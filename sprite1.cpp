@@ -1,5 +1,12 @@
 
+#include <iostream>
 #include "SDL.h"
+
+using std::cout;
+using std::endl;
+
+#define HIGH 1366
+#define WITH 768
 
 class Color{
 public:
@@ -12,16 +19,38 @@ public:
 
 };
 
-class Animation {
-    Uint32 timer;
+class Picture{
+    int rows, columns;
+    int row_num, column_num;
+    int w, h;
+
+
     SDL_Surface *surface;
+
+SDL_Rect get_dimention(){
     SDL_Rect dimention;
-    SDL_Rect position;
+    // Separaciones de 2 píxeles dentro de las rejillas para observar
+    // bien donde empieza una imagen y donde termina la otra
+    dimention.w = this->w - 2;
+    dimention.h = this->h - 2;
+ 
+    // Cálculo de la posición de la imagen // dentro de la rejilla
+    dimention.x = (this->row_num * this->w) + 2; 
+    dimention.y = (this->column_num * this->h) + 2;
+
+    return dimention;
+
+} 
+
+
+
+
 public:
-    Animation(const char * bmp_path, Color color, SDL_Rect dimention,SDL_Rect position, Uint32 timer){
-        this->timer = timer;
-        this->dimention = dimention;
-        this->position = position;
+    Picture(const char * bmp_path, Color color, int columns, int rows){
+        this->rows = rows;
+        this->columns = columns;
+        this->row_num = 0;
+        this->column_num = 0;
         this->surface = SDL_LoadBMP(bmp_path);
         if (!this->surface) {
             SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create surface from image: %s", SDL_GetError());
@@ -30,6 +59,72 @@ public:
 
         Uint32 colorkey = SDL_MapRGB(surface->format, color.r, color.g, color.b);
         SDL_SetColorKey(this->surface, SDL_TRUE, colorkey);
+
+
+        // El ancho de una imagen es el total entre el número de columnas   
+        this->w = surface->w / columns;
+        // El ato de una imagen es el total entre el número de filas
+        this->h = surface->h / rows;
+
+    }
+
+
+
+void draw(SDL_Renderer *renderer, SDL_Rect position){
+
+    SDL_Texture *texture = NULL;
+    texture = SDL_CreateTextureFromSurface(renderer, this->surface);
+    if (!texture) {
+        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create texture from surface: %s", SDL_GetError());
+        return;
+    }
+
+    SDL_Rect dimention = get_dimention();
+
+    SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
+    SDL_RenderClear(renderer);
+    SDL_RenderCopy(renderer, texture, &dimention,&position);
+    SDL_RenderPresent(renderer);
+    SDL_DestroyTexture(texture);
+
+}
+
+
+void next_internal_mov(){
+    this->row_num += 1;
+    if(this->row_num >= this->columns){
+        this->row_num = 0;
+        this->column_num +=1;
+        if(this->column_num >= this->rows){
+            this->column_num = 0;
+        }
+    }
+}
+
+
+
+
+
+
+/*~Picture(){
+    SDL_FreeSurface(this->surface);
+}*/
+
+
+
+
+};
+
+class Animation {
+    Uint32 timer;
+    Picture picture;
+    SDL_Rect dimention;
+    SDL_Rect position;
+public:
+    Animation(const char * bmp_path, Color color,int columns, int rows,SDL_Rect position, Uint32 timer): 
+    picture(bmp_path, color, columns, rows ){
+        this->timer = timer;
+        this->position = position;
     }
 
     bool is_time_to_move(Uint32 time_passed){
@@ -39,18 +134,7 @@ public:
 
 
 void draw(SDL_Renderer *renderer){
-    SDL_Texture *texture = NULL;
-    texture = SDL_CreateTextureFromSurface(renderer, this->surface);
-    if (!texture) {
-        SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create texture from surface: %s", SDL_GetError());
-        return;
-    }
-
-    SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
-    SDL_RenderClear(renderer);
-    SDL_RenderCopy(renderer, texture, &this->dimention,&this->position);
-    SDL_RenderPresent(renderer);
-    SDL_DestroyTexture(texture);
+    this->picture.draw(renderer, this->position);
 
 }
 
@@ -65,20 +149,18 @@ void move_right(){
 }
 
 void move_up(){
-    his->position.y +=1;
+    this->position.y +=1;
 
 }
 
 void move_down(){
-    his->position.y -=1;
+    this->position.y -=1;
 
 }
 
-
-
-/*~Animation(){
-    SDL_FreeSurface(this->surface);
-}*/
+int next_internal_mov(){
+    this->picture.next_internal_mov();
+}
 
 };
 
@@ -98,8 +180,8 @@ int main(int argc, char *args[]){
     SDL_DisplayMode dm;
 
     //default high and with
-    int w = 1366;
-    int h = 768;
+    int w = WITH;
+    int h = HIGH;
 
     //getting the actual size of screen computer
     if (SDL_GetDesktopDisplayMode(0, &dm) != 0){
@@ -126,10 +208,6 @@ int main(int argc, char *args[]){
     SDL_Rect dimention;
     SDL_Rect position;
 
-        dimention.x = 0;
-        dimention.y = 0;
-        dimention.w = 900;   
-        dimention.h = 650;
 
         position.x = i;
         position.y = h/2;
@@ -137,11 +215,8 @@ int main(int argc, char *args[]){
         position.h = 70;
 
        
-
-        Color colorkey(255,255,255);
-        Animation gusano("gusanito1.bmp",colorkey,dimention,position,100);
-
-
+        Color colorkey(0,255,0);
+        Animation personaje("jacinto.bmp",colorkey,7,4,position,100);
 
     while (true) {
 
@@ -155,13 +230,15 @@ int main(int argc, char *args[]){
         // Referencia de tiempo
         t1 = SDL_GetTicks();
 
-        if(gusano.is_time_to_move(t1 - t0)) {
+        if(personaje.is_time_to_move(t1 - t0)) {
             // Nueva referencia de tiempo
             t0 = SDL_GetTicks();
-
-            gusano.move_left();
+            personaje.next_internal_mov();
+            personaje.move_left();
             // Movimiento del personaje
-            gusano.draw(renderer);
+            personaje.draw(renderer);
+
+
         }
     }
 
