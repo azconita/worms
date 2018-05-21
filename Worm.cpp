@@ -20,7 +20,6 @@ Worm::Worm(b2World* world, float x, float y) {
   b2FixtureDef myFixtureDef;
   myFixtureDef.shape = &shape;
   myFixtureDef.density = 1;
-  myFixtureDef.friction =0;
   this->body->CreateFixture(&myFixtureDef);
 }
 
@@ -29,7 +28,7 @@ Worm::~Worm() {
 }
 
 void Worm::move_left() {
-  this->body->ApplyForce( b2Vec2(-100,0), this->body->GetWorldCenter(), true );
+  this->body->ApplyForce(b2Vec2(-50,0), this->body->GetWorldCenter(), true);
 }
 
 void Worm::rotateTranslate(b2Vec2& vector,const b2Vec2& center,float angle) {

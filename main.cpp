@@ -16,7 +16,7 @@ const float P2M=1/M2P;
 const int WIDTH=640;
 const int HEIGHT=480;
 
-void display(std::vector<Beam> &beams, std::vector<Worm> &worms);
+void display(StageDTO s);
 
 int main(int argc, char const *argv[]) {
   Stage stage("stage1");
@@ -50,10 +50,9 @@ int main(int argc, char const *argv[]) {
                   }
           }
           stage.update();      //update
-          std::vector<Beam> beams = stage.get_beams();
-          std::vector<Worm> worms = stage.get_worms();
-          display(beams, worms);
-          sleep(1);
+          StageDTO s = stage.get_positions();
+          display(s);
+          //sleep(1);
           SDL_Flip(screen);
           if(1000.0/30>SDL_GetTicks()-start)
                   SDL_Delay(1000.0/30-(SDL_GetTicks()-start));
@@ -112,21 +111,21 @@ void drawLine(SDL_Surface* dest,int x0,int y0,int x1,int y1)
         }
 }
 
-
-void drawSquare(std::vector<b2Vec2> points) {
+void drawSquare(std::vector<std::tuple<float,float>> points) {
   for(int i=0;i<4;i++) {
-    drawLine(screen, points[i].x*M2P, points[i].y*M2P,
-        points[(i+1)>3 ? 0 : (i+1)].x*M2P,
-        points[(i+1)>3 ? 0 : (i+1)].y*M2P);
+    float x, y, x1, y1;
+    std::tie (x,y) = points[i];
+    std::tie (x1,y1) = points[(i+1)>3 ? 0 : (i+1)];
+    drawLine(screen, x*M2P, y*M2P, x1*M2P, y1*M2P);
   }
 }
 
-void display(std::vector<Beam> &beams, std::vector<Worm> &worms) {
+void display(StageDTO s) {
   SDL_FillRect(screen,NULL,0);
-  for (auto p: beams) {
-    drawSquare(p.get_points());
+  for (auto p: s.beams) {
+    drawSquare(p.second);
   }
-  for (auto p: worms) {
-    drawSquare(p.get_points());
+  for (auto p: s.worms) {
+    drawSquare(p.second);
   }
 }
