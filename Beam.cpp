@@ -18,11 +18,12 @@ Beam::Beam(b2World* world, float x, float y) : x(x), y(y) {
 
   //add box fixture
   b2PolygonShape shape;
-  shape.SetAsBox(3, 0.8, b2Vec2(x,y), 0.0f * b2_pi);
+  shape.SetAsBox(3, 0.8);
  // std::cout << "vertice: " << shape.GetVertex(0) << '\n' ;
   b2FixtureDef myFixtureDef;
   myFixtureDef.shape = &shape;
   myFixtureDef.density = 1;
+  myFixtureDef.friction = 0.0;
   this->body->CreateFixture(&myFixtureDef);
 }
 
@@ -33,7 +34,7 @@ Beam::~Beam() {
 std::vector<b2Vec2> Beam::get_points() {
   std::vector<b2Vec2> points;
   for (int i = 0; i < 4; i++)
-    points.push_back(((b2PolygonShape*)this->body->GetFixtureList()->GetShape())->GetVertex(i));
+    points.push_back(((b2PolygonShape*)this->body->GetFixtureList()->GetShape())->GetVertex(i) + this->body->GetWorldCenter());
   return points;
 }
 

@@ -1,4 +1,5 @@
 #include <string>
+#include <iostream>
 #include <vector>
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
@@ -6,6 +7,7 @@
 #include "stage.h"
 #include "Beam.h"
 #include "Worm.h"
+#include <unistd.h>
 
 SDL_Surface* screen;
 const float M2P=20;
@@ -39,6 +41,9 @@ int main(int argc, char const *argv[]) {
                                           case SDLK_ESCAPE:
                                                   running=false;
                                                   break;
+                                          case SDLK_LEFT:
+                                                  stage.make_action(1);
+                                                  break;
                                   }
                                   break;
 
@@ -48,6 +53,7 @@ int main(int argc, char const *argv[]) {
           std::vector<Beam> beams = stage.get_beams();
           std::vector<Worm> worms = stage.get_worms();
           display(beams, worms);
+          sleep(1);
           SDL_Flip(screen);
           if(1000.0/30>SDL_GetTicks()-start)
                   SDL_Delay(1000.0/30-(SDL_GetTicks()-start));

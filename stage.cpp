@@ -7,10 +7,11 @@
 //config: yaml: https://github.com/jbeder/yaml-cpp/
 Stage::Stage(std::string config) {
   std::cout << config << '\n';
-  b2Vec2 gravity(0, -9.8); //normal earth gravity
+  b2Vec2 gravity(0, 9.8); //normal earth gravity
 
   this->world = new b2World(gravity);
   this->add_beams(config);
+  this->add_worms(config);
 }
 
 Stage::~Stage() {
@@ -18,7 +19,7 @@ Stage::~Stage() {
 }
 
 void Stage::update() {
-  float32 timeStep = 1/20.0; //segundos del step
+  float32 timeStep = 1; //segundos del step
   int32 velocityIterations = 8;   //how strongly to correct velocity
   int32 positionIterations = 3;   //how strongly to correct position
 
@@ -26,13 +27,12 @@ void Stage::update() {
 
 }
 
-//
-void rotateTranslate(b2Vec2& vector,const b2Vec2& center,float angle) {
-  b2Vec2 tmp;
-  tmp.x=vector.x*cos(angle)-vector.y*sin(angle);
-  tmp.y=vector.x*sin(angle)+vector.y*cos(angle);
-  vector=tmp+center;
+void Stage::make_action(int action) {
+  this->worms.front().move_left();
 }
+
+//
+
 
 std::vector<Beam> Stage::get_beams() {
   return this->beams;
@@ -43,9 +43,20 @@ std::vector<Worm> Stage::get_worms() {
 
 // set initial stage
 void Stage::add_beams(std::string config) {
-  int myints[] = {10,20,30,40};
+  const int WIDTH=640;
+  const int HEIGHT=480;
+  const float M2P=20;
+  const float P2M=1/M2P;
+
+  int myints[] = {-10,-20};
   std::vector<int> v(myints, myints + sizeof(myints) / sizeof(int) );
-  for (auto &g: v) {
-    this->beams.push_back(Beam(this->world, g, 20));
-  }
+  this->beams.push_back(Beam(this->world, 10,0));
+  this->beams.push_back(Beam(this->world, 10,20));
+  /*for (auto &g: v) {
+    this->beams.push_back(Beam(this->world, 20, g));
+  }*/
+}
+
+void Stage::add_worms(std::string config) {
+  this->worms.push_back(Worm(this->world, 11, 10));
 }

@@ -26,6 +26,7 @@ public:
   std::vector<Worm> get_worms();
 private:
   void add_beams(std::string config);
+  void add_worms(std::string config);
 };
 
 #endif
