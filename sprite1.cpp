@@ -6,7 +6,7 @@ using std::cout;
 using std::endl;
 using std::string;
 
-#define WORM_WALK "worm_walk.bmp"
+#define WORM_WALK "resources/worm_walk.bmp"
 
 
 #define HIGH 1366
@@ -212,7 +212,7 @@ int main(int argc, char *args[]){
     }
 
     //creamos la pantalla
-    window = SDL_CreateWindow("WORRRRMSSS", 0, 0, w,h-UP_BORDER_HIGH, 0);
+    window = SDL_CreateWindow("WORMS GAME", 0, 0, w,h-UP_BORDER_HIGH, 0);
    
 
     //tomamos la superficie de la pantalla
@@ -225,13 +225,13 @@ int main(int argc, char *args[]){
 
     Color colorkey_beam(0,255,0);
 
-    Picture beam("viga.bmp", colorkey_beam,1,2);
+    Picture beam("resources/beam.bmp", colorkey_beam,1,2);
     int position_beam1_x = w/2-100;
     int position_beam1_y = h/2+40;
     beam.draw(screen,position_beam1_x,position_beam1_y);
 
 
-    Picture beam2("viga.bmp", colorkey_beam,1,2);
+    Picture beam2("resources/beam.bmp", colorkey_beam,1,2);
     int position_beam2_x = 50;
     int position_beam2_y = 50;
     beam2.draw(screen, position_beam2_x, position_beam2_y);
@@ -266,7 +266,7 @@ int main(int argc, char *args[]){
         t1 = SDL_GetTicks();
        
         if(personaje.is_time_to_move(t1 -t0)) {
-            
+                
             // Nueva referencia de tiempo
             t0 = SDL_GetTicks();
 
