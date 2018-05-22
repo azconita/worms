@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
@@ -14,7 +15,6 @@
 using std::cout;
 using std::endl;
 using std::string;
-using std::map;
 
 
 #define SCREEN_DEFAULT_WITH 1366
@@ -107,8 +107,6 @@ void draw(SDL_Surface *screen, SDL_Rect position){
     
     position.h = dimention.h;
     position.w = dimention.w;
-
-    //printf("x = %i, y = %i, h = %i, w = %i \n",position.x, position.y, position.h, position.w );
     
     SDL_BlitSurface(this->surface, &dimention, screen, &position);
              
@@ -164,9 +162,6 @@ class Animation {
         this->picture.next_sprite_figure();
     }
 
-
-
-
 public:
     Animation(const char * bmp_path, Color color,int columns, int rows,int x, int y, Uint32 timer): 
     picture(bmp_path, color, columns, rows ){
@@ -191,7 +186,7 @@ public:
         return ((time_passed > this->timer) && this->in_movement);
     }
 
-    void move(int position_x, int position_y){
+    void move(){
         if(this->step == this->figures_num){
             in_movement = false;
             this->step = 0;
@@ -199,10 +194,6 @@ public:
         else if(this->step == this->figures_num - 1){
             move_left(10);
         }
-
-        this->position.x = position_x;
-        this->position.y = position_y;
-
         next_internal_mov();
         this->step +=1;
         
@@ -217,55 +208,11 @@ public:
 /////////////////////////////////////////////////////////////////////////////////////////
 
 float get_x_pixels(float meter_position){
-    return  23.5*meter_position+ 500;
+    return  meter_position + SCREEN_DEFAULT_WITH/2;
 }
 
 float get_y_pixels(float meter_position){
-    return  23.5*meter_position;
-}
-
-void show_beams(StageDTO s, SDL_Surface *screen){
-
-    Color colorkey_beam(BIG_BEAM_R,BIG_BEAM_G,BIG_BEAM_B);
-
-    for (auto b: s.beams) {
-        //cout <<"viga " << b.first << endl;
-        std::vector<std::tuple<float, float>> positions = b.second;
-        std::tuple<float, float> pos = positions[3];
-        Picture beam(BIG_BEAM, colorkey_beam,BIG_BEAM_COLUMNS,BIG_BEAM_ROWS);
-        int position_beam_x = get_x_pixels(std::get<0>(pos));
-        int position_beam_y = get_y_pixels(std::get<1>(pos));
-        beam.draw(screen,position_beam_x,position_beam_y);
-
-    }
-}
-
-std::map<int,Animation> create_worms(StageDTO s, SDL_Surface *screen){
-    
-    std::map<int,Animation> worms;
-    
-        Color colorkey(WORM_WALK_R,WORM_WALK_G,WORM_WALK_B);
-
-    for (auto w: s.worms) {
-        int id = w.first;
-        std::vector<std::tuple<float, float>> positions = w.second;
-
-        std::tuple<float, float> pos = positions[3];
-        int position_worm_x = get_x_pixels(std::get<0>(pos));
-        int position_worm_y = get_y_pixels(std::get<1>(pos));
-        
-        //creo el gusano y lo gardo en el vector
-        Animation worm(WORM_WALK,colorkey,WORM_WALK_COLUMNS,WORM_WALK_ROWS,position_worm_x,position_worm_y,100);
-        worms.insert ( std::pair<int,Animation>(id,worm) );
-        worm.draw(screen);
-    }
-
-    return worms;
-}
-
-
-void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Animation> & worms){
-
+    return  meter_position + SCREEN_DEFAULT_HIGH/2;
 }
 
 int main(int argc, char *args[]){
@@ -276,16 +223,16 @@ int main(int argc, char *args[]){
     }
 
     atexit(SDL_Quit);
-    int screen_width = SCREEN_DEFAULT_WITH;
-    int screen_height = SCREEN_DEFAULT_HIGH;
+    int screenWidth = SCREEN_DEFAULT_WITH;
+    int screenHeight = SCREEN_DEFAULT_HIGH;
 
     const SDL_VideoInfo* info = SDL_GetVideoInfo();   //<-- calls SDL_GetVideoInfo();   
-    screen_width = info->current_w;
-    screen_height = info->current_h;
+    screenWidth = info->current_w;
+    screenHeight = info->current_h;
 
     
    
-    if(SDL_VideoModeOK(screen_width, screen_height, 24, SDL_HWSURFACE|SDL_DOUBLEBUF) == 0) {
+    if(SDL_VideoModeOK(screenWidth, screenHeight, 24, SDL_HWSURFACE|SDL_DOUBLEBUF) == 0) {
         // Comprobamos que sea compatible el modo de video
        cout << "Modo no soportado: " << SDL_GetError() << endl;
        exit(1);
@@ -293,32 +240,57 @@ int main(int argc, char *args[]){
 
     // Establecemos el modo de video
     SDL_Surface *screen;
-    screen = SDL_SetVideoMode(screen_width, screen_height, 24, SDL_HWSURFACE|SDL_DOUBLEBUF);
+    screen = SDL_SetVideoMode(screenWidth, screenHeight, 24, SDL_HWSURFACE|SDL_DOUBLEBUF);
     if(screen == NULL) {
         cout << "No se pudo establecer el modo de video: "
         << SDL_GetError() << endl;
         exit(1);
     }
 
-    
-
     //------------------------------------
 
     Stage stage("stage1");
-
+    stage.update(); //update
     StageDTO s = stage.get_positions();
-    
-    //dibujo las vigas
-    show_beams(s, screen); 
 
-    //dibujo los gusanos en su posicion inicial
-    std::map<int,Animation> worms = create_worms(s, screen);
-    printf(" size = %li\n", worms.size() );
+    for (auto b: s.beams) {
+        cout <<"viga " << b.first << endl;
+        std::vector<std::tuple<float, float>> positions = b.second;
+        for(auto pos: positions){
+            cout << "pos: (" << get_x_pixels(std::get<0>(pos))  << ","<< get_x_pixels(std::get<1>(pos)) << ")" << endl;
+        }
+    }
 
+    for (auto w: s.worms) {
+        cout <<"gusano " << w.first << endl;
+        std::vector<std::tuple<float, float>> positions = w.second;
+        for(auto pos: positions){
+            cout << "pos: (" << get_x_pixels(std::get<0>(pos))  << ","<< get_x_pixels(std::get<1>(pos)) << ")" << endl;
+        }
+    }
 
     //------------------------------------
-    
 
+
+    Color colorkey_beam(BIG_BEAM_R,BIG_BEAM_G,BIG_BEAM_B);
+
+    Picture beam(BIG_BEAM, colorkey_beam,BIG_BEAM_COLUMNS,BIG_BEAM_ROWS);
+    int position_beam1_x = screenWidth/2-100;
+    int position_beam1_y = screenHeight/2+40;
+    beam.draw(screen,position_beam1_x,position_beam1_y);
+
+
+    Picture beam2(BIG_BEAM, colorkey_beam,BIG_BEAM_COLUMNS,BIG_BEAM_ROWS);
+    int position_beam2_x = 50;
+    int position_beam2_y = 50;
+    beam2.draw(screen, position_beam2_x, position_beam2_y);
+
+
+    Color colorkey(WORM_WALK_R,WORM_WALK_G,WORM_WALK_B);
+    Animation personaje(WORM_WALK,colorkey,WORM_WALK_COLUMNS,WORM_WALK_ROWS,screenWidth/2,screenHeight/2,100);
+    personaje.draw(screen);
+
+ 
 
     SDL_Event event;
     
@@ -343,25 +315,37 @@ int main(int argc, char *args[]){
                         running=false;
                         break;
                     case SDLK_LEFT:
-                        cout << "se apreto izquierda " << endl;
-                        //worm.wish_to_move();
-                        stage.make_action(1);
+                        personaje.wish_to_move();
+                        //stage.make_action(1);
+                            //------------------------------------
+                            stage.update(); //update
+                            StageDTO s = stage.get_positions();
+
+                            for (auto w: s.worms) {
+                                cout << endl <<"gusano " << w.first << endl;
+                                std::vector<std::tuple<float, float>> positions = w.second;
+                                for(auto pos: positions){
+                                    cout << "pos: (" << get_x_pixels(std::get<0>(pos))  << ","<< get_x_pixels(std::get<1>(pos)) << ")" << endl;
+                                }
+                            }
+
+                            //------------------------------------
+
+
+
                         break;
                     }
                     break;
         }
+       
 
         //actualiza el dibujo de la superficie en la pantalla
         SDL_Flip(screen);
 
         // Referencia de tiempo
         t1 = SDL_GetTicks();
-
-        //update
-        stage.update(); 
-        StageDTO s = stage.get_positions();
        
-        if((t1 -t0) > 100) {
+        if(personaje.is_time_to_move(t1 -t0)) {
                 
             // Nueva referencia de tiempo
             t0 = SDL_GetTicks();
@@ -370,31 +354,16 @@ int main(int argc, char *args[]){
             //toda la pantalla en negro
             SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format,0,0,0));
             
-            //dibujo las vigas 
-            show_beams(s, screen); 
-            //show_worms(s, screen, worms);
-
-            for (auto w: s.worms) {
-                std::vector<std::tuple<float, float>> positions = w.second;
-
-                std::tuple<float, float> pos = positions[3];
-                int position_worm_x = get_x_pixels(std::get<0>(pos));
-                int position_worm_y = get_y_pixels(std::get<1>(pos));
-
-
-                std::map<int,Animation>::iterator it = worms.find(w.first); 
-                Animation worm = it->second;
-
-                worm.move(position_worm_x,position_worm_y);
-                worm.draw(screen);
-            }
-
-            // Movimiento del worm
-            //worm.move();
-            //worm.draw(screen);
+            //tengo que volver a dibujar todo
+            beam.draw(screen,position_beam1_x,position_beam1_y);
+            beam2.draw(screen,position_beam2_x, position_beam2_y);
+            
+            // Movimiento del personaje
+            personaje.move();
+            personaje.draw(screen);
         }
         
-    }
+    } 
 
     return 0;
 }

@@ -21,4 +21,4 @@ public:
   std::vector<b2Vec2> get_points();
 };
 
-#endif /* BEAM_H_ */
+#endif /* BEAM_H_ */	
