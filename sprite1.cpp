@@ -1,16 +1,18 @@
 
 #include <iostream>
-#include "SDL.h"
+#include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
+#include "resources_definitions.h"
+
 
 using std::cout;
 using std::endl;
 using std::string;
 
-#define WORM_WALK "resources/worm_walk.bmp"
 
+#define SCREEN_DEFAULT_WITH 1366
+#define SCREEN_DEFAULT_HIGH 768
 
-#define HIGH 1366
-#define WITH 768
 #define UP_BORDER_HIGH 50 
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -59,7 +61,7 @@ public:
         this->column_num = 0;
         this->surface = SDL_LoadBMP(bmp_path);
         if (!this->surface) {
-            SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create surface from image: %s", SDL_GetError());
+            cout <<"Couldn't create surface from image:" << bmp_path << SDL_GetError() << endl; 
             return;
         }
 
@@ -124,6 +126,7 @@ class Animation {
     Picture picture;
     SDL_Rect dimention;
     SDL_Rect position;
+    int figures_num;
     bool in_movement;
 
     void move_left(int step){
@@ -147,9 +150,9 @@ public:
     picture(bmp_path, color, columns, rows ){
         this->step = 0;
         this->timer = timer;
-        this->position = position;
         this->position.x = x;
         this->position.y = y;
+        this->figures_num = columns * rows;
         this->in_movement = false;
 
     }
@@ -167,11 +170,11 @@ public:
     }
 
     void move(){
-        if(this->step == 15){
+        if(this->step == this->figures_num){
             in_movement = false;
             this->step = 0;
         }
-        else if(this->step == 14){
+        else if(this->step == this->figures_num - 1){
             move_left(10);
         }
         next_internal_mov();
@@ -190,77 +193,90 @@ public:
 
 
 int main(int argc, char *args[]){
-    SDL_Window *window = NULL;
-    SDL_Renderer *renderer = NULL;
-    SDL_Surface *screen;
-    SDL_Event event;
-    
-    SDL_Init(SDL_INIT_VIDEO); // init video
-   
-    //default high and with
-    int w = WITH;
-    int h = HIGH;
 
-    SDL_DisplayMode dm;
-    //getting the actual size of screen computer
-    if (SDL_GetDesktopDisplayMode(0, &dm) != 0){
-        SDL_Log("SDL_GetDesktopDisplayMode failed: %s", SDL_GetError());
-        return 1;
-    } else {
-        w = dm.w;
-        h = dm.h;
+    if(SDL_Init(SDL_INIT_VIDEO) < 0) {
+        cout << "No se pudo iniciar SDL: " << SDL_GetError() << endl;
+        exit(1); 
     }
 
-    //creamos la pantalla
-    window = SDL_CreateWindow("WORMS GAME", 0, 0, w,h-UP_BORDER_HIGH, 0);
+    atexit(SDL_Quit);
+    int screenWidth = SCREEN_DEFAULT_WITH;
+    int screenHeight = SCREEN_DEFAULT_HIGH;
+
+    const SDL_VideoInfo* info = SDL_GetVideoInfo();   //<-- calls SDL_GetVideoInfo();   
+    screenWidth = info->current_w;
+    screenHeight = info->current_h;
+
+    
    
+    if(SDL_VideoModeOK(screenWidth, screenHeight, 24, SDL_HWSURFACE|SDL_DOUBLEBUF) == 0) {
+        // Comprobamos que sea compatible el modo de video
+       cout << "Modo no soportado: " << SDL_GetError() << endl;
+       exit(1);
+    }
 
-    //tomamos la superficie de la pantalla
-    screen = SDL_GetWindowSurface(window);
+    // Establecemos el modo de video
+    SDL_Surface *screen;
+    screen = SDL_SetVideoMode(screenWidth, screenHeight, 24, SDL_HWSURFACE|SDL_DOUBLEBUF);
+    if(screen == NULL) {
+        cout << "No se pudo establecer el modo de video: "
+        << SDL_GetError() << endl;
+        exit(1);
+    }
+    
 
-    //para controlar el tiempo
-    Uint32 t0 = SDL_GetTicks();
-    Uint32 t1;
+    Color colorkey_beam(BIG_BEAM_R,BIG_BEAM_G,BIG_BEAM_B);
 
-
-    Color colorkey_beam(0,255,0);
-
-    Picture beam("resources/beam.bmp", colorkey_beam,1,2);
-    int position_beam1_x = w/2-100;
-    int position_beam1_y = h/2+40;
+    Picture beam(BIG_BEAM, colorkey_beam,BIG_BEAM_COLUMNS,BIG_BEAM_ROWS);
+    int position_beam1_x = screenWidth/2-100;
+    int position_beam1_y = screenHeight/2+40;
     beam.draw(screen,position_beam1_x,position_beam1_y);
 
 
-    Picture beam2("resources/beam.bmp", colorkey_beam,1,2);
+    Picture beam2(BIG_BEAM, colorkey_beam,BIG_BEAM_COLUMNS,BIG_BEAM_ROWS);
     int position_beam2_x = 50;
     int position_beam2_y = 50;
     beam2.draw(screen, position_beam2_x, position_beam2_y);
 
 
-    Color colorkey(128,128,192);
-    Animation personaje(WORM_WALK,colorkey,1,15,w/2,h/2,100);
+    Color colorkey(WORM_WALK_R,WORM_WALK_G,WORM_WALK_B);
+    Animation personaje(WORM_WALK,colorkey,WORM_WALK_COLUMNS,WORM_WALK_ROWS,screenWidth/2,screenHeight/2,100);
     personaje.draw(screen);
 
  
 
+    SDL_Event event;
+    
+    //para controlar el tiempo
+    Uint32 t0 = SDL_GetTicks();
+    Uint32 t1;
 
-    while(true){
+    bool running=true;
+    while(running ){
 
         //control de evento para cerrar ventana
         SDL_PollEvent(&event);
-        if (event.type == SDL_QUIT) {
-            break;
-        }
-        else if(event.type == SDL_KEYDOWN){
-            const Uint8 *state = SDL_GetKeyboardState(NULL);
-            if (state[SDL_SCANCODE_LEFT] ){
-                state = NULL;
-                personaje.wish_to_move();
-            } 
+        switch(event.type){
+            case SDL_QUIT:
+                cout << "se apreto x -> fin" << endl;
+                running = false;
+                break;
+
+            case SDL_KEYDOWN:
+                switch(event.key.keysym.sym){
+                    case SDLK_ESCAPE:
+                        running=false;
+                        break;
+                    case SDLK_LEFT:
+                        cout << "se apreto izquierda " << endl;
+                        personaje.wish_to_move();
+                        break;
+                    }
+                    break;
         }
 
         //actualiza el dibujo de la superficie en la pantalla
-        SDL_UpdateWindowSurface(window);
+        SDL_Flip(screen);
 
         // Referencia de tiempo
         t1 = SDL_GetTicks();
@@ -284,10 +300,6 @@ int main(int argc, char *args[]){
         }
         
     } 
-
-    SDL_DestroyWindow(window);
-
-    SDL_Quit();
 
     return 0;
 }
