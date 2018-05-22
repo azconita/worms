@@ -140,6 +140,7 @@ void next_sprite_figure(){
 /////////////////////////////////////////////////////////////////////////////////////////
 
 class Animation {
+public:
     Uint32 timer;
     int step;
     Picture picture;
@@ -167,7 +168,7 @@ class Animation {
 
 
 
-public:
+
     Animation(const char * bmp_path, Color color,int columns, int rows,int x, int y, Uint32 timer): 
     picture(bmp_path, color, columns, rows ){
         this->step = 0;
@@ -205,7 +206,6 @@ public:
 
         next_internal_mov();
         this->step +=1;
-        
         
     }
 
@@ -383,15 +383,13 @@ int main(int argc, char *args[]){
 
 
                 std::map<int,Animation>::iterator it = worms.find(w.first); 
-                Animation worm = it->second;
+                //Animation worm = it->second;
 
-                worm.move(position_worm_x,position_worm_y);
-                worm.draw(screen);
+                it->second.move(position_worm_x,position_worm_y);
+  
+                it->second.draw(screen);
             }
 
-            // Movimiento del worm
-            //worm.move();
-            //worm.draw(screen);
         }
         
     }
