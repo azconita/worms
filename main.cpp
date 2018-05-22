@@ -107,7 +107,7 @@ void draw(SDL_Surface *screen, SDL_Rect position){
     position.h = dimention.h;
     position.w = dimention.w;
 
-    printf("x = %i, y = %i, h = %i, w = %i \n",position.x, position.y, position.h, position.w );
+    //printf("x = %i, y = %i, h = %i, w = %i \n",position.x, position.y, position.h, position.w );
     
     SDL_BlitSurface(this->surface, &dimention, screen, &position);
              
@@ -225,7 +225,7 @@ void show_beams(StageDTO s, SDL_Surface *screen){
     Color colorkey_beam(BIG_BEAM_R,BIG_BEAM_G,BIG_BEAM_B);
 
     for (auto b: s.beams) {
-        cout <<"viga " << b.first << endl;
+        //cout <<"viga " << b.first << endl;
         std::vector<std::tuple<float, float>> positions = b.second;
         std::tuple<float, float> pos = positions[3];
         Picture beam(BIG_BEAM, colorkey_beam,BIG_BEAM_COLUMNS,BIG_BEAM_ROWS);
@@ -234,6 +234,17 @@ void show_beams(StageDTO s, SDL_Surface *screen){
         beam.draw(screen,position_beam_x,position_beam_y);
 
     }
+}
+
+void create_worms(StageDTO s, SDL_Surface *screen, std::vector<Animation> worm_animations){
+
+    
+
+}
+
+
+void show_worms(){
+
 }
 
 int main(int argc, char *args[]){
@@ -274,18 +285,17 @@ int main(int argc, char *args[]){
 
     Stage stage("stage1");
 
-    
-    
 
     stage.update(); //update
     StageDTO s = stage.get_positions();
     
-    show_beams(s, screen); //dibujo las vigas
+    //dibujo las vigas
+    show_beams(s, screen); 
 
-
-    Color colorkey(WORM_WALK_R,WORM_WALK_G,WORM_WALK_B);
-
+    //dibujo los gusanos en su posicion inicial
     std::vector<Animation> worm_animations;
+    
+    Color colorkey(WORM_WALK_R,WORM_WALK_G,WORM_WALK_B);
 
     for (auto w: s.worms) {
         cout <<"gusano " << w.first << endl;
@@ -294,18 +304,20 @@ int main(int argc, char *args[]){
         std::tuple<float, float> pos = positions[3];
         int position_worm_x = get_x_pixels(std::get<0>(pos));
         int position_worm_y = get_y_pixels(std::get<1>(pos));
+        
+        //creo el gusano y lo gardo en el vector
         Animation worm(WORM_WALK,colorkey,WORM_WALK_COLUMNS,WORM_WALK_ROWS,position_worm_x,position_worm_y,100);
-        worm.draw(screen);
         worm_animations.push_back(worm);
+        
+        worm.draw(screen);
         
         cout << "pos: (" << get_x_pixels(std::get<0>(pos))  << ","<< get_y_pixels(std::get<1>(pos)) << ")" << endl;
     }
 
+    printf(" size = %li\n", worm_animations.size() );
+
+
     //------------------------------------
-    
-
-
-    
     
 
 
@@ -346,7 +358,8 @@ int main(int argc, char *args[]){
         // Referencia de tiempo
         t1 = SDL_GetTicks();
 
-        stage.update(); //update
+        //update
+        stage.update(); 
         StageDTO s = stage.get_positions();
        
         if((t1 -t0) > 100) {
@@ -362,7 +375,7 @@ int main(int argc, char *args[]){
             show_beams(s, screen); 
 
             for (auto w: s.worms) {
-                cout <<"gusano " << w.first << endl;
+                //cout <<"gusano " << w.first << endl;
                 std::vector<std::tuple<float, float>> positions = w.second;
 
                 std::tuple<float, float> pos = positions[3];
@@ -371,8 +384,7 @@ int main(int argc, char *args[]){
                 Animation worm = worm_animations[0];
                 worm.move(position_worm_x,position_worm_y);
                 worm.draw(screen);
-                
-                cout << "pos: (" << get_x_pixels(std::get<0>(pos))  << ","<< get_y_pixels(std::get<1>(pos)) << ")" << endl;
+                //cout << "pos: (" << get_x_pixels(std::get<0>(pos))  << ","<< get_y_pixels(std::get<1>(pos)) << ")" << endl;
             }
             
             // Movimiento del worm
