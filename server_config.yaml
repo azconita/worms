@@ -1,0 +1,5 @@
+gravity: -9.8
+time_step: 0.1 
+velocity_iterations: 8
+position_iterations: 3
+

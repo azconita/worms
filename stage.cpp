@@ -3,11 +3,12 @@
 #include <vector>
 #include <iostream>
 #include <Box2D/Box2D.h>
+#include "Constants.h"
 
 //config: yaml: https://github.com/jbeder/yaml-cpp/
 Stage::Stage(std::string config) {
   std::cout << config << '\n';
-  b2Vec2 gravity(0, 9.8); //normal earth gravity
+  b2Vec2 gravity(0, Constants::gravity); //normal earth gravity
 
   this->world = new b2World(gravity);
   this->add_beams(config);
@@ -19,7 +20,7 @@ Stage::~Stage() {
 }
 
 void Stage::update() {
-  float32 timeStep = 0.05; //segundos del step
+  float32 timeStep = Constants::time_step; //segundos del step
   int32 velocityIterations = 8;   //how strongly to correct velocity
   int32 positionIterations = 3;   //how strongly to correct position
 
@@ -63,13 +64,6 @@ std::vector<Worm> Stage::get_worms() {
 
 // set initial stage
 void Stage::add_beams(std::string config) {
-  const int WIDTH=640;
-  const int HEIGHT=480;
-  const float M2P=20;
-  const float P2M=1/M2P;
-
-  int myints[] = {-10,-20};
-  std::vector<int> v(myints, myints + sizeof(myints) / sizeof(int) );
   this->beams.push_back(Beam(this->world, 10,0));
   this->beams.push_back(Beam(this->world, 10,20));
   /*for (auto &g: v) {

@@ -117,6 +117,7 @@ void drawSquare(std::vector<std::tuple<float,float>> points) {
     std::tie (x,y) = points[i];
     std::tie (x1,y1) = points[(i+1)>3 ? 0 : (i+1)];
     drawLine(screen, x*M2P, y*M2P, x1*M2P, y1*M2P);
+    //drawLine(screen, x, y, x1, y1);
   }
 }
 
