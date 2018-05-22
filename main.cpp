@@ -106,6 +106,8 @@ void draw(SDL_Surface *screen, SDL_Rect position){
     
     position.h = dimention.h;
     position.w = dimention.w;
+
+    printf("x = %i, y = %i, h = %i, w = %i \n",position.x, position.y, position.h, position.w );
     
     SDL_BlitSurface(this->surface, &dimention, screen, &position);
              
@@ -185,7 +187,7 @@ public:
         return ((time_passed > this->timer) && this->in_movement);
     }
 
-    void move(){
+    void move(int position_x, int position_y){
         if(this->step == this->figures_num){
             in_movement = false;
             this->step = 0;
@@ -193,6 +195,10 @@ public:
         else if(this->step == this->figures_num - 1){
             move_left(10);
         }
+
+        this->position.x = position_x;
+        this->position.y = position_y;
+
         next_internal_mov();
         this->step +=1;
         
@@ -206,7 +212,29 @@ public:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+float get_x_pixels(float meter_position){
+    return  23.5*meter_position+ 500;
+}
 
+float get_y_pixels(float meter_position){
+    return  23.5*meter_position;
+}
+
+void show_beams(StageDTO s, SDL_Surface *screen){
+
+    Color colorkey_beam(BIG_BEAM_R,BIG_BEAM_G,BIG_BEAM_B);
+
+    for (auto b: s.beams) {
+        cout <<"viga " << b.first << endl;
+        std::vector<std::tuple<float, float>> positions = b.second;
+        std::tuple<float, float> pos = positions[3];
+        Picture beam(BIG_BEAM, colorkey_beam,BIG_BEAM_COLUMNS,BIG_BEAM_ROWS);
+        int position_beam_x = get_x_pixels(std::get<0>(pos));
+        int position_beam_y = get_y_pixels(std::get<1>(pos));
+        beam.draw(screen,position_beam_x,position_beam_y);
+
+    }
+}
 
 int main(int argc, char *args[]){
 
@@ -239,26 +267,46 @@ int main(int argc, char *args[]){
         << SDL_GetError() << endl;
         exit(1);
     }
+
     
 
+    //------------------------------------
 
-    Color colorkey_beam(BIG_BEAM_R,BIG_BEAM_G,BIG_BEAM_B);
+    Stage stage("stage1");
 
-    Picture beam(BIG_BEAM, colorkey_beam,BIG_BEAM_COLUMNS,BIG_BEAM_ROWS);
-    int position_beam1_x = screen_width/2-100;
-    int position_beam1_y = screen_height/2+40;
-    beam.draw(screen,position_beam1_x,position_beam1_y);
+    
+    
 
-
-    Picture beam2(BIG_BEAM, colorkey_beam,BIG_BEAM_COLUMNS,BIG_BEAM_ROWS);
-    int position_beam2_x = 50;
-    int position_beam2_y = 50;
-    beam2.draw(screen, position_beam2_x, position_beam2_y);
+    stage.update(); //update
+    StageDTO s = stage.get_positions();
+    
+    show_beams(s, screen); //dibujo las vigas
 
 
     Color colorkey(WORM_WALK_R,WORM_WALK_G,WORM_WALK_B);
-    Animation worm(WORM_WALK,colorkey,WORM_WALK_COLUMNS,WORM_WALK_ROWS,screen_width/2,screen_height/2,100);
-    worm.draw(screen);
+
+    std::vector<Animation> worm_animations;
+
+    for (auto w: s.worms) {
+        cout <<"gusano " << w.first << endl;
+        std::vector<std::tuple<float, float>> positions = w.second;
+
+        std::tuple<float, float> pos = positions[3];
+        int position_worm_x = get_x_pixels(std::get<0>(pos));
+        int position_worm_y = get_y_pixels(std::get<1>(pos));
+        Animation worm(WORM_WALK,colorkey,WORM_WALK_COLUMNS,WORM_WALK_ROWS,position_worm_x,position_worm_y,100);
+        worm.draw(screen);
+        worm_animations.push_back(worm);
+        
+        cout << "pos: (" << get_x_pixels(std::get<0>(pos))  << ","<< get_y_pixels(std::get<1>(pos)) << ")" << endl;
+    }
+
+    //------------------------------------
+    
+
+
+    
+    
 
 
     SDL_Event event;
@@ -285,7 +333,8 @@ int main(int argc, char *args[]){
                         break;
                     case SDLK_LEFT:
                         cout << "se apreto izquierda " << endl;
-                        worm.wish_to_move();
+                        //worm.wish_to_move();
+                        stage.make_action(1);
                         break;
                     }
                     break;
@@ -296,8 +345,11 @@ int main(int argc, char *args[]){
 
         // Referencia de tiempo
         t1 = SDL_GetTicks();
+
+        stage.update(); //update
+        StageDTO s = stage.get_positions();
        
-        if(worm.is_time_to_move(t1 -t0)) {
+        if((t1 -t0) > 100) {
                 
             // Nueva referencia de tiempo
             t0 = SDL_GetTicks();
@@ -306,13 +358,26 @@ int main(int argc, char *args[]){
             //toda la pantalla en negro
             SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format,0,0,0));
             
-            //tengo que volver a dibujar todo
-            beam.draw(screen,position_beam1_x,position_beam1_y);
-            beam2.draw(screen,position_beam2_x, position_beam2_y);
+            //dibujo las vigas 
+            show_beams(s, screen); 
+
+            for (auto w: s.worms) {
+                cout <<"gusano " << w.first << endl;
+                std::vector<std::tuple<float, float>> positions = w.second;
+
+                std::tuple<float, float> pos = positions[3];
+                int position_worm_x = get_x_pixels(std::get<0>(pos));
+                int position_worm_y = get_y_pixels(std::get<1>(pos));
+                Animation worm = worm_animations[0];
+                worm.move(position_worm_x,position_worm_y);
+                worm.draw(screen);
+                
+                cout << "pos: (" << get_x_pixels(std::get<0>(pos))  << ","<< get_y_pixels(std::get<1>(pos)) << ")" << endl;
+            }
             
             // Movimiento del worm
-            worm.move();
-            worm.draw(screen);
+            //worm.move();
+            //worm.draw(screen);
         }
         
     }
