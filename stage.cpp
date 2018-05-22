@@ -21,29 +21,36 @@ Stage::~Stage() {
 
 void Stage::update() {
   float32 timeStep = Constants::time_step; //segundos del step
-  int32 velocityIterations = 8;   //how strongly to correct velocity
-  int32 positionIterations = 3;   //how strongly to correct position
+  int32 velocityIterations = Constants::velocity_iterations;   //how strongly to correct velocity
+  int32 positionIterations = Constants::position_iterations;   //how strongly to correct position
 
   this->world->Step( timeStep, velocityIterations, positionIterations);
 
 }
 
-void Stage::make_action(int action) {
-  this->worms.front().move_left();
+void Stage::make_action(int worm, int action) {
+  switch (action) {
+    case 0:
+      this->worms[worm].move_right();
+      break;
+    case 1:
+      this->worms[worm].move_left();
+      break;
+  }
 }
 
-StageDTO Stage::get_positions() {
+StageDTO Stage::get_stageDTO() {
   StageDTO s;
-  int i = 0;
   for (auto w: this->worms) {
     std::vector<std::tuple<float, float>> v;
-    std::vector<b2Vec2> points = w.get_points();
-    for (auto p: points)
+    std::vector<b2Vec2> points = w.second.get_points();
+    for (auto p: points) {
       v.push_back(std::tuple<float, float>(p.x,p.y));
-    s.worms[i] = v;
-    i++;
+      std::cout << "x: " << p.x << ", y: " << p.y << '\n';
+    }
+    s.worms[w.first] = v;
   }
-  i = 0;
+  int i = 0;
   for (auto w: this->beams) {
     std::vector<std::tuple<float, float>> v;
     std::vector<b2Vec2> points = w.get_points();
@@ -52,25 +59,19 @@ StageDTO Stage::get_positions() {
     s.beams[i] = v;
     i++;
   }
+  s.worm_turn = 0;
   return s;
 }
 
-std::vector<Beam> Stage::get_beams() {
-  return this->beams;
-}
-std::vector<Worm> Stage::get_worms() {
-  return this->worms;
-}
+
 
 // set initial stage
 void Stage::add_beams(std::string config) {
   this->beams.push_back(Beam(this->world, 10,0));
   this->beams.push_back(Beam(this->world, 10,20));
-  /*for (auto &g: v) {
-    this->beams.push_back(Beam(this->world, 20, g));
-  }*/
 }
 
 void Stage::add_worms(std::string config) {
-  this->worms.push_back(Worm(this->world, 11, 10));
+  Worm w(this->world, 10, 11);
+  this->worms.emplace(0, w);
 }

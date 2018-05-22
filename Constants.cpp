@@ -16,15 +16,9 @@ namespace Constants {
   extern const int velocity_iterations = config["velocity_iterations"].as<int>();
   extern const int position_iterations = config["position_iterations"].as<int>();
 
-
-/*Constants::Constants(std::string configfile) {
-  YAML::Node config = YAML::LoadFile(configfile);
-  this->gravity = config["gravity"].as<float>();
-  this->time_step = config["time_step"].as<float>();
-}
-
-Constants::~Constants() {
-  // TODO Auto-generated destructor stub
-}*/
+  extern const int worm_initial_life = config["worm_initial_life"].as<int>();
+  extern const float worm_walk_velocity = config["worm_walk_velocity"].as<float>();
+  extern const float worm_density = config["worm_density"].as<float>();
+  extern const float worm_size = config["worm_size"].as<float>();
 
 } /* namespace Constants */

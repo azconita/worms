@@ -1,5 +1,9 @@
-gravity: -9.8
+gravity: 9.8
 time_step: 0.1 
 velocity_iterations: 8
 position_iterations: 3
 
+worm_initial_life: 25
+worm_walk_velocity: 20
+worm_density: 1
+worm_size: 0.5

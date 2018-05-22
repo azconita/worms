@@ -1,13 +1,16 @@
-#include <string>
-#include <iostream>
-#include <vector>
 #include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
-#include <Box2D/Box2D.h>
+#include <SDL/SDL_events.h>
+#include <SDL/SDL_keyboard.h>
+#include <SDL/SDL_keysym.h>
+#include <SDL/SDL_stdinc.h>
+#include <SDL/SDL_timer.h>
+#include <SDL/SDL_video.h>
+#include <cstdlib>
+#include <tuple>
+#include <utility>
+#include <vector>
+
 #include "stage.h"
-#include "Beam.h"
-#include "Worm.h"
-#include <unistd.h>
 
 SDL_Surface* screen;
 const float M2P=20;
@@ -42,7 +45,7 @@ int main(int argc, char const *argv[]) {
                                                   running=false;
                                                   break;
                                           case SDLK_LEFT:
-                                                  stage.make_action(1);
+                                                  stage.make_action(0, 1);
                                                   break;
                                   }
                                   break;
@@ -50,7 +53,7 @@ int main(int argc, char const *argv[]) {
                   }
           }
           stage.update();      //update
-          StageDTO s = stage.get_positions();
+          StageDTO s = stage.get_stageDTO();
           display(s);
           //sleep(1);
           SDL_Flip(screen);

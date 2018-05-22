@@ -16,13 +16,12 @@ namespace Constants {
   extern const float time_step;
   extern const int velocity_iterations;
   extern const int position_iterations;
-/*class Constants {
-public:
-  float gravity;
-  float time_step;
-  Constants(std::string configfile);
-  virtual ~Constants();
-};*/
+
+  //worm constants
+  extern const int worm_initial_life;
+  extern const float worm_walk_velocity;
+  extern const float worm_density;
+  extern const float worm_size; //lado del cuadrado
 
 } /* namespace Constants */
 
