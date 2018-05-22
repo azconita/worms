@@ -59,15 +59,25 @@ public:
         this->columns = columns;
         this->row_num = 0;
         this->column_num = 0;
-        this->surface = SDL_LoadBMP(bmp_path);
-        if (!this->surface) {
+        //this->surface =     IMG_Load(bmp_path);
+        SDL_Surface *tmp = SDL_LoadBMP(bmp_path);
+        if (!tmp) {
             cout <<"Couldn't create surface from image:" << bmp_path << SDL_GetError() << endl; 
             return;
         }
 
-        Uint32 colorkey = SDL_MapRGB(surface->format, color.r, color.g, color.b);
-        SDL_SetColorKey(this->surface, SDL_TRUE, colorkey);
+        this->surface = SDL_DisplayFormat(tmp);
+        SDL_FreeSurface(tmp);
 
+        
+        if(this->surface == NULL) {
+            cout << "Error: " << SDL_GetError() << endl; exit(1);
+        }
+   
+        // Calculamos el color transparente, en nuestro caso el verde
+         Uint32 colorkey = SDL_MapRGB(this->surface->format, color.r, color.g, color.b);
+        // Lo establecemos como color transparente
+        SDL_SetColorKey(this->surface, SDL_SRCCOLORKEY, colorkey);
 
         // El ancho de una imagen es el total entre el número de columnas   
         this->w = surface->w / columns;
@@ -224,6 +234,7 @@ int main(int argc, char *args[]){
         exit(1);
     }
     
+
 
     Color colorkey_beam(BIG_BEAM_R,BIG_BEAM_G,BIG_BEAM_B);
 
