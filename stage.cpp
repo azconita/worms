@@ -75,3 +75,7 @@ void Stage::add_worms(std::string config) {
   Worm w(this->world, 10, 11);
   this->worms.emplace(0, w);
 }
+
+void Stage::add_weapons(std::string config) {
+
+}

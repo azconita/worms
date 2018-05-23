@@ -21,4 +21,12 @@ namespace Constants {
   extern const float worm_density = config["worm_density"].as<float>();
   extern const float worm_size = config["worm_size"].as<float>();
 
+  //weapons constants
+  extern const float weapon_size = config["weapon_size"].as<float>();
+  extern const float weapon_density = config["weapon_density"].as<float>();
+  //bazooka
+  extern const float bazooka_damage = config["bazooka_damage"].as<float>();
+  extern const float bazooka_radius = config["bazooka_radius"].as<float>();
+
+
 } /* namespace Constants */

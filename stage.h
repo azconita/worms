@@ -4,6 +4,7 @@
 #include <tuple>
 #include <Box2D/Box2D.h>
 #include "Beam.h"
+#include "Weapon.h"
 #include "Worm.h"
 
 #ifndef STAGE_H_
@@ -21,6 +22,7 @@ private:
  b2World* world;
  std::vector<Beam> beams;
  std::map<int, Worm> worms;
+ std::vector<Weapon> weapons;
 
 public:
   Stage(std::string config);
@@ -37,6 +39,7 @@ private:
 
   void add_beams(std::string config);
   void add_worms(std::string config);
+  void add_weapons(std::string config);
 };
 
 #endif

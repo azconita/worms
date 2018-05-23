@@ -7,3 +7,8 @@ worm_initial_life: 25
 worm_walk_velocity: 20
 worm_density: 1
 worm_size: 0.5
+
+weapon_size: 0.1
+weapon_density: 1
+bazooka_damage: 50
+bazooka_radius: 2

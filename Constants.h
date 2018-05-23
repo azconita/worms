@@ -23,6 +23,13 @@ namespace Constants {
   extern const float worm_density;
   extern const float worm_size; //lado del cuadrado
 
+  //weapons constants
+  extern const float weapon_size;
+  extern const float weapon_density;
+  //bazooka
+  extern const float bazooka_damage;
+  extern const float bazooka_radius;
+
 } /* namespace Constants */
 
 #endif /* CONSTANTS_H_ */

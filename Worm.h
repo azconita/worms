@@ -17,7 +17,7 @@ class Worm {
   int life;
 public:
   Worm(b2World* world, float x, float y);
-  Worm(const Worm& other);
+  Worm(const    Worm& other);
   Worm();
   virtual ~Worm();
   std::vector<b2Vec2> get_points();
@@ -27,6 +27,8 @@ public:
   void move_right();
   void jump(); // 1m adelante y 0.5m alto
   void jump_back(); // 0.2m atras y 1.2m alto
+
+  //use weapons
 
 private:
   float get_impulse();
