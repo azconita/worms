@@ -308,7 +308,7 @@ int main(int argc, char *args[]){
 
     Stage stage("stage1");
 
-    StageDTO s = stage.get_positions();
+    StageDTO s = stage.get_stageDTO();
 
     //dibujo las vigas
     show_beams(s, screen);
@@ -350,7 +350,7 @@ int main(int argc, char *args[]){
                     case SDLK_LEFT:
                         cout << "se apreto izquierda " << endl;
                         turn_worm_iter->second.wish_to_move();
-                        stage.make_action(1);
+                        stage.make_action(0, 1);
                         break;
                     }
                     break;
@@ -364,7 +364,7 @@ int main(int argc, char *args[]){
 
         //update
         stage.update();
-        StageDTO s = stage.get_positions();
+        StageDTO s = stage.get_stageDTO();
 
         if((t1 -t0) > 100) {
 
