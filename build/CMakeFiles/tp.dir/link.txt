@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/tp.dir/sprite1.cpp.o  -o tp -L/usr/lib/x86_64-linux-gnu  -lSDL2 

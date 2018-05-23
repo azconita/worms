@@ -30,3 +30,12 @@
 *.exe
 *.out
 *.app
+
+.cproject
+.project
+.settings	
+
+#CMakes
+CMakeFiles/
+CMakeCache.txt
+.settings/
