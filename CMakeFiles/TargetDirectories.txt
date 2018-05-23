@@ -1,0 +1,3 @@
+/home/jaz/Escritorio/jaz/fiuba/taller/tp4/worms/CMakeFiles/rebuild_cache.dir
+/home/jaz/Escritorio/jaz/fiuba/taller/tp4/worms/CMakeFiles/tp.dir
+/home/jaz/Escritorio/jaz/fiuba/taller/tp4/worms/CMakeFiles/edit_cache.dir
