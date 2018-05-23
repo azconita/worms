@@ -302,6 +302,39 @@ float get_pixels(float meter_position){
     return  23.5*meter_position;
 }
 
+void debug_box2d_figure(SDL_Surface *screen, std::vector<std::tuple<float, float>> vertices){
+
+    int i = 0;
+    for(auto vertice: vertices){
+        int x = std::get<0>(vertice);
+        int y = std::get<1>(vertice);
+        printf("v %i = x:%i, y:%i\n", i,x, y );
+        i +=1;
+    }
+
+
+    std::tuple<float, float> up_left_vertex = vertices[0];
+    int up_left_vertex_x = std::get<0>(up_left_vertex);
+    int up_left_vertex_y = std::get<1>(up_left_vertex);
+
+    std::tuple<float, float> down_right_vertex = vertices[2];
+    int down_right_vertex_x = std::get<0>(down_right_vertex);
+    int down_right_vertex_y = std::get<1>(down_right_vertex);
+        
+    //dibujo un rectangulo
+    SDL_Rect rectangle;
+    rectangle.x = get_pixels(up_left_vertex_x);
+    rectangle.y = get_pixels(up_left_vertex_y);
+    rectangle.h = get_pixels(down_right_vertex_y - up_left_vertex_y);
+    rectangle.w = get_pixels(down_right_vertex_x - up_left_vertex_x);
+
+    printf("rectangle = x : %i y: %i h: %i w: %i\n",rectangle.x,rectangle.y,rectangle.h,rectangle.w );
+
+    Uint32 colorkey = SDL_MapRGBA(screen->format, 0, 255, 0, 5);
+    SDL_FillRect(screen, &rectangle, colorkey);
+
+}
+
 
 void show_beams(StageDTO s, SDL_Surface *screen){
 
@@ -311,51 +344,16 @@ void show_beams(StageDTO s, SDL_Surface *screen){
         
         std::vector<std::tuple<float, float>> vertices = b.second;
 
-        //---------------------------------------------------------------------
-        int i = 0;
-        printf("\n\nvigaaaa");
-        for(auto vertice: vertices){
-            int x = std::get<0>(vertice);
-            int y = std::get<1>(vertice);
-            printf("v %i = x:%i, y:%i\n", i,x, y );
-            i +=1;
-        }
-        //---------------------------------------------------------------------
+        debug_box2d_figure(screen, vertices);
 
         
         std::tuple<float, float> up_left_vertex = vertices[0];
-        int up_left_beam_vertex_x = std::get<0>(up_left_vertex);
-        int up_left_beam_vertex_y = std::get<1>(up_left_vertex);
+        int up_left_vertex_x = get_pixels(std::get<0>(up_left_vertex));
+        int up_left_vertex_y = get_pixels(std::get<1>(up_left_vertex));
         
 
-        std::tuple<float, float> down_right_vertex = vertices[2];
-        int down_right_beam_vertex_x = std::get<0>(down_right_vertex);
-        int down_right_beam_vertex_y = std::get<1>(down_right_vertex);
-
-
-
-
-        //---------------------------------------------------------------------
-        //dibujo un rectangulo
-        SDL_Rect rectangle;
-        rectangle.x = get_pixels(up_left_beam_vertex_x);
-        rectangle.y = get_pixels(up_left_beam_vertex_y);
-        rectangle.h = get_pixels(down_right_beam_vertex_y - up_left_beam_vertex_y);
-        rectangle.w = get_pixels(down_right_beam_vertex_x - up_left_beam_vertex_x);
-
-        printf("rectangle = x : %i y: %i h: %i w: %i\n",rectangle.x,rectangle.y,rectangle.h,rectangle.w );
-
-        Uint32 colorkey = SDL_MapRGBA(screen->format, 0, 255, 0, 5);
-        SDL_FillRect(screen, &rectangle, colorkey);
-        //---------------------------------------------------------------------
-
-
-
-
-        Picture beam(BIG_BEAM, colorkey_beam,BIG_BEAM_COLUMNS,BIG_BEAM_ROWS);
-    
-        //beam.draw(screen,rectangle.x,rectangle.y);
-
+        //Picture beam(BIG_BEAM, colorkey_beam,BIG_BEAM_COLUMNS,BIG_BEAM_ROWS);
+        //beam.draw(screen,up_left_vertex_x, up_left_vertex_y);
 
     }
 
@@ -387,52 +385,22 @@ std::map<int,Animation> create_worms(StageDTO s, SDL_Surface *screen){
 }
 
 
+
+
 void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Animation> & worms){
 
     for (auto w: s.worms) {
         std::vector<std::tuple<float, float>> vertices = w.second;
 
-        //---------------------------------------------------------------------
-        int i = 0;
-        printf("\n\ngusanooo");
-        for(auto vertice: vertices){
-            int x = std::get<0>(vertice);
-            int y = std::get<1>(vertice);
-            printf("v %i = x:%i, y:%i\n", i,x, y );
-            i +=1;
-        }
-        //---------------------------------------------------------------------
-
-
+    
+        debug_box2d_figure(screen, vertices);
 
         std::tuple<float, float> up_left_vertex = vertices[0];
-        int up_left_vertex_x = std::get<0>(up_left_vertex);
-        int up_left_vertex_y = std::get<1>(up_left_vertex);
+        int up_left_vertex_x = get_pixels(std::get<0>(up_left_vertex));
+        int up_left_vertex_y = get_pixels(std::get<1>(up_left_vertex));
 
-
-
-
-        //---------------------------------------------------------------------
-        std::tuple<float, float> down_right_vertex = vertices[2];
-        int down_right_vertex_x = std::get<0>(down_right_vertex);
-        int down_right_vertex_y = std::get<1>(down_right_vertex);
-        //dibujo un rectangulo
-        SDL_Rect rectangle;
-        rectangle.x = get_pixels(up_left_vertex_x);
-        rectangle.y = get_pixels(up_left_vertex_y);
-        rectangle.h = get_pixels(down_right_vertex_y - up_left_vertex_y);
-        rectangle.w = get_pixels(down_right_vertex_x - up_left_vertex_x);
-
-        printf("rectangle = x : %i y: %i h: %i w: %i\n",rectangle.x,rectangle.y,rectangle.h,rectangle.w );
-
-        Uint32 colorkey = SDL_MapRGBA(screen->format, 0, 255, 0, 5);
-        SDL_FillRect(screen, &rectangle, colorkey);
-        //---------------------------------------------------------------------
-
-        
-
-        //std::map<int,Animation>::iterator animation_iter = worms.find(w.first); 
-        //animation_iter->second.move(rectangle.x,rectangle.y);
+        std::map<int,Animation>::iterator animation_iter = worms.find(w.first); 
+        //animation_iter->second.move(up_left_vertex_x, up_left_vertex_y);
         //animation_iter->second.draw(screen);
     }
 
