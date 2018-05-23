@@ -1,6 +1,7 @@
 #include <iostream>
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
+#include "Client_Constants.h"
 #include "resources_definitions.h"
 #include "stage.h"
 #include "Beam.h"
@@ -8,9 +9,6 @@
 
 
 //g++ -std=c++11 main.cpp stage.cpp Beam.cpp Worm.cpp Constants.cpp Weapon.cpp Bazooka.cpp -lBox2D -lSDL -lSDL_image -lyaml-cpp -g
-
-
-
 
 
 using std::cout;
@@ -26,6 +24,8 @@ using std::map;
 
 #define RIGHT 0
 #define LEFT 1
+#define UP 2
+
 
 /////////////////////////////////////////////////////////////////////////////////////////
 class Color{
@@ -217,89 +217,85 @@ void next_sprite_figure(){
 /////////////////////////////////////////////////////////////////////////////////////////
 
 class Animation {
-public:
-    Uint32 timer;
-    int step;
+
     Picture picture;
     SDL_Rect dimention;
-    SDL_Rect position;
     int figures_num;
     int direction;
 
-    void move_left(int step){
-        this->position.x -=step;
-    }
-    void move_right(int step){
-        this->position.x +=step;
-    }
-    void move_up(int step){
-        this->position.y +=step;
-    }
-    void move_down(int step){
-        this->position.y -=step;
-    }
+
     int next_internal_mov(){
         this->picture.next_sprite_figure();
     }
 
+public:
 
-
-
-
-    Animation(const char * bmp_path, Color color,int columns, int rows,int x, int y, Uint32 timer):
+    Animation(const char * bmp_path, Color color,int columns, int rows):
     picture(bmp_path, color, columns, rows ){
-        this->step = 0;
-        this->timer = timer;
-        this->position.x = x;
-        this->position.y = y;
         this->figures_num = columns * rows;
         this->direction = -1;
 
     }
 
-    void draw(SDL_Surface *screen){
-        this->picture.draw(screen, this->position);
+    void draw(SDL_Surface *screen, int x, int y){
+        SDL_Rect position;
+        position.x = x;
+        position.y = y;
+        this->picture.draw(screen,position);
     }
 
-    bool wish_to_move(int direction){
-        if(direction == RIGHT){
-            this->picture.flip();
-        }
-        this->direction = direction;
-    }
+};
 
-    bool is_time_to_move(Uint32 time_passed){
-        return ((time_passed > this->timer) && this->direction >= 0);
-    }
+/////////////////////////////////////////////////////////////////////////////////////////
+class Animation_Factory{
 
-    void move(int position_x, int position_y){
-        //printf("step = %i : x = %i, y = %i \n",this->step, this->position.x,this->position.y );
-
-        if(this->position.y > position_y){
-            //se cae
-            this->position.y = position_y;
-            this->position.x = position_x;
-            return;
-        }
-
-        if(this->direction >= 0){
-            //si se quiso mover cambia las figuras y despues se mueve
-            next_internal_mov();
-            this->step +=1;
-            if(this->step == this->figures_num){
-                this->position.y = position_y;
-                this->position.x = position_x;
-                this->direction = -1;
-                this->step = 0;
-            }
-        } else{
-            //si se cae por ejemplo
-            this->position.x = position_x;
-            this->position.y = position_y;
-
-        }
+private:
+    Animation_Factory(){}
+public:
+    static Animation get_worm_walk(){
+        Color colorkey(WORM_WALK_R,WORM_WALK_G,WORM_WALK_B);
+        Animation worm(WORM_WALK,colorkey,WORM_WALK_COLUMNS,WORM_WALK_ROWS);
+        return worm;
 
     }
+};
+
+/////////////////////////////////////////////////////////////////////////////////////////
+class Worm_Animation_Controller{
+public:
+    int x, y;
+    int direction;
+    std::map<int,Animation> animations;
+    //Animation jump;
+    //Animation fall;
+
+
+Worm_Animation_Controller(int initial_x, int initial_y){
+    this->x = initial_x;
+    this-> y = initial_y;
+    this->direction = LEFT;
+    Animation worm_walk = Animation_Factory::get_worm_walk();
+    this->animations.insert(std::pair<int,Animation>(LEFT,worm_walk));
+
+}
+
+void wish_to_move(int direction){
+    this->direction = direction;
+}
+
+void move(int position_x, int position_y){
+    printf("recibeeee %i, %i\n",position_x, position_y );
+    this->x =position_x;
+    this->y = position_y;
+    std::map<int,Animation>::iterator animation_iter = animations.find(this->direction); 
+    //animation_iter->second.move(position_x, position_y);
+    
+}
+
+void show(SDL_Surface * screen){
+    std::map<int,Animation>::iterator animation_iter = animations.find(this->direction); 
+    animation_iter->second.draw(screen, this->x, this->y); 
+}
 
 };
 
@@ -315,7 +311,7 @@ void debug_box2d_figure(SDL_Surface *screen, std::vector<std::tuple<float, float
     for(auto vertice: vertices){
         int x = std::get<0>(vertice);
         int y = std::get<1>(vertice);
-        printf("v %i = x:%i, y:%i\n", i,x, y );
+        //printf("v %i = x:%i, y:%i\n", i,x, y );
         i +=1;
     }
 
@@ -335,7 +331,7 @@ void debug_box2d_figure(SDL_Surface *screen, std::vector<std::tuple<float, float
     rectangle.h = get_pixels(down_right_vertex_y - up_left_vertex_y);
     rectangle.w = get_pixels(down_right_vertex_x - up_left_vertex_x);
 
-    printf("rectangle = x : %i y: %i h: %i w: %i\n",rectangle.x,rectangle.y,rectangle.h,rectangle.w );
+    //printf("rectangle = x : %i y: %i h: %i w: %i\n",rectangle.x,rectangle.y,rectangle.h,rectangle.w );
 
     Uint32 colorkey = SDL_MapRGBA(screen->format, 0, 255, 0, 5);
     SDL_FillRect(screen, &rectangle, colorkey);
@@ -366,9 +362,9 @@ void show_beams(StageDTO s, SDL_Surface *screen){
 
 }
 
-std::map<int,Animation> create_worms(StageDTO s, SDL_Surface *screen){
+std::map<int,Worm_Animation_Controller> create_worms(StageDTO s, SDL_Surface *screen){
 
-    std::map<int,Animation> worms;
+    std::map<int,Worm_Animation_Controller> worms;
 
     Color colorkey(WORM_WALK_R,WORM_WALK_G,WORM_WALK_B);
 
@@ -382,9 +378,9 @@ std::map<int,Animation> create_worms(StageDTO s, SDL_Surface *screen){
         int position_worm_y = get_pixels(std::get<1>(up_left_vertex));
 
         //creo el gusano y lo gardo en el vector
-        Animation worm(WORM_WALK,colorkey,WORM_WALK_COLUMNS,WORM_WALK_ROWS,position_worm_x,position_worm_y,100);
-        worms.insert ( std::pair<int,Animation>(id,worm) );
-        worm.draw(screen);
+        Worm_Animation_Controller worm(position_worm_x, position_worm_y);
+        worms.insert(std::pair<int,Worm_Animation_Controller>(id,worm));
+        worm.show(screen);
 
     }
 
@@ -394,21 +390,22 @@ std::map<int,Animation> create_worms(StageDTO s, SDL_Surface *screen){
 
 
 
-void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Animation> & worms){
+void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Worm_Animation_Controller> & worms){
 
     for (auto w: s.worms) {
         std::vector<std::tuple<float, float>> vertices = w.second;
 
-    
         debug_box2d_figure(screen, vertices);
 
         std::tuple<float, float> up_left_vertex = vertices[0];
         int up_left_vertex_x = get_pixels(std::get<0>(up_left_vertex));
         int up_left_vertex_y = get_pixels(std::get<1>(up_left_vertex));
 
-        std::map<int,Animation>::iterator animation_iter = worms.find(w.first); 
-        animation_iter->second.move(up_left_vertex_x, up_left_vertex_y);
-        animation_iter->second.draw(screen);
+        std::map<int,Worm_Animation_Controller>::iterator worms_iter = worms.find(w.first); 
+        printf("posicion antes: %i, %i\n", worms_iter->second.x, worms_iter->second.y );
+        worms_iter->second.move(up_left_vertex_x, up_left_vertex_y);
+        worms_iter->second.show(screen);
+        printf("posicion despues: %i, %i\n", worms_iter->second.x, worms_iter->second.y );
     }
 
 
@@ -458,7 +455,7 @@ int main(int argc, char *args[]){
     show_beams(s, screen);
 
     //dibujo los gusanos en su posicion inicial
-   std::map<int,Animation> worms = create_worms(s, screen);
+   std::map<int,Worm_Animation_Controller> worms = create_worms(s, screen);
     printf(" size = %li\n", worms.size() );
 
 
@@ -466,7 +463,7 @@ int main(int argc, char *args[]){
 
 
     //turno harcodeado
-    std::map<int,Animation>::iterator turn_worm_iter = worms.find(0);
+    std::map<int,Worm_Animation_Controller>::iterator turn_worm_iter = worms.find(0);
 
 
     SDL_Event event;
@@ -494,13 +491,18 @@ int main(int argc, char *args[]){
                     case SDLK_LEFT:
                         cout << "se apreto izquierda " << endl;
 
-                        turn_worm_iter->second.wish_to_move(LEFT);
+                        //turn_worm_iter->second.wish_to_move(LEFT);
                         stage.make_action(0,LEFT);
                         break;
                     case SDLK_RIGHT:
                         cout << "se apreto derecha " << endl;
-                        turn_worm_iter->second.wish_to_move(RIGHT);
+                        //turn_worm_iter->second.wish_to_move(RIGHT);
                         stage.make_action(0,RIGHT);
+                        break;
+                    case SDLK_UP:
+                        cout << "se apreto arriba " << endl;
+                        //turn_worm_iter->second.wish_to_move(UP);
+                        stage.make_action(0,UP);
                         break;
                     }
                     break;
