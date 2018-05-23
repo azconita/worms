@@ -19,7 +19,7 @@ Stage::~Stage() {
 }
 
 void Stage::update() {
-  float32 timeStep = 1; //segundos del step
+  float32 timeStep = 0.05; //segundos del step
   int32 velocityIterations = 8;   //how strongly to correct velocity
   int32 positionIterations = 3;   //how strongly to correct position
 
@@ -31,8 +31,28 @@ void Stage::make_action(int action) {
   this->worms.front().move_left();
 }
 
-//
-
+StageDTO Stage::get_positions() {
+  StageDTO s;
+  int i = 0;
+  for (auto w: this->worms) {
+    std::vector<std::tuple<float, float>> v;
+    std::vector<b2Vec2> points = w.get_points();
+    for (auto p: points)
+      v.push_back(std::tuple<float, float>(p.x,p.y));
+    s.worms[i] = v;
+    i++;
+  }
+  i = 0;
+  for (auto w: this->beams) {
+    std::vector<std::tuple<float, float>> v;
+    std::vector<b2Vec2> points = w.get_points();
+    for (auto p: points)
+      v.push_back(std::tuple<float, float>(p.x,p.y));
+    s.beams[i] = v;
+    i++;
+  }
+  return s;
+}
 
 std::vector<Beam> Stage::get_beams() {
   return this->beams;

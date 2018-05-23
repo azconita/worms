@@ -34,7 +34,8 @@
 .cproject
 .project
 .settings
+
+#CMakes
+CMakeFiles/
 CMakeCache.txt
-CMakeFiles/*
-Makefile
-cmake_install.cmake
+.settings/
