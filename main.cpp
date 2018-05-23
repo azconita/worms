@@ -275,12 +275,19 @@ public:
     void move(int position_x, int position_y){
         //printf("step = %i : x = %i, y = %i \n",this->step, this->position.x,this->position.y );
 
-        if(this->direction >= 0){
+        if(this->position.y > position_y){
+            //se cae
             this->position.y = position_y;
+            this->position.x = position_x;
+            return;
+        }
+
+        if(this->direction >= 0){
             //si se quiso mover cambia las figuras y despues se mueve
             next_internal_mov();
             this->step +=1;
             if(this->step == this->figures_num){
+                this->position.y = position_y;
                 this->position.x = position_x;
                 this->direction = -1;
                 this->step = 0;
@@ -344,7 +351,7 @@ void show_beams(StageDTO s, SDL_Surface *screen){
         
         std::vector<std::tuple<float, float>> vertices = b.second;
 
-        debug_box2d_figure(screen, vertices);
+        //debug_box2d_figure(screen, vertices);
 
         
         std::tuple<float, float> up_left_vertex = vertices[0];
@@ -352,8 +359,8 @@ void show_beams(StageDTO s, SDL_Surface *screen){
         int up_left_vertex_y = get_pixels(std::get<1>(up_left_vertex));
         
 
-        //Picture beam(BIG_BEAM, colorkey_beam,BIG_BEAM_COLUMNS,BIG_BEAM_ROWS);
-        //beam.draw(screen,up_left_vertex_x, up_left_vertex_y);
+        Picture beam(BIG_BEAM, colorkey_beam,BIG_BEAM_COLUMNS,BIG_BEAM_ROWS);
+        beam.draw(screen,up_left_vertex_x, up_left_vertex_y);
 
     }
 
@@ -400,8 +407,8 @@ void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Animation> & worms
         int up_left_vertex_y = get_pixels(std::get<1>(up_left_vertex));
 
         std::map<int,Animation>::iterator animation_iter = worms.find(w.first); 
-        //animation_iter->second.move(up_left_vertex_x, up_left_vertex_y);
-        //animation_iter->second.draw(screen);
+        animation_iter->second.move(up_left_vertex_x, up_left_vertex_y);
+        animation_iter->second.draw(screen);
     }
 
 
