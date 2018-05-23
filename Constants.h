@@ -1,0 +1,35 @@
+/*
+ * Constants.h
+ *
+ *  Created on: May 22, 2018
+ *      Author: gabi
+ */
+
+#include <string>
+
+#ifndef CONSTANTS_H_
+#define CONSTANTS_H_
+
+namespace Constants {
+
+  extern const float gravity;
+  extern const float time_step;
+  extern const int velocity_iterations;
+  extern const int position_iterations;
+
+  //worm constants
+  extern const int worm_initial_life;
+  extern const float worm_walk_velocity;
+  extern const float worm_density;
+  extern const float worm_size; //lado del cuadrado
+
+  //weapons constants
+  extern const float weapon_size;
+  extern const float weapon_density;
+  //bazooka
+  extern const float bazooka_damage;
+  extern const float bazooka_radius;
+
+} /* namespace Constants */
+
+#endif /* CONSTANTS_H_ */

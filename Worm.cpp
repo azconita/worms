@@ -6,30 +6,60 @@
  */
 
 #include "Worm.h"
+#include "Constants.h"
 
 Worm::Worm(b2World* world, float x, float y) {
-  float P2M=1;
   b2BodyDef bodyDef;
   bodyDef.type = b2_dynamicBody;
-  bodyDef.position.Set(x*P2M, y*P2M);
+  bodyDef.position.Set(x, y);
   this->body = world->CreateBody(&bodyDef);
 
   //add box fixture
   b2PolygonShape shape;
-  shape.SetAsBox(0.5*P2M, 0.5*P2M);
+  shape.SetAsBox(Constants::worm_size, Constants::worm_size);
   b2FixtureDef myFixtureDef;
   myFixtureDef.shape = &shape;
-  myFixtureDef.density = 1;
-  //myFixtureDef.friction =0;
+  myFixtureDef.density = Constants::worm_density;
   this->body->CreateFixture(&myFixtureDef);
+  this->life = Constants::worm_initial_life;
+}
+
+Worm::Worm(const Worm& other) :  body(other.body), life(other.life) {
+}
+
+Worm::Worm() : body(NULL), life(0) {
+
 }
 
 Worm::~Worm() {
   // TODO Auto-generated destructor stub
 }
 
+float Worm::get_impulse() {
+  b2Vec2 vel = body->GetLinearVelocity();
+  float velChange = Constants::worm_walk_velocity - vel.x;
+  return body->GetMass() * velChange;
+}
+
+void Worm::move_right() {
+  float impulse = this->get_impulse();
+  this->body->ApplyLinearImpulse(b2Vec2(impulse,0), this->body->GetWorldCenter(), true);
+}
+
 void Worm::move_left() {
-  this->body->ApplyForce(b2Vec2(-5,0), this->body->GetWorldCenter(), true);
+  float impulse = this->get_impulse();
+  this->body->ApplyLinearImpulse(b2Vec2(-impulse,0), this->body->GetWorldCenter(), true);
+}
+
+//TODO: fix me!!
+void Worm::jump() {
+  float impulse = this->get_impulse();
+  this->body->ApplyLinearImpulse(b2Vec2(impulse,impulse), this->body->GetWorldCenter(), true);
+}
+//TODO: fix me!!
+void Worm::jump_back() {
+  float impulse = this->get_impulse();
+  this->body->ApplyLinearImpulse(b2Vec2(-impulse,impulse), this->body->GetWorldCenter(), true);
 }
 
 void Worm::rotateTranslate(b2Vec2& vector,const b2Vec2& center,float angle) {
