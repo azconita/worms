@@ -22,6 +22,9 @@ using std::map;
 
 #define UP_BORDER_HIGH 50 
 
+#define RIGHT 0
+#define LEFT 1
+
 /////////////////////////////////////////////////////////////////////////////////////////
 class Color{
 public:
@@ -215,7 +218,7 @@ public:
     SDL_Rect dimention;
     SDL_Rect position;
     int figures_num;
-    bool in_movement;
+    int direction;
 
     void move_left(int step){
         this->position.x -=step;
@@ -244,34 +247,36 @@ public:
         this->position.x = x;
         this->position.y = y;
         this->figures_num = columns * rows;
-        this->in_movement = false;
+        this->direction = -1;
 
     }
 
     void draw(SDL_Surface *screen){
-        //this->picture.flip();
         this->picture.draw(screen, this->position);
     }
 
-    bool wish_to_move(){
-        this->in_movement = true;
+    bool wish_to_move(int direction){
+        if(direction == RIGHT){
+            this->picture.flip();
+        }
+        this->direction = direction;
     }
 
     bool is_time_to_move(Uint32 time_passed){
-        return ((time_passed > this->timer) && this->in_movement);
+        return ((time_passed > this->timer) && this->direction >= 0);
     }
 
     void move(int position_x, int position_y){
         printf("step = %i : x = %i, y = %i \n",this->step, this->position.x,this->position.y );
 
-        if(this->in_movement){
+        if(this->direction >= 0){
             this->position.y = position_y;
             //si se quiso mover cambia las figuras y despues se mueve
             next_internal_mov();
             this->step +=1;
             if(this->step == this->figures_num){
                 this->position.x = position_x;
-                this->in_movement = false;
+                this->direction = -1;
                 this->step = 0;
             }
         } else{
@@ -435,8 +440,13 @@ int main(int argc, char *args[]){
                         break;
                     case SDLK_LEFT:
                         cout << "se apreto izquierda " << endl;
-                        turn_worm_iter->second.wish_to_move();
-                        stage.make_action(1);
+                        turn_worm_iter->second.wish_to_move(LEFT);
+                        stage.make_action(LEFT);
+                        break;
+                    case SDLK_RIGHT:
+                        cout << "se apreto derecha " << endl;
+                        turn_worm_iter->second.wish_to_move(RIGHT);
+                        stage.make_action(RIGHT);
                         break;
                     }
                     break;
