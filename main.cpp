@@ -40,21 +40,59 @@ class Picture{
     int row_num, column_num;
     int w, h;
 
+    bool is_flipped;
     SDL_Surface *surface;
+    SDL_Surface *flipped;
 
-    SDL_Rect get_dimention(){
+SDL_Rect get_dimention(){
     SDL_Rect dimention;
     // Separaciones de 2 píxeles dentro de las rejillas para observar
-    // bien donde empieza una imagen y donde termina la otra
+    // bien donde empieza una original y donde termina la otra
     dimention.w = this->w - 2;
     dimention.h = this->h - 2;
  
-    // Cálculo de la posición de la imagen // dentro de la rejilla
-    dimention.x = (this->row_num * this->w) + 2; 
-    dimention.y = (this->column_num * this->h) + 2;
+    // Cálculo de la posición de la original // dentro de la rejilla
+    
+    dimention.x = (this->column_num * this->w) + 2;
+    dimention.y = (this->row_num * this->h) + 2; 
 
     return dimention;
+}
 
+
+SDL_Surface * flip(SDL_Surface * original, Uint32 colorkey){
+        SDL_Rect origen;
+        SDL_Rect destino;
+
+        // Origen -> ancho una línea
+        // Comienzo de copia por el principio
+        origen.x = 0;
+        origen.y = 0;
+        origen.w = 1;
+        origen.h = original->h;
+        // Destino -> ancho una lína
+        // Comienzo de 'pegado' por el final
+        // Para lograr la inversión
+        destino.x = original->w;
+        destino.y = 0;
+        destino.w = 1;
+        destino.h = original->h;
+        SDL_Surface *flipped;
+        // Pasamos la imagen a formato de pantalla
+        flipped = SDL_DisplayFormat(original);
+        if(flipped == NULL) {
+            cout << "No podemos convertir la imagen al formato de pantalla" << endl;
+            return NULL;
+        }
+       
+        // Preparamos el rectángulo nuevo vacío del color transparente
+        SDL_FillRect(flipped, NULL, colorkey);
+        // Copiamos linea vertical a linea vertical, inversamente
+        for(int i = 0; i < original->w; i++) {
+            SDL_BlitSurface(original, &origen, flipped, &destino);
+            origen.x = origen.x + 1; destino.x = destino.x - 1;
+       }
+       return flipped;
 } 
 
 
@@ -66,6 +104,9 @@ public:
         this->columns = columns;
         this->row_num = 0;
         this->column_num = 0;
+        this->is_flipped = false;
+
+
         //this->surface =     IMG_Load(bmp_path);
         SDL_Surface *tmp = SDL_LoadBMP(bmp_path);
         if (!tmp) {
@@ -76,7 +117,6 @@ public:
         this->surface = SDL_DisplayFormat(tmp);
         SDL_FreeSurface(tmp);
 
-        
         if(this->surface == NULL) {
             cout << "Error: " << SDL_GetError() << endl; exit(1);
         }
@@ -86,18 +126,29 @@ public:
         // Lo establecemos como color transparente
         SDL_SetColorKey(this->surface, SDL_SRCCOLORKEY, colorkey);
 
-        // El ancho de una imagen es el total entre el número de columnas   
+
+        this->flipped = flip(surface, colorkey);
+
+        // El ancho de una original es el total entre el número de columnas   
         this->w = surface->w / columns;
-        // El ato de una imagen es el total entre el número de filas
+        // El alto de una original es el total entre el número de filas
         this->h = surface->h / rows;
 
+
     }
+
+
+void flip(){
+    if(this->flipped != NULL){
+        this->is_flipped = true;
+    }
+}
+
 void draw(SDL_Surface *screen, int x, int y){
     SDL_Rect position;
     position.x = x;
     position.y = y;
     draw(screen, position);
-
 }
 
 
@@ -110,20 +161,37 @@ void draw(SDL_Surface *screen, SDL_Rect position){
 
     //printf("x = %i, y = %i, h = %i, w = %i \n",position.x, position.y, position.h, position.w );
     
+    if(this->is_flipped){
+        SDL_BlitSurface(this->flipped, &dimention, screen, &position);
+        return;
+    }
     SDL_BlitSurface(this->surface, &dimention, screen, &position);
              
 }
 
 
 void next_sprite_figure(){
-    this->row_num += 1;
-    if(this->row_num >= this->columns){
-        this->row_num = 0;
-        this->column_num +=1;
-        if(this->column_num >= this->rows){
-            this->column_num = 0;
+    if(this->is_flipped){
+        this->column_num -=1; // paso al anterior en la misma fila
+        if(this->column_num <= 0){ //si estoy en el primero
+            this->column_num = this->columns - 1; //paso al ultimo
+            this->row_num += 1; //pero de la fila de abajo
+            if(this->row_num >= this->rows){
+                this->row_num = 0; //si estaba en el ultimo vuelvo a empezar
+            
+            }
         }
+        return;
     }
+
+    this->column_num +=1; // paso al siguiente en la misma fila
+    if(this->column_num >= this->columns){ //si estoy en el ultimo de la fila
+        this->column_num = 0; //paso al primero
+        this->row_num += 1; //pero de la fila de abajo
+        if(this->row_num >= this->rows){
+            this->row_num = 0; //si estaba en el ultimo vuelvo a empezar
+        }
+    }  
 }
 
 
@@ -181,7 +249,8 @@ public:
     }
 
     void draw(SDL_Surface *screen){
-      this->picture.draw(screen, this->position);
+        //this->picture.flip();
+        this->picture.draw(screen, this->position);
     }
 
     bool wish_to_move(){
@@ -267,6 +336,23 @@ std::map<int,Animation> create_worms(StageDTO s, SDL_Surface *screen){
 
 
 void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Animation> & worms){
+
+     for (auto w: s.worms) {
+        std::vector<std::tuple<float, float>> positions = w.second;
+
+        std::tuple<float, float> pos = positions[3];
+                int position_worm_x = get_x_pixels(std::get<0>(pos));
+                int position_worm_y = get_y_pixels(std::get<1>(pos));
+
+
+                std::map<int,Animation>::iterator animation_iter = worms.find(w.first); 
+                //Animation worm = std::move(it->second);
+
+                animation_iter->second.move(position_worm_x,position_worm_y);
+  
+                animation_iter->second.draw(screen);
+            }
+
 
 }
 
@@ -377,24 +463,10 @@ int main(int argc, char *args[]){
             
             //dibujo las vigas 
             show_beams(s, screen); 
-            //show_worms(s, screen, worms);
+            //dibujo los gusanos
+            show_worms(s, screen, worms);
 
-            for (auto w: s.worms) {
-                std::vector<std::tuple<float, float>> positions = w.second;
-
-                std::tuple<float, float> pos = positions[3];
-                int position_worm_x = get_x_pixels(std::get<0>(pos));
-                int position_worm_y = get_y_pixels(std::get<1>(pos));
-
-
-                std::map<int,Animation>::iterator animation_iter = worms.find(w.first); 
-                //Animation worm = std::move(it->second);
-
-                animation_iter->second.move(position_worm_x,position_worm_y);
-  
-                animation_iter->second.draw(screen);
-            }
-
+           
         }
         
     }
