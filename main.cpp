@@ -193,24 +193,26 @@ public:
     }
 
     void move(int position_x, int position_y){
-        if(this->step == this->figures_num){
-            in_movement = false;
-            this->step = 0;
-        }
-        else if(this->step == this->figures_num - 1){
-            move_left(10);
+        printf("step = %i : x = %i, y = %i \n",this->step, this->position.x,this->position.y );
+
+        if(this->in_movement){
+            this->position.y = position_y;
+            //si se quiso mover cambia las figuras y despues se mueve
+            next_internal_mov();
+            this->step +=1;
+            if(this->step == this->figures_num){
+                this->position.x = position_x;
+                this->in_movement = false;
+                this->step = 0;
+            }
+        } else{
+            //si se cae por ejemplo
+            this->position.x = position_x;
+            this->position.y = position_y;
+
         }
 
-        this->position.x = position_x;
-        this->position.y = position_y;
-
-        next_internal_mov();
-        this->step +=1;
-        
     }
-
-
-
 
 };
 
@@ -319,6 +321,9 @@ int main(int argc, char *args[]){
     //------------------------------------
     
 
+    //turno harcodeado
+    std::map<int,Animation>::iterator turn_worm_iter = worms.find(0);
+
 
     SDL_Event event;
     
@@ -344,7 +349,7 @@ int main(int argc, char *args[]){
                         break;
                     case SDLK_LEFT:
                         cout << "se apreto izquierda " << endl;
-                        //worm.wish_to_move();
+                        turn_worm_iter->second.wish_to_move();
                         stage.make_action(1);
                         break;
                     }
@@ -382,12 +387,12 @@ int main(int argc, char *args[]){
                 int position_worm_y = get_y_pixels(std::get<1>(pos));
 
 
-                std::map<int,Animation>::iterator it = worms.find(w.first); 
-                //Animation worm = it->second;
+                std::map<int,Animation>::iterator animation_iter = worms.find(w.first); 
+                //Animation worm = std::move(it->second);
 
-                it->second.move(position_worm_x,position_worm_y);
+                animation_iter->second.move(position_worm_x,position_worm_y);
   
-                it->second.draw(screen);
+                animation_iter->second.draw(screen);
             }
 
         }
