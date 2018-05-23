@@ -46,7 +46,7 @@ StageDTO Stage::get_stageDTO() {
     std::vector<b2Vec2> points = w.second.get_points();
     for (auto p: points) {
       v.push_back(std::tuple<float, float>(p.x,p.y));
-      std::cout << "x: " << p.x << ", y: " << p.y << '\n';
+      
     }
     s.worms[w.first] = v;
   }
@@ -67,7 +67,7 @@ StageDTO Stage::get_stageDTO() {
 
 // set initial stage
 void Stage::add_beams(std::string config) {
-  this->beams.push_back(Beam(this->world, 10,0));
+  this->beams.push_back(Beam(this->world, 10,2));
   this->beams.push_back(Beam(this->world, 10,20));
 }
 

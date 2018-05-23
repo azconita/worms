@@ -6,7 +6,9 @@
 #include "Beam.h"
 #include "Worm.h"
 
-//g++ stage.cpp Beam.cpp Worm.cpp main.cpp -g  -std=c++11  -lBox2D -lSDL -lSDL_image
+
+//g++ -std=c++11 main.cpp stage.cpp Beam.cpp Worm.cpp Constants.cpp Weapon.cpp Bazooka.cpp -lBox2D -lSDL -lSDL_image -lyaml-cpp -g
+
 
 
 
@@ -271,7 +273,7 @@ public:
     }
 
     void move(int position_x, int position_y){
-        printf("step = %i : x = %i, y = %i \n",this->step, this->position.x,this->position.y );
+        //printf("step = %i : x = %i, y = %i \n",this->step, this->position.x,this->position.y );
 
         if(this->direction >= 0){
             this->position.y = position_y;
@@ -296,48 +298,89 @@ public:
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-float get_x_pixels(float meter_position){
-    return  23.5*meter_position+ 500;
-}
-
-float get_y_pixels(float meter_position){
+float get_pixels(float meter_position){
     return  23.5*meter_position;
 }
+
 
 void show_beams(StageDTO s, SDL_Surface *screen){
 
     Color colorkey_beam(BIG_BEAM_R,BIG_BEAM_G,BIG_BEAM_B);
 
     for (auto b: s.beams) {
-        //cout <<"viga " << b.first << endl;
-        std::vector<std::tuple<float, float>> positions = b.second;
-        std::tuple<float, float> pos = positions[3];
+        
+        std::vector<std::tuple<float, float>> vertices = b.second;
+
+        //---------------------------------------------------------------------
+        int i = 0;
+        printf("vigaaaa\n\n");
+        for(auto vertice: vertices){
+            int x = std::get<0>(vertice);
+            int y = std::get<1>(vertice);
+            printf("v %i = x:%i, y:%i\n", i,x, y );
+            i +=1;
+        }
+        //---------------------------------------------------------------------
+
+        
+        std::tuple<float, float> up_left_vertex = vertices[0];
+        int up_left_beam_vertex_x = std::get<0>(up_left_vertex);
+        int up_left_beam_vertex_y = std::get<1>(up_left_vertex);
+        
+
+        std::tuple<float, float> down_right_vertex = vertices[2];
+        int down_right_beam_vertex_x = std::get<0>(down_right_vertex);
+        int down_right_beam_vertex_y = std::get<1>(down_right_vertex);
+
+
+
+
+        //---------------------------------------------------------------------
+        //dibujo un rectangulo
+        SDL_Rect rectangle;
+        rectangle.x = get_pixels(up_left_beam_vertex_x);
+        rectangle.y = get_pixels(up_left_beam_vertex_y);
+        rectangle.h = get_pixels(down_right_beam_vertex_y - up_left_beam_vertex_y);
+        rectangle.w = get_pixels(down_right_beam_vertex_x - up_left_beam_vertex_x);
+
+        printf("rectangle = x : %i y: %i h: %i w: %i\n",rectangle.x,rectangle.y,rectangle.h,rectangle.w );
+
+        Uint32 colorkey = SDL_MapRGBA(screen->format, 0, 255, 0, 5);
+        SDL_FillRect(screen, &rectangle, colorkey);
+        //---------------------------------------------------------------------
+
+
+
+
         Picture beam(BIG_BEAM, colorkey_beam,BIG_BEAM_COLUMNS,BIG_BEAM_ROWS);
-        int position_beam_x = get_x_pixels(std::get<0>(pos));
-        int position_beam_y = get_y_pixels(std::get<1>(pos));
-        beam.draw(screen,position_beam_x,position_beam_y);
+    
+        //beam.draw(screen,rectangle.x,rectangle.y);
+
 
     }
+
 }
 
 std::map<int,Animation> create_worms(StageDTO s, SDL_Surface *screen){
 
     std::map<int,Animation> worms;
 
-        Color colorkey(WORM_WALK_R,WORM_WALK_G,WORM_WALK_B);
+    Color colorkey(WORM_WALK_R,WORM_WALK_G,WORM_WALK_B);
 
     for (auto w: s.worms) {
-        int id = w.first;
-        std::vector<std::tuple<float, float>> positions = w.second;
 
-        std::tuple<float, float> pos = positions[3];
-        int position_worm_x = get_x_pixels(std::get<0>(pos));
-        int position_worm_y = get_y_pixels(std::get<1>(pos));
+        int id = w.first;
+        std::vector<std::tuple<float, float>> vertices = w.second;
+
+        std::tuple<float, float> up_left_vertex = vertices[0];
+        int position_worm_x = get_pixels(std::get<0>(up_left_vertex));
+        int position_worm_y = get_pixels(std::get<1>(up_left_vertex));
 
         //creo el gusano y lo gardo en el vector
         Animation worm(WORM_WALK,colorkey,WORM_WALK_COLUMNS,WORM_WALK_ROWS,position_worm_x,position_worm_y,100);
         worms.insert ( std::pair<int,Animation>(id,worm) );
         worm.draw(screen);
+
     }
 
     return worms;
@@ -346,21 +389,29 @@ std::map<int,Animation> create_worms(StageDTO s, SDL_Surface *screen){
 
 void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Animation> & worms){
 
-     for (auto w: s.worms) {
-        std::vector<std::tuple<float, float>> positions = w.second;
+    for (auto w: s.worms) {
+        std::vector<std::tuple<float, float>> vertices = w.second;
 
-        std::tuple<float, float> pos = positions[3];
-                int position_worm_x = get_x_pixels(std::get<0>(pos));
-                int position_worm_y = get_y_pixels(std::get<1>(pos));
+        //---------------------------------------------------------------------
+        int i = 0;
+        printf("gusanooo\n\n");
+        for(auto vertice: vertices){
+            int x = std::get<0>(vertice);
+            int y = std::get<1>(vertice);
+            printf("v %i = x:%i, y:%i\n", i,x, y );
+            i +=1;
+        }
+        //---------------------------------------------------------------------
 
+        std::tuple<float, float> up_left_vertex = vertices[0];
+        int position_worm_x = get_pixels(std::get<0>(up_left_vertex));
+        int position_worm_y = get_pixels(std::get<1>(up_left_vertex));
 
-                std::map<int,Animation>::iterator animation_iter = worms.find(w.first); 
-                //Animation worm = std::move(it->second);
+        std::map<int,Animation>::iterator animation_iter = worms.find(w.first); 
 
-                animation_iter->second.move(position_worm_x,position_worm_y);
-  
-                animation_iter->second.draw(screen);
-            }
+        animation_iter->second.move(position_worm_x,position_worm_y);
+        animation_iter->second.draw(screen);
+    }
 
 
 }
@@ -409,7 +460,7 @@ int main(int argc, char *args[]){
     show_beams(s, screen);
 
     //dibujo los gusanos en su posicion inicial
-    std::map<int,Animation> worms = create_worms(s, screen);
+   std::map<int,Animation> worms = create_worms(s, screen);
     printf(" size = %li\n", worms.size() );
 
 
