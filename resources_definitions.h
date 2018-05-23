@@ -6,7 +6,7 @@
 #define WORM_WALK "resources/worm_walk.bmp"
 #define WORM_WALK_R 128
 #define WORM_WALK_G 128
-#define WORM_WALK_B 0//192
+#define WORM_WALK_B 192
 #define WORM_WALK_COLUMNS 1
 #define WORM_WALK_ROWS 15
 
