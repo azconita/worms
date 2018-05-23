@@ -53,26 +53,16 @@ SDL_Rect get_dimention(){
     // bien donde empieza una original y donde termina la otra
     dimention.w = this->w - 2;
     dimention.h = this->h - 2;
-<<<<<<< HEAD
-
-    // Cálculo de la posición de la imagen // dentro de la rejilla
-    dimention.x = (this->row_num * this->w) + 2;
-    dimention.y = (this->column_num * this->h) + 2;
-=======
  
     // Cálculo de la posición de la original // dentro de la rejilla
     
     dimention.x = (this->column_num * this->w) + 2;
     dimention.y = (this->row_num * this->h) + 2; 
->>>>>>> animaciones
 
     return dimention;
 }
 
 
-<<<<<<< HEAD
-}
-=======
 SDL_Surface * flip(SDL_Surface * original, Uint32 colorkey){
         SDL_Rect origen;
         SDL_Rect destino;
@@ -107,7 +97,7 @@ SDL_Surface * flip(SDL_Surface * original, Uint32 colorkey){
        }
        return flipped;
 } 
->>>>>>> animaciones
+
 
 
 
@@ -131,10 +121,6 @@ public:
         this->surface = SDL_DisplayFormat(tmp);
         SDL_FreeSurface(tmp);
 
-<<<<<<< HEAD
-
-=======
->>>>>>> animaciones
         if(this->surface == NULL) {
             cout << "Error: " << SDL_GetError() << endl; exit(1);
         }
@@ -144,14 +130,12 @@ public:
         // Lo establecemos como color transparente
         SDL_SetColorKey(this->surface, SDL_SRCCOLORKEY, colorkey);
 
-<<<<<<< HEAD
-        // El ancho de una imagen es el total entre el número de columnas
-=======
+
 
         this->flipped = flip(surface, colorkey);
 
         // El ancho de una original es el total entre el número de columnas   
->>>>>>> animaciones
+
         this->w = surface->w / columns;
         // El alto de una original es el total entre el número de filas
         this->h = surface->h / rows;
@@ -182,15 +166,12 @@ void draw(SDL_Surface *screen, SDL_Rect position){
     position.w = dimention.w;
 
     //printf("x = %i, y = %i, h = %i, w = %i \n",position.x, position.y, position.h, position.w );
-<<<<<<< HEAD
-
-=======
     
     if(this->is_flipped){
         SDL_BlitSurface(this->flipped, &dimention, screen, &position);
         return;
     }
->>>>>>> animaciones
+
     SDL_BlitSurface(this->surface, &dimention, screen, &position);
 
 }
@@ -494,34 +475,11 @@ int main(int argc, char *args[]){
             //borro todo lo que estaba
             //toda la pantalla en negro
             SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format,0,0,0));
-<<<<<<< HEAD
-
-            //dibujo las vigas
-            show_beams(s, screen);
-            //show_worms(s, screen, worms);
-
-            for (auto w: s.worms) {
-                std::vector<std::tuple<float, float>> positions = w.second;
-
-                std::tuple<float, float> pos = positions[3];
-                int position_worm_x = get_x_pixels(std::get<0>(pos));
-                int position_worm_y = get_y_pixels(std::get<1>(pos));
-
-
-                std::map<int,Animation>::iterator animation_iter = worms.find(w.first);
-                //Animation worm = std::move(it->second);
-
-                animation_iter->second.move(position_worm_x,position_worm_y);
-
-                animation_iter->second.draw(screen);
-            }
-=======
             
             //dibujo las vigas 
             show_beams(s, screen); 
             //dibujo los gusanos
             show_worms(s, screen, worms);
->>>>>>> animaciones
 
            
         }
