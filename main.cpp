@@ -237,7 +237,6 @@ public:
     }
 
 
-
     void draw(SDL_Surface *screen, int x, int y){
         SDL_Rect position;
         position.x = x;
@@ -293,20 +292,24 @@ public:
 #define FALL 2
 #define JUMP 3
 
+enum State{
+   Still,
+   Walk,
+   Fall,
+   Jump
+};
 
 class Worm_Animation_Controller{
 public:
     int x, y;
-    int state;
+    State state;
     std::map<int,Animation> animations;
-    //Animation jump;
-    //Animation fall;
 
 
 Worm_Animation_Controller(int initial_x, int initial_y){
     this->x = initial_x;
     this-> y = initial_y;
-    this->state = STILL;
+    this->state = Still;
     Animation worm_walk = Animation_Factory::get_worm_walk();
     
     this->animations.insert(std::pair<int,Animation>(STILL,worm_walk));
@@ -326,28 +329,28 @@ int get_direction(){
     return animation_iter->second.get_current_direction();
 }
 
-void wish_to_move(int state, int direction){
+void wish_to_move(State state, int direction){
     this->state = state;
     std::map<int,Animation>::iterator animation_iter = animations.find(this->state); 
     animation_iter->second.set_current_direction(direction);
 }
 
-void wish_to_move(int state){
+void wish_to_move(State state){
     int last_direction = get_direction();
     wish_to_move(state, last_direction);
 }
 
 void move(int position_x, int position_y){
-    if(this->state == WALK && position_y > this->y){ //aumenta el y, se cae
-        this->state = FALL;
+    if(this->state == Walk && position_y > this->y){ //aumenta el y, se cae
+        this->state = Fall;
     } 
     this->x = position_x;
     this->y = position_y; 
     std::map<int,Animation>::iterator animation_iter = animations.find(this->state);
 
-    if(this->state != STILL){
+    if(this->state != Still){
         if(!animation_iter->second.continue_internal_movement()){
-            this->state = STILL;
+            this->state = Still;
         }
     } 
 
@@ -468,8 +471,6 @@ void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Worm_Animation_Con
         worms_iter->second.show(screen);
 
     }
-
-
 }
 //////////////////////////////////////////////////////////////////////////////////////////
 class Event_Controller{
@@ -495,17 +496,17 @@ bool continue_running(Worm_Animation_Controller& turn_worm){
 
                 case SDLK_LEFT:
                     cout << "se apreto izquierda " << endl;
-                    turn_worm.wish_to_move(WALK,LEFT);
+                    turn_worm.wish_to_move(Walk,LEFT);
                     this->stage.make_action(0,LEFT);    
                     break;
                 case SDLK_RIGHT:
                     cout << "se apreto derecha " << endl;
-                    turn_worm.wish_to_move(WALK,RIGHT);
+                    turn_worm.wish_to_move(Walk,RIGHT);
                     this->stage.make_action(0,RIGHT);
                     break;
                 case SDLK_UP:
                     cout << "se apreto arriba " << endl;
-                    turn_worm.wish_to_move(JUMP);
+                    turn_worm.wish_to_move(Jump);
                     this->stage.make_action(0,UP);
                     break;
                 }
@@ -585,32 +586,26 @@ int main(int argc, char *args[]){
     while(running ){
 
         running = event_controller.continue_running(turn_worm_iter->second);
-
         //actualiza el dibujo de la superficie en la pantalla
         SDL_Flip(screen);
 
         // Referencia de tiempo
         t1 = SDL_GetTicks();
-
         //update
         stage.update();
         StageDTO s = stage.get_stageDTO();
 
         if((t1 -t0) > 100) {
-
             // Nueva referencia de tiempo
             t0 = SDL_GetTicks();
 
             //borro todo lo que estaba
             //toda la pantalla en negro
             SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format,0,0,0));
-            
             //dibujo las vigas 
             show_beams(s, screen); 
             //dibujo los gusanos
-            show_worms(s, screen, worms);
-
-           
+            show_worms(s, screen, worms);           
         }
 
     }
