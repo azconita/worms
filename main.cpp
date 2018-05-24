@@ -333,9 +333,12 @@ Direction get_direction(){
 }
 
 void wish_to_move(State state, Direction direction){
+    for(std::map<int,Animation>::iterator animation_iter = this->animations.begin();animation_iter != this->animations.end() ;animation_iter ++){
+        animation_iter->second.set_current_direction(direction);
+    }
     this->state = state;
-    std::map<int,Animation>::iterator animation_iter = animations.find(this->state); 
-    animation_iter->second.set_current_direction(direction);
+    //std::map<int,Animation>::iterator animation_iter = animations.find(this->state); 
+    //animation_iter->second
 }
 
 void wish_to_move(State state){
@@ -353,7 +356,6 @@ void move(int position_x, int position_y){
 
     if(this->state != Still){
         if(!animation_iter->second.continue_internal_movement()){
-            
             this->state = Still;
         }
     } 
