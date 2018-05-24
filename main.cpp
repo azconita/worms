@@ -333,12 +333,12 @@ Direction get_direction(){
 }
 
 void wish_to_move(State state, Direction direction){
-    for(std::map<int,Animation>::iterator animation_iter = this->animations.begin();animation_iter != this->animations.end() ;animation_iter ++){
+    for(std::map<int,Animation>::iterator animation_iter = this->animations.begin();
+        animation_iter != this->animations.end();
+        animation_iter ++){
         animation_iter->second.set_current_direction(direction);
     }
     this->state = state;
-    //std::map<int,Animation>::iterator animation_iter = animations.find(this->state); 
-    //animation_iter->second
 }
 
 void wish_to_move(State state){
@@ -429,6 +429,12 @@ void show_beams(StageDTO s, SDL_Surface *screen){
 
     }
 
+}
+
+void show_water(SDL_Surface *screen, int  screen_height, int screen_width){
+    Color colorkey(WATER_R,WATER_G,WATER_B);
+    Picture water(WATER, colorkey,WATER_COLUMNS,WATER_ROWS);
+    water.draw(screen,0,screen_height-20);
 }
 
 std::map<int,Worm_Animation_Controller> create_worms(StageDTO s, SDL_Surface *screen){
@@ -567,10 +573,7 @@ int main(int argc, char *args[]){
 
     //dibujo las vigas
     show_beams(s, screen);
-
-    Color colorkey(WATER_R,WATER_G,WATER_B);
-    Picture water(WATER, colorkey,WATER_COLUMNS,WATER_ROWS);
-    water.draw(screen,screen_height-20, 0);
+    show_water(sceen,screen_height,screen_width);
 
     //dibujo los gusanos en su posicion inicial
     std::map<int,Worm_Animation_Controller> worms = create_worms(s, screen);

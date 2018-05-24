@@ -36,7 +36,7 @@
 #define BEAM_ROWS 2
 
 //el agua
-#define WATER "resources/.bmp"
+#define WATER "resources/water.bmp"
 #define WATER_R 0
 #define WATER_G 255
 #define WATER_B 0
