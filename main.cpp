@@ -110,11 +110,11 @@ public:
         this->columns = columns;
         this->row_num = 0;
         this->column_num = 0;
-        this->default_direction = LEFT; //esto tienen que ser un parametro
+        this->default_direction = LEFT; //todas las fotos estan para la izquierda
 
 
-        //this->surface =     IMG_Load(bmp_path);
-        SDL_Surface *tmp = SDL_LoadBMP(bmp_path);
+        SDL_Surface *tmp = IMG_Load(bmp_path);
+        //SDL_Surface *tmp = SDL_LoadBMP(bmp_path);
         if (!tmp) {
             cout <<"Couldn't create surface from image:" << bmp_path << SDL_GetError() << endl;
             return;
@@ -230,8 +230,13 @@ public:
 
     void set_current_direction(int direction){
         this->direction = direction;
-
     }
+
+    int get_current_direction(){
+        return this->direction;
+    }
+
+
 
     void draw(SDL_Surface *screen, int x, int y){
         SDL_Rect position;
@@ -263,15 +268,23 @@ public:
         Color colorkey(WORM_WALK_R,WORM_WALK_G,WORM_WALK_B);
         Animation worm(WORM_WALK,colorkey,WORM_WALK_COLUMNS,WORM_WALK_ROWS);
         return worm;
+    }
+
+    static Animation get_worm_jump(){
+        Color colorkey(WORM_JUMP_R,WORM_JUMP_G,WORM_JUMP_B);
+        Animation worm(WORM_JUMP,colorkey,WORM_JUMP_COLUMNS,WORM_JUMP_ROWS);
+        return worm;
 
     }
+
+
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////
 #define STILL 0
 #define WALK 1
 #define FALL 2
-#define JUNM 3
+#define JUMP 3
 
 
 class Worm_Animation_Controller{
@@ -288,24 +301,35 @@ Worm_Animation_Controller(int initial_x, int initial_y){
     this-> y = initial_y;
     this->state = STILL;
     Animation worm_walk = Animation_Factory::get_worm_walk();
+    
     this->animations.insert(std::pair<int,Animation>(STILL,worm_walk));
     this->animations.insert(std::pair<int,Animation>(WALK,worm_walk));
 
+    Animation worm_jump = Animation_Factory::get_worm_jump();
+    this->animations.insert(std::pair<int,Animation>(JUMP,worm_jump));
+
+}
+int get_direction(){
+    std::map<int,Animation>::iterator animation_iter = animations.find(this->state); 
+    return animation_iter->second.get_current_direction();
 }
 
-void wish_to_move(int direction){
-    this->state = WALK;
+void wish_to_move(int state, int direction){
+    this->state = state;
     std::map<int,Animation>::iterator animation_iter = animations.find(this->state); 
     animation_iter->second.set_current_direction(direction);
-
 }
 
+void wish_to_move(int state){
+    int last_direction = get_direction();
+    wish_to_move(state, last_direction);
+}
 
 void move(int position_x, int position_y){
     this->x = position_x;
     this->y = position_y; 
     std::map<int,Animation>::iterator animation_iter = animations.find(this->state); 
-    if(this->state == WALK){
+    if(this->state != STILL){
         if(!animation_iter->second.continue_internal_movement()){
             this->state = STILL;
         }
@@ -314,7 +338,6 @@ void move(int position_x, int position_y){
 }
 
 void show(SDL_Surface * screen){
-    printf("%i %i\n", this->x, this->y );
     std::map<int,Animation>::iterator animation_iter = animations.find(this->state); 
     animation_iter->second.draw(screen, this->x, this->y); 
 }
@@ -363,7 +386,7 @@ void debug_box2d_figure(SDL_Surface *screen, std::vector<std::tuple<float, float
 
 void show_beams(StageDTO s, SDL_Surface *screen){
 
-    Color colorkey_beam(BIG_BEAM_R,BIG_BEAM_G,BIG_BEAM_B);
+    Color colorkey_beam(BEAM_R,BEAM_G,BEAM_B);
 
     for (auto b: s.beams) {
         
@@ -377,7 +400,7 @@ void show_beams(StageDTO s, SDL_Surface *screen){
         int up_left_vertex_y = get_pixels(std::get<1>(up_left_vertex));
         
 
-        //Picture beam(BIG_BEAM, colorkey_beam,BIG_BEAM_COLUMNS,BIG_BEAM_ROWS);
+        //Picture beam(BEAM, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
         //beam.draw(screen,up_left_vertex_x, up_left_vertex_y);
 
     }
@@ -512,17 +535,17 @@ int main(int argc, char *args[]){
                         break;
                     case SDLK_LEFT:
                         cout << "se apreto izquierda " << endl;
-                        turn_worm_iter->second.wish_to_move(LEFT);
+                        turn_worm_iter->second.wish_to_move(WALK,LEFT);
                         stage.make_action(0,LEFT);
                         break;
                     case SDLK_RIGHT:
                         cout << "se apreto derecha " << endl;
-                        turn_worm_iter->second.wish_to_move(RIGHT);
+                        turn_worm_iter->second.wish_to_move(WALK,RIGHT);
                         stage.make_action(0,RIGHT);
                         break;
                     case SDLK_UP:
                         cout << "se apreto arriba " << endl;
-                        //turn_worm_iter->second.wish_to_move(UP);
+                        turn_worm_iter->second.wish_to_move(JUMP);
                         stage.make_action(0,UP);
                         break;
                     }
