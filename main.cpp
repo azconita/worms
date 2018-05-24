@@ -408,7 +408,7 @@ void show_beams(StageDTO s, SDL_Surface *screen){
         
         std::vector<std::tuple<float, float>> vertices = b.second;
 
-        debug_box2d_figure(screen, vertices);
+        //debug_box2d_figure(screen, vertices);
 
         
         std::tuple<float, float> up_left_vertex = vertices[0];
@@ -416,8 +416,8 @@ void show_beams(StageDTO s, SDL_Surface *screen){
         int up_left_vertex_y = get_pixels(std::get<1>(up_left_vertex));
         
 
-        //Picture beam(BEAM, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
-        //beam.draw(screen,up_left_vertex_x, up_left_vertex_y);
+        Picture beam(BEAM, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        beam.draw(screen,up_left_vertex_x, up_left_vertex_y);
 
     }
 
@@ -457,7 +457,7 @@ void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Worm_Animation_Con
 
         std::vector<std::tuple<float, float>> vertices = w.second;
 
-        debug_box2d_figure(screen, vertices);
+        //debug_box2d_figure(screen, vertices);
 
         std::tuple<float, float> up_left_vertex = vertices[0];
         int up_left_vertex_x = get_pixels(std::get<0>(up_left_vertex));
@@ -471,6 +471,53 @@ void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Worm_Animation_Con
 
 
 }
+//////////////////////////////////////////////////////////////////////////////////////////
+class Event_Controller{
+    Stage & stage;
+    SDL_Event &  event;
+public:
+    Event_Controller(SDL_Event & event, Stage & stage):
+        event(event),
+        stage(stage)
+         {}
+
+bool continue_running(Worm_Animation_Controller& turn_worm){
+    SDL_PollEvent(&this->event);
+    switch(event.type){
+        case SDL_QUIT:
+            cout << "se apreto x -> fin" << endl;
+            return false;
+
+        case SDL_KEYDOWN:
+            switch(event.key.keysym.sym){
+                case SDLK_ESCAPE:
+                    return false;
+
+                case SDLK_LEFT:
+                    cout << "se apreto izquierda " << endl;
+                    turn_worm.wish_to_move(WALK,LEFT);
+                    this->stage.make_action(0,LEFT);    
+                    break;
+                case SDLK_RIGHT:
+                    cout << "se apreto derecha " << endl;
+                    turn_worm.wish_to_move(WALK,RIGHT);
+                    this->stage.make_action(0,RIGHT);
+                    break;
+                case SDLK_UP:
+                    cout << "se apreto arriba " << endl;
+                    turn_worm.wish_to_move(JUMP);
+                    this->stage.make_action(0,UP);
+                    break;
+                }
+                break;  
+    }
+    return true;
+    }
+
+};
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char *args[]){
 
@@ -528,6 +575,7 @@ int main(int argc, char *args[]){
 
 
     SDL_Event event;
+    Event_Controller event_controller(event, stage);
 
     //para controlar el tiempo
     Uint32 t0 = SDL_GetTicks();
@@ -536,37 +584,7 @@ int main(int argc, char *args[]){
     bool running=true;
     while(running ){
 
-        //control de evento para cerrar ventana
-        SDL_PollEvent(&event);
-        switch(event.type){
-            case SDL_QUIT:
-                cout << "se apreto x -> fin" << endl;
-                running = false;
-                break;
-
-            case SDL_KEYDOWN:
-                switch(event.key.keysym.sym){
-                    case SDLK_ESCAPE:
-                        running=false;
-                        break;
-                    case SDLK_LEFT:
-                        cout << "se apreto izquierda " << endl;
-                        turn_worm_iter->second.wish_to_move(WALK,LEFT);
-                        stage.make_action(0,LEFT);
-                        break;
-                    case SDLK_RIGHT:
-                        cout << "se apreto derecha " << endl;
-                        turn_worm_iter->second.wish_to_move(WALK,RIGHT);
-                        stage.make_action(0,RIGHT);
-                        break;
-                    case SDLK_UP:
-                        cout << "se apreto arriba " << endl;
-                        turn_worm_iter->second.wish_to_move(JUMP);
-                        stage.make_action(0,UP);
-                        break;
-                    }
-                    break;
-        }
+        running = event_controller.continue_running(turn_worm_iter->second);
 
         //actualiza el dibujo de la superficie en la pantalla
         SDL_Flip(screen);
