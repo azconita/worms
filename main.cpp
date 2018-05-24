@@ -27,6 +27,20 @@ using std::map;
 #define UP 2
 
 
+////////////////////////////////////////77
+enum State{
+   Still,
+   Walk,
+   Fall,
+   Jump
+};
+
+enum Direction{
+    Right,
+    Left
+};
+
+
 /////////////////////////////////////////////////////////////////////////////////////////
 class Color{
 public:
@@ -45,7 +59,7 @@ class Picture{
     int row_num, column_num;
     int w, h;
 
-    int default_direction;
+    Direction default_direction;
     SDL_Surface *surface;
     SDL_Surface *flipped;
 
@@ -110,7 +124,7 @@ public:
         this->columns = columns;
         this->row_num = 0;
         this->column_num = 0;
-        this->default_direction = LEFT; //todas las fotos estan para la izquierda
+        this->default_direction = Left; //todas las fotos estan para la izquierda
 
 
         SDL_Surface *tmp = IMG_Load(bmp_path);
@@ -150,7 +164,7 @@ void draw(SDL_Surface *screen, int x, int y){
 
 
 
-void draw(SDL_Surface *screen, SDL_Rect position, int direction){
+void draw(SDL_Surface *screen, SDL_Rect position, Direction direction){
     SDL_Rect dimention = get_dimention();
 
     position.h = dimention.h;
@@ -168,7 +182,7 @@ void draw(SDL_Surface *screen, SDL_Rect position, int direction){
 }
 
 
-void next_sprite_figure(int direction){
+void next_sprite_figure(Direction direction){
     if(this->default_direction != direction){ //hay que usar la inversa
         this->column_num -=1; // paso al anterior en la misma fila
         if(this->column_num <= 0){ //si estoy en el primero
@@ -211,7 +225,7 @@ class Animation {
     SDL_Rect dimention;
     int figures_num;
     int step;
-    int direction;
+    Direction direction;
 
 
     int next_internal_mov(){
@@ -224,15 +238,15 @@ public:
     picture(bmp_path, color, columns, rows ){
         this->figures_num = columns * rows;
         this->step = 0;
-        this->direction = -1;
+        this->direction = Left;
 
     }
 
-    void set_current_direction(int direction){
+    void set_current_direction(Direction direction){
         this->direction = direction;
     }
 
-    int get_current_direction(){
+    Direction get_current_direction(){
         return this->direction;
     }
 
@@ -287,17 +301,8 @@ public:
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////
-#define STILL 0
-#define WALK 1
-#define FALL 2
-#define JUMP 3
 
-enum State{
-   Still,
-   Walk,
-   Fall,
-   Jump
-};
+
 
 class Worm_Animation_Controller{
 public:
@@ -312,31 +317,29 @@ Worm_Animation_Controller(int initial_x, int initial_y){
     this->state = Still;
     Animation worm_walk = Animation_Factory::get_worm_walk();
     
-    this->animations.insert(std::pair<int,Animation>(STILL,worm_walk));
-    this->animations.insert(std::pair<int,Animation>(WALK,worm_walk));
+    this->animations.insert(std::pair<int,Animation>(Still,worm_walk));
+    this->animations.insert(std::pair<int,Animation>(Walk,worm_walk));
 
     Animation worm_fall = Animation_Factory::get_worm_fall();
-    this->animations.insert(std::pair<int,Animation>(FALL,worm_fall));
+    this->animations.insert(std::pair<int,Animation>(Fall,worm_fall));
 
     Animation worm_jump = Animation_Factory::get_worm_jump();
-    this->animations.insert(std::pair<int,Animation>(JUMP,worm_jump));
-
-   
-
+    this->animations.insert(std::pair<int,Animation>(Jump,worm_jump));
 }
-int get_direction(){
+
+Direction get_direction(){
     std::map<int,Animation>::iterator animation_iter = animations.find(this->state); 
     return animation_iter->second.get_current_direction();
 }
 
-void wish_to_move(State state, int direction){
+void wish_to_move(State state, Direction direction){
     this->state = state;
     std::map<int,Animation>::iterator animation_iter = animations.find(this->state); 
     animation_iter->second.set_current_direction(direction);
 }
 
 void wish_to_move(State state){
-    int last_direction = get_direction();
+    Direction last_direction = get_direction();
     wish_to_move(state, last_direction);
 }
 
@@ -350,6 +353,7 @@ void move(int position_x, int position_y){
 
     if(this->state != Still){
         if(!animation_iter->second.continue_internal_movement()){
+            
             this->state = Still;
         }
     } 
@@ -412,7 +416,6 @@ void show_beams(StageDTO s, SDL_Surface *screen){
         std::vector<std::tuple<float, float>> vertices = b.second;
 
         //debug_box2d_figure(screen, vertices);
-
         
         std::tuple<float, float> up_left_vertex = vertices[0];
         int up_left_vertex_x = get_pixels(std::get<0>(up_left_vertex));
@@ -496,12 +499,12 @@ bool continue_running(Worm_Animation_Controller& turn_worm){
 
                 case SDLK_LEFT:
                     cout << "se apreto izquierda " << endl;
-                    turn_worm.wish_to_move(Walk,LEFT);
+                    turn_worm.wish_to_move(Walk,Left);
                     this->stage.make_action(0,LEFT);    
                     break;
                 case SDLK_RIGHT:
                     cout << "se apreto derecha " << endl;
-                    turn_worm.wish_to_move(Walk,RIGHT);
+                    turn_worm.wish_to_move(Walk,Right);
                     this->stage.make_action(0,RIGHT);
                     break;
                 case SDLK_UP:
@@ -562,6 +565,10 @@ int main(int argc, char *args[]){
 
     //dibujo las vigas
     show_beams(s, screen);
+
+    Color colorkey(WATER_R,WATER_G,WATER_B);
+    Picture water(WATER, colorkey,WATER_COLUMNS,WATER_ROWS);
+    water.draw(screen,screen_height-20, 0);
 
     //dibujo los gusanos en su posicion inicial
     std::map<int,Worm_Animation_Controller> worms = create_worms(s, screen);
