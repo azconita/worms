@@ -153,7 +153,13 @@ public:
         // El alto de una original es el total entre el número de filas
         this->h = surface->h / rows;
 }
+int get_height(){
+    return this->h;
+}
 
+int get_width(){
+    return this->w;
+}
 
 void draw(SDL_Surface *screen, int x, int y){
     SDL_Rect position;
@@ -370,6 +376,53 @@ void show(SDL_Surface * screen){
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////
+class Event_Controller{
+    Stage & stage;
+    SDL_Event &  event;
+public:
+    Event_Controller(SDL_Event & event, Stage & stage):
+        event(event),
+        stage(stage)
+         {}
+
+bool continue_running(Worm_Animation_Controller& turn_worm){
+    SDL_PollEvent(&this->event);
+    switch(event.type){
+        case SDL_QUIT:
+            cout << "se apreto x -> fin" << endl;
+            return false;
+
+        case SDL_KEYDOWN:
+            switch(event.key.keysym.sym){
+                case SDLK_ESCAPE:
+                    return false;
+
+                case SDLK_LEFT:
+                    cout << "se apreto izquierda " << endl;
+                    turn_worm.wish_to_move(Walk,Left);
+                    this->stage.make_action(0,LEFT);    
+                    break;
+                case SDLK_RIGHT:
+                    cout << "se apreto derecha " << endl;
+                    turn_worm.wish_to_move(Walk,Right);
+                    this->stage.make_action(0,RIGHT);
+                    break;
+                case SDLK_UP:
+                    cout << "se apreto arriba " << endl;
+                    turn_worm.wish_to_move(Jump);
+                    this->stage.make_action(0,UP);
+                    break;
+                }
+                break;  
+    }
+    return true;
+    }
+
+};
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
 
 float get_pixels(float meter_position){
     return  23.5*meter_position;
@@ -434,7 +487,11 @@ void show_beams(StageDTO s, SDL_Surface *screen){
 void show_water(SDL_Surface *screen, int  screen_height, int screen_width){
     Color colorkey(WATER_R,WATER_G,WATER_B);
     Picture water(WATER, colorkey,WATER_COLUMNS,WATER_ROWS);
-    water.draw(screen,0,screen_height-20);
+    water.draw(screen,0,screen_height-water.get_height()-20);
+
+    Picture water2(WATER, colorkey,WATER_COLUMNS,WATER_ROWS);
+    water.draw(screen,water.get_width()-2,screen_height-water.get_height()-20);
+
 }
 
 std::map<int,Worm_Animation_Controller> create_worms(StageDTO s, SDL_Surface *screen){
@@ -483,53 +540,6 @@ void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Worm_Animation_Con
 
     }
 }
-//////////////////////////////////////////////////////////////////////////////////////////
-class Event_Controller{
-    Stage & stage;
-    SDL_Event &  event;
-public:
-    Event_Controller(SDL_Event & event, Stage & stage):
-        event(event),
-        stage(stage)
-         {}
-
-bool continue_running(Worm_Animation_Controller& turn_worm){
-    SDL_PollEvent(&this->event);
-    switch(event.type){
-        case SDL_QUIT:
-            cout << "se apreto x -> fin" << endl;
-            return false;
-
-        case SDL_KEYDOWN:
-            switch(event.key.keysym.sym){
-                case SDLK_ESCAPE:
-                    return false;
-
-                case SDLK_LEFT:
-                    cout << "se apreto izquierda " << endl;
-                    turn_worm.wish_to_move(Walk,Left);
-                    this->stage.make_action(0,LEFT);    
-                    break;
-                case SDLK_RIGHT:
-                    cout << "se apreto derecha " << endl;
-                    turn_worm.wish_to_move(Walk,Right);
-                    this->stage.make_action(0,RIGHT);
-                    break;
-                case SDLK_UP:
-                    cout << "se apreto arriba " << endl;
-                    turn_worm.wish_to_move(Jump);
-                    this->stage.make_action(0,UP);
-                    break;
-                }
-                break;  
-    }
-    return true;
-    }
-
-};
-
-
-//////////////////////////////////////////////////////////////////////////////////////////
 
 int main(int argc, char *args[]){
 
@@ -573,7 +583,7 @@ int main(int argc, char *args[]){
 
     //dibujo las vigas
     show_beams(s, screen);
-    show_water(sceen,screen_height,screen_width);
+    show_water(screen,screen_height,screen_width);
 
     //dibujo los gusanos en su posicion inicial
     std::map<int,Worm_Animation_Controller> worms = create_worms(s, screen);
@@ -614,10 +624,12 @@ int main(int argc, char *args[]){
             //borro todo lo que estaba
             //toda la pantalla en negro
             SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format,0,0,0));
-            //dibujo las vigas 
+            //dibujo las vigas y el agua
             show_beams(s, screen); 
+            show_water(screen,screen_height,screen_width);  
             //dibujo los gusanos
-            show_worms(s, screen, worms);           
+            show_worms(s, screen, worms);
+
         }
 
     }
