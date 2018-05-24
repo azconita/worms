@@ -36,6 +36,12 @@ void Stage::make_action(int worm, int action) {
     case 1:
       this->worms[worm].move_left();
       break;
+    case 2:
+      this->worms[worm].jump();
+      break;
+    case 3:
+      this->worms[worm].jump_back();
+      break;
   }
 }
 
