@@ -45,7 +45,7 @@ class Picture{
     int row_num, column_num;
     int w, h;
 
-    bool is_flipped;
+    int default_direction;
     SDL_Surface *surface;
     SDL_Surface *flipped;
 
@@ -110,7 +110,7 @@ public:
         this->columns = columns;
         this->row_num = 0;
         this->column_num = 0;
-        this->is_flipped = false;
+        this->default_direction = LEFT; //esto tienen que ser un parametro
 
 
         //this->surface =     IMG_Load(bmp_path);
@@ -132,36 +132,25 @@ public:
         // Lo establecemos como color transparente
         SDL_SetColorKey(this->surface, SDL_SRCCOLORKEY, colorkey);
 
-
-
         this->flipped = flip(surface, colorkey);
 
         // El ancho de una original es el total entre el número de columnas   
-
         this->w = surface->w / columns;
         // El alto de una original es el total entre el número de filas
         this->h = surface->h / rows;
-
-
-    }
-
-
-void flip(){
-    if(this->flipped != NULL){
-        this->is_flipped = true;
-    }
 }
+
 
 void draw(SDL_Surface *screen, int x, int y){
     SDL_Rect position;
     position.x = x;
     position.y = y;
-    draw(screen, position);
+    draw(screen, position, this->default_direction);
 }
 
 
 
-void draw(SDL_Surface *screen, SDL_Rect position){
+void draw(SDL_Surface *screen, SDL_Rect position, int direction){
     SDL_Rect dimention = get_dimention();
 
     position.h = dimention.h;
@@ -169,7 +158,7 @@ void draw(SDL_Surface *screen, SDL_Rect position){
 
     //printf("x = %i, y = %i, h = %i, w = %i \n",position.x, position.y, position.h, position.w );
     
-    if(this->is_flipped){
+    if(this->default_direction != direction){
         SDL_BlitSurface(this->flipped, &dimention, screen, &position);
         return;
     }
@@ -179,8 +168,8 @@ void draw(SDL_Surface *screen, SDL_Rect position){
 }
 
 
-void next_sprite_figure(){
-    if(this->is_flipped){
+void next_sprite_figure(int direction){
+    if(this->default_direction != direction){ //hay que usar la inversa
         this->column_num -=1; // paso al anterior en la misma fila
         if(this->column_num <= 0){ //si estoy en el primero
             this->column_num = this->columns - 1; //paso al ultimo
@@ -221,11 +210,12 @@ class Animation {
     Picture picture;
     SDL_Rect dimention;
     int figures_num;
+    int step;
     int direction;
 
 
     int next_internal_mov(){
-        this->picture.next_sprite_figure();
+        this->picture.next_sprite_figure(this->direction);
     }
 
 public:
@@ -233,7 +223,13 @@ public:
     Animation(const char * bmp_path, Color color,int columns, int rows):
     picture(bmp_path, color, columns, rows ){
         this->figures_num = columns * rows;
+        this->step = 0;
         this->direction = -1;
+
+    }
+
+    void set_current_direction(int direction){
+        this->direction = direction;
 
     }
 
@@ -241,8 +237,19 @@ public:
         SDL_Rect position;
         position.x = x;
         position.y = y;
-        this->picture.draw(screen,position);
+        this->picture.draw(screen, position, this->direction);
     }
+
+    bool continue_internal_movement(){
+        next_internal_mov();
+        this->step += 1;
+        if(this->step == this->figures_num){
+            this->step = 0;
+            return false;
+        }
+        return true;
+    }
+
 
 };
 
@@ -261,10 +268,16 @@ public:
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////
+#define STILL 0
+#define WALK 1
+#define FALL 2
+#define JUNM 3
+
+
 class Worm_Animation_Controller{
 public:
     int x, y;
-    int direction;
+    int state;
     std::map<int,Animation> animations;
     //Animation jump;
     //Animation fall;
@@ -273,27 +286,36 @@ public:
 Worm_Animation_Controller(int initial_x, int initial_y){
     this->x = initial_x;
     this-> y = initial_y;
-    this->direction = LEFT;
+    this->state = STILL;
     Animation worm_walk = Animation_Factory::get_worm_walk();
-    this->animations.insert(std::pair<int,Animation>(LEFT,worm_walk));
+    this->animations.insert(std::pair<int,Animation>(STILL,worm_walk));
+    this->animations.insert(std::pair<int,Animation>(WALK,worm_walk));
 
 }
 
 void wish_to_move(int direction){
-    this->direction = direction;
+    this->state = WALK;
+    std::map<int,Animation>::iterator animation_iter = animations.find(this->state); 
+    animation_iter->second.set_current_direction(direction);
+
 }
 
+
 void move(int position_x, int position_y){
-    printf("recibeeee %i, %i\n",position_x, position_y );
-    this->x =position_x;
-    this->y = position_y;
-    std::map<int,Animation>::iterator animation_iter = animations.find(this->direction); 
-    //animation_iter->second.move(position_x, position_y);
-    
+    this->x = position_x;
+    this->y = position_y; 
+    std::map<int,Animation>::iterator animation_iter = animations.find(this->state); 
+    if(this->state == WALK){
+        if(!animation_iter->second.continue_internal_movement()){
+            this->state = STILL;
+        }
+    } 
+
 }
 
 void show(SDL_Surface * screen){
-    std::map<int,Animation>::iterator animation_iter = animations.find(this->direction); 
+    printf("%i %i\n", this->x, this->y );
+    std::map<int,Animation>::iterator animation_iter = animations.find(this->state); 
     animation_iter->second.draw(screen, this->x, this->y); 
 }
 
@@ -347,7 +369,7 @@ void show_beams(StageDTO s, SDL_Surface *screen){
         
         std::vector<std::tuple<float, float>> vertices = b.second;
 
-        //debug_box2d_figure(screen, vertices);
+        debug_box2d_figure(screen, vertices);
 
         
         std::tuple<float, float> up_left_vertex = vertices[0];
@@ -355,8 +377,8 @@ void show_beams(StageDTO s, SDL_Surface *screen){
         int up_left_vertex_y = get_pixels(std::get<1>(up_left_vertex));
         
 
-        Picture beam(BIG_BEAM, colorkey_beam,BIG_BEAM_COLUMNS,BIG_BEAM_ROWS);
-        beam.draw(screen,up_left_vertex_x, up_left_vertex_y);
+        //Picture beam(BIG_BEAM, colorkey_beam,BIG_BEAM_COLUMNS,BIG_BEAM_ROWS);
+        //beam.draw(screen,up_left_vertex_x, up_left_vertex_y);
 
     }
 
@@ -393,6 +415,7 @@ std::map<int,Worm_Animation_Controller> create_worms(StageDTO s, SDL_Surface *sc
 void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Worm_Animation_Controller> & worms){
 
     for (auto w: s.worms) {
+
         std::vector<std::tuple<float, float>> vertices = w.second;
 
         debug_box2d_figure(screen, vertices);
@@ -402,10 +425,9 @@ void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Worm_Animation_Con
         int up_left_vertex_y = get_pixels(std::get<1>(up_left_vertex));
 
         std::map<int,Worm_Animation_Controller>::iterator worms_iter = worms.find(w.first); 
-        printf("posicion antes: %i, %i\n", worms_iter->second.x, worms_iter->second.y );
         worms_iter->second.move(up_left_vertex_x, up_left_vertex_y);
         worms_iter->second.show(screen);
-        printf("posicion despues: %i, %i\n", worms_iter->second.x, worms_iter->second.y );
+
     }
 
 
@@ -455,7 +477,7 @@ int main(int argc, char *args[]){
     show_beams(s, screen);
 
     //dibujo los gusanos en su posicion inicial
-   std::map<int,Worm_Animation_Controller> worms = create_worms(s, screen);
+    std::map<int,Worm_Animation_Controller> worms = create_worms(s, screen);
     printf(" size = %li\n", worms.size() );
 
 
@@ -490,13 +512,12 @@ int main(int argc, char *args[]){
                         break;
                     case SDLK_LEFT:
                         cout << "se apreto izquierda " << endl;
-
-                        //turn_worm_iter->second.wish_to_move(LEFT);
+                        turn_worm_iter->second.wish_to_move(LEFT);
                         stage.make_action(0,LEFT);
                         break;
                     case SDLK_RIGHT:
                         cout << "se apreto derecha " << endl;
-                        //turn_worm_iter->second.wish_to_move(RIGHT);
+                        turn_worm_iter->second.wish_to_move(RIGHT);
                         stage.make_action(0,RIGHT);
                         break;
                     case SDLK_UP:
