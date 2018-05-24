@@ -277,6 +277,13 @@ public:
 
     }
 
+    static Animation get_worm_fall(){
+        Color colorkey(WORM_FALL_R,WORM_FALL_G,WORM_JUMP_B);
+        Animation worm(WORM_FALL,colorkey,WORM_FALL_COLUMNS,WORM_FALL_ROWS);
+        return worm;
+
+    }
+
 
 };
 
@@ -305,8 +312,13 @@ Worm_Animation_Controller(int initial_x, int initial_y){
     this->animations.insert(std::pair<int,Animation>(STILL,worm_walk));
     this->animations.insert(std::pair<int,Animation>(WALK,worm_walk));
 
+    Animation worm_fall = Animation_Factory::get_worm_fall();
+    this->animations.insert(std::pair<int,Animation>(FALL,worm_fall));
+
     Animation worm_jump = Animation_Factory::get_worm_jump();
     this->animations.insert(std::pair<int,Animation>(JUMP,worm_jump));
+
+   
 
 }
 int get_direction(){
@@ -326,9 +338,13 @@ void wish_to_move(int state){
 }
 
 void move(int position_x, int position_y){
+    if(this->state == WALK && position_y > this->y){ //aumenta el y, se cae
+        this->state = FALL;
+    } 
     this->x = position_x;
     this->y = position_y; 
-    std::map<int,Animation>::iterator animation_iter = animations.find(this->state); 
+    std::map<int,Animation>::iterator animation_iter = animations.find(this->state);
+
     if(this->state != STILL){
         if(!animation_iter->second.continue_internal_movement()){
             this->state = STILL;

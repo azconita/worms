@@ -10,13 +10,21 @@
 #define WORM_WALK_COLUMNS 1
 #define WORM_WALK_ROWS 15
 
-//un gusano caminando en linea recta
+//un gusano saltando
 #define WORM_JUMP "resources/worm_jump.bmp"
 #define WORM_JUMP_R 128
 #define WORM_JUMP_G 128
 #define WORM_JUMP_B 192
 #define WORM_JUMP_COLUMNS 1
 #define WORM_JUMP_ROWS 10
+
+//un gusano cayendo
+#define WORM_FALL "resources/worm_fall.bmp"
+#define WORM_FALL_R 128
+#define WORM_FALL_G 128
+#define WORM_FALL_B 192
+#define WORM_FALL_COLUMNS 1
+#define WORM_FALL_ROWS 2
 
 
 //una viga larga
