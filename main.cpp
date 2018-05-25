@@ -219,9 +219,6 @@ void next_sprite_figure(Direction direction){
 
 };
 
-/////////////////////////////////////////////////////////////////////////////////////////
-
-
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -247,6 +244,15 @@ public:
         this->direction = Left;
 
     }
+
+    int get_height(){
+        return this->picture.get_height();
+    }
+
+    int get_width(){
+        return this->picture.get_width();
+    }
+
 
     void set_current_direction(Direction direction){
         this->direction = direction;
@@ -360,7 +366,7 @@ void move(int position_x, int position_y){
     this->y = position_y; 
     std::map<int,Animation>::iterator animation_iter = animations.find(this->state);
 
-    if(this->state != Still){
+    if(this->state != Still && this->state != Still){
         if(!animation_iter->second.continue_internal_movement()){
             this->state = Still;
         }
@@ -483,16 +489,48 @@ void show_beams(StageDTO s, SDL_Surface *screen){
     }
 
 }
+/////////////////////////////////////////////////////////////////////////////
 
-void show_water(SDL_Surface *screen, int  screen_height, int screen_width){
-    Color colorkey(WATER_R,WATER_G,WATER_B);
-    Picture water(WATER, colorkey,WATER_COLUMNS,WATER_ROWS);
-    water.draw(screen,0,screen_height-water.get_height()-20);
+class Water_animation_controller{
+    Color colorkey;
+    Animation water_left;
+    Animation water_right;
+    int screen_height;
+    int show_counter;
+    int speed;
 
-    Picture water2(WATER, colorkey,WATER_COLUMNS,WATER_ROWS);
-    water.draw(screen,water.get_width()-2,screen_height-water.get_height()-20);
+public:
+    Water_animation_controller(int screen_height,int speed):
+        colorkey(WATER_R,WATER_G,WATER_B),
+        water_left(WATER, this->colorkey,WATER_COLUMNS,WATER_ROWS),
+        water_right(WATER, this->colorkey,WATER_COLUMNS,WATER_ROWS)
+    {
+        this->speed = speed;
+        this->show_counter = 0;
+        this->screen_height = screen_height - 50;
+        this->water_right = water_right;
+        this->water_left = water_left;
+       
+    }
 
-}
+    void show(SDL_Surface * screen){
+        if(this->show_counter == this->speed){
+            this->show_counter = 0;
+            water_left.continue_internal_movement();
+            water_right.continue_internal_movement();
+
+        }else{
+            this->show_counter +=1;
+        }
+        water_left.draw(screen,0,this->screen_height-water_left.get_height());   
+        water_right.draw(screen,water_left.get_width()-2,this->screen_height-water_right.get_height());
+        
+    }
+
+
+};
+
+//////////////////////////////////////////////////////////////////////////////////
 
 std::map<int,Worm_Animation_Controller> create_worms(StageDTO s, SDL_Surface *screen){
 
@@ -580,10 +618,8 @@ int main(int argc, char *args[]){
     Stage stage("stage1");
 
     StageDTO s = stage.get_stageDTO();
-
-    //dibujo las vigas
-    show_beams(s, screen);
-    show_water(screen,screen_height,screen_width);
+    
+    Water_animation_controller water(screen_height, 2);
 
     //dibujo los gusanos en su posicion inicial
     std::map<int,Worm_Animation_Controller> worms = create_worms(s, screen);
@@ -626,7 +662,8 @@ int main(int argc, char *args[]){
             SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format,0,0,0));
             //dibujo las vigas y el agua
             show_beams(s, screen); 
-            show_water(screen,screen_height,screen_width);  
+           
+            water.show(screen);  
             //dibujo los gusanos
             show_worms(s, screen, worms);
 
