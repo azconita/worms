@@ -12,6 +12,7 @@
 
 class Weapon {
 private:
+protected:
   b2Body* body;
 
 public:

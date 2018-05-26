@@ -1,20 +1,15 @@
-<<<<<<< Updated upstream
 gravity: 9.8
 time_step: 0.1 
-=======
-gravity: 9.80 
-time_step: 0.05 
->>>>>>> Stashed changes
+time_step: 0.05
 velocity_iterations: 8
 position_iterations: 3
 
 worm_initial_life: 25
-worm_walk_velocity: 20
+worm_walk_velocity: 1
 worm_density: 1
-worm_size: 0.5
+worm_size: 0.8
 
 weapon_size: 0.1
 weapon_density: 1
 bazooka_damage: 50
 bazooka_radius: 2
-

@@ -35,4 +35,3 @@ std::vector<b2Vec2> Beam::get_points() {
     points.push_back(((b2PolygonShape*)this->body->GetFixtureList()->GetShape())->GetVertex(i) + this->body->GetWorldCenter());
   return points;
 }
-

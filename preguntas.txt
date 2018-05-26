@@ -1,0 +1,12 @@
+preguntas:
+
+sdl dibuja con solo punto x y (vertice superior de la imagen) despues tiene un heigh y un with segun la foto
+
+box2d me da cuatro puntos, los cuatro vertices
+
+nosotras sabemos que el dibujo de la viga mide 141 pixeles y esos deberian ser 6 metros entonces la conversion es
+
+pos_pixeles = pos_metros *23.5;
+
+como hacemos el cambio de escala para que los vertices queden justos?
+

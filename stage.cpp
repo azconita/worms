@@ -36,6 +36,12 @@ void Stage::make_action(int worm, int action) {
     case 1:
       this->worms[worm].move_left();
       break;
+    case 2:
+      this->worms[worm].jump();
+      break;
+    case 3:
+      this->worms[worm].jump_back();
+      break;
   }
 }
 
@@ -66,7 +72,7 @@ StageDTO Stage::get_stageDTO() {
 
 // set initial stage
 void Stage::add_beams(std::string config) {
-  this->beams.push_back(Beam(this->world, 10,0));
+  this->beams.push_back(Beam(this->world, 10,2));
   this->beams.push_back(Beam(this->world, 10,20));
 }
 
