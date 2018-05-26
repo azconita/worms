@@ -1,14 +1,16 @@
 #include <iostream>
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
+#include <SDL/SDL_ttf.h>
 #include "Client_Constants.h"
 #include "resources_definitions.h"
+
 #include "stage.h"
 #include "Beam.h"
 #include "Worm.h"
 
 
-//g++ -std=c++11 main.cpp stage.cpp Beam.cpp Worm.cpp Constants.cpp Weapon.cpp Bazooka.cpp -lBox2D -lSDL -lSDL_image -lyaml-cpp -g
+//g++ -std=c++11 main.cpp stage.cpp Beam.cpp Worm.cpp Constants.cpp Weapon.cpp Bazooka.cpp -lBox2D -lSDL -lSDL_image -lyaml-cpp -lSDL_ttf  -g
 
 
 using std::cout;
@@ -40,6 +42,19 @@ enum Direction{
     Left
 };
 
+enum Color_Name{
+    White,
+    Orange,
+    Green,
+    Purple,
+    Pink,
+    Yellow,
+    Red,
+    Blue
+};
+
+
+
 
 /////////////////////////////////////////////////////////////////////////////////////////
 class Color{
@@ -49,6 +64,46 @@ public:
         this->r = r;
         this->g = g;
         this->b = b;
+    }
+
+    static Color create(Color_Name color_name){
+        switch(color_name){
+            case(White):{
+                Color white(255,255,255);
+                return white;
+            }
+            case(Orange):{
+                Color orange(244, 95, 66);
+                return orange;
+            }
+            case(Yellow):{
+                Color yellow(229, 220, 57);
+                return yellow;
+            }
+            case(Green):{
+                Color green(57, 229, 114);
+                return green;
+            }
+            case Blue:{
+                Color blue(83, 144, 237);
+                return blue;
+            }
+            case Purple:{
+                Color purple(166, 109, 219);
+                return purple;
+            }
+            case Pink:{
+                Color pink(239, 115, 198);
+                return pink;
+            }
+            case Red:{
+                Color red(237, 78, 102);
+                return red;
+            }
+        }
+        Color black(0,0,0);
+        return black;
+
     }
 
 };
@@ -427,6 +482,85 @@ bool continue_running(Worm_Animation_Controller& turn_worm){
 };
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////
+class Graphic_Designer{
+    TTF_Font *font;
+    SDL_Color text_color;
+
+
+
+public:
+
+Graphic_Designer(int i){
+    // Initialize SDL_ttf library
+    if (TTF_Init() != 0) {
+      cout << "TTF_Init() Failed: " << TTF_GetError() << endl;
+      SDL_Quit();
+      exit(1);
+    }
+
+
+    this->font = TTF_OpenFont("resources/Amiko-Bold.ttf", 10);
+    if (this->font == NULL){
+        cout << "TTF_OpenFont() Fail: " << TTF_GetError() << endl;
+        TTF_Quit();
+        SDL_Quit();
+        exit(1);
+    }
+
+    this->text_color =  {0, 0, 0};
+
+
+}
+
+
+
+void show_circle_life(SDL_Surface * screen, int life, int x, int y, Color color){
+
+    char str_life[10];
+    if(life < 100){
+        sprintf(str_life, " %d ", life);
+    }else{
+        sprintf(str_life, "%d", life);
+    }
+
+
+    SDL_Surface * text = TTF_RenderText_Solid(font,str_life,text_color);
+    if (text == NULL){
+        cout << "TTF_RenderText_Solid(): " << TTF_GetError() << endl;
+        TTF_Quit();
+        SDL_Quit();
+        exit(1);
+    }
+
+    SDL_Rect rectangle;
+    rectangle.x = x-2;
+    rectangle.y = y-2;
+    rectangle.h = text->h + 2;
+    rectangle.w = text->w + 4 ;
+    Uint32 colorkey = SDL_MapRGBA(screen->format, color.r, color.g, color.b,0.2);
+    SDL_FillRect(screen, &rectangle, colorkey);
+
+    SDL_Rect dimention;
+    dimention.x = 0;
+    dimention.y = 0;
+    dimention.h = text->h;
+    dimention.w = text->w;
+
+    SDL_Rect position;
+    position.x = x;
+    position.y = y;
+    position.h = text->h;
+    position.w = text->w;
+    SDL_BlitSurface(text, &dimention, screen, &position);
+
+
+}
+
+
+};
+
+
 //////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -462,7 +596,7 @@ void debug_box2d_figure(SDL_Surface *screen, std::vector<std::tuple<float, float
 
     //printf("rectangle = x : %i y: %i h: %i w: %i\n",rectangle.x,rectangle.y,rectangle.h,rectangle.w );
 
-    Uint32 colorkey = SDL_MapRGBA(screen->format, 0, 255, 0, 5);
+    Uint32 colorkey = SDL_MapRGBA(screen->format, 0, 255, 0,0.5);
     SDL_FillRect(screen, &rectangle, colorkey);
 
 }
@@ -560,7 +694,7 @@ std::map<int,Worm_Animation_Controller> create_worms(StageDTO s, SDL_Surface *sc
 
 
 
-void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Worm_Animation_Controller> & worms){
+void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Worm_Animation_Controller> & worms, Graphic_Designer & graphic_designer){
 
     for (auto w: s.worms) {
 
@@ -576,8 +710,15 @@ void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Worm_Animation_Con
         worms_iter->second.move(up_left_vertex_x, up_left_vertex_y);
         worms_iter->second.show(screen);
 
+        Color player_color = Color::create(Orange);
+        int initial_life = 100;
+        graphic_designer.show_circle_life(screen, initial_life,up_left_vertex_x+20,up_left_vertex_y-5,player_color);
+
     }
 }
+
+
+
 
 int main(int argc, char *args[]){
 
@@ -598,7 +739,7 @@ int main(int argc, char *args[]){
 
     if(SDL_VideoModeOK(screen_width, screen_height, 24, SDL_HWSURFACE|SDL_DOUBLEBUF) == 0) {
         // Comprobamos que sea compatible el modo de video
-       cout << "Modo no soportado: " << SDL_GetError() << endl;
+       cout << "Modo video no soportado: " << SDL_GetError() << endl;
        exit(1);
     }
 
@@ -611,6 +752,10 @@ int main(int argc, char *args[]){
         exit(1);
     }
 
+    // Set the title bar
+    SDL_WM_SetCaption("Worms game", "Worms");
+
+    Graphic_Designer graphic_designer(1);
 
 
     //------------------------------------
@@ -619,7 +764,7 @@ int main(int argc, char *args[]){
 
     StageDTO s = stage.get_stageDTO();
 
-    Water_animation_controller water(screen_height, 2);
+    Water_animation_controller water(screen_height, 3);
 
     //dibujo los gusanos en su posicion inicial
     std::map<int,Worm_Animation_Controller> worms = create_worms(s, screen);
@@ -665,7 +810,7 @@ int main(int argc, char *args[]){
 
             water.show(screen);
             //dibujo los gusanos
-            show_worms(s, screen, worms);
+            show_worms(s, screen, worms, graphic_designer);
 
         }
 
