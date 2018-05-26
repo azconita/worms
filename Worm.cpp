@@ -53,8 +53,8 @@ void Worm::move_left() {
 
 //TODO: fix me!!
 void Worm::jump() {
-  float impulse = this->get_impulse();
-  this->body->ApplyLinearImpulse(b2Vec2(impulse,impulse), this->body->GetWorldCenter(), true);
+  float impulse = body->GetMass() * 1.5;
+  this->body->ApplyLinearImpulse(b2Vec2(this->get_impulse(),-impulse), this->body->GetWorldCenter(), true);
 }
 //TODO: fix me!!
 void Worm::jump_back() {

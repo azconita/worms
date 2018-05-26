@@ -61,7 +61,7 @@ enum Color_Name{
     Blue
 };
 
-           
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -83,8 +83,8 @@ public:
             case(Orange):{
                 Color orange(244, 95, 66);
                 return orange;
-            } 
-            case(Yellow):{ 
+            }
+            case(Yellow):{
                 Color yellow(229, 220, 57);
                 return yellow;
             }
@@ -112,7 +112,7 @@ public:
         Color black(0,0,0);
         return black;
 
-    }  
+    }
 
 };
 
@@ -132,11 +132,11 @@ SDL_Rect get_dimention(){
     // bien donde empieza una original y donde termina la otra
     dimention.w = this->w - 2;
     dimention.h = this->h - 2;
- 
+
     // Cálculo de la posición de la original // dentro de la rejilla
-    
+
     dimention.x = (this->column_num * this->w) + 2;
-    dimention.y = (this->row_num * this->h) + 2; 
+    dimention.y = (this->row_num * this->h) + 2;
 
     return dimention;
 }
@@ -166,7 +166,7 @@ SDL_Surface * flip(SDL_Surface * original, Uint32 colorkey){
             cout << "No podemos convertir la imagen al formato de pantalla" << endl;
             return NULL;
         }
-       
+
         // Preparamos el rectángulo nuevo vacío del color transparente
         SDL_FillRect(flipped, NULL, colorkey);
         // Copiamos linea vertical a linea vertical, inversamente
@@ -175,7 +175,7 @@ SDL_Surface * flip(SDL_Surface * original, Uint32 colorkey){
             origen.x = origen.x + 1; destino.x = destino.x - 1;
        }
        return flipped;
-} 
+}
 
 
 
@@ -211,7 +211,7 @@ public:
 
         this->flipped = flip(surface, colorkey);
 
-        // El ancho de una original es el total entre el número de columnas   
+        // El ancho de una original es el total entre el número de columnas
         this->w = surface->w / columns;
         // El alto de una original es el total entre el número de filas
         this->h = surface->h / rows;
@@ -240,7 +240,7 @@ void draw(SDL_Surface *screen, SDL_Rect position, Direction direction){
     position.w = dimention.w;
 
     //printf("x = %i, y = %i, h = %i, w = %i \n",position.x, position.y, position.h, position.w );
-    
+
     if(this->default_direction != direction){
         SDL_BlitSurface(this->flipped, &dimention, screen, &position);
         return;
@@ -259,7 +259,7 @@ void next_sprite_figure(Direction direction){
             this->row_num += 1; //pero de la fila de abajo
             if(this->row_num >= this->rows){
                 this->row_num = 0; //si estaba en el ultimo vuelvo a empezar
-            
+
             }
         }
         return;
@@ -272,7 +272,7 @@ void next_sprite_figure(Direction direction){
         if(this->row_num >= this->rows){
             this->row_num = 0; //si estaba en el ultimo vuelvo a empezar
         }
-    }  
+    }
 }
 
 void previous_sprite_figure(Direction direction){
@@ -458,7 +458,7 @@ Worm_Animation_Controller(int initial_x, int initial_y){
     this->weapon = NULL;
     this->grades = -90;
     Animation worm_walk = Animation_Factory::get_worm_walk();
-    
+
     this->animations.insert(std::pair<int,Animation>(Still,worm_walk));
     this->animations.insert(std::pair<int,Animation>(Walk,worm_walk));
 
@@ -471,6 +471,7 @@ Worm_Animation_Controller(int initial_x, int initial_y){
     Animation worm_missile = Animation_Factory::get_worm_missile();
     this->animations.insert(std::pair<int,Animation>(Worm_missile,worm_missile));
 }
+
 
 bool is_armed(){
     return(this->weapon != NULL);
@@ -527,22 +528,22 @@ Direction get_direction(){
 void move(int position_x, int position_y){
     if(this->state == Walk && position_y > this->y){ //aumenta el y, se cae
         this->state = Fall;
-    } 
+    }
     this->x = position_x;
-    this->y = position_y; 
+    this->y = position_y;
     std::map<int,Animation>::iterator animation_iter = animations.find(this->state);
 
     if(this->state == Jump && this->state ==Walk){
         if(!animation_iter->second.continue_internal_movement()){
             this->state = Still;
         }
-    } 
+    }
 
 }
 
 void show(SDL_Surface * screen){
-    std::map<int,Animation>::iterator animation_iter = animations.find(this->state); 
-    animation_iter->second.draw(screen, this->x, this->y); 
+    std::map<int,Animation>::iterator animation_iter = animations.find(this->state);
+    animation_iter->second.draw(screen, this->x, this->y);
 }
 
 };
@@ -607,7 +608,7 @@ bool continue_running(Worm_Animation_Controller& turn_worm){
                     turn_worm.take_weapon(Mortar);
                     //this->stage.make_action(0,Mortar);
                 }
-                break;  
+                break;
     }
     return true;
     }
@@ -619,11 +620,11 @@ bool continue_running(Worm_Animation_Controller& turn_worm){
 class Graphic_Designer{
     TTF_Font *font;
     SDL_Color text_color;
-    
+
 
 
 public:
-    
+
 Graphic_Designer(int i){
     // Initialize SDL_ttf library
     if (TTF_Init() != 0) {
@@ -632,7 +633,7 @@ Graphic_Designer(int i){
       exit(1);
     }
 
-   
+
     this->font = TTF_OpenFont("resources/Amiko-Bold.ttf", 10);
     if (this->font == NULL){
         cout << "TTF_OpenFont() Fail: " << TTF_GetError() << endl;
@@ -641,7 +642,7 @@ Graphic_Designer(int i){
         exit(1);
     }
 
-    this->text_color =  {0, 0, 0};  
+    this->text_color =  {0, 0, 0};
 
 
 }
@@ -719,7 +720,7 @@ void debug_box2d_figure(SDL_Surface *screen, std::vector<std::tuple<float, float
     std::tuple<float, float> down_right_vertex = vertices[2];
     int down_right_vertex_x = std::get<0>(down_right_vertex);
     int down_right_vertex_y = std::get<1>(down_right_vertex);
-        
+
     //dibujo un rectangulo
     SDL_Rect rectangle;
     rectangle.x = get_pixels(up_left_vertex_x);
@@ -740,15 +741,15 @@ void show_beams(StageDTO s, SDL_Surface *screen){
     Color colorkey_beam(BEAM_R,BEAM_G,BEAM_B);
 
     for (auto b: s.beams) {
-        
+
         std::vector<std::tuple<float, float>> vertices = b.second;
 
         //debug_box2d_figure(screen, vertices);
-        
+
         std::tuple<float, float> up_left_vertex = vertices[0];
         int up_left_vertex_x = get_pixels(std::get<0>(up_left_vertex));
         int up_left_vertex_y = get_pixels(std::get<1>(up_left_vertex));
-        
+
 
         Picture beam(BEAM, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
         beam.draw(screen,up_left_vertex_x, up_left_vertex_y);
@@ -777,7 +778,7 @@ public:
         this->screen_height = screen_height - 50;
         this->water_right = water_right;
         this->water_left = water_left;
-       
+
     }
 
     void show(SDL_Surface * screen){
@@ -789,9 +790,9 @@ public:
         }else{
             this->show_counter +=1;
         }
-        water_left.draw(screen,0,this->screen_height-water_left.get_height());   
+        water_left.draw(screen,0,this->screen_height-water_left.get_height());
         water_right.draw(screen,water_left.get_width()-2,this->screen_height-water_right.get_height());
-        
+
     }
 
 
@@ -839,7 +840,7 @@ void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Worm_Animation_Con
         int up_left_vertex_x = get_pixels(std::get<0>(up_left_vertex));
         int up_left_vertex_y = get_pixels(std::get<1>(up_left_vertex));
 
-        std::map<int,Worm_Animation_Controller>::iterator worms_iter = worms.find(w.first); 
+        std::map<int,Worm_Animation_Controller>::iterator worms_iter = worms.find(w.first);
         worms_iter->second.move(up_left_vertex_x, up_left_vertex_y);
         worms_iter->second.show(screen);
 
@@ -896,7 +897,7 @@ int main(int argc, char *args[]){
     Stage stage("stage1");
 
     StageDTO s = stage.get_stageDTO();
-    
+
     Water_animation_controller water(screen_height, 3);
 
     //dibujo los gusanos en su posicion inicial
@@ -939,9 +940,9 @@ int main(int argc, char *args[]){
             //toda la pantalla en negro
             SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format,0,0,0));
             //dibujo las vigas y el agua
-            show_beams(s, screen); 
-           
-            water.show(screen);  
+            show_beams(s, screen);
+
+            water.show(screen);
             //dibujo los gusanos
             show_worms(s, screen, worms, graphic_designer);
 
