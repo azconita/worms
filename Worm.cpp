@@ -7,11 +7,13 @@
 
 #include "Worm.h"
 #include "Constants.h"
+#include <string>
 
 Worm::Worm(b2World* world, float x, float y) {
   b2BodyDef bodyDef;
   bodyDef.type = b2_dynamicBody;
   bodyDef.position.Set(x, y);
+  bodyDef.userData = (void*) "worm";
   this->body = world->CreateBody(&bodyDef);
 
   //add box fixture

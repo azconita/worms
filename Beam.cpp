@@ -14,6 +14,7 @@ Beam::Beam(b2World* world, float x, float y) : x(x), y(y) {
   b2BodyDef myBodyDef;
   myBodyDef.type = b2_staticBody;
   myBodyDef.position.Set(x, y);
+  myBodyDef.userData = (void*) "beam";
   this->body = world->CreateBody(&myBodyDef);
 
   //add box fixture

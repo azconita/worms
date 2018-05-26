@@ -13,6 +13,7 @@ Stage::Stage(std::string config) {
   this->world = new b2World(gravity);
   this->add_beams(config);
   this->add_worms(config);
+  this->add_explosion();
 }
 
 Stage::~Stage() {
@@ -23,7 +24,10 @@ void Stage::update() {
   float32 timeStep = Constants::time_step; //segundos del step
   int32 velocityIterations = Constants::velocity_iterations;   //how strongly to correct velocity
   int32 positionIterations = Constants::position_iterations;   //how strongly to correct position
-
+  if (this->explosions[0].should_explode()) {
+    this->explosions[0].proximityExplosion(1000, 1000);
+  }
+  worms[0].printPos();
   this->world->Step( timeStep, velocityIterations, positionIterations);
 
 }
@@ -83,4 +87,8 @@ void Stage::add_worms(std::string config) {
 
 void Stage::add_weapons(std::string config) {
 
+}
+
+void Stage::add_explosion() {
+  this->explosions.push_back(Explosion(this->world, 11,12));
 }

@@ -6,6 +6,7 @@
 #include "Beam.h"
 #include "Weapon.h"
 #include "Worm.h"
+#include "Explosion.h"
 
 #ifndef STAGE_H_
 #define STAGE_H_
@@ -24,6 +25,8 @@ private:
  std::map<int, Worm> worms;
  std::vector<Weapon> weapons;
 
+ std::vector<Explosion> explosions;
+
 public:
   Stage(std::string config);
   virtual ~Stage();
@@ -40,6 +43,8 @@ private:
   void add_beams(std::string config);
   void add_worms(std::string config);
   void add_weapons(std::string config);
+
+  void add_explosion();
 };
 
 #endif

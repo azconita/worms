@@ -476,7 +476,7 @@ void show_beams(StageDTO s, SDL_Surface *screen){
 
         std::vector<std::tuple<float, float>> vertices = b.second;
 
-        //debug_box2d_figure(screen, vertices);
+        debug_box2d_figure(screen, vertices);
 
         std::tuple<float, float> up_left_vertex = vertices[0];
         int up_left_vertex_x = get_pixels(std::get<0>(up_left_vertex));
@@ -566,7 +566,7 @@ void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Worm_Animation_Con
 
         std::vector<std::tuple<float, float>> vertices = w.second;
 
-        //debug_box2d_figure(screen, vertices);
+        debug_box2d_figure(screen, vertices);
 
         std::tuple<float, float> up_left_vertex = vertices[0];
         int up_left_vertex_x = get_pixels(std::get<0>(up_left_vertex));

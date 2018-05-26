@@ -30,6 +30,10 @@ public:
 
   //use weapons
 
+
+  void printPos() {
+    std::cout << "worm: " << this->body->GetPosition().x << ":" << this->body->GetPosition().y << "\n";
+  }
 private:
   float get_impulse();
   void rotateTranslate(b2Vec2& vector,const b2Vec2& center,float angle);
