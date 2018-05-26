@@ -43,8 +43,4 @@
 #define WATER_COLUMNS 1
 #define WATER_ROWS 4
 
-<<<<<<< HEAD
 #endif
-=======
-#endif
->>>>>>> master
