@@ -27,6 +27,8 @@ using std::map;
 #define RIGHT 0
 #define LEFT 1
 #define UP 2
+#define BAZOOKA 3
+
 
 
 ////////////////////////////////////////77
@@ -34,7 +36,13 @@ enum State{
    Still,
    Walk,
    Fall,
-   Jump
+   Jump,
+   Worm_missile
+};
+
+enum Weapon_name{
+    Bazooka,
+    Mortar
 };
 
 enum Direction{
@@ -267,6 +275,50 @@ void next_sprite_figure(Direction direction){
     }  
 }
 
+void previous_sprite_figure(Direction direction){
+    if(this->default_direction != direction){ //hay que usar la inversa
+        this->column_num +=1; // paso al siguiente en la misma fila
+        if(this->column_num >= this->columns){ //si ya no hay mas
+            this->column_num = 0; //paso al primero
+            this->row_num -= 1; //pero de la fila de arriba
+            if(this->row_num < 0){
+                this->row_num = this->rows - 1; //si estaba en el ultimo vuelvo a empezar
+            
+            }
+        }
+        return;
+    }
+
+    this->column_num -=1; // paso al anterior en la misma fila
+    if(this->column_num < 0){ //si ya no hay anterior
+        this->column_num = this->columns - 1; //paso al ultomo
+        this->row_num -= 1; //pero de la fila de arriba
+        if(this->row_num < 0){
+            this->row_num = this->rows - 1; //si estaba en el primero vuelvo al ultimo
+        }
+    }  
+}
+
+bool is_in_first_figure(Direction direction){
+    if(this->default_direction != direction){
+        return (this->row_num <= 0 && this->column_num >= this->columns-1);
+    }
+    return (this->row_num <= 0 && this->column_num <= 0);
+    
+}
+
+bool is_in_last_figure(Direction direction){
+     if(this->row_num >= this->rows -1 ){
+        printf("%i es la ultima\n",this->row_num );
+    }
+   
+    if(this->default_direction != direction){
+        return (this->row_num >= this->rows-1 && this->column_num <= 0);
+    }
+    return (this->row_num >= this->rows-1 && this->column_num >= this->columns-1);
+
+}
+
 
 /*~Picture(){
     SDL_FreeSurface(this->surface);
@@ -285,10 +337,6 @@ class Animation {
     int step;
     Direction direction;
 
-
-    int next_internal_mov(){
-        this->picture.next_sprite_figure(this->direction);
-    }
 
 public:
 
@@ -326,13 +374,29 @@ public:
     }
 
     bool continue_internal_movement(){
-        next_internal_mov();
+        this->picture.next_sprite_figure(this->direction);
         this->step += 1;
         if(this->step == this->figures_num){
             this->step = 0;
             return false;
         }
         return true;
+    }
+
+    bool point_up(){
+        if(!this->picture.is_in_last_figure(this->direction)){
+            this->picture.next_sprite_figure(this->direction);
+            return true;
+        }
+        return false;
+
+    }
+    bool point_down(){
+        if(!this->picture.is_in_first_figure(this->direction)){
+            this->picture.previous_sprite_figure(this->direction);
+            return true;
+        }
+        return false;
     }
 
 
@@ -364,24 +428,35 @@ public:
 
     }
 
+    static Animation get_worm_missile(){
+        Color colorkey(WORM_MISSILE_R,WORM_MISSILE_G,WORM_MISSILE_B);
+        Animation worm(WORM_MISSILE,colorkey,WORM_MISSILE_COLUMNS,WORM_MISSILE_ROWS);
+        return worm;
+    }
+
 
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+#define GRADES_PER_STEP 5.8064516129 //180/31
 
 
 class Worm_Animation_Controller{
-public:
     int x, y;
     State state;
+    Weapon_name * weapon;
+    float grades;
     std::map<int,Animation> animations;
-
+    
+public:
 
 Worm_Animation_Controller(int initial_x, int initial_y){
     this->x = initial_x;
     this-> y = initial_y;
     this->state = Still;
+    this->weapon = NULL;
+    this->grades = -90;
     Animation worm_walk = Animation_Factory::get_worm_walk();
     
     this->animations.insert(std::pair<int,Animation>(Still,worm_walk));
@@ -392,26 +467,62 @@ Worm_Animation_Controller(int initial_x, int initial_y){
 
     Animation worm_jump = Animation_Factory::get_worm_jump();
     this->animations.insert(std::pair<int,Animation>(Jump,worm_jump));
+
+    Animation worm_missile = Animation_Factory::get_worm_missile();
+    this->animations.insert(std::pair<int,Animation>(Worm_missile,worm_missile));
 }
+
+bool is_armed(){
+    return(this->weapon != NULL);
+}
+
+void change_direction(Direction direction){
+    for(std::map<int,Animation>::iterator animation_iter = this->animations.begin();
+        animation_iter != this->animations.end();
+        animation_iter ++){ 
+        animation_iter->second.set_current_direction(direction);
+    }
+    if(this->state == Still){
+        change_state(Walk);
+    }
+    
+}
+
+void change_state(State state){
+    this->state = state; //sigue en la misma dire que antes
+}
+
+void take_weapon(Weapon_name weapon){
+    this->weapon = &weapon;
+    this->grades = -90;
+    State weapon_state = Worm_missile;
+    change_state(weapon_state);
+
+}
+
+float point_down_weapon(){
+    std::map<int,Animation>::iterator animation_iter = animations.find(this->state); 
+    if(animation_iter->second.point_down()){
+        this->grades-=GRADES_PER_STEP; //31 fotos/180 grados
+    }
+    return this->grades;
+
+}
+
+float point_up_weapon(){
+    std::map<int,Animation>::iterator animation_iter = animations.find(this->state); 
+    if(animation_iter->second.point_up()){
+       this->grades+=GRADES_PER_STEP;
+    }
+    return this->grades;
+}
+
 
 Direction get_direction(){
     std::map<int,Animation>::iterator animation_iter = animations.find(this->state); 
     return animation_iter->second.get_current_direction();
 }
 
-void wish_to_move(State state, Direction direction){
-    for(std::map<int,Animation>::iterator animation_iter = this->animations.begin();
-        animation_iter != this->animations.end();
-        animation_iter ++){
-        animation_iter->second.set_current_direction(direction);
-    }
-    this->state = state;
-}
-
-void wish_to_move(State state){
-    Direction last_direction = get_direction();
-    wish_to_move(state, last_direction);
-}
 
 void move(int position_x, int position_y){
     if(this->state == Walk && position_y > this->y){ //aumenta el y, se cae
@@ -421,7 +532,7 @@ void move(int position_x, int position_y){
     this->y = position_y; 
     std::map<int,Animation>::iterator animation_iter = animations.find(this->state);
 
-    if(this->state != Still && this->state != Still){
+    if(this->state == Jump && this->state ==Walk){
         if(!animation_iter->second.continue_internal_movement()){
             this->state = Still;
         }
@@ -460,19 +571,41 @@ bool continue_running(Worm_Animation_Controller& turn_worm){
 
                 case SDLK_LEFT:
                     cout << "se apreto izquierda " << endl;
-                    turn_worm.wish_to_move(Walk,Left);
+                    turn_worm.change_direction(Left);
                     this->stage.make_action(0,LEFT);    
                     break;
                 case SDLK_RIGHT:
                     cout << "se apreto derecha " << endl;
-                    turn_worm.wish_to_move(Walk,Right);
+                    turn_worm.change_direction(Right);
                     this->stage.make_action(0,RIGHT);
                     break;
                 case SDLK_UP:
                     cout << "se apreto arriba " << endl;
-                    turn_worm.wish_to_move(Jump);
-                    this->stage.make_action(0,UP);
+                    if(turn_worm.is_armed()){
+                        float grades = turn_worm.point_up_weapon();
+                        printf("%f\n",grades );
+                        //this->stage.make_action(0,grades);
+                    }else{
+                        turn_worm.change_state(Jump);
+                        this->stage.make_action(0,UP);
+                    }
                     break;
+                case SDLK_DOWN:
+                    cout << "se apreto abajo " << endl;
+                    if(turn_worm.is_armed()){
+                        float grades = turn_worm.point_down_weapon();
+                        printf("%f\n",grades );
+                        //this->stage.make_action(0,grades);
+                    }
+                    break;
+                case SDLK_b:
+                    cout << "se apreto b -> bazooka" << endl;
+                    turn_worm.take_weapon(Bazooka);
+                    //this->stage.make_action(0,Bazooka);
+                case SDLK_m:
+                    cout << "se apreto M -> Mortar" << endl;
+                    turn_worm.take_weapon(Mortar);
+                    //this->stage.make_action(0,Mortar);
                 }
                 break;  
     }

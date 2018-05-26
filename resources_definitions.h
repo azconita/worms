@@ -26,6 +26,15 @@
 #define WORM_FALL_COLUMNS 1
 #define WORM_FALL_ROWS 2
 
+//un gusano con disparador de bazooka
+#define WORM_MISSILE "resources/worm_bazooka.bmp"
+#define WORM_MISSILE_R 128
+#define WORM_MISSILE_G 128
+#define WORM_MISSILE_B 192
+#define WORM_MISSILE_COLUMNS 1
+#define WORM_MISSILE_ROWS 32
+
+
 
 //una viga larga
 #define BEAM "resources/beam.bmp"
