@@ -10,6 +10,24 @@
 #ifndef STAGE_H_
 #define STAGE_H_
 
+enum Weapon_Name{
+    Air_Attack, //a
+    Bazooka, //b
+    Dynamite, //d
+    Mortar, //m
+    Green_Granade,//g
+    Holy_Granade,//h
+    Red_Granade,//r
+    Teletrans,//t
+    Banana,//u
+    Baseboll_Bat//v
+};
+
+enum Direction{
+    Right,
+    Left
+};
+
 struct StageDTO {
   int worm_turn;
   std::map<int,std::vector<std::tuple<float, float>>> worms;

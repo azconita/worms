@@ -31,24 +31,10 @@ using std::map;
 
 
 
-////////////////////////////////////////77
-enum State{
-   Still,
-   Walk,
-   Fall,
-   Jump,
-   Worm_missile
-};
 
-enum Weapon_name{
-    Bazooka,
-    Mortar
-};
 
-enum Direction{
-    Right,
-    Left
-};
+
+
 
 enum Color_Name{
     White,
@@ -434,6 +420,54 @@ public:
         return worm;
     }
 
+     static Animation get_worm_banana(){
+        Color colorkey(WORM_BANANE_R,WORM_BANANE_G,WORM_BANANE_B);
+        Animation worm(WORM_BANANE,colorkey,WORM_BANANE_COLUMNS,WORM_MISSILE_ROWS);
+        return worm;
+    }
+
+    static Animation get_worm_bat(){
+        Color colorkey(WORM_BAT_R,WORM_BAT_G,WORM_BAT_B);
+        Animation worm(WORM_BAT,colorkey,WORM_BAT_COLUMNS,WORM_BAT_ROWS);
+        return worm;
+    }
+
+    static Animation get_worm_green_granade(){
+        Color colorkey(WORM_GREEN_GRANADE_R,WORM_GREEN_GRANADE_G,WORM_GREEN_GRANADE_B);
+        Animation worm(WORM_GREEN_GRANADE,colorkey,WORM_GREEN_GRANADE_COLUMNS,WORM_GREEN_GRANADE_ROWS);
+        return worm;
+    }
+
+    static Animation get_worm_red_granade(){
+        Color colorkey(WORM_RED_GRANADE_R,WORM_RED_GRANADE_G,WORM_RED_GRANADE_B);
+        Animation worm(WORM_RED_GRANADE,colorkey,WORM_RED_GRANADE_COLUMNS,WORM_RED_GRANADE_ROWS);
+        return worm;
+    }
+
+    static Animation get_worm_holy_granade(){
+        Color colorkey(WORM_HOLY_GRANADE_R,WORM_HOLY_GRANADE_G,WORM_HOLY_GRANADE_B);
+        Animation worm(WORM_HOLY_GRANADE,colorkey,WORM_HOLY_GRANADE_COLUMNS,WORM_HOLY_GRANADE_ROWS);
+        return worm;
+    }
+
+    static Animation get_worm_teletrans(){
+        Color colorkey(WORM_TELETRANS_R,WORM_TELETRANS_G,WORM_TELETRANS_B);
+        Animation worm(WORM_TELETRANS,colorkey,WORM_TELETRANS_COLUMNS,WORM_TELETRANS_ROWS);
+        return worm;
+    }
+
+    static Animation get_worm_air_attack(){
+        Color colorkey(WORM_AIR_ATTACK_R,WORM_AIR_ATTACK_G,WORM_AIR_ATTACK_B);
+        Animation worm(WORM_AIR_ATTACK,colorkey,WORM_AIR_ATTACK_COLUMNS,WORM_AIR_ATTACK_ROWS);
+        return worm;
+    }
+
+    static Animation get_worm_dynamite(){
+        Color colorkey(WORM_DYNAMITE_R,WORM_DYNAMITE_G,WORM_DYNAMITE_B);
+        Animation worm(WORM_DYNAMITE,colorkey,WORM_DYNAMITE_COLUMNS,WORM_DYNAMITE_ROWS);
+        return worm;
+    }
+
 
 };
 
@@ -441,11 +475,46 @@ public:
 
 #define GRADES_PER_STEP 5.8064516129 //180/31
 
+////////////////////////////////////////77
+enum State{
+   Still,
+   Walk,
+   Fall,
+   Jump,
+   Worm_missile,
+   Worm_banana,
+   Worm_bat,
+   Worm_green_granade,
+   Worm_red_granade,
+   Worm_holy_granade,
+   Worm_teletrans,
+   Worm_air_attack,
+   Worm_dynamite
+};
+//////////////////////////////////////////////////////
+
+
+static std::map<Weapon_Name, State> weapons_states {
+    
+    {Air_Attack, Worm_air_attack},
+    {Bazooka,Worm_missile},
+    {Dynamite,Worm_dynamite},
+    {Mortar,Worm_missile},
+    {Green_Granade,Worm_green_granade},
+    {Holy_Granade,Worm_holy_granade},
+    {Red_Granade,Worm_red_granade},
+    {Teletrans,Worm_teletrans},
+    {Banana,Worm_banana},
+    {Baseboll_Bat,Worm_bat}
+};
+
+
+
+/////////////////////////////////////////////////////////////////
 
 class Worm_Animation_Controller{
     int x, y;
     State state;
-    Weapon_name * weapon;
     float grades;
     std::map<int,Animation> animations;
     
@@ -455,7 +524,6 @@ Worm_Animation_Controller(int initial_x, int initial_y){
     this->x = initial_x;
     this-> y = initial_y;
     this->state = Still;
-    this->weapon = NULL;
     this->grades = -90;
     Animation worm_walk = Animation_Factory::get_worm_walk();
 
@@ -470,11 +538,40 @@ Worm_Animation_Controller(int initial_x, int initial_y){
 
     Animation worm_missile = Animation_Factory::get_worm_missile();
     this->animations.insert(std::pair<int,Animation>(Worm_missile,worm_missile));
+
+    Animation worm_banana = Animation_Factory::get_worm_banana();
+    this->animations.insert(std::pair<int,Animation>(Worm_banana,worm_banana));
+
+    Animation worm_bat = Animation_Factory::get_worm_bat();
+    this->animations.insert(std::pair<int,Animation>(Worm_bat,worm_bat));
+
+    Animation worm_green_granade = Animation_Factory::get_worm_green_granade();
+    this->animations.insert(std::pair<int,Animation>(Worm_green_granade,worm_green_granade));
+
+    Animation worm_red_granade = Animation_Factory::get_worm_red_granade();
+    this->animations.insert(std::pair<int,Animation>(Worm_red_granade,worm_red_granade));
+
+    Animation worm_holy_granade = Animation_Factory::get_worm_holy_granade();
+    this->animations.insert(std::pair<int,Animation>(Worm_holy_granade,worm_holy_granade));
+
+
+    Animation worm_teletrans = Animation_Factory::get_worm_teletrans();
+    this->animations.insert(std::pair<int,Animation>(Worm_teletrans,worm_teletrans));
+
+
+    Animation worm_air_attack = Animation_Factory::get_worm_air_attack();
+    this->animations.insert(std::pair<int,Animation>(Worm_air_attack,worm_air_attack));
+
+    Animation worm_dynamite = Animation_Factory::get_worm_dynamite();
+    this->animations.insert(std::pair<int,Animation>(Worm_dynamite,worm_dynamite));
+
 }
 
 
-bool is_armed(){
-    return(this->weapon != NULL);
+bool has_point_weapon(){ //armas con las que no se puede apuntar
+    return (this->state != Worm_teletrans && //
+     this->state != Worm_dynamite && //
+     this->state != Worm_air_attack);
 }
 
 void change_direction(Direction direction){
@@ -493,11 +590,10 @@ void change_state(State state){
     this->state = state; //sigue en la misma dire que antes
 }
 
-void take_weapon(Weapon_name weapon){
-    this->weapon = &weapon;
+void take_weapon(Weapon_Name weapon){
     this->grades = -90;
-    State weapon_state = Worm_missile;
-    change_state(weapon_state);
+    std::map<Weapon_Name,State>::iterator weapon_state = weapons_states.find(weapon);
+    change_state(weapon_state->second);
 
 }
 
@@ -526,7 +622,10 @@ Direction get_direction(){
 
 
 void move(int position_x, int position_y){
-    if(this->state == Walk && position_y > this->y){ //aumenta el y, se cae
+    if(this->x = position_x && this->y == y && this->state == Fall){ // se cayo sobre una viga 
+        this->state = Still;
+    }
+    if(this->state != Jump && position_y > this->y){ //aumenta el y, se cae
         this->state = Fall;
     }
     this->x = position_x;
@@ -582,7 +681,7 @@ bool continue_running(Worm_Animation_Controller& turn_worm){
                     break;
                 case SDLK_UP:
                     cout << "se apreto arriba " << endl;
-                    if(turn_worm.is_armed()){
+                    if(turn_worm.has_point_weapon()){
                         float grades = turn_worm.point_up_weapon();
                         printf("%f\n",grades );
                         //this->stage.make_action(0,grades);
@@ -593,20 +692,55 @@ bool continue_running(Worm_Animation_Controller& turn_worm){
                     break;
                 case SDLK_DOWN:
                     cout << "se apreto abajo " << endl;
-                    if(turn_worm.is_armed()){
+                    if(turn_worm.has_point_weapon()){
                         float grades = turn_worm.point_down_weapon();
                         printf("%f\n",grades );
                         //this->stage.make_action(0,grades);
                     }
                     break;
+                //-------------ARMAS--------------------
+                case SDLK_a:
+                    cout << "se apreto a -> Air_attack" << endl;
+                    turn_worm.take_weapon(Air_Attack);
+                    break;
                 case SDLK_b:
                     cout << "se apreto b -> bazooka" << endl;
                     turn_worm.take_weapon(Bazooka);
                     //this->stage.make_action(0,Bazooka);
+                    break;
+                case SDLK_d:
+                    cout << "se apreto d -> Dynamite" << endl;
+                    turn_worm.take_weapon(Dynamite);
+                    break;
+                case SDLK_g:
+                    cout << "se apreto g -> Green_Granade" << endl;
+                    turn_worm.take_weapon(Green_Granade);
+                    break;
+                case SDLK_h:
+                    cout << "se apreto h -> Holy_Granade" << endl;
+                    turn_worm.take_weapon(Holy_Granade);
+                    break;
                 case SDLK_m:
-                    cout << "se apreto M -> Mortar" << endl;
+                    cout << "se apreto m -> Mortar" << endl;
                     turn_worm.take_weapon(Mortar);
                     //this->stage.make_action(0,Mortar);
+                    break;
+                case SDLK_r:
+                    cout << "se apreto r-> Red_Granade" << endl;
+                    turn_worm.take_weapon(Red_Granade);
+                    break;
+                case SDLK_t:
+                    cout << "se apreto t -> Teletrans" << endl;
+                    turn_worm.take_weapon(Teletrans);
+                    break;
+                case SDLK_u:
+                    cout << "se apreto u ->  Banana" << endl;
+                    turn_worm.take_weapon(Banana);
+                    break;
+                case SDLK_v:
+                    cout << "se apreto v -> Baseboll_Ba" << endl;
+                    turn_worm.take_weapon(Baseboll_Bat);
+                    break;
                 }
                 break;
     }
