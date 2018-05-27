@@ -7,6 +7,7 @@
 #include "Weapon.h"
 #include "Worm.h"
 #include "Explosion.h"
+#include "WeaponExplosionListener.h"
 
 #ifndef STAGE_H_
 #define STAGE_H_
@@ -21,11 +22,12 @@ class Stage {
 private:
  std::vector<int> jugadores;
  b2World* world;
- std::vector<Beam> beams;
- std::map<int, Worm> worms;
+ std::vector<Beam*> beams;
+ std::map<int, Worm*> worms;
  std::vector<Weapon> weapons;
 
- std::vector<Explosion> explosions;
+ WeaponExplosionListener explosion_listener;
+ std::vector<Explosion*> explosions;
 
 public:
   Stage(std::string config);

@@ -9,21 +9,34 @@
 #include <iostream>
 #include <vector>
 
-Beam::Beam(b2World* world, float x, float y) : x(x), y(y) {
+Beam::Beam(b2World* world, float x, float y) : Entity(0) {
   //set up static body, store in class variable
   b2BodyDef myBodyDef;
   myBodyDef.type = b2_staticBody;
   myBodyDef.position.Set(x, y);
-  myBodyDef.userData = (void*) "beam";
+  //myBodyDef.userData = (void*) this;
   this->body = world->CreateBody(&myBodyDef);
-
+  std::cout << "beamDir: " << this << '\n';
   //add box fixture
   b2PolygonShape shape;
-  shape.SetAsBox(3, 0.8);
+  shape.SetAsBox(6, 0.8);
   b2FixtureDef myFixtureDef;
   myFixtureDef.shape = &shape;
   myFixtureDef.density = 1;
   this->body->CreateFixture(&myFixtureDef);
+  this->body->SetUserData(this);
+}
+
+Beam::Beam(const Beam &other) : Entity(0), body(other.body) {
+  //this->body->SetUserData(this);
+  std::cout << "beamDir(&other): " << this << '\n';
+}
+
+Beam* Beam::operator=(const Beam &other) {
+  std::cout << "beamDir=: " << this << '\n';
+  this->body = other.body;
+  this->body->SetUserData(this);
+  return this;
 }
 
 Beam::~Beam() {

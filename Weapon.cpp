@@ -19,12 +19,13 @@ Weapon::~Weapon() {
   // TODO Auto-generated destructor stub
 }
 
-Weapon::Weapon(b2World* world, float x, float y) {
+Weapon::Weapon(b2World* world, float x, float y) : Entity(2) {
   b2BodyDef bodyDef;
   bodyDef.type = b2_dynamicBody;
   bodyDef.bullet = true;
   bodyDef.position.Set(x, y);
   this->body = world->CreateBody(&bodyDef);
+
 
   //add box fixture
   b2CircleShape shape;
@@ -33,4 +34,8 @@ Weapon::Weapon(b2World* world, float x, float y) {
   myFixtureDef.shape = &shape;
   myFixtureDef.density = Constants::weapon_density;
   this->body->CreateFixture(&myFixtureDef);
+  this->body->SetUserData(this);
 }
+
+//Weapon::Weapon() : Entity(2),
+

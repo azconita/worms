@@ -9,10 +9,14 @@
 #include <vector>
 #include <iostream>
 
+#include "Entity.h"
+
 #ifndef WORM_H_
 #define WORM_H_
 
-class Worm {
+#define TYPE_WORM 1
+
+class Worm : public Entity {
   b2Body* body;
   int life;
 public:
@@ -20,6 +24,9 @@ public:
   Worm(const    Worm& other);
   Worm();
   virtual ~Worm();
+  Worm* operator=(const Worm &other);
+
+  int get_type() { return TYPE_WORM; }
   std::vector<b2Vec2> get_points();
 
   //movements

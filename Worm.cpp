@@ -9,13 +9,13 @@
 #include "Constants.h"
 #include <string>
 
-Worm::Worm(b2World* world, float x, float y) {
+Worm::Worm(b2World* world, float x, float y) : Entity(1) {
   b2BodyDef bodyDef;
   bodyDef.type = b2_dynamicBody;
   bodyDef.position.Set(x, y);
-  bodyDef.userData = (void*) "worm";
+  bodyDef.userData = (void*) this;
   this->body = world->CreateBody(&bodyDef);
-
+  std::cout << "wormDir: " << this << '\n';
   //add box fixture
   b2PolygonShape shape;
   shape.SetAsBox(Constants::worm_size, Constants::worm_size);
@@ -23,18 +23,30 @@ Worm::Worm(b2World* world, float x, float y) {
   myFixtureDef.shape = &shape;
   myFixtureDef.density = Constants::worm_density;
   this->body->CreateFixture(&myFixtureDef);
+  this->body->SetUserData(this);
   this->life = Constants::worm_initial_life;
 }
 
-Worm::Worm(const Worm& other) :  body(other.body), life(other.life) {
+Worm::Worm(const Worm& other) : Entity(1), body(other.body), life(other.life) {
+  this->body->SetUserData(this);
+  std::cout << "wormDir(&other): " << this << '\n';
 }
 
-Worm::Worm() : body(NULL), life(0) {
+Worm::Worm() : Entity(1), body(NULL), life(0) {
+  std::cout << "wormDir(): " << this << '\n';
 
 }
 
 Worm::~Worm() {
   // TODO Auto-generated destructor stub
+}
+
+Worm* Worm::operator=(const Worm &other) {
+  std::cout << "wormDir=: " << this << '\n';
+  this->body = other.body;
+  this->life = other.life;
+  this->body->SetUserData(this);
+  return this;
 }
 
 float Worm::get_impulse() {

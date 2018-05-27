@@ -13,15 +13,15 @@
 
 #include "Explosion.h"
 
-Explosion::Explosion(b2World *world, float x, float y) : world(world) {
+Explosion::Explosion(b2World *world, float x, float y) : Entity(3), world(world) {
   // TODO Auto-generated constructor stub
   b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     bodyDef.bullet = true;
     bodyDef.position.Set(x, y);
-    bodyDef.userData = (void*) "bomb";
+    bodyDef.userData = (void*) this;
     this->body = world->CreateBody(&bodyDef);
-
+std::cout << "explosionDir: " << this << '\n';
     //add box fixture
     b2CircleShape shape;
     shape.m_radius = Constants::weapon_size;
@@ -29,10 +29,24 @@ Explosion::Explosion(b2World *world, float x, float y) : world(world) {
     myFixtureDef.shape = &shape;
     myFixtureDef.density = Constants::weapon_density;
     this->body->CreateFixture(&myFixtureDef);
+    this->body->SetUserData(this);
+}
+
+Explosion::Explosion(const Explosion &other) : Entity(3), world(other.world), body(other.body) {
+  std::cout << "explosionDir(&other): " << this << '\n';
+  //this->body->SetUserData(this);
 }
 
 Explosion::~Explosion() {
   // TODO Auto-generated destructor stub
+}
+
+Explosion* Explosion::operator=(const Explosion &other) {
+  std::cout << "explosionDir=: " << this << '\n';
+  this->body = other.body;
+  this->world = other.world;
+  this->body->SetUserData(this);
+  return this;
 }
 
 void applyBlastImpulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint,
@@ -46,9 +60,9 @@ void applyBlastImpulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint,
   float impulseMag = blastPower * invDistance * invDistance;
   std::cout << "imp mag: " << impulseMag << ", blastdir: " << blastDir.x << ":" << blastDir.y << "\n";
 
-  char* type = (char*) (body->GetUserData());
-  std::cout<<"body found: " << type << '\n';
-  if (strcmp(type, "worm")==0) {
+  Entity* entity = (Entity*) (body->GetUserData());
+  std::cout<<"body found: " << entity->en_type << '\n';
+  if (entity->en_type == 1) {
     std::cout << "apply explosion\n";
     body->ApplyLinearImpulse( impulseMag * blastDir, body->GetPosition() , true);
   }
