@@ -17,6 +17,7 @@ using std::cout;
 using std::endl;
 using std::string;
 using std::map;
+using std::pair;
 
 
 #define SCREEN_DEFAULT_WITH 1366
@@ -294,10 +295,6 @@ bool is_in_first_figure(Direction direction){
 }
 
 bool is_in_last_figure(Direction direction){
-     if(this->row_num >= this->rows -1 ){
-        printf("%i es la ultima\n",this->row_num );
-    }
-   
     if(this->default_direction != direction){
         return (this->row_num >= this->rows-1 && this->column_num <= 0);
     }
@@ -516,6 +513,7 @@ class Worm_Animation_Controller{
     int x, y;
     State state;
     float grades;
+    int weapon_power;
     std::map<int,Animation> animations;
     
 public:
@@ -525,6 +523,7 @@ Worm_Animation_Controller(int initial_x, int initial_y){
     this-> y = initial_y;
     this->state = Still;
     this->grades = -90;
+    this->weapon_power = 0;
     Animation worm_walk = Animation_Factory::get_worm_walk();
 
     this->animations.insert(std::pair<int,Animation>(Still,worm_walk));
@@ -569,9 +568,12 @@ Worm_Animation_Controller(int initial_x, int initial_y){
 
 
 bool has_point_weapon(){ //armas con las que no se puede apuntar
-    return (this->state != Worm_teletrans && //
-     this->state != Worm_dynamite && //
-     this->state != Worm_air_attack);
+    return (this->state == Worm_green_granade && //
+     this->state == Worm_red_granade && //
+     this->state == Worm_holy_granade && //
+     this->state == Worm_bat &&
+     this->state == Worm_missile &&
+     this-> state == Worm_banana);
 }
 
 void change_direction(Direction direction){
@@ -614,6 +616,12 @@ float point_up_weapon(){
     return this->grades;
 }
 
+bool add_power(){
+    if(this->weapon_power < 100){
+        this->weapon_power +=1;
+    }
+}
+
 
 Direction get_direction(){
     std::map<int,Animation>::iterator animation_iter = animations.find(this->state); 
@@ -632,7 +640,7 @@ void move(int position_x, int position_y){
     this->y = position_y;
     std::map<int,Animation>::iterator animation_iter = animations.find(this->state);
 
-    if(this->state == Jump && this->state ==Walk){
+    if(this->state == Jump || this->state ==Walk){
         if(!animation_iter->second.continue_internal_movement()){
             this->state = Still;
         }
@@ -648,14 +656,26 @@ void show(SDL_Surface * screen){
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////
+
 class Event_Controller{
     Stage & stage;
     SDL_Event &  event;
+    bool wait_for_destination_clicl;
+    bool wait_for_potentia;
 public:
-    Event_Controller(SDL_Event & event, Stage & stage):
+Event_Controller(SDL_Event & event, Stage & stage):
         event(event),
-        stage(stage)
-         {}
+        stage(stage){
+            this->wait_for_destination_clicl = false;
+            this->wait_for_potentia = false;
+
+}
+
+float meters_conversor(int pixel){
+    return (pixel+0.0)/23.5;
+
+}
+
 
 bool continue_running(Worm_Animation_Controller& turn_worm){
     SDL_PollEvent(&this->event);
@@ -663,6 +683,16 @@ bool continue_running(Worm_Animation_Controller& turn_worm){
         case SDL_QUIT:
             cout << "se apreto x -> fin" << endl;
             return false;
+        case SDL_MOUSEBUTTONUP:
+            cout <<"se apreto en mouse"<< endl;
+            if(wait_for_destination_clicl){
+                int x, y;
+                SDL_GetMouseState(&x, &y);
+                printf("%f %f\n", meters_conversor(x),meters_conversor(y) );
+                //make_action(0, meters_conversor(x),meters_conversor(y) );
+                this->wait_for_destination_clicl = true;
+            }
+            
 
         case SDL_KEYDOWN:
             switch(event.key.keysym.sym){
@@ -698,10 +728,20 @@ bool continue_running(Worm_Animation_Controller& turn_worm){
                         //this->stage.make_action(0,grades);
                     }
                     break;
+                //-----------potencia..................
+                case SDLK_SPACE:
+                    printf("se apreto espacioo\n");
+                    if(this->wait_for_potentia){
+                        if(!turn_worm.add_power()){
+                            this->wait_for_potentia = false;
+                        }
+                    }
+                    break;
                 //-------------ARMAS--------------------
                 case SDLK_a:
                     cout << "se apreto a -> Air_attack" << endl;
                     turn_worm.take_weapon(Air_Attack);
+                    this->wait_for_destination_clicl = true;
                     break;
                 case SDLK_b:
                     cout << "se apreto b -> bazooka" << endl;
@@ -732,6 +772,7 @@ bool continue_running(Worm_Animation_Controller& turn_worm){
                 case SDLK_t:
                     cout << "se apreto t -> Teletrans" << endl;
                     turn_worm.take_weapon(Teletrans);
+                    this->wait_for_destination_clicl = true;
                     break;
                 case SDLK_u:
                     cout << "se apreto u ->  Banana" << endl;
@@ -968,7 +1009,7 @@ void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Worm_Animation_Con
 
         std::vector<std::tuple<float, float>> vertices = w.second;
 
-        //debug_box2d_figure(screen, vertices);
+        debug_box2d_figure(screen, vertices);
 
         std::tuple<float, float> up_left_vertex = vertices[0];
         int up_left_vertex_x = get_pixels(std::get<0>(up_left_vertex));
