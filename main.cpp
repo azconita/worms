@@ -397,15 +397,15 @@ public:
         return worm;
     }
 
-     static Animation get_worm_banana(){
-        Color colorkey(WORM_BANANE_R,WORM_BANANE_G,WORM_BANANE_B);
-        Animation worm(WORM_BANANE,colorkey,WORM_BANANE_COLUMNS,WORM_MISSILE_ROWS);
-        return worm;
-    }
-
     static Animation get_worm_bat(){
         Color colorkey(WORM_BAT_R,WORM_BAT_G,WORM_BAT_B);
         Animation worm(WORM_BAT,colorkey,WORM_BAT_COLUMNS,WORM_BAT_ROWS);
+        return worm;
+    }
+
+    static Animation get_worm_banana(){
+        Color colorkey(WORM_BANANA_R,WORM_BANANA_G,WORM_BANANA_B);
+        Animation worm(WORM_BANANA,colorkey,WORM_BANANA_COLUMNS,WORM_MISSILE_ROWS);
         return worm;
     }
 
@@ -445,14 +445,62 @@ public:
         return worm;
     }
 
+    //-----------------------Armas --------------------------------------------------
+
+
+     static Animation get_bazooka(){
+        Color colorkey(BAZOOKA_R,BAZOOKA_G,BAZOOKA_B);
+        Animation worm(BAZOOKA,colorkey,BAZOOKA_COLUMNS,BAZOOKA_ROWS);
+        return worm;
+    }
+
+       static Animation get_mortar(){
+        Color colorkey(MORTAR_R,MORTAR_G,MORTAR_B);
+        Animation worm(MORTAR,colorkey,MORTAR_COLUMNS,MORTAR_ROWS);
+        return worm;
+    }
+
+     static Animation get_banana(){
+        Color colorkey(BANANA_R,BANANA_G,BANANA_B);
+        Animation worm(BANANA,colorkey,BANANA_COLUMNS,BANANA_ROWS);
+        return worm;
+    }
+
+    static Animation get_green_granade(){
+        Color colorkey(GREEN_GRANADE_R,GREEN_GRANADE_G,GREEN_GRANADE_B);
+        Animation worm(GREEN_GRANADE,colorkey,GREEN_GRANADE_COLUMNS,GREEN_GRANADE_ROWS);
+        return worm;
+    }
+
+    static Animation get_red_granade(){
+        Color colorkey(RED_GRANADE_R,RED_GRANADE_G,RED_GRANADE_B);
+        Animation worm(RED_GRANADE,colorkey,RED_GRANADE_COLUMNS,RED_GRANADE_ROWS);
+        return worm;
+    }
+
+    static Animation get_holy_granade(){
+        Color colorkey(HOLY_GRANADE_R,HOLY_GRANADE_G,HOLY_GRANADE_B);
+        Animation worm(HOLY_GRANADE,colorkey,HOLY_GRANADE_COLUMNS,HOLY_GRANADE_ROWS);
+        return worm;
+    }
+
+
+    static Animation get_air_attack(){
+        Color colorkey(AIR_ATTACK_R,AIR_ATTACK_G,AIR_ATTACK_B);
+        Animation worm(AIR_ATTACK,colorkey,AIR_ATTACK_COLUMNS,AIR_ATTACK_ROWS);
+        return worm;
+    }
+
+    static Animation get_dynamite(){
+        Color colorkey(DYNAMITE_R,DYNAMITE_G,DYNAMITE_B);
+        Animation worm(DYNAMITE,colorkey,DYNAMITE_COLUMNS,DYNAMITE_ROWS);
+        return worm;
+    }
 
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
-#define GRADES_PER_STEP 5.8064516129 //180/31
-
-////////////////////////////////////////77
 enum State{
    Still,
    Walk,
@@ -498,9 +546,9 @@ static const std::vector<State> weapons_states_to_point(
 
 
 
-
-
 /////////////////////////////////////////////////////////////////
+
+#define GRADES_PER_STEP 5.8064516129 //180/31
 
 class Worm_Animation_Controller{
     int x, y;
@@ -546,17 +594,14 @@ Worm_Animation_Controller(int initial_x, int initial_y){
     Animation worm_holy_granade = Animation_Factory::get_worm_holy_granade();
     this->animations.insert(std::pair<int,Animation>(Worm_holy_granade,worm_holy_granade));
 
-
     Animation worm_teletrans = Animation_Factory::get_worm_teletrans();
     this->animations.insert(std::pair<int,Animation>(Worm_teletrans,worm_teletrans));
-
 
     Animation worm_air_attack = Animation_Factory::get_worm_air_attack();
     this->animations.insert(std::pair<int,Animation>(Worm_air_attack,worm_air_attack));
 
     Animation worm_dynamite = Animation_Factory::get_worm_dynamite();
     this->animations.insert(std::pair<int,Animation>(Worm_dynamite,worm_dynamite));
-
 }
 
 
@@ -646,6 +691,10 @@ void show(SDL_Surface * screen){
 }
 
 };
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////7/////////
 
 
 class Event_Controller{
@@ -920,6 +969,64 @@ void debug_box2d_figure(SDL_Surface *screen, ElementDTO element_info){
 
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+class Weapons_Animation_Controller{
+    Weapon_Name * current_weapon; 
+    std::map<Weapon_Name,Animation> animations;
+
+public:
+
+Weapons_Animation_Controller(int i){
+        this->current_weapon = NULL;
+
+        Animation bazooka = Animation_Factory::get_bazooka();
+        this->animations.insert(std::pair<Weapon_Name,Animation>(Bazooka, bazooka));
+
+        Animation mortar = Animation_Factory::get_mortar();
+        this->animations.insert(std::pair<Weapon_Name,Animation>(Mortar,mortar));
+
+        Animation banana = Animation_Factory::get_banana();
+        this->animations.insert(std::pair<Weapon_Name,Animation>(Banana,banana));
+
+        Animation green_granade = Animation_Factory::get_green_granade();
+        this->animations.insert(std::pair<Weapon_Name,Animation>(Green_Granade,green_granade));
+
+        Animation red_granade = Animation_Factory::get_red_granade();
+        this->animations.insert(std::pair<Weapon_Name,Animation>(Red_Granade,red_granade));
+
+        Animation holy_granade = Animation_Factory::get_holy_granade();
+        this->animations.insert(std::pair<Weapon_Name,Animation>(Holy_Granade,holy_granade));
+
+        Animation air_attack = Animation_Factory::get_air_attack();
+        this->animations.insert(std::pair<Weapon_Name,Animation>(Air_Attack,air_attack));
+
+        Animation dynamite = Animation_Factory::get_dynamite();
+        this->animations.insert(std::pair<Weapon_Name,Animation>(Dynamite,dynamite));
+}
+
+void show_weapon( StageDTO s,SDL_Surface * screen){
+    for (auto weapon_info: s.weapons) {
+
+        debug_box2d_figure(screen, weapon_info);
+
+        int up_left_vertex_x = get_pixels(weapon_info.x);
+        int up_left_vertex_y = get_pixels(weapon_info.y);
+
+        std::map<Weapon_Name,Animation>::iterator weapon_iter = animations.find(*this->current_weapon);
+        weapon_iter->second.continue_internal_movement();
+        weapon_iter->second.draw(screen,up_left_vertex_x, up_left_vertex_y);
+    }
+}
+
+};
+//////////////////////////////////////////////////////////////////////////////
+
 
 void show_beams(StageDTO s, SDL_Surface *screen){
 
@@ -1087,6 +1194,8 @@ int main(int argc, char *args[]){
     std::map<int,Worm_Animation_Controller> worms = create_worms(s, screen);
     printf(" size = %li\n", worms.size() );
 
+    Weapons_Animation_Controller weapons_controller = Weapons_Animation_Controller(1);
+
 
     //------------------------------------
 
@@ -1128,6 +1237,7 @@ int main(int argc, char *args[]){
             water.show(screen);
             //dibujo los gusanos
             show_worms(s, screen, worms, graphic_designer);
+            weapons_controller.show_weapon(s, screen);
 
         }
 

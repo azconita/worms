@@ -67,12 +67,12 @@
 #define WORM_HOLY_GRANADE_ROWS 32
 
 //un gusano con una banana
-#define WORM_BANANE "resources/worm_banane.bmp"
-#define WORM_BANANE_R 128
-#define WORM_BANANE_G 128
-#define WORM_BANANE_B 192
-#define WORM_BANANE_COLUMNS 1
-#define WORM_BANANE_ROWS 32
+#define WORM_BANANA "resources/worm_banane.bmp"
+#define WORM_BANANA_R 128
+#define WORM_BANANA_G 128
+#define WORM_BANANA_B 192
+#define WORM_BANANA_COLUMNS 1
+#define WORM_BANANA_ROWS 32
 
 //un gusano con un bate de bsseball
 #define WORM_BAT "resources/worm_bat.bmp"
@@ -99,6 +99,65 @@
 #define WORM_TELETRANS_ROWS 48
 
 
+//----------------------ARMAS----------------------
+
+#define BAZOOKA "resources/bazooka.bmp"
+#define BAZOOKA_R 128
+#define BAZOOKA_G 128
+#define BAZOOKA_B 192
+#define BAZOOKA_COLUMNS 1
+#define BAZOOKA_ROWS 32
+
+#define AIR_ATTACK "resources/air_attack.bmp"
+#define AIR_ATTACK_R 128
+#define AIR_ATTACK_G 128
+#define AIR_ATTACK_B 192
+#define AIR_ATTACK_COLUMNS 1
+#define AIR_ATTACK_ROWS 10
+
+#define GREEN_GRANADE "resources/green_granade.bmp"
+#define GREEN_GRANADE_R 128
+#define GREEN_GRANADE_G 128
+#define GREEN_GRANADE_B 192
+#define GREEN_GRANADE_COLUMNS 1
+#define GREEN_GRANADE_ROWS 32
+
+#define RED_GRANADE "resources/worm_red_granade.bmp"
+#define RED_GRANADE_R 128
+#define RED_GRANADE_G 128
+#define RED_GRANADE_B 192
+#define RED_GRANADE_COLUMNS 1
+#define RED_GRANADE_ROWS 32
+
+
+#define HOLY_GRANADE "resources/worm_holy_granade.bmp"
+#define HOLY_GRANADE_R 128
+#define HOLY_GRANADE_G 128
+#define HOLY_GRANADE_B 192
+#define HOLY_GRANADE_COLUMNS 1
+#define HOLY_GRANADE_ROWS 32
+
+
+#define BANANA "resources/banane.bmp"
+#define BANANA_R 128
+#define BANANA_G 128
+#define BANANA_B 192
+#define BANANA_COLUMNS 1
+#define BANANA_ROWS 32
+
+#define DYNAMITE "resources/dynamite.bmp"
+#define DYNAMITE_R 128
+#define DYNAMITE_G 128
+#define DYNAMITE_B 192
+#define DYNAMITE_COLUMNS 1
+#define DYNAMITE_ROWS 10
+
+#define MORTAR "resources/mortar.bmp"
+#define MORTAR_R 192
+#define MORTAR_G 192
+#define MORTAR_B 128
+#define MORTAR_COLUMNS 1
+#define MORTAR_ROWS 48
 
 //una viga larga
 #define BEAM "resources/beam.bmp"
