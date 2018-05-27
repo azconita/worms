@@ -550,6 +550,13 @@ static const std::vector<State> weapons_states_to_point(
     Worm_bat}
 );
 
+static const std::vector<State> weapons_states_with_power(
+    {Worm_missile,
+    Worm_green_granade,
+    Worm_holy_granade,
+    Worm_red_granade,
+    Worm_banana}
+);
 
 
 /////////////////////////////////////////////////////////////////
@@ -659,9 +666,15 @@ float point_up_weapon(){
 bool add_power(){
     if(this->weapon_power < 100){
         this->weapon_power +=1;
+        return true;
     }
+    return false;
 }
 int get_weapon_power(){
+    if( std::find(weapons_states_with_power.begin(), weapons_states_with_power.end(), this->state) //
+    != weapons_states_with_power.end() && this->weapon_power == 0){
+        this->weapon_power = 10;
+    }
     return this->weapon_power;
 }
 
@@ -704,167 +717,245 @@ void show(SDL_Surface * screen){
 
 
 class Event_Controller{
+    int screen_height;
+    int screen_width;
     Stage & stage;
     SDL_Event &  event;
     bool wait_for_destination_clicl;
     bool wait_for_potentia;
     ActionDTO action;
+
+float meters_conversor(int pixel){
+    return (pixel+0.0)/23.5;
+
+}
+void air_attack(Worm_Animation_Controller& turn_worm){
+    turn_worm.take_weapon(Air_Attack);
+    this->wait_for_destination_clicl = true;
+    this->action.type = Take_weapon;
+    this->action.weapon = Air_Attack;
+    this->stage.make_action(this->action);
+}
+
+void bazooka(Worm_Animation_Controller& turn_worm){
+    turn_worm.take_weapon(Bazooka);
+    this->wait_for_potentia = true;
+    this->action.type = Take_weapon;
+    this->action.weapon = Bazooka;
+    this->stage.make_action(this->action);
+}
+
+void dynamite(Worm_Animation_Controller& turn_worm){
+    turn_worm.take_weapon(Dynamite);
+    this->action.type = Take_weapon;
+    this->action.weapon = Dynamite;
+    this->stage.make_action(this->action);
+}
+
+void green_granade(Worm_Animation_Controller& turn_worm){
+    turn_worm.take_weapon(Green_Granade);
+    this->wait_for_potentia = true;
+    this->action.type = Take_weapon;
+    this->action.weapon = Green_Granade;
+    this->stage.make_action(this->action);
+}
+
+void holy_granade(Worm_Animation_Controller& turn_worm){
+    turn_worm.take_weapon(Holy_Granade);
+    this->wait_for_potentia = true;
+    this->action.type = Take_weapon;
+    this->action.weapon = Holy_Granade;
+    this->stage.make_action(this->action);
+}
+
+void mortar(Worm_Animation_Controller& turn_worm){
+    turn_worm.take_weapon(Mortar);
+    this->wait_for_potentia = true;
+    this->action.type = Take_weapon;
+    this->action.weapon = Mortar;
+    this->stage.make_action(this->action);
+}
+
+void red_granade(Worm_Animation_Controller& turn_worm){
+    turn_worm.take_weapon(Red_Granade);
+    this->action.type = Take_weapon;
+    this->wait_for_potentia = true;
+    this->action.weapon = Red_Granade;
+    this->stage.make_action(this->action);
+}
+
+void teletrans(Worm_Animation_Controller& turn_worm){
+    turn_worm.take_weapon(Teletrans);
+    this->wait_for_destination_clicl = true;
+    this->action.type = Take_weapon;
+    this->action.weapon = Teletrans;
+    this->stage.make_action(this->action);
+}
+
+void banana(Worm_Animation_Controller& turn_worm){
+    turn_worm.take_weapon(Banana);
+    this->wait_for_potentia = true;
+    this->action.type = Take_weapon;
+    this->action.weapon = Banana;
+    this->stage.make_action(this->action);
+}
+
+void baseboll_bat(Worm_Animation_Controller& turn_worm){
+    turn_worm.take_weapon(Baseboll_Bat);
+    this->action.type = Take_weapon;
+    this->action.weapon = Baseboll_Bat;
+    this->stage.make_action(this->action);
+}
+
+void click(Worm_Animation_Controller& turn_worm){
+    if(wait_for_destination_clicl){
+        int x, y;
+        SDL_GetMouseState(&x, &y);
+        printf("%f %f\n", meters_conversor(x),meters_conversor(y) );
+        this->action.type = Shot_weapon;
+        this->action.x = meters_conversor(x);
+        this->action.y = meters_conversor(y);
+        this->action.power = turn_worm.get_weapon_power();
+        this->wait_for_destination_clicl = true;
+        this->stage.make_action(this->action);
+    }
+
+}
+
+void up(Worm_Animation_Controller& turn_worm){
+    if(turn_worm.has_point_weapon()){
+        float degrees = turn_worm.point_up_weapon();
+        printf("%f\n",degrees );
+    }else{
+        turn_worm.change_state(Jump_state);
+        this->action.type = Make_move;
+        this->action.move = Jump;
+        this->stage.make_action(this->action);
+    }
+
+}
+
+void down(Worm_Animation_Controller& turn_worm){
+    if(turn_worm.has_point_weapon()){
+        float degrees = turn_worm.point_down_weapon();
+        printf("%f\n",degrees );
+    }
+
+}
+
+void right(Worm_Animation_Controller& turn_worm){
+    turn_worm.change_direction(Right);
+    this->action.type = Make_move;
+    this->action.move = Walk_right;
+    this->stage.make_action(this->action);
+
+}
+
+void left(Worm_Animation_Controller& turn_worm){
+    turn_worm.change_direction(Left);
+    this->action.type = Make_move;
+    this->action.move = Walk_left;
+    this->stage.make_action(this->action);    
+}
+
+
+void space(Worm_Animation_Controller& turn_worm){
+    if(this->wait_for_potentia){
+        if(!turn_worm.add_power()){
+            this->wait_for_potentia = false;
+        }
+    }
+}
+
+void mouse_motion(){
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+    if(x > screen_width - 5 && y < 5){
+        cout << "Se quiere elegir un arma:" << endl;
+        printf("%i %i\n",x,y);
+    }
+}
+
+
+
+
+
 public:
-Event_Controller(SDL_Event & event, Stage & stage):
+Event_Controller(SDL_Event & event, Stage & stage, int screen_height, int screen_width):
         event(event),
         stage(stage){
+            this->screen_height = screen_height;
+            this-> screen_width = screen_width;
             this->wait_for_destination_clicl = false;
             this->wait_for_potentia = false;
             this->action.worm_id = 0;
 
 }
 
-float meters_conversor(int pixel){
-    return (pixel+0.0)/23.5;
-
-}
 
 
 bool continue_running(Worm_Animation_Controller& turn_worm){
     SDL_PollEvent(&this->event);
     switch(event.type){
         case SDL_QUIT:
-            cout << "se apreto x -> fin" << endl;
             return false;
         case SDL_MOUSEBUTTONUP:
-            cout <<"se apreto en mouse"<< endl;
-            if(wait_for_destination_clicl){
-                int x, y;
-                SDL_GetMouseState(&x, &y);
-                printf("%f %f\n", meters_conversor(x),meters_conversor(y) );
-                this->action.type = Shot_weapon;
-                this->action.x = meters_conversor(x);
-                this->action.y = meters_conversor(y);
-                this->action.power = turn_worm.get_weapon_power();
-                this->wait_for_destination_clicl = true;
-                this->stage.make_action(this->action);
-            }
+            click(turn_worm);
             break;
-            
+        case SDL_MOUSEMOTION:
+            mouse_motion();
+
 
         case SDL_KEYDOWN:
             switch(event.key.keysym.sym){
                 case SDLK_ESCAPE:
                     return false;
-
                 case SDLK_LEFT:
-                    cout << "se apreto izquierda " << endl;
-                    turn_worm.change_direction(Left);
-                    this->action.type = Make_move;
-                    this->action.move = Walk_left;
-                    this->stage.make_action(this->action);    
+                    left( turn_worm);
                     break;
                 case SDLK_RIGHT:
-                    cout << "se apreto derecha " << endl;
-                    turn_worm.change_direction(Right);
-                    this->action.type = Make_move;
-                    this->action.move = Walk_right;
-                    this->stage.make_action(this->action);
+                    right( turn_worm);
                     break;
                 case SDLK_UP:
-                    cout << "se apreto arriba " << endl;
-                    if(turn_worm.has_point_weapon()){
-                        float degrees = turn_worm.point_up_weapon();
-                        printf("%f\n",degrees );
-                    }else{
-                        turn_worm.change_state(Jump_state);
-                        this->action.type = Make_move;
-                        this->action.move = Jump;
-                        this->stage.make_action(this->action);
-                    }
+                    up( turn_worm);
                     break;
                 case SDLK_DOWN:
-                    cout << "se apreto abajo " << endl;
-                    if(turn_worm.has_point_weapon()){
-                        float degrees = turn_worm.point_down_weapon();
-                        printf("%f\n",degrees );
-                    }
+                    down( turn_worm);
                     break;
                 //-----------potencia..................
                 case SDLK_SPACE:
-                    printf("se apreto espacioo\n");
-                    if(this->wait_for_potentia){
-                        if(!turn_worm.add_power()){
-                            this->wait_for_potentia = false;
-                        }
-                    }
+                    space( turn_worm);
                     break;
                 //-------------ARMAS--------------------
                 case SDLK_a:
-                    cout << "se apreto a -> Air_attack" << endl;
-                    turn_worm.take_weapon(Air_Attack);
-                    this->wait_for_destination_clicl = true;
-                    this->action.type = Take_weapon;
-                    this->action.weapon = Air_Attack;
-                    this->stage.make_action(this->action);
+                    air_attack( turn_worm);
                     break;
                 case SDLK_b:
-                    cout << "se apreto b -> bazooka" << endl;
-                    turn_worm.take_weapon(Bazooka);
-                    this->action.type = Take_weapon;
-                    this->action.weapon = Bazooka;
-                    this->stage.make_action(this->action);
+                    bazooka( turn_worm);
                     break;
                 case SDLK_d:
-                    cout << "se apreto d -> Dynamite" << endl;
-                    turn_worm.take_weapon(Dynamite);
-                    this->action.type = Take_weapon;
-                    this->action.weapon = Dynamite;
-                    this->stage.make_action(this->action);
+                    dynamite( turn_worm);
                     break;
                 case SDLK_g:
-                    cout << "se apreto g -> Green_Granade" << endl;
-                    turn_worm.take_weapon(Green_Granade);
-                    this->action.type = Take_weapon;
-                    this->action.weapon = Green_Granade;
-                    this->stage.make_action(this->action);
+                    green_granade( turn_worm);
                     break;
                 case SDLK_h:
-                    cout << "se apreto h -> Holy_Granade" << endl;
-                    turn_worm.take_weapon(Holy_Granade);
-                    this->action.type = Take_weapon;
-                    this->action.weapon = Holy_Granade;
-                    this->stage.make_action(this->action);
+                    holy_granade( turn_worm);
                     break;
                 case SDLK_m:
-                    cout << "se apreto m -> Mortar" << endl;
-                    turn_worm.take_weapon(Mortar);
-                    this->action.type = Take_weapon;
-                    this->action.weapon = Mortar;
-                    this->stage.make_action(this->action);
+                    mortar( turn_worm);
                     break;
                 case SDLK_r:
-                    cout << "se apreto r-> Red_Granade" << endl;
-                    this->action.type = Take_weapon;
-                    this->action.weapon = Red_Granade;
-                    this->stage.make_action(this->action);
+                    red_granade( turn_worm);
                     break;
                 case SDLK_t:
-                    cout << "se apreto t -> Teletrans" << endl;
-                    turn_worm.take_weapon(Teletrans);
-                    this->wait_for_destination_clicl = true;
-                    this->action.type = Take_weapon;
-                    this->action.weapon = Teletrans;
-                    this->stage.make_action(this->action);
+                    teletrans( turn_worm);
                     break;
                 case SDLK_u:
-                    cout << "se apreto u ->  Banana" << endl;
-                    turn_worm.take_weapon(Banana);
-                    this->action.type = Take_weapon;
-                    this->action.weapon = Banana;
-                    this->stage.make_action(this->action);
+                    banana( turn_worm);
                     break;
                 case SDLK_v:
-                    cout << "se apreto v -> Baseboll_Ba" << endl;
-                    turn_worm.take_weapon(Baseboll_Bat);
-                    this->action.type = Take_weapon;
-                    this->action.weapon = Baseboll_Bat;
-                    this->stage.make_action(this->action);
+                    baseboll_bat( turn_worm);
                     break;
                 }
                 break;
@@ -876,24 +967,29 @@ bool continue_running(Worm_Animation_Controller& turn_worm){
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////
+#define FONT_FILE "resources/Amiko-Bold.ttf"
 class Graphic_Designer{
+    int screen_height;
+    int screen_width;
     TTF_Font *font;
     SDL_Color text_color;
+    SDL_Surface *power_bar;
+
 
 
 
 public:
 
-Graphic_Designer(int i){
-    // Initialize SDL_ttf library
+Graphic_Designer(int screen_height, int screen_width){
+    this->screen_height = screen_height;
+    this->screen_width = screen_width;
+    
     if (TTF_Init() != 0) {
       cout << "TTF_Init() Failed: " << TTF_GetError() << endl;
       SDL_Quit();
       exit(1);
     }
-
-
-    this->font = TTF_OpenFont("resources/Amiko-Bold.ttf", 10);
+    this->font = TTF_OpenFont(FONT_FILE, 10);
     if (this->font == NULL){
         cout << "TTF_OpenFont() Fail: " << TTF_GetError() << endl;
         TTF_Quit();
@@ -902,6 +998,15 @@ Graphic_Designer(int i){
     }
 
     this->text_color =  {0, 0, 0};
+
+    SDL_Surface *power_bar = IMG_Load(POWER_BAR);
+    if (!power_bar) {
+        cout <<"Couldn't create surface from image:" << POWER_BAR << SDL_GetError() << endl;
+        return;
+    }
+    Uint32 colorkey = SDL_MapRGB(power_bar->format, 0, 0, 0);
+    SDL_SetColorKey(power_bar, SDL_SRCCOLORKEY, colorkey);
+    this->power_bar = power_bar;
 
 
 }
@@ -950,6 +1055,23 @@ void show_life(SDL_Surface * screen, int life, int x, int y, Color color){
 
 }
 
+void show_powerbar(SDL_Surface * screen, int power){
+    SDL_Rect dimention;
+    dimention.x = 0;
+    dimention.y = 0;
+    dimention.h = this->power_bar->h;
+    dimention.w = this->power_bar->w*power/100;
+
+    SDL_Rect position;
+    position.x = this->screen_width - this->power_bar->w -5;
+    position.y = 5;
+    position.h = this->power_bar->h;
+    position.w = this->power_bar->w;
+    SDL_BlitSurface(this->power_bar, &dimention, screen, &position);
+
+
+}
+
 
 };
 
@@ -975,7 +1097,6 @@ void debug_box2d_figure(SDL_Surface *screen, ElementDTO element_info){
 
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -1022,7 +1143,7 @@ void show_weapon( StageDTO s,SDL_Surface * screen){
 
         //debug_box2d_figure(screen, w);
 
-        int up_left_vertex_x = get_pixels(w.x);
+        int up_left_vertex_x = get_pixels(w.x); 
         int up_left_vertex_y = get_pixels(w.y);
 
 
@@ -1140,9 +1261,11 @@ void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Worm_Animation_Con
         worms_iter->second.move(up_left_vertex_x, up_left_vertex_y);
         worms_iter->second.show(screen);
 
-        Color player_color = Color::create(Orange);
+        Color player_color = Color::create(Orange); 
         int initial_life = 100;
         graphic_designer.show_life(screen, initial_life,up_left_vertex_x+20,up_left_vertex_y-5,player_color);
+        int weapon_power = worms_iter->second.get_weapon_power();
+        graphic_designer.show_powerbar(screen, weapon_power);
 
     }
 }
@@ -1187,7 +1310,7 @@ int main(int argc, char *args[]){
     // Set the title bar
     SDL_WM_SetCaption("Worms game", "Worms");
 
-    Graphic_Designer graphic_designer(1);
+    Graphic_Designer graphic_designer(screen_height,screen_width);
 
 
     //------------------------------------
@@ -1213,7 +1336,7 @@ int main(int argc, char *args[]){
 
 
     SDL_Event event;
-    Event_Controller event_controller(event, stage);
+    Event_Controller event_controller(event, stage, screen_height, screen_width);
 
     //para controlar el tiempo
     Uint32 t0 = SDL_GetTicks();
@@ -1240,9 +1363,9 @@ int main(int argc, char *args[]){
             //toda la pantalla en negro
             SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format,0,0,0));
             //dibujo las vigas y el agua
+            water.show(screen);
             show_beams(s, screen);
 
-            water.show(screen);
             //dibujo los gusanos
             show_worms(s, screen, worms, graphic_designer);
             weapons_controller.show_weapon(s, screen);

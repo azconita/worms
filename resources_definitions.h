@@ -183,4 +183,9 @@
 #define WATER_COLUMNS 1
 #define WATER_ROWS 4
 
+//barra de poder
+//el agua
+#define POWER_BAR "resources/powerbar.bmp"
+
+
 #endif
