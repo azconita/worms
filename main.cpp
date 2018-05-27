@@ -497,6 +497,12 @@ public:
         return worm;
     }
 
+     static Animation get_explosion(){
+        Color colorkey(EXPLOSION_R,EXPLOSION_G,EXPLOSION_B);
+        Animation worm(EXPLOSION,colorkey,EXPLOSION_COLUMNS,EXPLOSION_ROWS);
+        return worm;
+    }
+
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////
@@ -1006,6 +1012,9 @@ Weapons_Animation_Controller(int i){
 
         Animation dynamite = Animation_Factory::get_dynamite();
         this->animations.insert(std::pair<Weapon_Name,Animation>(Dynamite,dynamite));
+
+        Animation explosion = Animation_Factory::get_explosion();
+        this->animations.insert(std::pair<Weapon_Name,Animation>(Explosion,explosion));
 }
 
 void show_weapon( StageDTO s,SDL_Surface * screen){

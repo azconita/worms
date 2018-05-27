@@ -159,6 +159,14 @@
 #define MORTAR_COLUMNS 1
 #define MORTAR_ROWS 48
 
+
+#define EXPLOSION "resources/explosion.bmp"
+#define EXPLOSION_R 128
+#define EXPLOSION_G 128
+#define EXPLOSION_B 192
+#define EXPLOSION_COLUMNS 1
+#define EXPLOSION_ROWS 8
+
 //una viga larga
 #define BEAM "resources/beam.bmp"
 #define BEAM_R 0

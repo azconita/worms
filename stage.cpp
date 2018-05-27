@@ -118,6 +118,14 @@ StageDTO Stage::get_stageDTO() {
   weapon_element2.w = 2;
   s.weapons.push_back(weapon_element2);
 
+  ElementDTO explosion;
+  explosion.weapon = Explosion;
+  explosion.x = 25 -1;
+  explosion.y = 25-1;
+  explosion.h = 2;
+  explosion.w = 2;
+  s.weapons.push_back(explosion);
+
   ElementDTO banana;
   banana.weapon = Banana;
   banana.x = 25;

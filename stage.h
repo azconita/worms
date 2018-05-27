@@ -20,7 +20,8 @@ enum Weapon_Name{
     Red_Granade,//r
     Teletrans,//t
     Banana,//u
-    Baseboll_Bat//v
+    Baseboll_Bat,//v
+    Explosion
 };
 
 enum Movement{
@@ -58,7 +59,7 @@ enum Color_name{
 };
 
 
-struct ElementDTO{ //puede ser un gusano, un arma o una viga 
+struct ElementDTO{ //puede ser un gusano, un arma o una viga  
   float x; 
   float y; //vertice superior izquierdo en metros
   float h;
@@ -66,6 +67,7 @@ struct ElementDTO{ //puede ser un gusano, un arma o una viga
   int life;
   Color_name player_color;
   Weapon_Name weapon;
+  bool explosion;
 };
 
 struct StageDTO {
