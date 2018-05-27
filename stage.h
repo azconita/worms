@@ -4,9 +4,9 @@
 #include <tuple>
 #include <Box2D/Box2D.h>
 #include "Beam.h"
+#include "Projectile.h"
 #include "Weapon.h"
 #include "Worm.h"
-#include "Explosion.h"
 #include "WeaponExplosionListener.h"
 
 #ifndef STAGE_H_
@@ -24,10 +24,10 @@ private:
  b2World* world;
  std::vector<Beam*> beams;
  std::map<int, Worm*> worms;
- std::vector<Weapon> weapons;
+ std::vector<Weapon*> weapons;
 
  WeaponExplosionListener explosion_listener;
- std::vector<Explosion*> explosions;
+ std::vector<Projectile*> explosions;
 
 public:
   Stage(std::string config);

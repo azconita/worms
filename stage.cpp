@@ -92,5 +92,5 @@ void Stage::add_weapons(std::string config) {
 }
 
 void Stage::add_explosion() {
-  this->explosions.push_back(new Explosion(this->world, 9,12));
+  this->explosions.push_back(new Projectile(this->world, 9,12));
 }

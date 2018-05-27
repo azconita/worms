@@ -5,15 +5,16 @@
  *      Author: gabi
  */
 
+#include "Projectile.h"
+
 #include <Box2D/Box2D.h>
 #include <vector>
 #include <iostream>
 #include <string>
 #include "Constants.h"
 
-#include "Explosion.h"
 
-Explosion::Explosion(b2World *world, float x, float y) : Entity(3), world(world) {
+Projectile::Projectile(b2World *world, float x, float y) : Entity(3), world(world) {
   // TODO Auto-generated constructor stub
   b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
@@ -32,16 +33,16 @@ std::cout << "explosionDir: " << this << '\n';
     this->body->SetUserData(this);
 }
 
-Explosion::Explosion(const Explosion &other) : Entity(3), world(other.world), body(other.body) {
+Projectile::Projectile(const Projectile &other) : Entity(3), world(other.world), body(other.body) {
   std::cout << "explosionDir(&other): " << this << '\n';
   //this->body->SetUserData(this);
 }
 
-Explosion::~Explosion() {
+Projectile::~Projectile() {
   // TODO Auto-generated destructor stub
 }
 
-Explosion* Explosion::operator=(const Explosion &other) {
+Projectile* Projectile::operator=(const Projectile &other) {
   std::cout << "explosionDir=: " << this << '\n';
   this->body = other.body;
   this->world = other.world;
@@ -70,7 +71,7 @@ void applyBlastImpulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint,
 
 
 //find all bodies with fixtures in blast radius AABB
-void Explosion::proximityExplosion(float blastRadius, float blastPower) {
+void Projectile::proximityExplosion(float blastRadius, float blastPower) {
   std::cout << "explosion!\n" ;
   ExplosionQueryCallback queryCallback; //see "World querying topic"
   b2AABB aabb;
@@ -92,7 +93,7 @@ void Explosion::proximityExplosion(float blastRadius, float blastPower) {
   }
 }
 
-bool Explosion::should_explode(){
+bool Projectile::should_explode(){
   i--;
   if (this->i == 0)
     return true;

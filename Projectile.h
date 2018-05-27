@@ -8,22 +8,23 @@
 #include "Entity.h"
 #include <vector>
 #include <iostream>
+#include <Box2D/Box2D.h>
 
-#ifndef EXPLOSION_H_
-#define EXPLOSION_H_
+#ifndef PROJECTILE_H_
+#define PROJECTILE_H_
 
 #define EXPLOSION 3
 
-class Explosion : public Entity {
+class Projectile : public Entity {
 private:
   b2World *world;
   b2Body* body;
   int i = 100;
 public:
-  Explosion(b2World *world, float x, float y);
-  Explosion(const Explosion &other);
-  virtual ~Explosion();
-  Explosion* operator=(const Explosion &other);
+  Projectile(b2World *world, float x, float y);
+  Projectile(const Projectile &other);
+  virtual ~Projectile();
+  Projectile* operator=(const Projectile &other);
   int get_type() { return EXPLOSION; }
   bool should_explode();
   void proximityExplosion(float blastRadius, float blastPower);
@@ -44,4 +45,4 @@ public:
     }
 };
 
-#endif /* EXPLOSION_H_ */
+#endif /* PROJECTILE_H_ */

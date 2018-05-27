@@ -7,8 +7,8 @@
 #include <Box2D/Box2D.h>
 #include "Entity.h"
 #include <iostream>
-#include "Explosion.h"
 
+#include "Projectile.h"
 #include "WeaponExplosionListener.h"
 
 WeaponExplosionListener::WeaponExplosionListener() {
@@ -26,14 +26,14 @@ void WeaponExplosionListener::BeginContact(b2Contact* contact) {
   Entity* bodyUserData = (Entity*) contact->GetFixtureA()->GetBody()->GetUserData();
   std::cout << "entity read " << bodyUserData<< "\n";
   if (bodyUserData->en_type == 3) {
-    static_cast<Explosion*>( bodyUserData )->proximityExplosion(100,100);
+    static_cast<Projectile*>( bodyUserData )->proximityExplosion(100,100);
 
   } else {
   //check if fixture B was a explosion
     bodyUserData = (Entity*) contact->GetFixtureB()->GetBody()->GetUserData();
     std::cout << "entity read " << bodyUserData<< "\n";
     if ( bodyUserData->en_type == 3 )
-      static_cast<Explosion*>( bodyUserData )->proximityExplosion(100,100);
+      static_cast<Projectile*>( bodyUserData )->proximityExplosion(100,100);
   }
 
 }
