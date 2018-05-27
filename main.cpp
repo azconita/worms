@@ -17,41 +17,10 @@ using std::cout;
 using std::endl;
 using std::string;
 using std::map;
+using std::pair;
 
 
-#define SCREEN_DEFAULT_WITH 1366
-#define SCREEN_DEFAULT_HIGH 768
 
-#define UP_BORDER_HIGH 50
-
-#define RIGHT 0
-#define LEFT 1
-#define UP 2
-
-
-////////////////////////////////////////77
-enum State{
-   Still,
-   Walk,
-   Fall,
-   Jump
-};
-
-enum Direction{
-    Right,
-    Left
-};
-
-enum Color_Name{
-    White,
-    Orange,
-    Green,
-    Purple,
-    Pink,
-    Yellow,
-    Red,
-    Blue
-};
 
 
 
@@ -66,7 +35,7 @@ public:
         this->b = b;
     }
 
-    static Color create(Color_Name color_name){
+    static Color create(Color_name color_name){
         switch(color_name){
             case(White):{
                 Color white(255,255,255);
@@ -109,6 +78,12 @@ public:
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////
+enum Direction{
+    Right,
+    Left
+};
+
+
 class Picture{
     int rows, columns;
     int row_num, column_num;
@@ -267,6 +242,46 @@ void next_sprite_figure(Direction direction){
     }
 }
 
+void previous_sprite_figure(Direction direction){
+    if(this->default_direction != direction){ //hay que usar la inversa
+        this->column_num +=1; // paso al siguiente en la misma fila
+        if(this->column_num >= this->columns){ //si ya no hay mas
+            this->column_num = 0; //paso al primero
+            this->row_num -= 1; //pero de la fila de arriba
+            if(this->row_num < 0){
+                this->row_num = this->rows - 1; //si estaba en el ultimo vuelvo a empezar
+
+            }
+        }
+        return;
+    }
+
+    this->column_num -=1; // paso al anterior en la misma fila
+    if(this->column_num < 0){ //si ya no hay anterior
+        this->column_num = this->columns - 1; //paso al ultomo
+        this->row_num -= 1; //pero de la fila de arriba
+        if(this->row_num < 0){
+            this->row_num = this->rows - 1; //si estaba en el primero vuelvo al ultimo
+        }
+    }
+}
+
+bool is_in_first_figure(Direction direction){
+    if(this->default_direction != direction){
+        return (this->row_num <= 0 && this->column_num >= this->columns-1);
+    }
+    return (this->row_num <= 0 && this->column_num <= 0);
+
+}
+
+bool is_in_last_figure(Direction direction){
+    if(this->default_direction != direction){
+        return (this->row_num >= this->rows-1 && this->column_num <= 0);
+    }
+    return (this->row_num >= this->rows-1 && this->column_num >= this->columns-1);
+
+}
+
 
 /*~Picture(){
     SDL_FreeSurface(this->surface);
@@ -285,10 +300,6 @@ class Animation {
     int step;
     Direction direction;
 
-
-    int next_internal_mov(){
-        this->picture.next_sprite_figure(this->direction);
-    }
 
 public:
 
@@ -326,13 +337,29 @@ public:
     }
 
     bool continue_internal_movement(){
-        next_internal_mov();
+        this->picture.next_sprite_figure(this->direction);
         this->step += 1;
         if(this->step == this->figures_num){
             this->step = 0;
             return false;
         }
         return true;
+    }
+
+    bool point_up(){
+        if(!this->picture.is_in_last_figure(this->direction)){
+            this->picture.next_sprite_figure(this->direction);
+            return true;
+        }
+        return false;
+
+    }
+    bool point_down(){
+        if(!this->picture.is_in_first_figure(this->direction)){
+            this->picture.previous_sprite_figure(this->direction);
+            return true;
+        }
+        return false;
     }
 
 
@@ -364,24 +391,193 @@ public:
 
     }
 
+    static Animation get_worm_missile(){
+        Color colorkey(WORM_MISSILE_R,WORM_MISSILE_G,WORM_MISSILE_B);
+        Animation worm(WORM_MISSILE,colorkey,WORM_MISSILE_COLUMNS,WORM_MISSILE_ROWS);
+        return worm;
+    }
+
+    static Animation get_worm_bat(){
+        Color colorkey(WORM_BAT_R,WORM_BAT_G,WORM_BAT_B);
+        Animation worm(WORM_BAT,colorkey,WORM_BAT_COLUMNS,WORM_BAT_ROWS);
+        return worm;
+    }
+
+    static Animation get_worm_banana(){
+        Color colorkey(WORM_BANANA_R,WORM_BANANA_G,WORM_BANANA_B);
+        Animation worm(WORM_BANANA,colorkey,WORM_BANANA_COLUMNS,WORM_MISSILE_ROWS);
+        return worm;
+    }
+
+    static Animation get_worm_green_granade(){
+        Color colorkey(WORM_GREEN_GRANADE_R,WORM_GREEN_GRANADE_G,WORM_GREEN_GRANADE_B);
+        Animation worm(WORM_GREEN_GRANADE,colorkey,WORM_GREEN_GRANADE_COLUMNS,WORM_GREEN_GRANADE_ROWS);
+        return worm;
+    }
+
+    static Animation get_worm_red_granade(){
+        Color colorkey(WORM_RED_GRANADE_R,WORM_RED_GRANADE_G,WORM_RED_GRANADE_B);
+        Animation worm(WORM_RED_GRANADE,colorkey,WORM_RED_GRANADE_COLUMNS,WORM_RED_GRANADE_ROWS);
+        return worm;
+    }
+
+    static Animation get_worm_holy_granade(){
+        Color colorkey(WORM_HOLY_GRANADE_R,WORM_HOLY_GRANADE_G,WORM_HOLY_GRANADE_B);
+        Animation worm(WORM_HOLY_GRANADE,colorkey,WORM_HOLY_GRANADE_COLUMNS,WORM_HOLY_GRANADE_ROWS);
+        return worm;
+    }
+
+    static Animation get_worm_teletrans(){
+        Color colorkey(WORM_TELETRANS_R,WORM_TELETRANS_G,WORM_TELETRANS_B);
+        Animation worm(WORM_TELETRANS,colorkey,WORM_TELETRANS_COLUMNS,WORM_TELETRANS_ROWS);
+        return worm;
+    }
+
+    static Animation get_worm_air_attack(){
+        Color colorkey(WORM_AIR_ATTACK_R,WORM_AIR_ATTACK_G,WORM_AIR_ATTACK_B);
+        Animation worm(WORM_AIR_ATTACK,colorkey,WORM_AIR_ATTACK_COLUMNS,WORM_AIR_ATTACK_ROWS);
+        return worm;
+    }
+
+    static Animation get_worm_dynamite(){
+        Color colorkey(WORM_DYNAMITE_R,WORM_DYNAMITE_G,WORM_DYNAMITE_B);
+        Animation worm(WORM_DYNAMITE,colorkey,WORM_DYNAMITE_COLUMNS,WORM_DYNAMITE_ROWS);
+        return worm;
+    }
+
+    //-----------------------Armas --------------------------------------------------
+
+
+     static Animation get_bazooka(){
+        Color colorkey(BAZOOKA_R,BAZOOKA_G,BAZOOKA_B);
+        Animation worm(BAZOOKA,colorkey,BAZOOKA_COLUMNS,BAZOOKA_ROWS);
+        return worm;
+    }
+
+       static Animation get_mortar(){
+        Color colorkey(MORTAR_R,MORTAR_G,MORTAR_B);
+        Animation worm(MORTAR,colorkey,MORTAR_COLUMNS,MORTAR_ROWS);
+        return worm;
+    }
+
+     static Animation get_banana(){
+        Color colorkey(BANANA_R,BANANA_G,BANANA_B);
+        Animation worm(BANANA,colorkey,BANANA_COLUMNS,BANANA_ROWS);
+        return worm;
+    }
+
+    static Animation get_green_granade(){
+        Color colorkey(GREEN_GRANADE_R,GREEN_GRANADE_G,GREEN_GRANADE_B);
+        Animation worm(GREEN_GRANADE,colorkey,GREEN_GRANADE_COLUMNS,GREEN_GRANADE_ROWS);
+        return worm;
+    }
+
+    static Animation get_red_granade(){
+        Color colorkey(RED_GRANADE_R,RED_GRANADE_G,RED_GRANADE_B);
+        Animation worm(RED_GRANADE,colorkey,RED_GRANADE_COLUMNS,RED_GRANADE_ROWS);
+        return worm;
+    }
+
+    static Animation get_holy_granade(){
+        Color colorkey(HOLY_GRANADE_R,HOLY_GRANADE_G,HOLY_GRANADE_B);
+        Animation worm(HOLY_GRANADE,colorkey,HOLY_GRANADE_COLUMNS,HOLY_GRANADE_ROWS);
+        return worm;
+    }
+
+
+    static Animation get_air_attack(){
+        Color colorkey(AIR_ATTACK_R,AIR_ATTACK_G,AIR_ATTACK_B);
+        Animation worm(AIR_ATTACK,colorkey,AIR_ATTACK_COLUMNS,AIR_ATTACK_ROWS);
+        return worm;
+    }
+
+    static Animation get_dynamite(){
+        Color colorkey(DYNAMITE_R,DYNAMITE_G,DYNAMITE_B);
+        Animation worm(DYNAMITE,colorkey,DYNAMITE_COLUMNS,DYNAMITE_ROWS);
+        return worm;
+    }
+
+     static Animation get_explosion(){
+        Color colorkey(EXPLOSION_R,EXPLOSION_G,EXPLOSION_B);
+        Animation worm(EXPLOSION,colorkey,EXPLOSION_COLUMNS,EXPLOSION_ROWS);
+        return worm;
+    }
 
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
+enum State{
+   Still,
+   Walk,
+   Fall,
+   Jump_state,
+   Worm_missile,
+   Worm_banana,
+   Worm_bat,
+   Worm_green_granade,
+   Worm_red_granade,
+   Worm_holy_granade,
+   Worm_teletrans,
+   Worm_air_attack,
+   Worm_dynamite
+};
+//////////////////////////////////////////////////////
 
+
+static  std::map<Weapon_Name, State> weapons_states {
+
+    {Air_Attack, Worm_air_attack},
+    {Bazooka,Worm_missile},
+    {Dynamite,Worm_dynamite},
+    {Mortar,Worm_missile},
+    {Green_Granade,Worm_green_granade},
+    {Holy_Granade,Worm_holy_granade},
+    {Red_Granade,Worm_red_granade},
+    {Teletrans,Worm_teletrans},
+    {Banana,Worm_banana},
+    {Baseboll_Bat,Worm_bat}
+};
+
+
+static const std::vector<State> weapons_states_to_point(
+    {Worm_missile,
+    Worm_green_granade,
+    Worm_holy_granade,
+    Worm_red_granade,
+    Worm_teletrans,
+    Worm_banana,
+    Worm_bat}
+);
+
+static const std::vector<State> weapons_states_with_power(
+    {Worm_missile,
+    Worm_green_granade,
+    Worm_holy_granade,
+    Worm_red_granade,
+    Worm_banana}
+);
+
+
+/////////////////////////////////////////////////////////////////
+
+#define GRADES_PER_STEP 5.8064516129 //180/31
 
 class Worm_Animation_Controller{
-public:
     int x, y;
     State state;
+    float degrees;
+    int weapon_power;
     std::map<int,Animation> animations;
 
+public:
 
 Worm_Animation_Controller(int initial_x, int initial_y){
     this->x = initial_x;
     this-> y = initial_y;
     this->state = Still;
+    this->degrees = -90;
+    this->weapon_power = 0;
     Animation worm_walk = Animation_Factory::get_worm_walk();
 
     this->animations.insert(std::pair<int,Animation>(Still,worm_walk));
@@ -391,37 +587,116 @@ Worm_Animation_Controller(int initial_x, int initial_y){
     this->animations.insert(std::pair<int,Animation>(Fall,worm_fall));
 
     Animation worm_jump = Animation_Factory::get_worm_jump();
-    this->animations.insert(std::pair<int,Animation>(Jump,worm_jump));
+    this->animations.insert(std::pair<int,Animation>(Jump_state,worm_jump));
+
+    Animation worm_missile = Animation_Factory::get_worm_missile();
+    this->animations.insert(std::pair<int,Animation>(Worm_missile,worm_missile));
+
+    Animation worm_banana = Animation_Factory::get_worm_banana();
+    this->animations.insert(std::pair<int,Animation>(Worm_banana,worm_banana));
+
+    Animation worm_bat = Animation_Factory::get_worm_bat();
+    this->animations.insert(std::pair<int,Animation>(Worm_bat,worm_bat));
+
+    Animation worm_green_granade = Animation_Factory::get_worm_green_granade();
+    this->animations.insert(std::pair<int,Animation>(Worm_green_granade,worm_green_granade));
+
+    Animation worm_red_granade = Animation_Factory::get_worm_red_granade();
+    this->animations.insert(std::pair<int,Animation>(Worm_red_granade,worm_red_granade));
+
+    Animation worm_holy_granade = Animation_Factory::get_worm_holy_granade();
+    this->animations.insert(std::pair<int,Animation>(Worm_holy_granade,worm_holy_granade));
+
+    Animation worm_teletrans = Animation_Factory::get_worm_teletrans();
+    this->animations.insert(std::pair<int,Animation>(Worm_teletrans,worm_teletrans));
+
+    Animation worm_air_attack = Animation_Factory::get_worm_air_attack();
+    this->animations.insert(std::pair<int,Animation>(Worm_air_attack,worm_air_attack));
+
+    Animation worm_dynamite = Animation_Factory::get_worm_dynamite();
+    this->animations.insert(std::pair<int,Animation>(Worm_dynamite,worm_dynamite));
 }
+
+
+bool has_point_weapon(){ //armas con las que no se puede apuntar
+    return std::find(weapons_states_to_point.begin(), weapons_states_to_point.end(), this->state) //
+    != weapons_states_to_point.end();
+}
+
+void change_direction(Direction direction){
+    for(std::map<int,Animation>::iterator animation_iter = this->animations.begin();
+        animation_iter != this->animations.end();
+        animation_iter ++){
+        animation_iter->second.set_current_direction(direction);
+    }
+    if(this->state == Still){
+        change_state(Walk);
+    }
+
+}
+
+void change_state(State state){
+    this->state = state; //sigue en la misma dire que antes
+}
+
+void take_weapon(Weapon_Name weapon){
+    this->degrees = -90;
+    std::map<Weapon_Name,State>::iterator weapon_state = weapons_states.find(weapon);
+    change_state(weapon_state->second);
+
+}
+
+float point_down_weapon(){
+    std::map<int,Animation>::iterator animation_iter = animations.find(this->state);
+    if(animation_iter->second.point_down()){
+        this->degrees-=GRADES_PER_STEP; //31 fotos/180 grados
+    }
+    return this->degrees;
+
+}
+
+float point_up_weapon(){
+    std::map<int,Animation>::iterator animation_iter = animations.find(this->state);
+    if(animation_iter->second.point_up()){
+       this->degrees+=GRADES_PER_STEP;
+    }
+    return this->degrees;
+}
+
+bool add_power(){
+    if(this->weapon_power < 100){
+        this->weapon_power +=1;
+        return true;
+    }
+    return false;
+}
+int get_weapon_power(){
+    if( std::find(weapons_states_with_power.begin(), weapons_states_with_power.end(), this->state) //
+    != weapons_states_with_power.end() && this->weapon_power == 0){
+        this->weapon_power = 10;
+    }
+    return this->weapon_power;
+}
+
 
 Direction get_direction(){
     std::map<int,Animation>::iterator animation_iter = animations.find(this->state);
     return animation_iter->second.get_current_direction();
 }
 
-void wish_to_move(State state, Direction direction){
-    for(std::map<int,Animation>::iterator animation_iter = this->animations.begin();
-        animation_iter != this->animations.end();
-        animation_iter ++){
-        animation_iter->second.set_current_direction(direction);
-    }
-    this->state = state;
-}
-
-void wish_to_move(State state){
-    Direction last_direction = get_direction();
-    wish_to_move(state, last_direction);
-}
 
 void move(int position_x, int position_y){
-    if(this->state == Walk && position_y > this->y){ //aumenta el y, se cae
+    if(this->x = position_x && this->y == y && this->state == Fall){ // se cayo sobre una viga
+        this->state = Still;
+    }
+    if(this->state != Jump_state && position_y > this->y){ //aumenta el y, se cae
         this->state = Fall;
     }
     this->x = position_x;
     this->y = position_y;
     std::map<int,Animation>::iterator animation_iter = animations.find(this->state);
 
-    if(this->state != Still && this->state != Still){
+    if(this->state == Jump_state || this->state ==Walk){
         if(!animation_iter->second.continue_internal_movement()){
             this->state = Still;
         }
@@ -436,42 +711,251 @@ void show(SDL_Surface * screen){
 
 };
 
-/////////////////////////////////////////////////////////////////////////////////////////
+
+
+////////////////////////////////////////////////////////////////////////////////////////////7/////////
+
+
 class Event_Controller{
+    int screen_height;
+    int screen_width;
     Stage & stage;
     SDL_Event &  event;
+    bool wait_for_destination_clicl;
+    bool wait_for_potentia;
+    ActionDTO action;
+
+float meters_conversor(int pixel){
+    return (pixel+0.0)/23.5;
+
+}
+void air_attack(Worm_Animation_Controller& turn_worm){
+    turn_worm.take_weapon(Air_Attack);
+    this->wait_for_destination_clicl = true;
+    this->action.type = Take_weapon;
+    this->action.weapon = Air_Attack;
+    this->stage.make_action(this->action);
+}
+
+void bazooka(Worm_Animation_Controller& turn_worm){
+    turn_worm.take_weapon(Bazooka);
+    this->wait_for_potentia = true;
+    this->action.type = Take_weapon;
+    this->action.weapon = Bazooka;
+    this->stage.make_action(this->action);
+}
+
+void dynamite(Worm_Animation_Controller& turn_worm){
+    turn_worm.take_weapon(Dynamite);
+    this->action.type = Take_weapon;
+    this->action.weapon = Dynamite;
+    this->stage.make_action(this->action);
+}
+
+void green_granade(Worm_Animation_Controller& turn_worm){
+    turn_worm.take_weapon(Green_Granade);
+    this->wait_for_potentia = true;
+    this->action.type = Take_weapon;
+    this->action.weapon = Green_Granade;
+    this->stage.make_action(this->action);
+}
+
+void holy_granade(Worm_Animation_Controller& turn_worm){
+    turn_worm.take_weapon(Holy_Granade);
+    this->wait_for_potentia = true;
+    this->action.type = Take_weapon;
+    this->action.weapon = Holy_Granade;
+    this->stage.make_action(this->action);
+}
+
+void mortar(Worm_Animation_Controller& turn_worm){
+    turn_worm.take_weapon(Mortar);
+    this->wait_for_potentia = true;
+    this->action.type = Take_weapon;
+    this->action.weapon = Mortar;
+    this->stage.make_action(this->action);
+}
+
+void red_granade(Worm_Animation_Controller& turn_worm){
+    turn_worm.take_weapon(Red_Granade);
+    this->action.type = Take_weapon;
+    this->wait_for_potentia = true;
+    this->action.weapon = Red_Granade;
+    this->stage.make_action(this->action);
+}
+
+void teletrans(Worm_Animation_Controller& turn_worm){
+    turn_worm.take_weapon(Teletrans);
+    this->wait_for_destination_clicl = true;
+    this->action.type = Take_weapon;
+    this->action.weapon = Teletrans;
+    this->stage.make_action(this->action);
+}
+
+void banana(Worm_Animation_Controller& turn_worm){
+    turn_worm.take_weapon(Banana);
+    this->wait_for_potentia = true;
+    this->action.type = Take_weapon;
+    this->action.weapon = Banana;
+    this->stage.make_action(this->action);
+}
+
+void baseboll_bat(Worm_Animation_Controller& turn_worm){
+    turn_worm.take_weapon(Baseboll_Bat);
+    this->action.type = Take_weapon;
+    this->action.weapon = Baseboll_Bat;
+    this->stage.make_action(this->action);
+}
+
+void click(Worm_Animation_Controller& turn_worm){
+    if(wait_for_destination_clicl){
+        int x, y;
+        SDL_GetMouseState(&x, &y);
+        printf("%f %f\n", meters_conversor(x),meters_conversor(y) );
+        this->action.type = Shot_weapon;
+        this->action.x = meters_conversor(x);
+        this->action.y = meters_conversor(y);
+        this->action.power = turn_worm.get_weapon_power();
+        this->wait_for_destination_clicl = true;
+        this->stage.make_action(this->action);
+    }
+
+}
+
+void up(Worm_Animation_Controller& turn_worm){
+    if(turn_worm.has_point_weapon()){
+        float degrees = turn_worm.point_up_weapon();
+        printf("%f\n",degrees );
+    }else{
+        turn_worm.change_state(Jump_state);
+        this->action.type = Make_move;
+        this->action.move = Jump;
+        this->stage.make_action(this->action);
+    }
+
+}
+
+void down(Worm_Animation_Controller& turn_worm){
+    if(turn_worm.has_point_weapon()){
+        float degrees = turn_worm.point_down_weapon();
+        printf("%f\n",degrees );
+    }
+
+}
+
+void right(Worm_Animation_Controller& turn_worm){
+    turn_worm.change_direction(Right);
+    this->action.type = Make_move;
+    this->action.move = Walk_right;
+    this->stage.make_action(this->action);
+
+}
+
+void left(Worm_Animation_Controller& turn_worm){
+    turn_worm.change_direction(Left);
+    this->action.type = Make_move;
+    this->action.move = Walk_left;
+    this->stage.make_action(this->action);
+}
+
+
+void space(Worm_Animation_Controller& turn_worm){
+    if(this->wait_for_potentia){
+        if(!turn_worm.add_power()){
+            this->wait_for_potentia = false;
+        }
+    }
+}
+
+void mouse_motion(){
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+    if(x > screen_width - 5 && y < 5){
+        cout << "Se quiere elegir un arma:" << endl;
+        printf("%i %i\n",x,y);
+    }
+}
+
+
+
+
+
 public:
-    Event_Controller(SDL_Event & event, Stage & stage):
+Event_Controller(SDL_Event & event, Stage & stage, int screen_height, int screen_width):
         event(event),
-        stage(stage)
-         {}
+        stage(stage){
+            this->screen_height = screen_height;
+            this-> screen_width = screen_width;
+            this->wait_for_destination_clicl = false;
+            this->wait_for_potentia = false;
+            this->action.worm_id = 0;
+
+}
+
+
 
 bool continue_running(Worm_Animation_Controller& turn_worm){
     SDL_PollEvent(&this->event);
     switch(event.type){
         case SDL_QUIT:
-            cout << "se apreto x -> fin" << endl;
             return false;
+        case SDL_MOUSEBUTTONUP:
+            click(turn_worm);
+            break;
+        case SDL_MOUSEMOTION:
+            mouse_motion();
+
 
         case SDL_KEYDOWN:
             switch(event.key.keysym.sym){
                 case SDLK_ESCAPE:
                     return false;
-
                 case SDLK_LEFT:
-                    cout << "se apreto izquierda " << endl;
-                    turn_worm.wish_to_move(Walk,Left);
-                    this->stage.make_action(0,LEFT);
+                    left( turn_worm);
                     break;
                 case SDLK_RIGHT:
-                    cout << "se apreto derecha " << endl;
-                    turn_worm.wish_to_move(Walk,Right);
-                    this->stage.make_action(0,RIGHT);
+                    right( turn_worm);
                     break;
                 case SDLK_UP:
-                    cout << "se apreto arriba " << endl;
-                    turn_worm.wish_to_move(Jump);
-                    this->stage.make_action(0,UP);
+                    up( turn_worm);
+                    break;
+                case SDLK_DOWN:
+                    down( turn_worm);
+                    break;
+                //-----------potencia..................
+                case SDLK_SPACE:
+                    space( turn_worm);
+                    break;
+                //-------------ARMAS--------------------
+                case SDLK_a:
+                    air_attack( turn_worm);
+                    break;
+                case SDLK_b:
+                    bazooka( turn_worm);
+                    break;
+                case SDLK_d:
+                    dynamite( turn_worm);
+                    break;
+                case SDLK_g:
+                    green_granade( turn_worm);
+                    break;
+                case SDLK_h:
+                    holy_granade( turn_worm);
+                    break;
+                case SDLK_m:
+                    mortar( turn_worm);
+                    break;
+                case SDLK_r:
+                    red_granade( turn_worm);
+                    break;
+                case SDLK_t:
+                    teletrans( turn_worm);
+                    break;
+                case SDLK_u:
+                    banana( turn_worm);
+                    break;
+                case SDLK_v:
+                    baseboll_bat( turn_worm);
                     break;
                 }
                 break;
@@ -483,24 +967,29 @@ bool continue_running(Worm_Animation_Controller& turn_worm){
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////
+#define FONT_FILE "resources/Amiko-Bold.ttf"
 class Graphic_Designer{
+    int screen_height;
+    int screen_width;
     TTF_Font *font;
     SDL_Color text_color;
+    SDL_Surface *power_bar;
+
 
 
 
 public:
 
-Graphic_Designer(int i){
-    // Initialize SDL_ttf library
+Graphic_Designer(int screen_height, int screen_width){
+    this->screen_height = screen_height;
+    this->screen_width = screen_width;
+
     if (TTF_Init() != 0) {
       cout << "TTF_Init() Failed: " << TTF_GetError() << endl;
       SDL_Quit();
       exit(1);
     }
-
-
-    this->font = TTF_OpenFont("resources/Amiko-Bold.ttf", 10);
+    this->font = TTF_OpenFont(FONT_FILE, 10);
     if (this->font == NULL){
         cout << "TTF_OpenFont() Fail: " << TTF_GetError() << endl;
         TTF_Quit();
@@ -510,12 +999,21 @@ Graphic_Designer(int i){
 
     this->text_color =  {0, 0, 0};
 
+    SDL_Surface *power_bar = IMG_Load(POWER_BAR);
+    if (!power_bar) {
+        cout <<"Couldn't create surface from image:" << POWER_BAR << SDL_GetError() << endl;
+        return;
+    }
+    Uint32 colorkey = SDL_MapRGB(power_bar->format, 0, 0, 0);
+    SDL_SetColorKey(power_bar, SDL_SRCCOLORKEY, colorkey);
+    this->power_bar = power_bar;
+
 
 }
 
 
 
-void show_circle_life(SDL_Surface * screen, int life, int x, int y, Color color){
+void show_life(SDL_Surface * screen, int life, int x, int y, Color color){
 
     char str_life[10];
     if(life < 100){
@@ -557,6 +1055,23 @@ void show_circle_life(SDL_Surface * screen, int life, int x, int y, Color color)
 
 }
 
+void show_powerbar(SDL_Surface * screen, int power){
+    SDL_Rect dimention;
+    dimention.x = 0;
+    dimention.y = 0;
+    dimention.h = this->power_bar->h;
+    dimention.w = this->power_bar->w*power/100;
+
+    SDL_Rect position;
+    position.x = this->screen_width - this->power_bar->w -5;
+    position.y = 5;
+    position.h = this->power_bar->h;
+    position.w = this->power_bar->w;
+    SDL_BlitSurface(this->power_bar, &dimention, screen, &position);
+
+
+}
+
 
 };
 
@@ -568,33 +1083,14 @@ float get_pixels(float meter_position){
     return  23.5*meter_position;
 }
 
-void debug_box2d_figure(SDL_Surface *screen, std::vector<std::tuple<float, float>> vertices){
-
-    int i = 0;
-    for(auto vertice: vertices){
-        int x = std::get<0>(vertice);
-        int y = std::get<1>(vertice);
-        //printf("v %i = x:%i, y:%i\n", i,x, y );
-        i +=1;
-    }
-
-
-    std::tuple<float, float> up_left_vertex = vertices[0];
-    int up_left_vertex_x = std::get<0>(up_left_vertex);
-    int up_left_vertex_y = std::get<1>(up_left_vertex);
-
-    std::tuple<float, float> down_right_vertex = vertices[2];
-    int down_right_vertex_x = std::get<0>(down_right_vertex);
-    int down_right_vertex_y = std::get<1>(down_right_vertex);
+void debug_box2d_figure(SDL_Surface *screen, ElementDTO element_info){
 
     //dibujo un rectangulo
     SDL_Rect rectangle;
-    rectangle.x = get_pixels(up_left_vertex_x);
-    rectangle.y = get_pixels(up_left_vertex_y);
-    rectangle.h = get_pixels(down_right_vertex_y - up_left_vertex_y);
-    rectangle.w = get_pixels(down_right_vertex_x - up_left_vertex_x);
-
-    //printf("rectangle = x : %i y: %i h: %i w: %i\n",rectangle.x,rectangle.y,rectangle.h,rectangle.w );
+    rectangle.x = get_pixels(element_info.x);
+    rectangle.y = get_pixels(element_info.y);
+    rectangle.h = get_pixels(element_info.h);
+    rectangle.w = get_pixels(element_info.w);
 
     Uint32 colorkey = SDL_MapRGBA(screen->format, 0, 255, 0,0.5);
     SDL_FillRect(screen, &rectangle, colorkey);
@@ -602,20 +1098,75 @@ void debug_box2d_figure(SDL_Surface *screen, std::vector<std::tuple<float, float
 }
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+class Weapons_Animation_Controller{
+    std::map<Weapon_Name,Animation> animations;
+
+public:
+
+Weapons_Animation_Controller(int i){
+
+        Animation bazooka = Animation_Factory::get_bazooka();
+        this->animations.insert(std::pair<Weapon_Name,Animation>(Bazooka, bazooka));
+
+        Animation mortar = Animation_Factory::get_mortar();
+        this->animations.insert(std::pair<Weapon_Name,Animation>(Mortar,mortar));
+
+        Animation banana = Animation_Factory::get_banana();
+        this->animations.insert(std::pair<Weapon_Name,Animation>(Banana,banana));
+
+        Animation green_granade = Animation_Factory::get_green_granade();
+        this->animations.insert(std::pair<Weapon_Name,Animation>(Green_Granade,green_granade));
+
+        Animation red_granade = Animation_Factory::get_red_granade();
+        this->animations.insert(std::pair<Weapon_Name,Animation>(Red_Granade,red_granade));
+
+        Animation holy_granade = Animation_Factory::get_holy_granade();
+        this->animations.insert(std::pair<Weapon_Name,Animation>(Holy_Granade,holy_granade));
+
+        Animation air_attack = Animation_Factory::get_air_attack();
+        this->animations.insert(std::pair<Weapon_Name,Animation>(Air_Attack,air_attack));
+
+        Animation dynamite = Animation_Factory::get_dynamite();
+        this->animations.insert(std::pair<Weapon_Name,Animation>(Dynamite,dynamite));
+
+        Animation explosion = Animation_Factory::get_explosion();
+        this->animations.insert(std::pair<Weapon_Name,Animation>(Explosion,explosion));
+}
+
+void show_weapon( StageDTO s,SDL_Surface * screen){
+    for (auto w: s.weapons) {
+
+        //debug_box2d_figure(screen, w);
+
+        int up_left_vertex_x = get_pixels(w.x);
+        int up_left_vertex_y = get_pixels(w.y);
+
+
+        std::map<Weapon_Name,Animation>::iterator weapon_iter = animations.find(w.weapon);
+        weapon_iter->second.continue_internal_movement();
+        weapon_iter->second.draw(screen,up_left_vertex_x, up_left_vertex_y);
+    }
+}
+
+};
+//////////////////////////////////////////////////////////////////////////////
+
+
 void show_beams(StageDTO s, SDL_Surface *screen){
 
     Color colorkey_beam(BEAM_R,BEAM_G,BEAM_B);
 
-    for (auto b: s.beams) {
+    for (auto beam_info: s.beams) {
 
-        std::vector<std::tuple<float, float>> vertices = b.second;
+        debug_box2d_figure(screen, beam_info);
 
-        debug_box2d_figure(screen, vertices);
-
-        std::tuple<float, float> up_left_vertex = vertices[0];
-        int up_left_vertex_x = get_pixels(std::get<0>(up_left_vertex));
-        int up_left_vertex_y = get_pixels(std::get<1>(up_left_vertex));
-
+        int up_left_vertex_x = get_pixels(beam_info.x);
+        int up_left_vertex_y = get_pixels(beam_info.y);
 
         Picture beam(BEAM, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
         beam.draw(screen,up_left_vertex_x, up_left_vertex_y);
@@ -668,6 +1219,8 @@ public:
 
 std::map<int,Worm_Animation_Controller> create_worms(StageDTO s, SDL_Surface *screen){
 
+    printf("creador de gusanos\n");
+
     std::map<int,Worm_Animation_Controller> worms;
 
     Color colorkey(WORM_WALK_R,WORM_WALK_G,WORM_WALK_B);
@@ -675,11 +1228,10 @@ std::map<int,Worm_Animation_Controller> create_worms(StageDTO s, SDL_Surface *sc
     for (auto w: s.worms) {
 
         int id = w.first;
-        std::vector<std::tuple<float, float>> vertices = w.second;
+        ElementDTO worm_info = w.second;
 
-        std::tuple<float, float> up_left_vertex = vertices[0];
-        int position_worm_x = get_pixels(std::get<0>(up_left_vertex));
-        int position_worm_y = get_pixels(std::get<1>(up_left_vertex));
+        int position_worm_x = get_pixels(worm_info.x);
+        int position_worm_y = get_pixels(worm_info.y);
 
         //creo el gusano y lo gardo en el vector
         Worm_Animation_Controller worm(position_worm_x, position_worm_y);
@@ -698,13 +1250,12 @@ void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Worm_Animation_Con
 
     for (auto w: s.worms) {
 
-        std::vector<std::tuple<float, float>> vertices = w.second;
+        ElementDTO worm_info = w.second;
 
-        debug_box2d_figure(screen, vertices);
+        debug_box2d_figure(screen, worm_info);
 
-        std::tuple<float, float> up_left_vertex = vertices[0];
-        int up_left_vertex_x = get_pixels(std::get<0>(up_left_vertex));
-        int up_left_vertex_y = get_pixels(std::get<1>(up_left_vertex));
+        int up_left_vertex_x = get_pixels(worm_info.x);
+        int up_left_vertex_y = get_pixels(worm_info.y);
 
         std::map<int,Worm_Animation_Controller>::iterator worms_iter = worms.find(w.first);
         worms_iter->second.move(up_left_vertex_x, up_left_vertex_y);
@@ -712,13 +1263,17 @@ void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Worm_Animation_Con
 
         Color player_color = Color::create(Orange);
         int initial_life = 100;
-        graphic_designer.show_circle_life(screen, initial_life,up_left_vertex_x+20,up_left_vertex_y-5,player_color);
+        graphic_designer.show_life(screen, initial_life,up_left_vertex_x+20,up_left_vertex_y-5,player_color);
+        int weapon_power = worms_iter->second.get_weapon_power();
+        graphic_designer.show_powerbar(screen, weapon_power);
 
     }
 }
 
 
 
+#define SCREEN_DEFAULT_WITH 1366
+#define SCREEN_DEFAULT_HIGH 768
 
 int main(int argc, char *args[]){
 
@@ -755,7 +1310,7 @@ int main(int argc, char *args[]){
     // Set the title bar
     SDL_WM_SetCaption("Worms game", "Worms");
 
-    Graphic_Designer graphic_designer(1);
+    Graphic_Designer graphic_designer(screen_height,screen_width);
 
 
     //------------------------------------
@@ -770,6 +1325,8 @@ int main(int argc, char *args[]){
     std::map<int,Worm_Animation_Controller> worms = create_worms(s, screen);
     printf(" size = %li\n", worms.size() );
 
+    Weapons_Animation_Controller weapons_controller = Weapons_Animation_Controller(1);
+
 
     //------------------------------------
 
@@ -779,7 +1336,7 @@ int main(int argc, char *args[]){
 
 
     SDL_Event event;
-    Event_Controller event_controller(event, stage);
+    Event_Controller event_controller(event, stage, screen_height, screen_width);
 
     //para controlar el tiempo
     Uint32 t0 = SDL_GetTicks();
@@ -806,11 +1363,12 @@ int main(int argc, char *args[]){
             //toda la pantalla en negro
             SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format,0,0,0));
             //dibujo las vigas y el agua
+            water.show(screen);
             show_beams(s, screen);
 
-            water.show(screen);
             //dibujo los gusanos
             show_worms(s, screen, worms, graphic_designer);
+            weapons_controller.show_weapon(s, screen);
 
         }
 

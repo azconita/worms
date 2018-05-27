@@ -34,42 +34,113 @@ void Stage::update() {
 
 }
 
-void Stage::make_action(int worm, int action) {
-  switch (action) {
-    case 0:
-      this->worms[worm]->move_right();
+void Stage::make_action(ActionDTO & action) {
+  int worm = action.worm_id;
+  switch (action.type) {
+    case (Make_move):{
+      switch(action.move){
+        case Walk_right:
+          this->worms[worm].move_right();
+          break;
+        case Walk_left:
+          this->worms[worm].move_left();
+          break;
+        case Jump:
+          this->worms[worm].jump();
+          break;
+        case Jump_back:
+          this->worms[worm].jump_back();
+          break;
+      }
       break;
-    case 1:
-      this->worms[worm]->move_left();
+    }
+    case(Take_weapon):{
+      printf("Se tomo el arma %i\n", action.weapon);
       break;
-    case 2:
-      this->worms[worm]->jump();
+
+    }
+
+    case(Shot_weapon):{
+      printf("Se disparo el arma al punto (%i,%i) en metros, con una potencia de %i apuntando a %f grados",//
+       action.x, action.y, action.power, action.weapon_degrees);
       break;
-    case 3:
-      this->worms[worm]->jump_back();
-      break;
+
+    }
   }
+}
+
+void Stage::set_position(ElementDTO & element , std::vector<b2Vec2> & vertices){
+    b2Vec2 up_left = vertices[0];
+    b2Vec2 down_right = vertices[2];
+
+
+    element.x = up_left.x;
+    element.y = up_left.y;
+
+    if(down_right.y > up_left.y){
+      element.h = (down_right.y - up_left.y);
+    }else{
+      element.h = (up_left.y - down_right.y);
+    }
+    if(down_right.x > up_left.x){
+      element.w = (down_right.x - up_left.x);
+    }else{
+      element.w = (up_left.x - down_right.x);
+    }
 }
 
 StageDTO Stage::get_stageDTO() {
   StageDTO s;
   for (auto w: this->worms) {
-    std::vector<std::tuple<float, float>> v;
-    std::vector<b2Vec2> points = w.second->get_points();
-    for (auto p: points) {
-      v.push_back(std::tuple<float, float>(p.x,p.y));
-    }
-    s.worms[w.first] = v;
+    ElementDTO worm_element;
+    std::vector<b2Vec2> vertices = w.second.get_points();
+    set_position(worm_element, vertices);
+    //printf("worm %i: x = %f y = %f  h = %f w = %f\n",w.first, worm_element.x, worm_element.y, worm_element.h, worm_element.w);
+    s.worms[w.first] = worm_element;
   }
-  int i = 0;
-  for (auto w: this->beams) {
-    std::vector<std::tuple<float, float>> v;
-    std::vector<b2Vec2> points = w->get_points();
-    for (auto p: points)
-      v.push_back(std::tuple<float, float>(p.x,p.y));
-    s.beams[i] = v;
-    i++;
+
+  for (auto b: this->beams) {
+    ElementDTO beam_element;
+    std::vector<b2Vec2> vertices = b.get_points();
+    set_position(beam_element, vertices);
+    //printf("beam : x = %f y = %f  h = %f w = %f\n", beam_element.x, beam_element.y, beam_element.h, beam_element.w);
+    s.beams.push_back(beam_element);
   }
+
+//arma harcodeada
+  ElementDTO weapon_element;
+  weapon_element.weapon = Air_Attack;
+  weapon_element.x = 20;
+  weapon_element.y = 20;
+  weapon_element.h = 2;
+  weapon_element.w = 2;
+  s.weapons.push_back(weapon_element);
+
+   ElementDTO weapon_element2;
+  weapon_element2.weapon = Bazooka;
+  weapon_element2.x = 25;
+  weapon_element2.y = 25;
+  weapon_element2.h = 2;
+  weapon_element2.w = 2;
+  s.weapons.push_back(weapon_element2);
+
+  ElementDTO explosion;
+  explosion.weapon = Explosion;
+  explosion.x = 25 -1;
+  explosion.y = 25-1;
+  explosion.h = 2;
+  explosion.w = 2;
+  s.weapons.push_back(explosion);
+
+  ElementDTO banana;
+  banana.weapon = Banana;
+  banana.x = 25;
+  banana.y = 5;
+  banana.h = 2;
+  banana.w = 2;
+  s.weapons.push_back(banana);
+
+
   s.worm_turn = 0;
   return s;
 }
