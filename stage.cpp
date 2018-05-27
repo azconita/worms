@@ -100,6 +100,33 @@ StageDTO Stage::get_stageDTO() {
     //printf("beam : x = %f y = %f  h = %f w = %f\n", beam_element.x, beam_element.y, beam_element.h, beam_element.w);
     s.beams.push_back(beam_element);
   }
+
+//arma harcodeada
+  ElementDTO weapon_element;
+  weapon_element.weapon = Air_Attack;
+  weapon_element.x = 20;
+  weapon_element.y = 20;
+  weapon_element.h = 2;
+  weapon_element.w = 2;
+  s.weapons.push_back(weapon_element);
+
+   ElementDTO weapon_element2;
+  weapon_element2.weapon = Bazooka;
+  weapon_element2.x = 25;
+  weapon_element2.y = 25;
+  weapon_element2.h = 2;
+  weapon_element2.w = 2;
+  s.weapons.push_back(weapon_element2);
+
+  ElementDTO banana;
+  banana.weapon = Banana;
+  banana.x = 25;
+  banana.y = 5;
+  banana.h = 2;
+  banana.w = 2;
+  s.weapons.push_back(banana);
+
+
   s.worm_turn = 0;
   return s;
 }

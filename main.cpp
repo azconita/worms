@@ -977,13 +977,11 @@ void debug_box2d_figure(SDL_Surface *screen, ElementDTO element_info){
 
 
 class Weapons_Animation_Controller{
-    Weapon_Name * current_weapon; 
     std::map<Weapon_Name,Animation> animations;
 
 public:
 
 Weapons_Animation_Controller(int i){
-        this->current_weapon = NULL;
 
         Animation bazooka = Animation_Factory::get_bazooka();
         this->animations.insert(std::pair<Weapon_Name,Animation>(Bazooka, bazooka));
@@ -1011,14 +1009,15 @@ Weapons_Animation_Controller(int i){
 }
 
 void show_weapon( StageDTO s,SDL_Surface * screen){
-    for (auto weapon_info: s.weapons) {
+    for (auto w: s.weapons) {
 
-        debug_box2d_figure(screen, weapon_info);
+        //debug_box2d_figure(screen, w);
 
-        int up_left_vertex_x = get_pixels(weapon_info.x);
-        int up_left_vertex_y = get_pixels(weapon_info.y);
+        int up_left_vertex_x = get_pixels(w.x);
+        int up_left_vertex_y = get_pixels(w.y);
 
-        std::map<Weapon_Name,Animation>::iterator weapon_iter = animations.find(*this->current_weapon);
+
+        std::map<Weapon_Name,Animation>::iterator weapon_iter = animations.find(w.weapon);
         weapon_iter->second.continue_internal_movement();
         weapon_iter->second.draw(screen,up_left_vertex_x, up_left_vertex_y);
     }

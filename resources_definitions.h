@@ -109,11 +109,11 @@
 #define BAZOOKA_ROWS 32
 
 #define AIR_ATTACK "resources/air_attack.bmp"
-#define AIR_ATTACK_R 128
-#define AIR_ATTACK_G 128
-#define AIR_ATTACK_B 192
+#define AIR_ATTACK_R 192
+#define AIR_ATTACK_G 192
+#define AIR_ATTACK_B 128
 #define AIR_ATTACK_COLUMNS 1
-#define AIR_ATTACK_ROWS 10
+#define AIR_ATTACK_ROWS 32
 
 #define GREEN_GRANADE "resources/green_granade.bmp"
 #define GREEN_GRANADE_R 128
@@ -138,10 +138,10 @@
 #define HOLY_GRANADE_ROWS 32
 
 
-#define BANANA "resources/banane.bmp"
-#define BANANA_R 128
-#define BANANA_G 128
-#define BANANA_B 192
+#define BANANA "resources/banana.bmp"
+#define BANANA_R 192
+#define BANANA_G 192
+#define BANANA_B 128
 #define BANANA_COLUMNS 1
 #define BANANA_ROWS 32
 
