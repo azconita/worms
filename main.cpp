@@ -643,6 +643,13 @@ void take_weapon(Weapon_Name weapon){
     this->degrees = -90;
     std::map<Weapon_Name,State>::iterator weapon_state = weapons_states.find(weapon);
     change_state(weapon_state->second);
+    if( std::find(weapons_states_with_power.begin(), weapons_states_with_power.end(), this->state) //
+    != weapons_states_with_power.end() && this->weapon_power == 0){
+        this->weapon_power = 10;
+    }else{
+        this->weapon_power = 0;
+    }
+    
 
 }
 
@@ -671,10 +678,6 @@ bool add_power(){
     return false;
 }
 int get_weapon_power(){
-    if( std::find(weapons_states_with_power.begin(), weapons_states_with_power.end(), this->state) //
-    != weapons_states_with_power.end() && this->weapon_power == 0){
-        this->weapon_power = 10;
-    }
     return this->weapon_power;
 }
 
@@ -711,18 +714,229 @@ void show(SDL_Surface * screen){
 
 };
 
+/////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+class Graphic_Designer{
+    SDL_Surface * screen;
+    int screen_height;
+    int screen_width;
+    TTF_Font *font;
+    SDL_Color text_color;
+    SDL_Surface *power_bar;
+    SDL_Surface * weapons_menu;
+
+
+
+
+public:
+
+Graphic_Designer(SDL_Surface * screen, int screen_height, int screen_width){
+    this->screen = screen;
+    this->screen_height = screen_height;
+    this->screen_width = screen_width;
+    
+    if (TTF_Init() != 0) {
+      cout << "TTF_Init() Failed: " << TTF_GetError() << endl;
+      SDL_Quit();
+      exit(1);
+    }
+    this->font = TTF_OpenFont(FONT_FILE, 10);
+    if (this->font == NULL){
+        cout << "TTF_OpenFont() Fail: " << TTF_GetError() << endl;
+        TTF_Quit();
+        SDL_Quit();
+        exit(1);
+    }
+
+    this->text_color =  {0, 0, 0};
+
+    SDL_Surface *power_bar = IMG_Load(POWER_BAR);
+    if (!power_bar) {
+        cout <<"Couldn't create surface from image:" << POWER_BAR << SDL_GetError() << endl;
+        return;
+    }
+    Uint32 colorkey = SDL_MapRGB(power_bar->format, 0, 0, 0);
+    SDL_SetColorKey(power_bar, SDL_SRCCOLORKEY, colorkey);
+    this->power_bar = power_bar;
+
+    SDL_Surface * weapons_menu = IMG_Load(WEAPONS_MENU);
+    if (!power_bar) {
+        cout <<"Couldn't create surface from image:" << WEAPONS_MENU << SDL_GetError() << endl;
+        return;
+    }
+    this->weapons_menu = weapons_menu;
+
+
+
+
+
+}
+
+
+
+void show_life(int life, int x, int y, Color color){
+
+    char str_life[10];
+    if(life < 100){
+        sprintf(str_life, " %d ", life);
+    }else{
+        sprintf(str_life, "%d", life);
+    }
+
+
+    SDL_Surface * text = TTF_RenderText_Solid(font,str_life,text_color);
+    if (text == NULL){
+        cout << "TTF_RenderText_Solid(): " << TTF_GetError() << endl;
+        TTF_Quit();
+        SDL_Quit();
+        exit(1);
+    }
+
+    SDL_Rect rectangle;
+    rectangle.x = x-2;
+    rectangle.y = y-2;
+    rectangle.h = text->h + 2;
+    rectangle.w = text->w + 4 ;
+    Uint32 colorkey = SDL_MapRGBA(screen->format, color.r, color.g, color.b,0.2);
+    SDL_FillRect(screen, &rectangle, colorkey);
+
+    SDL_Rect dimention;
+    dimention.x = 0;
+    dimention.y = 0;
+    dimention.h = text->h;
+    dimention.w = text->w;
+
+    SDL_Rect position;
+    position.x = x;
+    position.y = y;
+    position.h = text->h;
+    position.w = text->w;
+    SDL_BlitSurface(text, &dimention, screen, &position);
+
+
+}
+
+void show_powerbar(int power){
+    SDL_Rect dimention;
+    dimention.x = 0;
+    dimention.y = 0;
+    dimention.h = this->power_bar->h;
+    dimention.w = this->power_bar->w*power/100;
+
+    SDL_Rect position;
+    position.x = this->screen_width - this->power_bar->w -5;
+    position.y = 5;
+    position.h = this->power_bar->h;
+    position.w = this->power_bar->w;
+    SDL_BlitSurface(this->power_bar, &dimention, screen, &position);
+
+
+}
+
+void show_weapons_menu(int size){
+    SDL_Rect dimention;
+    dimention.x = 0;
+    dimention.y = 0;
+    dimention.h = this->weapons_menu->h;
+    dimention.w = this->weapons_menu->w*size/100;
+
+    SDL_Rect position;
+    position.x = this->screen_width - this->weapons_menu->w -5;
+    position.y = 5;
+    position.h = this->weapons_menu->h;
+    position.w = this->weapons_menu->w;
+    SDL_BlitSurface(this->weapons_menu, &dimention, screen, &position);
+}
+
+bool is_inside_weapon_menu(int x, int y){
+    int x_relative = x -(this->screen_width - this->weapons_menu->w -5);
+    int y_relative = y - 5;
+    if(x_relative < 0 || y_relative > this->weapons_menu->h){
+        return false;
+    }
+    return true;
+}
+
+
+Weapon_Name choose_weapon(int x, int y){
+    
+    int icon_y = this->weapons_menu->h/10;
+    if(y < icon_y){
+        return Air_Attack;
+        
+    } 
+    if(y < icon_y*2){
+        return Baseboll_Bat;
+    }
+    if(y < icon_y*3){
+        return Bazooka;
+    } 
+    if(y < icon_y*4){
+        return Red_Granade;
+    }
+    if(y < icon_y*5){
+        return Green_Granade;
+    } 
+    if(y < icon_y*6){
+        return Holy_Granade;
+
+    }
+    if(y < icon_y*7){
+        return Mortar;
+
+    } 
+    if(y < icon_y*8){
+        return Teletrans;
+    }
+    if(y < icon_y*9){
+        return Dynamite;
+    } 
+    return Banana;
+}
+
+
+};
+
+
+//////////////////////////////////////////////////////////////////////////////////////////
+
+
+float get_pixels(float meter_position){
+    return  23.5*meter_position;
+}
+
+void debug_box2d_figure(SDL_Surface *screen, ElementDTO element_info){
+
+    //dibujo un rectangulo
+    SDL_Rect rectangle;
+    rectangle.x = get_pixels(element_info.x);
+    rectangle.y = get_pixels(element_info.y);
+    rectangle.h = get_pixels(element_info.h);
+    rectangle.w = get_pixels(element_info.w);
+
+    Uint32 colorkey = SDL_MapRGBA(screen->format, 0, 255, 0,0.5);
+    SDL_FillRect(screen, &rectangle, colorkey);
+
+}
+
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////7/////////
 
 
 class Event_Controller{
+    Graphic_Designer graphic_designer;
     int screen_height;
     int screen_width;
     Stage & stage;
     SDL_Event &  event;
     bool wait_for_destination_clicl;
-    bool wait_for_potentia;
+    bool wait_for_weapon_click;
     ActionDTO action;
 
 float meters_conversor(int pixel){
@@ -739,7 +953,6 @@ void air_attack(Worm_Animation_Controller& turn_worm){
 
 void bazooka(Worm_Animation_Controller& turn_worm){
     turn_worm.take_weapon(Bazooka);
-    this->wait_for_potentia = true;
     this->action.type = Take_weapon;
     this->action.weapon = Bazooka;
     this->stage.make_action(this->action);
@@ -754,7 +967,6 @@ void dynamite(Worm_Animation_Controller& turn_worm){
 
 void green_granade(Worm_Animation_Controller& turn_worm){
     turn_worm.take_weapon(Green_Granade);
-    this->wait_for_potentia = true;
     this->action.type = Take_weapon;
     this->action.weapon = Green_Granade;
     this->stage.make_action(this->action);
@@ -762,7 +974,6 @@ void green_granade(Worm_Animation_Controller& turn_worm){
 
 void holy_granade(Worm_Animation_Controller& turn_worm){
     turn_worm.take_weapon(Holy_Granade);
-    this->wait_for_potentia = true;
     this->action.type = Take_weapon;
     this->action.weapon = Holy_Granade;
     this->stage.make_action(this->action);
@@ -770,7 +981,6 @@ void holy_granade(Worm_Animation_Controller& turn_worm){
 
 void mortar(Worm_Animation_Controller& turn_worm){
     turn_worm.take_weapon(Mortar);
-    this->wait_for_potentia = true;
     this->action.type = Take_weapon;
     this->action.weapon = Mortar;
     this->stage.make_action(this->action);
@@ -779,14 +989,12 @@ void mortar(Worm_Animation_Controller& turn_worm){
 void red_granade(Worm_Animation_Controller& turn_worm){
     turn_worm.take_weapon(Red_Granade);
     this->action.type = Take_weapon;
-    this->wait_for_potentia = true;
     this->action.weapon = Red_Granade;
     this->stage.make_action(this->action);
 }
 
 void teletrans(Worm_Animation_Controller& turn_worm){
     turn_worm.take_weapon(Teletrans);
-    this->wait_for_destination_clicl = true;
     this->action.type = Take_weapon;
     this->action.weapon = Teletrans;
     this->stage.make_action(this->action);
@@ -794,7 +1002,6 @@ void teletrans(Worm_Animation_Controller& turn_worm){
 
 void banana(Worm_Animation_Controller& turn_worm){
     turn_worm.take_weapon(Banana);
-    this->wait_for_potentia = true;
     this->action.type = Take_weapon;
     this->action.weapon = Banana;
     this->stage.make_action(this->action);
@@ -808,9 +1015,9 @@ void baseboll_bat(Worm_Animation_Controller& turn_worm){
 }
 
 void click(Worm_Animation_Controller& turn_worm){
-    if(wait_for_destination_clicl){
-        int x, y;
-        SDL_GetMouseState(&x, &y);
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+    if(this->wait_for_destination_clicl){
         printf("%f %f\n", meters_conversor(x),meters_conversor(y) );
         this->action.type = Shot_weapon;
         this->action.x = meters_conversor(x);
@@ -818,7 +1025,19 @@ void click(Worm_Animation_Controller& turn_worm){
         this->action.power = turn_worm.get_weapon_power();
         this->wait_for_destination_clicl = true;
         this->stage.make_action(this->action);
+        this->wait_for_destination_clicl = false;
     }
+
+    else if(this->wait_for_weapon_click){
+        if(graphic_designer.is_inside_weapon_menu(x,y)){
+            Weapon_Name  weapon = graphic_designer.choose_weapon(x,y);
+            turn_worm.take_weapon(weapon);
+            this->action.type = Take_weapon;
+            this->action.weapon = weapon;
+            this->stage.make_action(this->action);
+        }
+    }
+    this->wait_for_weapon_click = false;
 
 }
 
@@ -860,12 +1079,14 @@ void left(Worm_Animation_Controller& turn_worm){
 
 
 void space(Worm_Animation_Controller& turn_worm){
-    if(this->wait_for_potentia){
-        if(!turn_worm.add_power()){
-            this->wait_for_potentia = false;
-        }
+    int power = turn_worm.get_weapon_power();
+    if(power >0 && power < 100){
+        turn_worm.add_power();
     }
 }
+
+
+
 
 void mouse_motion(){
     int x, y;
@@ -873,6 +1094,7 @@ void mouse_motion(){
     if(x > screen_width - 5 && y < 5){
         cout << "Se quiere elegir un arma:" << endl;
         printf("%i %i\n",x,y);
+        this->wait_for_weapon_click = true;
     }
 }
 
@@ -880,14 +1102,16 @@ void mouse_motion(){
 
 
 
+
 public:
-Event_Controller(SDL_Event & event, Stage & stage, int screen_height, int screen_width):
+Event_Controller(SDL_Event & event, Stage & stage, int screen_height, int screen_width, Graphic_Designer & graphic_designer):
         event(event),
-        stage(stage){
+        stage(stage),
+        graphic_designer(graphic_designer){
             this->screen_height = screen_height;
             this-> screen_width = screen_width;
             this->wait_for_destination_clicl = false;
-            this->wait_for_potentia = false;
+            this->wait_for_weapon_click = false;
             this->action.worm_id = 0;
 
 }
@@ -895,6 +1119,10 @@ Event_Controller(SDL_Event & event, Stage & stage, int screen_height, int screen
 
 
 bool continue_running(Worm_Animation_Controller& turn_worm){
+    if(this->wait_for_weapon_click){
+        this->graphic_designer.show_weapons_menu(100);
+    }
+ 
     SDL_PollEvent(&this->event);
     switch(event.type){
         case SDL_QUIT:
@@ -904,8 +1132,6 @@ bool continue_running(Worm_Animation_Controller& turn_worm){
             break;
         case SDL_MOUSEMOTION:
             mouse_motion();
-
-
         case SDL_KEYDOWN:
             switch(event.key.keysym.sym){
                 case SDLK_ESCAPE:
@@ -966,136 +1192,6 @@ bool continue_running(Worm_Animation_Controller& turn_worm){
 };
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////
-#define FONT_FILE "resources/Amiko-Bold.ttf"
-class Graphic_Designer{
-    int screen_height;
-    int screen_width;
-    TTF_Font *font;
-    SDL_Color text_color;
-    SDL_Surface *power_bar;
-
-
-
-
-public:
-
-Graphic_Designer(int screen_height, int screen_width){
-    this->screen_height = screen_height;
-    this->screen_width = screen_width;
-    
-    if (TTF_Init() != 0) {
-      cout << "TTF_Init() Failed: " << TTF_GetError() << endl;
-      SDL_Quit();
-      exit(1);
-    }
-    this->font = TTF_OpenFont(FONT_FILE, 10);
-    if (this->font == NULL){
-        cout << "TTF_OpenFont() Fail: " << TTF_GetError() << endl;
-        TTF_Quit();
-        SDL_Quit();
-        exit(1);
-    }
-
-    this->text_color =  {0, 0, 0};
-
-    SDL_Surface *power_bar = IMG_Load(POWER_BAR);
-    if (!power_bar) {
-        cout <<"Couldn't create surface from image:" << POWER_BAR << SDL_GetError() << endl;
-        return;
-    }
-    Uint32 colorkey = SDL_MapRGB(power_bar->format, 0, 0, 0);
-    SDL_SetColorKey(power_bar, SDL_SRCCOLORKEY, colorkey);
-    this->power_bar = power_bar;
-
-
-}
-
-
-
-void show_life(SDL_Surface * screen, int life, int x, int y, Color color){
-
-    char str_life[10];
-    if(life < 100){
-        sprintf(str_life, " %d ", life);
-    }else{
-        sprintf(str_life, "%d", life);
-    }
-
-
-    SDL_Surface * text = TTF_RenderText_Solid(font,str_life,text_color);
-    if (text == NULL){
-        cout << "TTF_RenderText_Solid(): " << TTF_GetError() << endl;
-        TTF_Quit();
-        SDL_Quit();
-        exit(1);
-    }
-
-    SDL_Rect rectangle;
-    rectangle.x = x-2;
-    rectangle.y = y-2;
-    rectangle.h = text->h + 2;
-    rectangle.w = text->w + 4 ;
-    Uint32 colorkey = SDL_MapRGBA(screen->format, color.r, color.g, color.b,0.2);
-    SDL_FillRect(screen, &rectangle, colorkey);
-
-    SDL_Rect dimention;
-    dimention.x = 0;
-    dimention.y = 0;
-    dimention.h = text->h;
-    dimention.w = text->w;
-
-    SDL_Rect position;
-    position.x = x;
-    position.y = y;
-    position.h = text->h;
-    position.w = text->w;
-    SDL_BlitSurface(text, &dimention, screen, &position);
-
-
-}
-
-void show_powerbar(SDL_Surface * screen, int power){
-    SDL_Rect dimention;
-    dimention.x = 0;
-    dimention.y = 0;
-    dimention.h = this->power_bar->h;
-    dimention.w = this->power_bar->w*power/100;
-
-    SDL_Rect position;
-    position.x = this->screen_width - this->power_bar->w -5;
-    position.y = 5;
-    position.h = this->power_bar->h;
-    position.w = this->power_bar->w;
-    SDL_BlitSurface(this->power_bar, &dimention, screen, &position);
-
-
-}
-
-
-};
-
-
-//////////////////////////////////////////////////////////////////////////////////////////
-
-
-float get_pixels(float meter_position){
-    return  23.5*meter_position;
-}
-
-void debug_box2d_figure(SDL_Surface *screen, ElementDTO element_info){
-
-    //dibujo un rectangulo
-    SDL_Rect rectangle;
-    rectangle.x = get_pixels(element_info.x);
-    rectangle.y = get_pixels(element_info.y);
-    rectangle.h = get_pixels(element_info.h);
-    rectangle.w = get_pixels(element_info.w);
-
-    Uint32 colorkey = SDL_MapRGBA(screen->format, 0, 255, 0,0.5);
-    SDL_FillRect(screen, &rectangle, colorkey);
-
-}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1263,9 +1359,9 @@ void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Worm_Animation_Con
 
         Color player_color = Color::create(Orange); 
         int initial_life = 100;
-        graphic_designer.show_life(screen, initial_life,up_left_vertex_x+20,up_left_vertex_y-5,player_color);
+        graphic_designer.show_life(initial_life,up_left_vertex_x+20,up_left_vertex_y-5,player_color);
         int weapon_power = worms_iter->second.get_weapon_power();
-        graphic_designer.show_powerbar(screen, weapon_power);
+        graphic_designer.show_powerbar(weapon_power);
 
     }
 }
@@ -1310,7 +1406,7 @@ int main(int argc, char *args[]){
     // Set the title bar
     SDL_WM_SetCaption("Worms game", "Worms");
 
-    Graphic_Designer graphic_designer(screen_height,screen_width);
+    Graphic_Designer graphic_designer(screen, screen_height,screen_width);
 
 
     //------------------------------------
@@ -1336,7 +1432,7 @@ int main(int argc, char *args[]){
 
 
     SDL_Event event;
-    Event_Controller event_controller(event, stage, screen_height, screen_width);
+    Event_Controller event_controller(event, stage, screen_height, screen_width, graphic_designer);
 
     //para controlar el tiempo
     Uint32 t0 = SDL_GetTicks();

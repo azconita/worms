@@ -186,6 +186,9 @@
 //barra de poder
 //el agua
 #define POWER_BAR "resources/powerbar.bmp"
+#define WEAPONS_MENU "resources/weapons_menu.bmp"
+#define FONT_FILE "resources/Amiko-Bold.ttf"
+
 
 
 #endif
