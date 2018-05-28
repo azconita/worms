@@ -57,12 +57,12 @@ float Worm::get_impulse() {
 
 void Worm::move_right() {
   float impulse = this->get_impulse();
-  this->body->ApplyLinearImpulse(b2Vec2(impulse,0), this->body->GetWorldCenter(), true);
+  this->body->ApplyLinearImpulse(b2Vec2(Constants::worm_walk_velocity,0), this->body->GetWorldCenter(), true);
 }
 
 void Worm::move_left() {
   float impulse = this->get_impulse();
-  this->body->ApplyLinearImpulse(b2Vec2(-impulse,0), this->body->GetWorldCenter(), true);
+  this->body->ApplyLinearImpulse(b2Vec2(-Constants::worm_walk_velocity,0), this->body->GetWorldCenter(), true);
 }
 
 //TODO: fix me!!

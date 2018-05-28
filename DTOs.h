@@ -57,16 +57,6 @@ struct ActionDTO {
   int y;
 };
 
-enum Color_name {
-    White,
-    Orange,
-    Green,
-    Purple,
-    Pink,
-    Yellow,
-    Red,
-    Blue
-};
 
 
 struct ElementDTO { //puede ser un gusano, un arma o una viga
@@ -75,7 +65,7 @@ struct ElementDTO { //puede ser un gusano, un arma o una viga
   float h;
   float w;
   int life;
-  Color_name player_color;
+  int player_id;
   Weapon_Name weapon;
   bool explosion;
 };

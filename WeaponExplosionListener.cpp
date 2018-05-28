@@ -26,14 +26,14 @@ void WeaponExplosionListener::BeginContact(b2Contact* contact) {
   Entity* bodyUserData = (Entity*) contact->GetFixtureA()->GetBody()->GetUserData();
   std::cout << "entity read " << bodyUserData<< "\n";
   if (bodyUserData->en_type == 3) {
-    static_cast<Projectile*>( bodyUserData )->proximityExplosion(100,100);
+    static_cast<Projectile*>( bodyUserData )->proximity_explosion(100,100);
 
   } else {
   //check if fixture B was a explosion
     bodyUserData = (Entity*) contact->GetFixtureB()->GetBody()->GetUserData();
     std::cout << "entity read " << bodyUserData<< "\n";
     if ( bodyUserData->en_type == 3 )
-      static_cast<Projectile*>( bodyUserData )->proximityExplosion(100,100);
+      static_cast<Projectile*>( bodyUserData )->proximity_explosion(100,100);
   }
 
 }
@@ -41,11 +41,11 @@ void WeaponExplosionListener::BeginContact(b2Contact* contact) {
 void WeaponExplosionListener::EndContact(b2Contact* contact) {
 
   //check if fixture A was a ball
-  void* bodyUserData = contact->GetFixtureA()->GetBody()->GetUserData();
-  if ( bodyUserData )
+  Entity* bodyUserData = (Entity*)contact->GetFixtureA()->GetBody()->GetUserData();
+  if ( bodyUserData->en_type == 3 )
     return;
   //check if fixture B was a ball
-  bodyUserData = contact->GetFixtureB()->GetBody()->GetUserData();
+  bodyUserData = (Entity*)contact->GetFixtureB()->GetBody()->GetUserData();
   if ( bodyUserData )
     return;
 }

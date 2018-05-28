@@ -70,6 +70,7 @@ void apply_explosion_impulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint
     std::cout << "apply explosion\n";
     body->ApplyLinearImpulse( impulseMag * blastDir, body->GetPosition() , true);
   }
+
 }
 
 
@@ -94,6 +95,8 @@ void Projectile::proximity_explosion(float radius, float power) {
 
       apply_explosion_impulse(body, center, bodyCom, power );
   }
+  //this->world->DestroyBody(this->body);
+  this->alive = false;
 }
 
 //r in degrees

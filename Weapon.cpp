@@ -12,6 +12,7 @@
 #include <Box2D/Dynamics/b2Body.h>
 #include <Box2D/Dynamics/b2Fixture.h>
 #include <Box2D/Dynamics/b2World.h>
+#include <iostream>
 
 #include "Constants.h"
 
@@ -40,6 +41,7 @@ Weapon::Weapon(b2World* world, Weapon_Name name, float x, float y)
 
 
 void Weapon::shoot(int power, float degrees) {
+  std::cout << "SHOOT!\n";
   float r = degrees * (3.14159265359/180.0);
   b2Vec2 vel = b2Vec2(cos(r), sin(r));
   float velChange = power * vel.x;

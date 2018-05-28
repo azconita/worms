@@ -34,6 +34,12 @@ void Stage::update() {
   //this->explosions[0].printPos();
   this->world->Step( timeStep, velocityIterations, positionIterations);
 
+  for (auto w: this->explosions) {
+    if (!w->is_alive()) {
+      delete w;
+      w = NULL;
+    }
+  }
 }
 
 void Stage::make_action(ActionDTO & action) {
@@ -107,9 +113,13 @@ StageDTO Stage::get_stageDTO() {
     ElementDTO worm_element;
     std::vector<b2Vec2> vertices = w.second->get_points();
     set_position(worm_element, vertices);
+    worm_element.player_id = w.first;
+    worm_element.life = 100;
     //printf("worm %i: x = %f y = %f  h = %f w = %f\n",w.first, worm_element.x, worm_element.y, worm_element.h, worm_element.w);
     s.worms[w.first] = worm_element;
   }
+
+
 
   for (auto b: this->beams) {
     ElementDTO beam_element;
@@ -146,7 +156,7 @@ StageDTO Stage::get_stageDTO() {
   ElementDTO explosion;
   explosion.weapon = Explosion;
   explosion.x = 25 -1;
-  explosion.y = 25-1;
+  explosion.y = 25 -1;
   explosion.h = 2;
   explosion.w = 2;
   s.weapons.push_back(explosion);
@@ -182,5 +192,5 @@ void Stage::add_weapons(std::string config) {
 }
 
 void Stage::add_explosion() {
-  this->explosions.push_back(new Projectile(this->world, W_Bazooka, 9, 12));
+  //this->explosions.push_back(new Projectile(this->world, W_Bazooka, 9, 12));
 }

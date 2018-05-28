@@ -21,6 +21,7 @@ private:
   b2World *world;
   b2Body* body;
   Weapon_Name name;
+  bool alive = true;
   int i = 100;
 public:
   Projectile(b2World *world, Weapon_Name name, float x, float y);
@@ -32,6 +33,7 @@ public:
   void proximity_explosion(float blastRadius, float blastPower);
   void shoot(int power, float degrees);
 
+  bool is_alive() {return this->alive;}
   b2Vec2 get_point();
 
 
