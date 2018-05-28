@@ -139,6 +139,10 @@ void Projectile::shoot(int power, float degrees, int s, int time_to_explode) {
       this->green_grenade(power, degrees, time_to_explode, s);
       break;
     }
+    case Dynamite: {
+      this->dynamite(time_to_explode, s);
+      break;
+    }
   }
 }
 

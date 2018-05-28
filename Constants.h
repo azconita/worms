@@ -20,6 +20,7 @@ namespace Constants {
   //worm constants
   extern const int worm_initial_life;
   extern const float worm_walk_velocity;
+  extern const float worm_jump_velocity;
   extern const float worm_density;
   extern const float worm_size; //lado del cuadrado
 

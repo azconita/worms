@@ -18,6 +18,7 @@ namespace Constants {
 
   extern const int worm_initial_life = config["worm_initial_life"].as<int>();
   extern const float worm_walk_velocity = config["worm_walk_velocity"].as<float>();
+  extern const float worm_jump_velocity = config["worm_jump_velocity"].as<float>();
   extern const float worm_density = config["worm_density"].as<float>();
   extern const float worm_size = config["worm_size"].as<float>();
 

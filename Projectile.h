@@ -43,6 +43,7 @@ public:
 
   void bazooka(int power, float degrees, int s);
   void green_grenade(int power, float degrees, int timer, int s);
+  void dynamite(int time_to_explode, int s);
 
   void printPos() {
       std::cout << "explosion: " << this->body->GetPosition().x << ":" << this->body->GetPosition().y << "\n";
