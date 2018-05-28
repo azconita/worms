@@ -54,7 +54,7 @@ void Stage::make_action(ActionDTO & action) {
           this->worms[worm]->move_left();
           break;
         case Jump:
-          this->worms[worm]->jump();
+          this->worms[worm]->jump(action.direction);
           break;
         case Jump_back:
           this->worms[worm]->jump_back();
@@ -77,11 +77,9 @@ void Stage::make_action(ActionDTO & action) {
 
       //switch(action.weapon) {
         //case W_Bazooka:
-          int s =(action.weapon_degrees < 90) ? 1 : -1;
-          float d = (action.weapon_degrees < 90) ? -action.weapon_degrees : -(action.weapon_degrees - 180);
           b2Vec2 pos = this->worms[worm]->get_position();
           Projectile* w = new Projectile(this->world, action.weapon, pos.x, pos.y);
-          w->shoot(action.power, d, s, action.time_to_explode);
+          w->shoot(action.power, action.weapon_degrees, action.direction, action.time_to_explode);
           this->explosions.push_back(w);
       //}
 

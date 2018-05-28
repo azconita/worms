@@ -35,7 +35,7 @@ public:
   //movements
   void move_left(); //vel: 0.2 m/s
   void move_right();
-  void jump(); // 1m adelante y 0.5m alto
+  void jump(Direction dir); // 1m adelante y 0.5m alto
   void jump_back(); // 0.2m atras y 1.2m alto
 
   //use weapons

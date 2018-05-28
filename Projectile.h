@@ -35,7 +35,7 @@ public:
   Weapon_Name get_name() { return this->name;}
 
   void proximity_explosion(float blastRadius, float blastPower);
-  void shoot(int power, float degrees, int s, int time_to_explode);
+  void shoot(int power, float degrees, Direction dir, int time_to_explode);
 
   bool is_alive() {return this->alive;}
   b2Vec2 get_point();

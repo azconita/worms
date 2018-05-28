@@ -129,7 +129,8 @@ b2Vec2 rad2vec(float r) {
   return b2Vec2(cos(r), sin(r));
 }
 
-void Projectile::shoot(int power, float degrees, int s, int time_to_explode) {
+void Projectile::shoot(int power, float degrees, Direction dir, int time_to_explode) {
+  int s = (dir == Right) ? 1 : -1;
   switch (this->name) {
     case W_Bazooka: {
       this->bazooka(power,degrees, s);
@@ -165,4 +166,9 @@ void Projectile::green_grenade(int power, float degrees, int timer, int s) {
   velChange = power * vel.y;
   float impulsey = body->GetMass() * velChange;
   this->body->ApplyLinearImpulse(b2Vec2(impulsex*s,impulsey), this->body->GetWorldCenter(), true);
+}
+
+void Projectile::dynamite(int time_to_explode, int s) {
+  this->timer = timer;
+
 }

@@ -66,9 +66,11 @@ void Worm::move_left() {
 }
 
 //TODO: fix me!!
-void Worm::jump() {
+void Worm::jump(Direction dir) {
+  std::cout << "dir: " << dir << "\n";
+  int d = (dir == Left) ? -1 : 1;
   float impulse = body->GetMass() * Constants::worm_jump_velocity;
-  this->body->ApplyLinearImpulse(b2Vec2(this->get_impulse(),impulse), this->body->GetWorldCenter(), true);
+  this->body->ApplyLinearImpulse(b2Vec2(d * impulse /2,impulse), this->body->GetWorldCenter(), true);
 }
 //TODO: fix me!!
 void Worm::jump_back() {
