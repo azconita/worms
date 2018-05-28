@@ -1292,7 +1292,7 @@ Weapons_Animation_Controller(int i){
 void show_weapon( StageDTO s,SDL_Surface * screen){
     for (auto w: s.weapons) {
 
-        //debug_box2d_figure(screen, w);
+        debug_box2d_figure(screen, w);
 
         int up_left_vertex_x = get_pixels(w.x);
         int up_left_vertex_y = get_pixels(w.y);
@@ -1314,7 +1314,7 @@ void show_beams(StageDTO s, SDL_Surface *screen){
 
     for (auto beam_info: s.beams) {
 
-        //debug_box2d_figure(screen, beam_info);
+        debug_box2d_figure(screen, beam_info);
 
         int up_left_vertex_x = get_pixels(beam_info.x);
         int up_left_vertex_y = get_pixels(beam_info.y);
@@ -1416,7 +1416,7 @@ void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Worm_Animation_Con
 
         ElementDTO worm_info = w.second;
 
-        //debug_box2d_figure(screen, worm_info);
+        debug_box2d_figure(screen, worm_info);
 
         int up_left_vertex_x = get_pixels(worm_info.x);
         int up_left_vertex_y = get_pixels(worm_info.y);

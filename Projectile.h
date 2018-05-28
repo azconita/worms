@@ -45,12 +45,12 @@ public:
 //subclass b2QueryCallback
 class ExplosionQueryCallback : public b2QueryCallback {
 public:
-    std::vector<b2Body*> foundBodies;
+  std::vector<b2Body*> foundBodies;
 
-    bool ReportFixture(b2Fixture* fixture) {
-        foundBodies.push_back( fixture->GetBody() );
-        return true;//keep going to find all fixtures in the query area
-    }
+  bool ReportFixture(b2Fixture* fixture) {
+    foundBodies.push_back( fixture->GetBody() );
+    return true;//keep going to find all fixtures in the query area
+  }
 };
 
 #endif /* PROJECTILE_H_ */

@@ -62,13 +62,13 @@ void apply_explosion_impulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint
      return;
   float invDistance = 1 / distance;
   float impulseMag = blastPower * invDistance * invDistance;
-  std::cout << "imp mag: " << impulseMag << ", blastdir: " << blastDir.x << ":" << blastDir.y << "\n";
+  //std::cout << "imp mag: " << impulseMag << ", blastdir: " << blastDir.x << ":" << blastDir.y << "\n";
 
   Entity* entity = (Entity*) (body->GetUserData());
   std::cout<<"body found: " << entity->en_type << '\n';
   if (entity->en_type == 1) {
-    std::cout << "apply explosion\n";
-    body->ApplyLinearImpulse( impulseMag * blastDir, body->GetPosition() , true);
+    std::cout << "apply explosion: "<<impulseMag <<"\n";
+    body->ApplyLinearImpulse( blastPower * blastDir, body->GetPosition() , true);
   }
 
 }
@@ -76,15 +76,16 @@ void apply_explosion_impulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint
 
 //find all bodies with fixtures in blast radius AABB
 void Projectile::proximity_explosion(float radius, float power) {
+  if (!this->alive)
+    return;
   std::cout << "explosion!\n" ;
-  ExplosionQueryCallback query_callback; //see "World querying topic"
+  ExplosionQueryCallback query_callback;
   b2AABB aabb;
   b2Vec2 center = this->body->GetPosition();
   aabb.lowerBound = center - b2Vec2(radius, radius);
   aabb.upperBound = center + b2Vec2(radius, radius);
   this->world->QueryAABB(&query_callback, aabb);
 
-  //check which of these bodies have their center of mass within the blast radius
   for (int i = 0; i < query_callback.foundBodies.size(); i++) {
       b2Body* body = query_callback.foundBodies[i];
       b2Vec2 bodyCom = body->GetWorldCenter();

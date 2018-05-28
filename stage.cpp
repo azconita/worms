@@ -34,12 +34,12 @@ void Stage::update() {
   //this->explosions[0].printPos();
   this->world->Step( timeStep, velocityIterations, positionIterations);
 
-  for (auto w: this->explosions) {
-    if (!w->is_alive()) {
-      delete w;
-      w = NULL;
-    }
-  }
+  //for (auto w: this->explosions) {
+    //if (!w->is_alive()) {
+      //delete w;
+      //w = NULL;
+    //}
+  //}
 }
 
 void Stage::make_action(ActionDTO & action) {
