@@ -71,15 +71,18 @@ void Stage::make_action(ActionDTO & action) {
     }
 
     case(Shot_weapon):{
-      printf("Se disparo el arma al punto (%i,%i) en metros, con una potencia de %i apuntando a %f grados",//
-       action.x, action.y, action.power, action.weapon_degrees);
-      this->worms[worm]->use_weapon(action.x, action.y, action.power, action.weapon_degrees);
-      switch(action.weapon) {
-        case W_Bazooka:
+      //printf("Se disparo el arma al punto (%i,%i) en metros, con una potencia de %i apuntando a %f grados",//
+       //action.x, action.y, action.power, action.weapon_degrees);
+      //this->worms[worm]->use_weapon(action.x, action.y, action.power, action.weapon_degrees);
+
+      //switch(action.weapon) {
+        //case W_Bazooka:
           Projectile* w = new Projectile(this->world, action.weapon, action.x, action.y);
           this->explosions.push_back(w);
-          w->shoot(action.power, action.weapon_degrees);
-      }
+          int s =(action.weapon_degrees < 90) ? 1 : -1;
+          float d = (action.weapon_degrees < 90) ? -action.weapon_degrees : -(action.weapon_degrees - 180);
+          w->shoot(action.power, d, s);
+      //}
 
       break;
 
@@ -119,8 +122,6 @@ StageDTO Stage::get_stageDTO() {
     s.worms[w.first] = worm_element;
   }
 
-
-
   for (auto b: this->beams) {
     ElementDTO beam_element;
     std::vector<b2Vec2> vertices = b->get_points();
@@ -132,15 +133,23 @@ StageDTO Stage::get_stageDTO() {
   for (auto w: this->explosions) {
     if(w->is_alive()) {
       ElementDTO weapon;
-      b2Vec2 point = w->get_point();
-      weapon.x = point.x;
-      weapon.y = point.y;
-      weapon.h = 0.5;
-      weapon.w = 0.5;
+      if (weapon.weapon == None)
+        continue;
+      std::vector<b2Vec2> vertices = w->get_points();
+      set_position(weapon, vertices);
+
+//      b2Vec2 point = w->get_point();
+//      weapon.x = point.x;
+//      weapon.y = point.y;
+//      weapon.h = 0.5;
+//      weapon.w = 0.5;
+      //como hacer que se vea la explosion pero que no aparezca siempre?
+      //destruir objetos!!
       weapon.weapon = w->get_name();
       s.weapons.push_back(weapon);
     }
   }
+
 //arma harcodeada
   ElementDTO weapon_element;
   weapon_element.weapon = W_Air_Attack;
@@ -185,6 +194,8 @@ StageDTO Stage::get_stageDTO() {
 void Stage::add_beams(std::string config) {
   this->beams.push_back(new Beam(this->world, 10,2));
   this->beams.push_back(new Beam(this->world, 10,20));
+  this->beams.push_back(new Beam(this->world, 20,20));
+  this->beams.push_back(new Beam(this->world, 30,20));
 }
 
 void Stage::add_worms(std::string config) {

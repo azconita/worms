@@ -26,14 +26,14 @@ void WeaponExplosionListener::BeginContact(b2Contact* contact) {
   Entity* bodyUserData = (Entity*) contact->GetFixtureA()->GetBody()->GetUserData();
   std::cout << "entity read " << bodyUserData<< "\n";
   if (bodyUserData->en_type == 3) {
-    static_cast<Projectile*>( bodyUserData )->proximity_explosion(100,100);
+    static_cast<Projectile*>( bodyUserData )->proximity_explosion(10,10);
 
   } else {
   //check if fixture B was a explosion
     bodyUserData = (Entity*) contact->GetFixtureB()->GetBody()->GetUserData();
     //std::cout << "entity read " << bodyUserData<< "\n";
     if ( bodyUserData->en_type == 3 )
-      static_cast<Projectile*>( bodyUserData )->proximity_explosion(100,100);
+      static_cast<Projectile*>( bodyUserData )->proximity_explosion(10,10);
   }
 
 }

@@ -92,6 +92,8 @@ void apply_explosion_impulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint
 void Projectile::proximity_explosion(float radius, float power) {
   if (!this->alive)
     return;
+  //TODO: timer!!
+  //if (this->name == Green_Grenade) &&
   std::cout << "explosion!\n" ;
   this->name = Explosion;
   ExplosionQueryCallback query_callback;
@@ -121,20 +123,30 @@ b2Vec2 rad2vec(float r) {
   return b2Vec2(cos(r), sin(r));
 }
 
-void Projectile::shoot(int power, float degrees) {
+void Projectile::shoot(int power, float degrees, int s) {
   switch (this->name) {
     case W_Bazooka: {
-      this->bazooka(power,degrees);
+      this->bazooka(power,degrees, s);
     }
   }
 }
 
-void Projectile::bazooka(int power, float degrees) {
+void Projectile::bazooka(int power, float degrees, int s) {
+  //TODO:afectar por el viento
   b2Vec2 vel = rad2vec(degrees);
   float velChange = power * vel.x;
   float impulsex = body->GetMass() * velChange;
   velChange = power * vel.y;
   float impulsey = body->GetMass() * velChange;
-  this->body->ApplyLinearImpulse(b2Vec2(impulsex,impulsey), this->body->GetWorldCenter(), true);
+  this->body->ApplyLinearImpulse(b2Vec2(impulsex*s,impulsey), this->body->GetWorldCenter(), true);
 
+}
+
+void Projectile::green_grenade(int power, float degrees, int timer, int s) {
+  b2Vec2 vel = rad2vec(degrees);
+  float velChange = power * vel.x;
+  float impulsex = body->GetMass() * velChange;
+  velChange = power * vel.y;
+  float impulsey = body->GetMass() * velChange;
+  this->body->ApplyLinearImpulse(b2Vec2(impulsex*s,impulsey), this->body->GetWorldCenter(), true);
 }

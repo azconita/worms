@@ -10,6 +10,7 @@
 #include <iostream>
 #include <Box2D/Box2D.h>
 #include "DTOs.h"
+#include <time.h>
 
 #ifndef PROJECTILE_H_
 #define PROJECTILE_H_
@@ -22,7 +23,7 @@ private:
   b2Body* body;
   Weapon_Name name;
   bool alive = true;
-  int i = 100;
+  time_t t = 0;
 public:
   Projectile(b2World *world, Weapon_Name name, float x, float y);
   Projectile(const Projectile &other);
@@ -30,16 +31,16 @@ public:
   Projectile* operator=(const Projectile &other);
   int get_type() { return PROJECTILE; }
   Weapon_Name get_name() { return this->name;}
-  bool should_explode();
+
   void proximity_explosion(float blastRadius, float blastPower);
-  void shoot(int power, float degrees);
+  void shoot(int power, float degrees, int s);
 
   bool is_alive() {return this->alive;}
   b2Vec2 get_point();
   std::vector<b2Vec2> get_points();
 
-  void bazooka(int power, float degrees);
-  void green_grenade(int power, float degrees, int timer);
+  void bazooka(int power, float degrees, int s);
+  void green_grenade(int power, float degrees, int timer, int s);
 
   void printPos() {
       std::cout << "explosion: " << this->body->GetPosition().x << ":" << this->body->GetPosition().y << "\n";

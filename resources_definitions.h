@@ -88,7 +88,7 @@
 #define WORM_DYNAMITE_G 128
 #define WORM_DYNAMITE_B 192
 #define WORM_DYNAMITE_COLUMNS 1
-#define WORM_DYNAMITE_ROWS 10
+#define WORM_DYNAMITE_ROWS 143
 
 //un gusano con teletransportacion
 #define WORM_TELETRANS "resources/worm_teletrans.bmp"
