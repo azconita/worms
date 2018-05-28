@@ -89,9 +89,13 @@ StageDTO Stage::get_stageDTO() {
     ElementDTO worm_element;
     std::vector<b2Vec2> vertices = w.second.get_points();
     set_position(worm_element, vertices);
+    worm_element.player_id = w.first;
+    worm_element.life = 100;
     //printf("worm %i: x = %f y = %f  h = %f w = %f\n",w.first, worm_element.x, worm_element.y, worm_element.h, worm_element.w);
     s.worms[w.first] = worm_element;
   }
+
+
 
   for (auto b: this->beams) {
     ElementDTO beam_element;
@@ -121,8 +125,8 @@ StageDTO Stage::get_stageDTO() {
   ElementDTO explosion;
   explosion.weapon = Explosion;
   explosion.x = 25 -1;
-  explosion.y = 25-1;
-  explosion.h = 2;
+  explosion.y = 25 -1;
+  explosion.h = 2;  
   explosion.w = 2;
   s.weapons.push_back(explosion);
 
@@ -145,11 +149,14 @@ StageDTO Stage::get_stageDTO() {
 void Stage::add_beams(std::string config) {
   this->beams.push_back(Beam(this->world, 10,2));
   this->beams.push_back(Beam(this->world, 10,20));
+  this->beams.push_back(Beam(this->world, 30,20));
 }
 
 void Stage::add_worms(std::string config) {
-  Worm w(this->world, 10, 11);
-  this->worms.emplace(0, w);
+  Worm w0(this->world, 10, 11);
+   Worm w1(this->world, 30, 11);
+  this->worms.emplace(0, w0);
+  this->worms.emplace(1, w1);
 }
 
 void Stage::add_weapons(std::string config) {

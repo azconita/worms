@@ -6,7 +6,7 @@
 
 
 
-//g++ -std=c++11 main.cpp stage.cpp Beam.cpp Worm.cpp Constants.cpp Weapon.cpp Bazooka.cpp -lBox2D -lSDL -lSDL_image -lyaml-cpp -lSDL_ttf  -lSDL_gfx -g
+//g++ -std=c++11 prueba.cpp -lBox2D -lSDL -lSDL_image -lyaml-cpp -lSDL_ttf  -lSDL_gfx -g
 
 
 using std::cout;
@@ -107,30 +107,6 @@ void show_circle_life(SDL_Surface * screen, int life, int x, int y, Color color)
     position.w = text->w;
     SDL_BlitSurface(text, &dimention, screen, &position);
 
-    /*SDL_Surface * life_surface = SDL_CreateRGBSurface(0, 300,300, 32, 255, 255, 255, 100);
-    //ellipseRGBA(life_surface,text->w,text->h, text->w ,text->h, color.r,color.g,color.b,100);
-    //filledEllipseRGBA(life_surface,text->w,text->h, text->w ,text->h,color.r,color.g,color.b,100);
-
-    SDL_Rect dimention;
-    dimention.x = 0;
-    dimention.y = 0;
-    dimention.h = text->h;
-    dimention.w = text->w;
-
-    SDL_Rect position;
-    position.x = text->w/2+2;
-    position.y = text->h/2+2;
-    position.h = text->h;
-    position.w = text->w;
-    SDL_BlitSurface(text, &dimention, life_surface, &position);
-
-    dimention.h = text->h*2+2;
-    dimention.w = text->w*2+2;
-
-    position.x = x;
-    position.y = y;
-
-    SDL_BlitSurface(life_surface, &dimention, screen, &position);*/
 }
 
 
@@ -170,6 +146,18 @@ int main(int argc, char *args[]){
         << SDL_GetError() << endl;
         exit(1);
     }
+
+
+//////////////////////////////////////////////////////////////////////
+SDL_Window *second = SDL_CreateWindow("My Game Window",
+                          SDL_WINDOWPOS_UNDEFINED,
+                          SDL_WINDOWPOS_UNDEFINED,
+                          640, 480, 0);
+
+
+
+
+
 
     Graphic_Designer graphic_designer(1);
 
