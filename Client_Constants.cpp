@@ -1,6 +1,6 @@
 #include "Constants.h"
 #include <yaml-cpp/yaml.h>
-
+using std::string;
 
 namespace Resources_def {
   YAML::Node resources_definitions = YAML::LoadFile("resources_definitions.yaml");

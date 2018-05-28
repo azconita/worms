@@ -93,3 +93,11 @@ std::vector<b2Vec2> Worm::get_points() {
 
   return points;
 }
+
+void Worm::took_weapon(Weapon_Name weapon) {
+  this->weapon = weapon;
+}
+
+void Worm::use_weapon(float x, float y, int power, float degrees) {
+
+}

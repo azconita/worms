@@ -9,25 +9,31 @@
 #include <vector>
 #include <iostream>
 #include <Box2D/Box2D.h>
+#include "DTOs.h"
 
 #ifndef PROJECTILE_H_
 #define PROJECTILE_H_
 
-#define EXPLOSION 3
+#define PROJECTILE 3
 
 class Projectile : public Entity {
 private:
   b2World *world;
   b2Body* body;
+  Weapon_Name name;
   int i = 100;
 public:
-  Projectile(b2World *world, float x, float y);
+  Projectile(b2World *world, Weapon_Name name, float x, float y);
   Projectile(const Projectile &other);
   virtual ~Projectile();
   Projectile* operator=(const Projectile &other);
-  int get_type() { return EXPLOSION; }
+  int get_type() { return PROJECTILE; }
   bool should_explode();
-  void proximityExplosion(float blastRadius, float blastPower);
+  void proximity_explosion(float blastRadius, float blastPower);
+  void shoot(int power, float degrees);
+
+  b2Vec2 get_point();
+
 
   void printPos() {
       std::cout << "explosion: " << this->body->GetPosition().x << ":" << this->body->GetPosition().y << "\n";

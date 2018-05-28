@@ -12,9 +12,10 @@
 
 #include "Bazooka.h"
 #include "Constants.h"
+#include "DTOs.h"
 
 Bazooka::Bazooka(b2World* world, float x, float y) :
-          Weapon(world, x, y) {
+          Weapon(world, W_Bazooka, x, y) {
   this->damage = Constants::bazooka_damage;
   this->radius = Constants::bazooka_radius;
 }

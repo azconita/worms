@@ -5,6 +5,8 @@
 #include <Box2D/Box2D.h>
 #include "Constants.h"
 #include "WeaponExplosionListener.h"
+#include "Bazooka.h"
+#include "DTOs.h"
 
 //config: yaml: https://github.com/jbeder/yaml-cpp/
 Stage::Stage(std::string config) {
@@ -40,22 +42,24 @@ void Stage::make_action(ActionDTO & action) {
     case (Make_move):{
       switch(action.move){
         case Walk_right:
-          this->worms[worm].move_right();
+          this->worms[worm]->move_right();
           break;
         case Walk_left:
-          this->worms[worm].move_left();
+          this->worms[worm]->move_left();
           break;
         case Jump:
-          this->worms[worm].jump();
+          this->worms[worm]->jump();
           break;
         case Jump_back:
-          this->worms[worm].jump_back();
+          this->worms[worm]->jump_back();
           break;
       }
       break;
     }
     case(Take_weapon):{
       printf("Se tomo el arma %i\n", action.weapon);
+      // cuando sea el fin del turno, asignar NONE al arma del gusano
+      this->worms[worm]->took_weapon(action.weapon);
       break;
 
     }
@@ -63,6 +67,14 @@ void Stage::make_action(ActionDTO & action) {
     case(Shot_weapon):{
       printf("Se disparo el arma al punto (%i,%i) en metros, con una potencia de %i apuntando a %f grados",//
        action.x, action.y, action.power, action.weapon_degrees);
+      this->worms[worm]->use_weapon(action.x, action.y, action.power, action.weapon_degrees);
+      switch(action.weapon) {
+        case W_Bazooka:
+          Projectile* w = new Projectile(this->world, action.weapon, action.x, action.y);
+          this->explosions.push_back(w);
+          w->shoot(action.power, action.weapon_degrees);
+      }
+
       break;
 
     }
@@ -70,30 +82,30 @@ void Stage::make_action(ActionDTO & action) {
 }
 
 void Stage::set_position(ElementDTO & element , std::vector<b2Vec2> & vertices){
-    b2Vec2 up_left = vertices[0];
-    b2Vec2 down_right = vertices[2];
+  b2Vec2 up_left = vertices[0];
+  b2Vec2 down_right = vertices[2];
 
 
-    element.x = up_left.x;
-    element.y = up_left.y;
+  element.x = up_left.x;
+  element.y = up_left.y;
 
-    if(down_right.y > up_left.y){
-      element.h = (down_right.y - up_left.y);
-    }else{
-      element.h = (up_left.y - down_right.y);
-    }
-    if(down_right.x > up_left.x){
-      element.w = (down_right.x - up_left.x);
-    }else{
-      element.w = (up_left.x - down_right.x);
-    }
+  if(down_right.y > up_left.y){
+    element.h = (down_right.y - up_left.y);
+  }else{
+    element.h = (up_left.y - down_right.y);
+  }
+  if(down_right.x > up_left.x){
+    element.w = (down_right.x - up_left.x);
+  }else{
+    element.w = (up_left.x - down_right.x);
+  }
 }
 
 StageDTO Stage::get_stageDTO() {
   StageDTO s;
   for (auto w: this->worms) {
     ElementDTO worm_element;
-    std::vector<b2Vec2> vertices = w.second.get_points();
+    std::vector<b2Vec2> vertices = w.second->get_points();
     set_position(worm_element, vertices);
     //printf("worm %i: x = %f y = %f  h = %f w = %f\n",w.first, worm_element.x, worm_element.y, worm_element.h, worm_element.w);
     s.worms[w.first] = worm_element;
@@ -101,15 +113,22 @@ StageDTO Stage::get_stageDTO() {
 
   for (auto b: this->beams) {
     ElementDTO beam_element;
-    std::vector<b2Vec2> vertices = b.get_points();
+    std::vector<b2Vec2> vertices = b->get_points();
     set_position(beam_element, vertices);
     //printf("beam : x = %f y = %f  h = %f w = %f\n", beam_element.x, beam_element.y, beam_element.h, beam_element.w);
     s.beams.push_back(beam_element);
   }
 
+  for (auto w: this->explosions) {
+    ElementDTO weapon;
+    b2Vec2 point = w->get_point();
+    weapon.x = point.x;
+    weapon.y = point.y;
+    s.weapons.push_back(weapon);
+  }
 //arma harcodeada
   ElementDTO weapon_element;
-  weapon_element.weapon = Air_Attack;
+  weapon_element.weapon = W_Air_Attack;
   weapon_element.x = 20;
   weapon_element.y = 20;
   weapon_element.h = 2;
@@ -117,7 +136,7 @@ StageDTO Stage::get_stageDTO() {
   s.weapons.push_back(weapon_element);
 
    ElementDTO weapon_element2;
-  weapon_element2.weapon = Bazooka;
+  weapon_element2.weapon = W_Bazooka;
   weapon_element2.x = 25;
   weapon_element2.y = 25;
   weapon_element2.h = 2;
@@ -163,5 +182,5 @@ void Stage::add_weapons(std::string config) {
 }
 
 void Stage::add_explosion() {
-  this->explosions.push_back(new Projectile(this->world, 9,12));
+  this->explosions.push_back(new Projectile(this->world, W_Bazooka, 9, 12));
 }

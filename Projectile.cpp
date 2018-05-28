@@ -12,10 +12,9 @@
 #include <iostream>
 #include <string>
 #include "Constants.h"
+#include "DTOs.h"
 
-
-Projectile::Projectile(b2World *world, float x, float y) : Entity(3), world(world) {
-  // TODO Auto-generated constructor stub
+Projectile::Projectile(b2World *world, Weapon_Name name, float x, float y) : Entity(3), world(world), name(name) {
   b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     bodyDef.bullet = true;
@@ -33,7 +32,7 @@ std::cout << "explosionDir: " << this << '\n';
     this->body->SetUserData(this);
 }
 
-Projectile::Projectile(const Projectile &other) : Entity(3), world(other.world), body(other.body) {
+Projectile::Projectile(const Projectile &other) : Entity(3), world(other.world), body(other.body), name(name) {
   std::cout << "explosionDir(&other): " << this << '\n';
   //this->body->SetUserData(this);
 }
@@ -50,7 +49,11 @@ Projectile* Projectile::operator=(const Projectile &other) {
   return this;
 }
 
-void applyBlastImpulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint,
+b2Vec2 Projectile::get_point() {
+  return ((b2CircleShape*) this->body->GetFixtureList()->GetShape())->m_p;
+}
+
+void apply_explosion_impulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint,
                         float blastPower) {
   b2Vec2 blastDir = applyPoint - blastCenter;
   float distance = blastDir.Normalize();
@@ -71,26 +74,41 @@ void applyBlastImpulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint,
 
 
 //find all bodies with fixtures in blast radius AABB
-void Projectile::proximityExplosion(float blastRadius, float blastPower) {
+void Projectile::proximity_explosion(float radius, float power) {
   std::cout << "explosion!\n" ;
-  ExplosionQueryCallback queryCallback; //see "World querying topic"
+  ExplosionQueryCallback query_callback; //see "World querying topic"
   b2AABB aabb;
   b2Vec2 center = this->body->GetPosition();
-  aabb.lowerBound = center - b2Vec2( blastRadius, blastRadius );
-  aabb.upperBound = center + b2Vec2( blastRadius, blastRadius );
-  this->world->QueryAABB( &queryCallback, aabb );
+  aabb.lowerBound = center - b2Vec2(radius, radius);
+  aabb.upperBound = center + b2Vec2(radius, radius);
+  this->world->QueryAABB(&query_callback, aabb);
 
   //check which of these bodies have their center of mass within the blast radius
-  for (int i = 0; i < queryCallback.foundBodies.size(); i++) {
-      b2Body* body = queryCallback.foundBodies[i];
+  for (int i = 0; i < query_callback.foundBodies.size(); i++) {
+      b2Body* body = query_callback.foundBodies[i];
       b2Vec2 bodyCom = body->GetWorldCenter();
 
       //ignore bodies outside the blast range
-      if ( (bodyCom - center).Length() >= blastRadius )
+      if ( (bodyCom - center).Length() >= radius )
           continue;
 
-      applyBlastImpulse(body, center, bodyCom, blastPower );
+      apply_explosion_impulse(body, center, bodyCom, power );
   }
+}
+
+//r in degrees
+b2Vec2 rad2vec(float r) {
+  r = r * (3.14159265359/180.0);
+  return b2Vec2(cos(r), sin(r));
+}
+
+void Projectile::shoot(int power, float degrees) {
+  b2Vec2 vel = rad2vec(degrees);
+  float velChange = power * vel.x;
+  float impulsex = body->GetMass() * velChange;
+  velChange = power * vel.y;
+  float impulsey = body->GetMass() * velChange;
+  this->body->ApplyLinearImpulse(b2Vec2(impulsex,impulsey), this->body->GetWorldCenter(), true);
 }
 
 bool Projectile::should_explode(){

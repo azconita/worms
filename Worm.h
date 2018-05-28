@@ -8,8 +8,9 @@
 #include <Box2D/Box2D.h>
 #include <vector>
 #include <iostream>
-
+#include "Weapon.h"
 #include "Entity.h"
+#include "DTOs.h"
 
 #ifndef WORM_H_
 #define WORM_H_
@@ -18,6 +19,7 @@
 
 class Worm : public Entity {
   b2Body* body;
+  Weapon_Name weapon = None;
   int life;
 public:
   Worm(b2World* world, float x, float y);
@@ -36,7 +38,8 @@ public:
   void jump_back(); // 0.2m atras y 1.2m alto
 
   //use weapons
-
+  void took_weapon(Weapon_Name weapon);
+  void use_weapon(float x, float y, int power, float degrees);
 
   void printPos() {
     std::cout << "worm: " << this->body->GetPosition().x << ":" << this->body->GetPosition().y << "\n";

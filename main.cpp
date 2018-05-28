@@ -527,8 +527,8 @@ enum State{
 
 static  std::map<Weapon_Name, State> weapons_states {
 
-    {Air_Attack, Worm_air_attack},
-    {Bazooka,Worm_missile},
+    {W_Air_Attack, Worm_air_attack},
+    {W_Bazooka,Worm_missile},
     {Dynamite,Worm_dynamite},
     {Mortar,Worm_missile},
     {Green_Granade,Worm_green_granade},
@@ -730,18 +730,18 @@ float meters_conversor(int pixel){
 
 }
 void air_attack(Worm_Animation_Controller& turn_worm){
-    turn_worm.take_weapon(Air_Attack);
+    turn_worm.take_weapon(W_Air_Attack);
     this->wait_for_destination_clicl = true;
     this->action.type = Take_weapon;
-    this->action.weapon = Air_Attack;
+    this->action.weapon = W_Air_Attack;
     this->stage.make_action(this->action);
 }
 
 void bazooka(Worm_Animation_Controller& turn_worm){
-    turn_worm.take_weapon(Bazooka);
+    turn_worm.take_weapon(W_Bazooka);
     this->wait_for_potentia = true;
     this->action.type = Take_weapon;
-    this->action.weapon = Bazooka;
+    this->action.weapon = W_Bazooka;
     this->stage.make_action(this->action);
 }
 
@@ -1111,7 +1111,7 @@ public:
 Weapons_Animation_Controller(int i){
 
         Animation bazooka = Animation_Factory::get_bazooka();
-        this->animations.insert(std::pair<Weapon_Name,Animation>(Bazooka, bazooka));
+        this->animations.insert(std::pair<Weapon_Name,Animation>(W_Bazooka, bazooka));
 
         Animation mortar = Animation_Factory::get_mortar();
         this->animations.insert(std::pair<Weapon_Name,Animation>(Mortar,mortar));
@@ -1129,7 +1129,7 @@ Weapons_Animation_Controller(int i){
         this->animations.insert(std::pair<Weapon_Name,Animation>(Holy_Granade,holy_granade));
 
         Animation air_attack = Animation_Factory::get_air_attack();
-        this->animations.insert(std::pair<Weapon_Name,Animation>(Air_Attack,air_attack));
+        this->animations.insert(std::pair<Weapon_Name,Animation>(W_Air_Attack,air_attack));
 
         Animation dynamite = Animation_Factory::get_dynamite();
         this->animations.insert(std::pair<Weapon_Name,Animation>(Dynamite,dynamite));

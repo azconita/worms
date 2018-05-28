@@ -19,7 +19,8 @@ Weapon::~Weapon() {
   // TODO Auto-generated destructor stub
 }
 
-Weapon::Weapon(b2World* world, float x, float y) : Entity(2) {
+Weapon::Weapon(b2World* world, Weapon_Name name, float x, float y)
+                                           : Entity(2) , name(name) {
   b2BodyDef bodyDef;
   bodyDef.type = b2_dynamicBody;
   bodyDef.bullet = true;
@@ -37,5 +38,13 @@ Weapon::Weapon(b2World* world, float x, float y) : Entity(2) {
   this->body->SetUserData(this);
 }
 
-//Weapon::Weapon() : Entity(2),
 
+void Weapon::shoot(int power, float degrees) {
+  float r = degrees * (3.14159265359/180.0);
+  b2Vec2 vel = b2Vec2(cos(r), sin(r));
+  float velChange = power * vel.x;
+  float impulsex = body->GetMass() * velChange;
+  velChange = power * vel.y;
+  float impulsey = body->GetMass() * velChange;
+  this->body->ApplyLinearImpulse(b2Vec2(impulsex,impulsey), this->body->GetWorldCenter(), true);
+}
