@@ -751,6 +751,13 @@ void move(int position_x, int position_y){
 
 }
 
+int get_x(){
+    return this->x;
+}
+int get_y(){
+    return this->y;
+}
+
 void show(SDL_Surface * screen){
     std::map<int,Animation>::iterator animation_iter = animations.find(this->state);
     animation_iter->second.draw(screen, this->x, this->y);
@@ -1152,7 +1159,7 @@ void mouse_motion(){
 }
 
 void weapon_shot(Worm_Animation_Controller& turn_worm){
-    shot(turn_worm,0,0);
+    shot(turn_worm,turn_worm.get_x(),turn_worm.get_y());
        
 }
 
