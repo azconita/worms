@@ -53,6 +53,7 @@ struct ActionDTO {
   Weapon_Name weapon;
   float weapon_degrees;
   int power;
+  int time_to_explode;
   int x;
   int y;
 };

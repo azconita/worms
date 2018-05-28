@@ -81,7 +81,7 @@ void Stage::make_action(ActionDTO & action) {
           this->explosions.push_back(w);
           int s =(action.weapon_degrees < 90) ? 1 : -1;
           float d = (action.weapon_degrees < 90) ? -action.weapon_degrees : -(action.weapon_degrees - 180);
-          w->shoot(action.power, d, s);
+          w->shoot(action.power, d, s, action.time_to_explode);
       //}
 
       break;

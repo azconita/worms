@@ -22,7 +22,7 @@ WeaponExplosionListener::~WeaponExplosionListener() {
 
 void WeaponExplosionListener::BeginContact(b2Contact* contact) {
 
-  //check if fixture A was a explsion
+  //check if fixture A was a explosion
   Entity* bodyUserData = (Entity*) contact->GetFixtureA()->GetBody()->GetUserData();
   std::cout << "entity read " << bodyUserData<< "\n";
   if (bodyUserData->en_type == 3) {

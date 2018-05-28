@@ -93,6 +93,12 @@ void Projectile::proximity_explosion(float radius, float power) {
   if (!this->alive)
     return;
   //TODO: timer!!
+  if (this->timer != 0) {
+    if (this->t == 0)
+      time(&(this->t));
+    else if (difftime(this->t,time(NULL)) < this->timer)
+      return;
+  }
   //if (this->name == Green_Grenade) &&
   std::cout << "explosion!\n" ;
   this->name = Explosion;
@@ -123,10 +129,15 @@ b2Vec2 rad2vec(float r) {
   return b2Vec2(cos(r), sin(r));
 }
 
-void Projectile::shoot(int power, float degrees, int s) {
+void Projectile::shoot(int power, float degrees, int s, int time_to_explode) {
   switch (this->name) {
     case W_Bazooka: {
       this->bazooka(power,degrees, s);
+      break;
+    }
+    case Green_Granade: {
+      this->green_grenade(power, degrees, time_to_explode, s);
+      break;
     }
   }
 }
@@ -143,6 +154,7 @@ void Projectile::bazooka(int power, float degrees, int s) {
 }
 
 void Projectile::green_grenade(int power, float degrees, int timer, int s) {
+  this->timer = timer;
   b2Vec2 vel = rad2vec(degrees);
   float velChange = power * vel.x;
   float impulsex = body->GetMass() * velChange;
