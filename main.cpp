@@ -550,12 +550,12 @@ static  std::map<Weapon_Name, State> weapons_states {
 };
 
 
-static const std::vector<State> weapons_states_to_point(
+//armas con mira
+static const std::vector<State> weapons_states_with_degrees( 
     {Worm_missile,
     Worm_green_granade,
     Worm_holy_granade,
     Worm_red_granade,
-    Worm_teletrans,
     Worm_banana,
     Worm_bat}
 );
@@ -639,9 +639,13 @@ bool has_weapon(){
     return (this->state != Walk && this->state != Still && this->state != Jump_state && this->state != Fall); 
 }
 
+bool has_weapon_to_click(){
+    return (this->state == Worm_teletrans || this->state == Worm_air_attack);
+}
+
 bool has_point_weapon(){ //armas con las que no se puede apuntar
-    return std::find(weapons_states_to_point.begin(), weapons_states_to_point.end(), this->state) //
-    != weapons_states_to_point.end();
+    return std::find(weapons_states_with_degrees.begin(), weapons_states_with_degrees.end(), this->state) //
+    != weapons_states_with_degrees.end();
 }
 
 void change_direction(Direction direction){
@@ -1065,16 +1069,15 @@ void shot(Worm_Animation_Controller& turn_worm,int x, int y){
         this->wait_for_destination_clicl = true;
         this->stage.make_action(this->action);
     }
-
-    cout << "no tiene arma para disparar" << endl;
-
-
+    else{
+        cout << "no tiene arma para disparar" << endl;
+    }
 }
 
 void click(Worm_Animation_Controller& turn_worm){
     int x, y;
     SDL_GetMouseState(&x, &y);
-    if(turn_worm.has_weapon()){
+    if(turn_worm.has_weapon_to_click()){
         shot(turn_worm,x,y);
     }
 
@@ -1148,7 +1151,7 @@ void mouse_motion(){
     }
 }
 
-void enter(Worm_Animation_Controller& turn_worm){
+void weapon_shot(Worm_Animation_Controller& turn_worm){
     shot(turn_worm,0,0);
        
 }
@@ -1179,7 +1182,7 @@ bool continue_running(Worm_Animation_Controller& turn_worm){
     }
  
     if(SDL_PollEvent(&this->event) != 1){
-        return true; // no hay nuevos eventos
+        return true; // no hay nuevos event
     }
     switch(event.type){
         case SDL_QUIT:
@@ -1193,9 +1196,9 @@ bool continue_running(Worm_Animation_Controller& turn_worm){
             switch(event.key.keysym.sym){
                 case SDLK_ESCAPE:
                     return false;
-                case SDLK_KP_ENTER:
+                case SDLK_w:
                     cout << "disparo" << endl;
-                    enter(turn_worm);
+                    weapon_shot(turn_worm);
                     break;
                 case SDLK_LEFT:
                     left( turn_worm);
@@ -1422,7 +1425,7 @@ void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Worm_Animation_Con
 
         ElementDTO worm_info = w.second;
 
-        //debug_box2d_figure(screen, worm_info);
+        debug_box2d_figure(screen, worm_info);
 
         int up_left_vertex_x = get_pixels(worm_info.x);
         int up_left_vertex_y = get_pixels(worm_info.y);
