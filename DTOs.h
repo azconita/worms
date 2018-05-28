@@ -12,6 +12,13 @@
 #include <vector>
 #include <string>
 
+
+
+enum Direction{
+    Right,
+    Left
+};
+
 enum Entity_Type {
   E_Beam,
   E_Worm,
@@ -54,6 +61,7 @@ struct ActionDTO {
   float weapon_degrees;
   int power;
   int time_to_explode;
+  Direction direction;
   int x;
   int y;
 };
@@ -68,6 +76,7 @@ struct ElementDTO { //puede ser un gusano, un arma o una viga
   int life;
   int player_id;
   Weapon_Name weapon;
+  int timer;
   bool explosion;
 };
 

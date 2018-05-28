@@ -188,6 +188,9 @@
 #define POWER_BAR "resources/powerbar.bmp"
 #define WEAPONS_MENU "resources/weapons_menu.bmp"
 #define FONT_FILE "resources/Amiko-Bold.ttf"
+#define FONT_SIZE 10
+#define TIMER_SIZE 35
+#define TIMER_FONT "resources/DS-DIGI.ttf"
 
 
 

@@ -90,10 +90,7 @@ public:
 };
 
 /////////////////////////////////////////////////////////////////////////////////////////
-enum Direction{
-    Right,
-    Left
-};
+
 
 
 class Picture{
@@ -580,6 +577,7 @@ class Worm_Animation_Controller{
     State state;
     float degrees;
     int weapon_power;
+    int timer;
     std::map<int,Animation> animations;
 
 public:
@@ -633,6 +631,7 @@ Worm_Animation_Controller(int initial_x, int initial_y, Direction initial_dir){
         animation_iter->second.set_current_direction(initial_dir);
     }
     this->weapon_power = 0;
+    this->timer = 5;
 }
 
 bool has_weapon(){
@@ -666,6 +665,8 @@ void change_state(State state){
 }
 
 void take_weapon(Weapon_Name weapon){
+    this->timer = 5;
+    this->degrees = -90;
     std::map<Weapon_Name,State>::iterator weapon_state = weapons_states.find(weapon);
     change_state(weapon_state->second);
     if( std::find(weapons_states_with_power.begin(), weapons_states_with_power.end(), this->state) //
@@ -674,12 +675,8 @@ void take_weapon(Weapon_Name weapon){
     }else{
         this->weapon_power = 0;
     }
-
-     if(this->direction == Right){
-        this->degrees = -90;
-    }else{
-        this->degrees = 270;
-    }
+        
+    
 
 
 }
@@ -687,12 +684,8 @@ void take_weapon(Weapon_Name weapon){
 float point_down_weapon(){
     std::map<int,Animation>::iterator animation_iter = animations.find(this->state);
     if(animation_iter->second.point_down()){
-        if(this->direction == Right){
-            this->degrees-=GRADES_PER_STEP; //31 fotos/180 grados
-        }else{
-            this->degrees+=GRADES_PER_STEP;
-        }
-
+        this->degrees-=GRADES_PER_STEP; //31 fotos/180 grados
+        
     }
     return this->degrees;
 
@@ -701,11 +694,7 @@ float point_down_weapon(){
 float point_up_weapon(){
     std::map<int,Animation>::iterator animation_iter = animations.find(this->state);
     if(animation_iter->second.point_up()){
-        if(this->direction == Right){
             this->degrees+=GRADES_PER_STEP; //31 fotos/180 grados
-        }else{
-            this->degrees-=GRADES_PER_STEP;
-        }
     }
     return this->degrees;
 }
@@ -724,6 +713,15 @@ bool add_power(){
 int get_weapon_power(){
     return this->weapon_power;
 }
+
+void set_timer(int timer){
+    this->timer = timer;
+}
+
+int get_timer(){
+    return this->timer;
+}
+
 
 
 Direction get_direction(){
@@ -776,7 +774,7 @@ class Graphic_Designer{
     int screen_height;
     int screen_width;
     TTF_Font *font;
-    SDL_Color text_color;
+    TTF_Font *time_font;
     SDL_Surface *power_bar;
     SDL_Surface * weapons_menu;
 
@@ -795,7 +793,7 @@ Graphic_Designer(SDL_Surface * screen, int screen_height, int screen_width){
       SDL_Quit();
       exit(1);
     }
-    this->font = TTF_OpenFont(FONT_FILE, 10);
+    this->font = TTF_OpenFont(FONT_FILE, FONT_SIZE);
     if (this->font == NULL){
         cout << "TTF_OpenFont() Fail: " << TTF_GetError() << endl;
         TTF_Quit();
@@ -803,7 +801,14 @@ Graphic_Designer(SDL_Surface * screen, int screen_height, int screen_width){
         exit(1);
     }
 
-    this->text_color =  {0, 0, 0};
+    this->time_font = TTF_OpenFont(TIMER_FONT, TIMER_SIZE);
+    if (this->time_font == NULL){
+        cout << "TTF_OpenFont() Fail: " << TTF_GetError() << endl;
+        TTF_Quit();
+        SDL_Quit();
+        exit(1);
+    }
+
 
     SDL_Surface *power_bar = IMG_Load(POWER_BAR);
     if (!power_bar) {
@@ -838,8 +843,8 @@ void show_life(int life, int x, int y, Color color){
         sprintf(str_life, "%d", life);
     }
 
-
-    SDL_Surface * text = TTF_RenderText_Solid(font,str_life,text_color);
+    SDL_Color black_text_color = {0,0,0};
+    SDL_Surface * text = TTF_RenderText_Solid(font,str_life,black_text_color);
     if (text == NULL){
         cout << "TTF_RenderText_Solid(): " << TTF_GetError() << endl;
         TTF_Quit();
@@ -947,6 +952,52 @@ Weapon_Name choose_weapon(int x, int y){
         return Dynamite;
     }
     return Banana;
+}
+
+void show_timer(int second){
+    char time[10];
+    sprintf(time, "00:00:0%d ", second);
+
+
+    SDL_Color red_text_color = {255,0,0};
+    SDL_Surface * text = TTF_RenderText_Solid(time_font,time,red_text_color);
+    if (text == NULL){
+        cout << "TTF_RenderText_Solid(): " << TTF_GetError() << endl;
+        TTF_Quit();
+        SDL_Quit();
+        exit(1);
+    }
+
+    SDL_Rect white_rec;
+    white_rec.x = this->screen_width/2 - 6;
+    white_rec.y = 25 - 4;
+    white_rec.h = text->h + 8;
+    white_rec.w = text->w + 8;
+    Uint32 withe  = SDL_MapRGBA(screen->format, 255, 255,255,100);
+    SDL_FillRect(screen, &white_rec, withe);
+
+    SDL_Rect rectangle;
+    rectangle.x = this->screen_width/2 - 2;
+    rectangle.y = 25;
+    rectangle.h = text->h;
+    rectangle.w = text->w;
+    Uint32 colorkey = SDL_MapRGBA(screen->format, 0, 0, 0, 0);
+    SDL_FillRect(screen, &rectangle, colorkey);
+
+    SDL_Rect dimention;
+    dimention.x = 0;
+    dimention.y = 0;
+    dimention.h = text->h;
+    dimention.w = text->w;
+
+    SDL_Rect position;
+    position.x = this->screen_width/2;
+    position.y = 25;
+    position.h = text->h;
+    position.w = text->w;
+    SDL_BlitSurface(text, &dimention, screen, &position);
+
+
 }
 
 
@@ -1072,7 +1123,9 @@ void shot(Worm_Animation_Controller& turn_worm,int x, int y){
         this->action.x = meters_conversor(x);
         this->action.y = meters_conversor(y);
         this->action.weapon_degrees = turn_worm.get_degrees();
+        this->action.direction = turn_worm.get_direction();
         this->action.power = turn_worm.get_weapon_power();
+        this->action.time_to_explode = turn_worm.get_timer();
         this->wait_for_destination_clicl = true;
         this->stage.make_action(this->action);
     }
@@ -1223,6 +1276,38 @@ bool continue_running(Worm_Animation_Controller& turn_worm){
                 case SDLK_SPACE:
                     space( turn_worm);
                     break;
+                case SDLK_0:
+                    turn_worm.set_timer(0);
+                    break;
+                case SDLK_1:
+                    turn_worm.set_timer(1);
+                    break;
+                case SDLK_2:
+                    turn_worm.set_timer(2);
+                    break;
+                case SDLK_3:
+                    turn_worm.set_timer(3);
+                    break;
+                case SDLK_4:
+                    turn_worm.set_timer(4);
+                    break;
+                case SDLK_5:
+                    turn_worm.set_timer(5);
+                    break;
+                case SDLK_6:
+                    printf("se apreto 6\n");
+                    break;
+                    turn_worm.set_timer(6);
+                    break;
+                case SDLK_7:
+                    turn_worm.set_timer(7);
+                    break;
+                case SDLK_8:
+                    turn_worm.set_timer(8);
+                    break;
+                case SDLK_9:
+                    turn_worm.set_timer(9);
+                    break;
                 //-------------ARMAS--------------------
                 case SDLK_a:
                     air_attack( turn_worm);
@@ -1305,7 +1390,7 @@ Weapons_Animation_Controller(int i){
         this->animations.insert(std::pair<Weapon_Name,Animation>(Explosion,explosion));
 }
 
-void show_weapon( StageDTO s,SDL_Surface * screen){
+void show_weapon( StageDTO s,SDL_Surface * screen, Graphic_Designer & gd){
     for (auto w: s.weapons) {
 
         debug_box2d_figure(screen, w);
@@ -1317,6 +1402,7 @@ void show_weapon( StageDTO s,SDL_Surface * screen){
         std::map<Weapon_Name,Animation>::iterator weapon_iter = animations.find(w.weapon);
         weapon_iter->second.continue_internal_movement();
         weapon_iter->second.draw(screen,up_left_vertex_x, up_left_vertex_y);
+        gd.show_timer(5);
     }
 }
 
@@ -1552,7 +1638,7 @@ int main(int argc, char *args[]){
 
             //dibujo los gusanos
             show_worms(s, screen, worms, graphic_designer);
-            weapons_controller.show_weapon(s, screen);
+            weapons_controller.show_weapon(s, screen, graphic_designer);
 
         }
 

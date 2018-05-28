@@ -71,8 +71,8 @@ void Stage::make_action(ActionDTO & action) {
     }
 
     case(Shot_weapon):{
-      //printf("Se disparo el arma al punto (%i,%i) en metros, con una potencia de %i apuntando a %f grados",//
-       //action.x, action.y, action.power, action.weapon_degrees);
+      printf("Se disparo el arma al punto (%i,%i) en metros, con una potencia de %i apuntando a %f grados en la dire %i y con timer %i\n",//
+       action.x, action.y, action.power, action.weapon_degrees, action.direction, action.time_to_explode);
       //this->worms[worm]->use_weapon(action.x, action.y, action.power, action.weapon_degrees);
 
       //switch(action.weapon) {

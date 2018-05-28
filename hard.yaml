@@ -1,0 +1,43 @@
+beams:
+	-x: 10
+	 y: 20
+	 size: small
+	 inclination: 0
+	-x: 15
+	 y: 24
+	 size: small
+	 inclination: 45
+	-x: 18
+	 y: 28
+	 size: small
+	 inclination: 60
+	-x: 21
+	 y: 17
+	 size: small
+	 inclination: -45
+	-x: 28
+	 y: 21
+	 size: small
+	 inclination: 0
+
+worm_initial_life: 100
+players: 
+	0:	-0:
+			x: 10 
+			y: 11
+		-1:
+			x: 16
+			y: 11
+		-2:
+			x: 18
+			y: 11
+	1:
+		-3:
+			x: 22
+			y: 11
+		-4:
+			x: 24
+			y: 11
+		-5:
+			x: 29
+			y: 11
