@@ -1055,14 +1055,19 @@ void baseboll_bat(Worm_Animation_Controller& turn_worm){
 }
 
 void shot(Worm_Animation_Controller& turn_worm,int x, int y){
-    printf("%f %f\n", meters_conversor(x),meters_conversor(y));
-    this->action.type = Shot_weapon;
-    this->action.x = meters_conversor(x);
-    this->action.y = meters_conversor(y);
-    this->action.weapon_degrees = turn_worm.get_degrees();
-    this->action.power = turn_worm.get_weapon_power();
-    this->wait_for_destination_clicl = true;
-    this->stage.make_action(this->action);
+    if(turn_worm.has_weapon()){
+        printf("%f %f\n", meters_conversor(x),meters_conversor(y));
+        this->action.type = Shot_weapon;
+        this->action.x = meters_conversor(x);
+        this->action.y = meters_conversor(y);
+        this->action.weapon_degrees = turn_worm.get_degrees();
+        this->action.power = turn_worm.get_weapon_power();
+        this->wait_for_destination_clicl = true;
+        this->stage.make_action(this->action);
+    }
+
+    cout << "no tiene arma para disparar" << endl;
+
 
 }
 
@@ -1144,9 +1149,8 @@ void mouse_motion(){
 }
 
 void enter(Worm_Animation_Controller& turn_worm){
-    if(turn_worm.has_weapon()){
-        shot(turn_worm,0,0);
-    }
+    shot(turn_worm,0,0);
+       
 }
 
 
@@ -1174,7 +1178,9 @@ bool continue_running(Worm_Animation_Controller& turn_worm){
         this->graphic_designer.show_weapons_menu(100);
     }
  
-    SDL_PollEvent(&this->event);
+    if(SDL_PollEvent(&this->event) != 1){
+        return true; // no hay nuevos eventos
+    }
     switch(event.type){
         case SDL_QUIT:
             return false;
