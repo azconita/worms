@@ -1162,6 +1162,7 @@ void up(Worm_Animation_Controller& turn_worm){
         turn_worm.change_state(Jump_state);
         this->action.type = Make_move;
         this->action.move = Jump;
+        this->action.direction = turn_worm.get_direction();
         this->stage.make_action(this->action);
     }
 
