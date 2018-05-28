@@ -29,13 +29,17 @@ public:
   virtual ~Projectile();
   Projectile* operator=(const Projectile &other);
   int get_type() { return PROJECTILE; }
+  Weapon_Name get_name() { return this->name;}
   bool should_explode();
   void proximity_explosion(float blastRadius, float blastPower);
   void shoot(int power, float degrees);
 
   bool is_alive() {return this->alive;}
   b2Vec2 get_point();
+  std::vector<b2Vec2> get_points();
 
+  void bazooka(int power, float degrees);
+  void green_grenade(int power, float degrees, int timer);
 
   void printPos() {
       std::cout << "explosion: " << this->body->GetPosition().x << ":" << this->body->GetPosition().y << "\n";

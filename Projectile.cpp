@@ -21,10 +21,12 @@ Projectile::Projectile(b2World *world, Weapon_Name name, float x, float y) : Ent
     bodyDef.position.Set(x, y);
     bodyDef.userData = (void*) this;
     this->body = world->CreateBody(&bodyDef);
-std::cout << "explosionDir: " << this << '\n';
+//std::cout << "explosionDir: " << this << '\n';
     //add box fixture
-    b2CircleShape shape;
-    shape.m_radius = Constants::weapon_size;
+    //b2CircleShape shape;
+    //shape.m_radius = Constants::weapon_size;
+    b2PolygonShape shape;
+    shape.SetAsBox(0.5, 0.5);
     b2FixtureDef myFixtureDef;
     myFixtureDef.shape = &shape;
     myFixtureDef.density = Constants::weapon_density;
@@ -33,7 +35,7 @@ std::cout << "explosionDir: " << this << '\n';
 }
 
 Projectile::Projectile(const Projectile &other) : Entity(3), world(other.world), body(other.body), name(name) {
-  std::cout << "explosionDir(&other): " << this << '\n';
+  //std::cout << "explosionDir(&other): " << this << '\n';
   //this->body->SetUserData(this);
 }
 
@@ -42,7 +44,7 @@ Projectile::~Projectile() {
 }
 
 Projectile* Projectile::operator=(const Projectile &other) {
-  std::cout << "explosionDir=: " << this << '\n';
+  //std::cout << "explosionDir=: " << this << '\n';
   this->body = other.body;
   this->world = other.world;
   this->body->SetUserData(this);
@@ -50,7 +52,19 @@ Projectile* Projectile::operator=(const Projectile &other) {
 }
 
 b2Vec2 Projectile::get_point() {
-  return ((b2CircleShape*) this->body->GetFixtureList()->GetShape())->m_p;
+  //return ((b2CircleShape*) this->body->GetFixtureList()->GetShape())->m_p;
+  return this->body->GetPosition();
+}
+
+std::vector<b2Vec2> Projectile::get_points() {
+  std::vector<b2Vec2> points;
+  for (int i = 0; i < 4; i++) {
+    b2Vec2 p = ((b2PolygonShape*)this->body->GetFixtureList()->GetShape())->GetVertex(i);
+    rotateTranslate(p, this->body->GetWorldCenter(), this->body->GetAngle());
+    points.push_back(p);
+  }
+
+  return points;
 }
 
 void apply_explosion_impulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint,
@@ -79,6 +93,7 @@ void Projectile::proximity_explosion(float radius, float power) {
   if (!this->alive)
     return;
   std::cout << "explosion!\n" ;
+  this->name = Explosion;
   ExplosionQueryCallback query_callback;
   b2AABB aabb;
   b2Vec2 center = this->body->GetPosition();
@@ -107,17 +122,19 @@ b2Vec2 rad2vec(float r) {
 }
 
 void Projectile::shoot(int power, float degrees) {
+  switch (this->name) {
+    case W_Bazooka: {
+      this->bazooka(power,degrees);
+    }
+  }
+}
+
+void Projectile::bazooka(int power, float degrees) {
   b2Vec2 vel = rad2vec(degrees);
   float velChange = power * vel.x;
   float impulsex = body->GetMass() * velChange;
   velChange = power * vel.y;
   float impulsey = body->GetMass() * velChange;
   this->body->ApplyLinearImpulse(b2Vec2(impulsex,impulsey), this->body->GetWorldCenter(), true);
-}
 
-bool Projectile::should_explode(){
-  i--;
-  if (this->i == 0)
-    return true;
-  return false;
 }

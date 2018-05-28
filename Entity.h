@@ -8,6 +8,8 @@
 #ifndef ENTITY_H_
 #define ENTITY_H_
 
+#include <Box2D/Box2D.h>
+
 class Entity {
 public:
   int en_type;
@@ -16,6 +18,7 @@ public:
   Entity(int i);
   virtual ~Entity();
   virtual int get_type()=0;
+  void rotateTranslate(b2Vec2& vector,const b2Vec2& center,float angle);
 };
 
 #endif /* ENTITY_H_ */

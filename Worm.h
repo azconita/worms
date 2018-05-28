@@ -46,7 +46,7 @@ public:
   }
 private:
   float get_impulse();
-  void rotateTranslate(b2Vec2& vector,const b2Vec2& center,float angle);
+  //void rotateTranslate(b2Vec2& vector,const b2Vec2& center,float angle);
 };
 
 #endif /* WORM_H_ */

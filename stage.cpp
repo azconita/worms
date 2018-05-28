@@ -130,11 +130,16 @@ StageDTO Stage::get_stageDTO() {
   }
 
   for (auto w: this->explosions) {
-    ElementDTO weapon;
-    b2Vec2 point = w->get_point();
-    weapon.x = point.x;
-    weapon.y = point.y;
-    s.weapons.push_back(weapon);
+    if(w->is_alive()) {
+      ElementDTO weapon;
+      b2Vec2 point = w->get_point();
+      weapon.x = point.x;
+      weapon.y = point.y;
+      weapon.h = 0.5;
+      weapon.w = 0.5;
+      weapon.weapon = w->get_name();
+      s.weapons.push_back(weapon);
+    }
   }
 //arma harcodeada
   ElementDTO weapon_element;

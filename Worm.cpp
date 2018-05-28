@@ -76,12 +76,7 @@ void Worm::jump_back() {
   this->body->ApplyLinearImpulse(b2Vec2(-impulse,impulse), this->body->GetWorldCenter(), true);
 }
 
-void Worm::rotateTranslate(b2Vec2& vector,const b2Vec2& center,float angle) {
-  b2Vec2 tmp;
-  tmp.x=vector.x*cos(angle)-vector.y*sin(angle);
-  tmp.y=vector.x*sin(angle)+vector.y*cos(angle);
-  vector=tmp+center;
-}
+
 
 std::vector<b2Vec2> Worm::get_points() {
   std::vector<b2Vec2> points;
