@@ -1295,8 +1295,6 @@ bool continue_running(Worm_Animation_Controller& turn_worm){
                     turn_worm.set_timer(5);
                     break;
                 case SDLK_6:
-                    printf("se apreto 6\n");
-                    break;
                     turn_worm.set_timer(6);
                     break;
                 case SDLK_7:
@@ -1402,7 +1400,8 @@ void show_weapon( StageDTO s,SDL_Surface * screen, Graphic_Designer & gd){
         std::map<Weapon_Name,Animation>::iterator weapon_iter = animations.find(w.weapon);
         weapon_iter->second.continue_internal_movement();
         weapon_iter->second.draw(screen,up_left_vertex_x, up_left_vertex_y);
-        gd.show_timer(5);
+
+        gd.show_timer(w.timer);
     }
 }
 
