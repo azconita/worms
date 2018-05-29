@@ -107,7 +107,6 @@ void Projectile::proximity_explosion(float radius, float power) {
   }
   //if (this->name == Green_Grenade) &&
   std::cout << "explosion!\n" ;
-  this->name = Explosion;
   ExplosionQueryCallback query_callback;
   b2AABB aabb;
   b2Vec2 center = this->body->GetPosition();
@@ -126,7 +125,9 @@ void Projectile::proximity_explosion(float radius, float power) {
       apply_explosion_impulse(body, center, bodyCom, power );
   }
   //this->alive = false;
+
   this->timer = 8;
+  this->name = Explosion;
 }
 
 //r in degrees

@@ -31,21 +31,28 @@ void Stage::update() {
   int32 velocityIterations = Constants::velocity_iterations;   //how strongly to correct velocity
   int32 positionIterations = Constants::position_iterations;   //how strongly to correct position
 
-  //this->worms[0].printPos();
-  //this->explosions[0].printPos();
   this->world->Step( timeStep, velocityIterations, positionIterations);
 
-
+  //check for timers in explosion
   /*for (auto w: this->explosions) {
-    if (!w->is_alive()) {
-      delete w;
-      printf("w: %x\n", w);
-      printf("destroy weapon!\n");
-      w = NULL;
+    if (w->has_timer()) {
+
     }
   }*/
+
+  //delete "dead" explosions
   this->explosions.erase(std::remove_if(this->explosions.begin(), this->explosions.end(),
       [](Projectile* x){return !x->is_alive();}), this->explosions.end());
+
+  //delete dead worms
+  std::map<int, Worm*>::iterator it = this->worms.begin();
+  while (it != this->worms.end()) {
+      if (!it->second->is_alive()) {
+         this->worms.erase(it++);
+      } else {
+         ++it;
+      }
+  }
 
 }
 
@@ -124,7 +131,7 @@ StageDTO Stage::get_stageDTO() {
     set_position(worm_element, vertices);
     worm_element.player_id = w.first;
     worm_element.life = 100;
-    //printf("worm %i: x = %f y = %f  h = %f w = %f\n",w.first, worm_element.x, worm_element.y, worm_element.h, worm_element.w);
+    printf("worm %i: x = %f y = %f  h = %f w = %f\n",w.first, worm_element.x, worm_element.y, worm_element.h, worm_element.w);
     s.worms[w.first] = worm_element;
   }
 
@@ -201,6 +208,8 @@ void Stage::add_beams(std::string config) {
   this->beams.push_back(new Beam(this->world, 10,20));
   this->beams.push_back(new Beam(this->world, 20,20));
   this->beams.push_back(new Beam(this->world, 30,20));
+
+  this->beams.push_back(new Beam(this->world, 30,40));
 }
 
 void Stage::add_worms(std::string config) {

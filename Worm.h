@@ -31,6 +31,7 @@ public:
   int get_type() { return TYPE_WORM; }
   std::vector<b2Vec2> get_points();
   b2Vec2 get_position() { return this->body->GetPosition();}
+  bool is_alive() { return ((this->life > 0) && (this->body->GetPosition().y < 100)); }
 
   //movements
   void move_left(); //vel: 0.2 m/s
