@@ -76,7 +76,7 @@ struct ElementDTO { //puede ser un gusano, un arma o una viga
   int life;
   int player_id;
   Weapon_Name weapon;
-  int timer;
+  int timer = 0;
   bool explosion;
 };
 

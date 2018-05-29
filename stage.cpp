@@ -134,18 +134,20 @@ StageDTO Stage::get_stageDTO() {
       ElementDTO weapon;
       if (weapon.weapon == None)
         continue;
-      std::vector<b2Vec2> vertices = w->get_points();
-      set_position(weapon, vertices);
+  //    std::vector<b2Vec2> vertices = w->get_points();
+    //  set_position(weapon, vertices);
 
-//      b2Vec2 point = w->get_point();
-//      weapon.x = point.x;
-//      weapon.y = point.y;
-//      weapon.h = 0.5;
-//      weapon.w = 0.5;
+      b2Vec2 point = w->get_point();
+      weapon.x = point.x;
+      weapon.y = point.y;
+      weapon.h = 0.5;
+      weapon.w = 0.5;
       //como hacer que se vea la explosion pero que no aparezca siempre?
       //destruir objetos!!
       weapon.weapon = w->get_name();
+      weapon.timer = w->get_timer();
       s.weapons.push_back(weapon);
+      printf("weapon: %d, x: %d y: %d\n", weapon.weapon, weapon.x, weapon.y);
     }
   }
 

@@ -23,10 +23,10 @@ Projectile::Projectile(b2World *world, Weapon_Name name, float x, float y) : Ent
     this->body = world->CreateBody(&bodyDef);
 //std::cout << "explosionDir: " << this << '\n';
     //add box fixture
-    //b2CircleShape shape;
-    //shape.m_radius = Constants::weapon_size;
-    b2PolygonShape shape;
-    shape.SetAsBox(0.5, 0.5);
+    b2CircleShape shape;
+    shape.m_radius = Constants::weapon_size;
+    //b2PolygonShape shape;
+    //shape.SetAsBox(0.5, 0.5);
     b2FixtureDef myFixtureDef;
     myFixtureDef.shape = &shape;
     myFixtureDef.density = Constants::weapon_density;
@@ -49,6 +49,10 @@ Projectile* Projectile::operator=(const Projectile &other) {
   this->world = other.world;
   this->body->SetUserData(this);
   return this;
+}
+
+int Projectile::get_timer() {
+  return this->timer;
 }
 
 b2Vec2 Projectile::get_point() {
@@ -133,6 +137,7 @@ void Projectile::shoot(int power, float degrees, Direction dir, int time_to_expl
   int s = (dir == Right) ? 1 : -1;
   switch (this->name) {
     case W_Bazooka: {
+      std::cout << "bazooka!\n";
       this->bazooka(power,degrees, s);
       break;
     }

@@ -33,6 +33,7 @@ public:
   Projectile* operator=(const Projectile &other);
   int get_type() { return PROJECTILE; }
   Weapon_Name get_name() { return this->name;}
+  int get_timer();
 
   void proximity_explosion(float blastRadius, float blastPower);
   void shoot(int power, float degrees, Direction dir, int time_to_explode);
