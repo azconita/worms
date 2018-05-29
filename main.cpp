@@ -557,7 +557,7 @@ static const std::vector<State> weapons_states_with_degrees(
     Worm_bat}
 );
 
-
+//armas con intensidad
 static const std::vector<State> weapons_states_with_power(
     {Worm_missile,
     Worm_green_granade,
@@ -1351,6 +1351,14 @@ bool continue_running(Worm_Animation_Controller& turn_worm){
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//armas con timer
+static const std::vector<Weapon_Name> weapons_with_timer(
+    {Holy_Granade,
+    Dynamite,
+    Baseboll_Bat,
+    Red_Granade,
+    Banana}
+);
 
 
 
@@ -1389,6 +1397,11 @@ Weapons_Animation_Controller(int i){
         this->animations.insert(std::pair<Weapon_Name,Animation>(Explosion,explosion));
 }
 
+
+bool is_timer_weapon(Weapon_Name weapon){
+    return std::find(weapons_with_timer.begin(), weapons_with_timer.end(), weapon) != weapons_with_timer.end();
+}
+
 void show_weapon( StageDTO s,SDL_Surface * screen, Graphic_Designer & gd){
     for (auto w: s.weapons) {
 
@@ -1402,7 +1415,10 @@ void show_weapon( StageDTO s,SDL_Surface * screen, Graphic_Designer & gd){
         weapon_iter->second.continue_internal_movement();
         weapon_iter->second.draw(screen,up_left_vertex_x, up_left_vertex_y);
 
-        gd.show_timer(w.timer);
+        if(is_timer_weapon(w.weapon)){
+            gd.show_timer(w.timer);
+        }
+        
     }
 }
 

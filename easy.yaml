@@ -1,3 +1,5 @@
+worm_initial_life: 100
+
 beams:
 	-x: 10
 	 y: 21
@@ -16,7 +18,7 @@ beams:
 	 size: small
 	 inclination: 0
 
-worm_initial_life: 100
+
 players: 
 	0:	-0:
 			x: 10 
