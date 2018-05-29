@@ -40,7 +40,7 @@ Projectile::Projectile(const Projectile &other) : Entity(3), world(other.world),
 }
 
 Projectile::~Projectile() {
-  // TODO Auto-generated destructor stub
+  this->world->DestroyBody(this->body);
 }
 
 Projectile* Projectile::operator=(const Projectile &other) {
@@ -94,6 +94,8 @@ void apply_explosion_impulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint
 
 //find all bodies with fixtures in blast radius AABB
 void Projectile::proximity_explosion(float radius, float power) {
+  if (this->name == Explosion)
+    return this->explosion();
   if (!this->alive)
     return;
   //TODO: timer!!
@@ -123,21 +125,20 @@ void Projectile::proximity_explosion(float radius, float power) {
 
       apply_explosion_impulse(body, center, bodyCom, power );
   }
-  //this->world->DestroyBody(this->body);
-  this->alive = false;
+  //this->alive = false;
+  this->timer = 8;
 }
 
 //r in degrees
 b2Vec2 rad2vec(float r) {
   r = r * (3.14159265359/180.0);
-  return b2Vec2(cos(r), sin(r));
+  return b2Vec2(cos(r), -sin(r));
 }
 
 void Projectile::shoot(int power, float degrees, Direction dir, int time_to_explode) {
   int s = (dir == Right) ? 1 : -1;
   switch (this->name) {
     case W_Bazooka: {
-      std::cout << "bazooka!\n";
       this->bazooka(power,degrees, s);
       break;
     }
@@ -176,4 +177,12 @@ void Projectile::green_grenade(int power, float degrees, int timer, int s) {
 void Projectile::dynamite(int time_to_explode, int s) {
   this->timer = timer;
 
+}
+
+void Projectile::explosion() {
+  this->timer--;
+  std::cout << "timer: " << this->timer << "\n";
+  if (this-> timer == 0)
+    this->alive = false;
+  return;
 }

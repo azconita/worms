@@ -1,4 +1,5 @@
 #include "stage.h"
+#include <algorithm>
 #include <string>
 #include <vector>
 #include <iostream>
@@ -34,12 +35,18 @@ void Stage::update() {
   //this->explosions[0].printPos();
   this->world->Step( timeStep, velocityIterations, positionIterations);
 
-  //for (auto w: this->explosions) {
-    //if (!w->is_alive()) {
-      //delete w;
-      //w = NULL;
-    //}
-  //}
+
+  /*for (auto w: this->explosions) {
+    if (!w->is_alive()) {
+      delete w;
+      printf("w: %x\n", w);
+      printf("destroy weapon!\n");
+      w = NULL;
+    }
+  }*/
+  this->explosions.erase(std::remove_if(this->explosions.begin(), this->explosions.end(),
+      [](Projectile* x){return !x->is_alive();}), this->explosions.end());
+
 }
 
 void Stage::make_action(ActionDTO & action) {
@@ -78,7 +85,7 @@ void Stage::make_action(ActionDTO & action) {
       //switch(action.weapon) {
         //case W_Bazooka:
           b2Vec2 pos = this->worms[worm]->get_position();
-          Projectile* w = new Projectile(this->world, action.weapon, pos.x, pos.y);
+          Projectile* w = new Projectile(this->world, action.weapon, action.x, action.y);
           w->shoot(action.power, action.weapon_degrees, action.direction, action.time_to_explode);
           this->explosions.push_back(w);
       //}
@@ -130,25 +137,22 @@ StageDTO Stage::get_stageDTO() {
   }
 
   for (auto w: this->explosions) {
-    if(w->is_alive()) {
-      ElementDTO weapon;
-      if (weapon.weapon == None)
-        continue;
-  //    std::vector<b2Vec2> vertices = w->get_points();
-    //  set_position(weapon, vertices);
+    ElementDTO weapon;
+    if (w->get_name() == None)
+      continue;
+    if (w->get_name() == Explosion)
+      w->explosion();
+    //std::vector<b2Vec2> vertices = w->get_points();
+    //set_position(weapon, vertices);
 
-      b2Vec2 point = w->get_point();
-      weapon.x = point.x;
-      weapon.y = point.y;
-      weapon.h = 0.5;
-      weapon.w = 0.5;
-      //como hacer que se vea la explosion pero que no aparezca siempre?
-      //destruir objetos!!
-      weapon.weapon = w->get_name();
-      weapon.timer = w->get_timer();
-      s.weapons.push_back(weapon);
-      printf("weapon: %d, x: %d y: %d\n", weapon.weapon, weapon.x, weapon.y);
-    }
+    b2Vec2 point = w->get_point();
+    weapon.x = point.x;
+    weapon.y = point.y;
+    weapon.h = 0.5;
+    weapon.w = 0.5;
+    weapon.weapon = w->get_name();
+    weapon.timer = w->get_timer();
+    s.weapons.push_back(weapon);
   }
 
 //arma harcodeada
