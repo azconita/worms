@@ -12,6 +12,7 @@
 #include "Projectile.h"
 #include "DTOs.h"
 #include "Worm.h"
+#include "Beam.h"
 
 //config: yaml: https://github.com/jbeder/yaml-cpp/
 Stage::Stage(std::string config) {
@@ -27,6 +28,23 @@ Stage::Stage(std::string config) {
 }
 
 Stage::~Stage() {
+  //delete vectors (shouldn't use this, iterate over world's bodys)
+  for (std::map<int, Worm*>::iterator it = this->worms.begin();
+              it != this->worms.end(); ++it) {
+    delete (it->second);
+  }
+  this->worms.clear();
+  for (std::vector<Beam*>::iterator it = this->beams.begin();
+            it != this->beams.end(); ++it) {
+    delete (*it);
+  }
+  this->beams.clear();
+  for (std::vector<Projectile*>::iterator it = this->explosions.begin();
+          it != this->explosions.end(); ++it) {
+    delete (*it);
+  }
+  this->explosions.clear();
+  printf("delete world!\n");
   delete this->world;
 }
 
