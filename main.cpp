@@ -1352,6 +1352,15 @@ bool continue_running(Worm_Animation_Controller& turn_worm){
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+//armas con timer
+static const std::vector<Weapon_Name> weapons_with_timer(
+    {Holy_Granade,
+    Dynamite,
+    Baseboll_Bat,
+    Red_Granade,
+    Banana}
+);
+
 
 
 class Weapons_Animation_Controller{
@@ -1389,10 +1398,17 @@ Weapons_Animation_Controller(int i){
         this->animations.insert(std::pair<Weapon_Name,Animation>(Explosion,explosion));
 }
 
+bool is_timer_weapon(Weapon_Name weapon){
+     return std::find(weapons_with_timer.begin(), weapons_with_timer.end(), weapon) //
+    != weapons_with_timer.end();
+
+}
+
+
 void show_weapon( StageDTO s,SDL_Surface * screen, Graphic_Designer & gd){
     for (auto w: s.weapons) {
 
-        debug_box2d_figure(screen, w);
+        //debug_box2d_figure(screen, w);
 
         int up_left_vertex_x = get_pixels(w.x);
         int up_left_vertex_y = get_pixels(w.y);
@@ -1402,8 +1418,11 @@ void show_weapon( StageDTO s,SDL_Surface * screen, Graphic_Designer & gd){
         weapon_iter->second.continue_internal_movement();
         weapon_iter->second.draw(screen,up_left_vertex_x, up_left_vertex_y);
 
-        gd.show_timer(w.timer);
+        if(is_timer_weapon(w.weapon)){
+            gd.show_timer(w.timer);
+        }
     }
+
 }
 
 };
@@ -1416,7 +1435,7 @@ void show_beams(StageDTO s, SDL_Surface *screen){
 
     for (auto beam_info: s.beams) {
 
-        debug_box2d_figure(screen, beam_info);
+        //debug_box2d_figure(screen, beam_info);
 
         int up_left_vertex_x = get_pixels(beam_info.x);
         int up_left_vertex_y = get_pixels(beam_info.y);
@@ -1518,7 +1537,7 @@ void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Worm_Animation_Con
 
         ElementDTO worm_info = w.second;
 
-        debug_box2d_figure(screen, worm_info);
+        //debug_box2d_figure(screen, worm_info);
 
         int up_left_vertex_x = get_pixels(worm_info.x);
         int up_left_vertex_y = get_pixels(worm_info.y);
