@@ -20,7 +20,7 @@ Beam::Beam(b2World* world, float x, float y) : Entity(0) {
   std::cout << "beamDir: " << this << '\n';
   //add box fixture
   b2PolygonShape shape;
-  shape.SetAsBox(Constants::beam_width/2, Constants::beam_height/2);
+  shape.SetAsBox(1.5,0.4);//Constants::beam_width/2, Constants::beam_height/2);
   b2FixtureDef myFixtureDef;
   myFixtureDef.shape = &shape;
   myFixtureDef.density = 1;
