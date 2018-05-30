@@ -131,7 +131,7 @@ StageDTO Stage::get_stageDTO() {
     set_position(worm_element, vertices);
     worm_element.player_id = w.first;
     worm_element.life = 100;
-    printf("worm %i: x = %f y = %f  h = %f w = %f\n",w.first, worm_element.x, worm_element.y, worm_element.h, worm_element.w);
+    //printf("worm %i: x = %f y = %f  h = %f w = %f\n",w.first, worm_element.x, worm_element.y, worm_element.h, worm_element.w);
     s.worms[w.first] = worm_element;
   }
 
@@ -161,40 +161,6 @@ StageDTO Stage::get_stageDTO() {
     weapon.timer = w->get_timer();
     s.weapons.push_back(weapon);
   }
-
-//arma harcodeada
-  ElementDTO weapon_element;
-  weapon_element.weapon = W_Air_Attack;
-  weapon_element.x = 20;
-  weapon_element.y = 20;
-  weapon_element.h = 2;
-  weapon_element.w = 2;
-  s.weapons.push_back(weapon_element);
-
-   ElementDTO weapon_element2;
-  weapon_element2.weapon = W_Bazooka;
-  weapon_element2.x = 25;
-  weapon_element2.y = 25;
-  weapon_element2.h = 2;
-  weapon_element2.w = 2;
-  s.weapons.push_back(weapon_element2);
-
-  ElementDTO explosion;
-  explosion.weapon = Explosion;
-  explosion.x = 25 -1;
-  explosion.y = 25 -1;
-  explosion.h = 2;
-  explosion.w = 2;
-  s.weapons.push_back(explosion);
-
-  ElementDTO banana;
-  banana.weapon = Banana;
-  banana.x = 25;
-  banana.y = 5;
-  banana.h = 2;
-  banana.w = 2;
-  s.weapons.push_back(banana);
-
 
   s.worm_turn = 0;
   return s;

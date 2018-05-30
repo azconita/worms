@@ -3,6 +3,9 @@ time_step: 0.1
 velocity_iterations: 8
 position_iterations: 3
 
+beam_width: 0.8
+beam_height: 3
+
 worm_initial_life: 25
 worm_walk_velocity: 5
 worm_jump_velocity: -7

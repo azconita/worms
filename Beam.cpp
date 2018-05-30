@@ -8,6 +8,7 @@
 #include "Beam.h"
 #include <iostream>
 #include <vector>
+#include "Constants.h"
 
 Beam::Beam(b2World* world, float x, float y) : Entity(0) {
   //set up static body, store in class variable
@@ -19,7 +20,7 @@ Beam::Beam(b2World* world, float x, float y) : Entity(0) {
   std::cout << "beamDir: " << this << '\n';
   //add box fixture
   b2PolygonShape shape;
-  shape.SetAsBox(6, 0.8);
+  shape.SetAsBox(Constants::beam_width/2, Constants::beam_height/2);
   b2FixtureDef myFixtureDef;
   myFixtureDef.shape = &shape;
   myFixtureDef.density = 1;

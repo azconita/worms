@@ -24,6 +24,9 @@ namespace Constants {
   extern const float worm_density;
   extern const float worm_size; //lado del cuadrado
 
+  //beam constants
+  extern const float beam_height;
+  extern const float beam_width;
   //weapons constants
   extern const float weapon_size;
   extern const float weapon_density;
