@@ -38,7 +38,8 @@ enum Weapon_Name {
     Banana,//u
     Baseboll_Bat,//v
     Explosion,
-    None
+    None,
+    W_Timer
 };
 
 enum Movement {

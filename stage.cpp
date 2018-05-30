@@ -1,13 +1,17 @@
 #include "stage.h"
+
 #include <algorithm>
 #include <string>
 #include <vector>
 #include <iostream>
+#include <map>
 #include <Box2D/Box2D.h>
 #include "Constants.h"
 #include "WeaponExplosionListener.h"
 #include "Bazooka.h"
+#include "Projectile.h"
 #include "DTOs.h"
+#include "Worm.h"
 
 //config: yaml: https://github.com/jbeder/yaml-cpp/
 Stage::Stage(std::string config) {
@@ -34,24 +38,37 @@ void Stage::update() {
   this->world->Step( timeStep, velocityIterations, positionIterations);
 
   //check for timers in explosion
-  /*for (auto w: this->explosions) {
-    if (w->has_timer()) {
+  for (auto &w: this->explosions) {
 
+    if (w->has_timer() && w->is_time_to_explode()) {
+      w->explode();
     }
-  }*/
+  }
 
   //delete "dead" explosions
-  this->explosions.erase(std::remove_if(this->explosions.begin(), this->explosions.end(),
-      [](Projectile* x){return !x->is_alive();}), this->explosions.end());
+  for (std::vector<Projectile*>::iterator it = this->explosions.begin();
+      it != this->explosions.end();) {
+     if(! (*it)->is_alive()) {
+       printf("it: %x", *it);
+       delete *it;
+       it = this->explosions.erase(it);
+     } else {
+       if ((*it)->has_timer() && (*it)->is_time_to_explode()) {
+         (*it)->explode();
+       }
+       ++it;
+     }
+  }
 
   //delete dead worms
   std::map<int, Worm*>::iterator it = this->worms.begin();
   while (it != this->worms.end()) {
-      if (!it->second->is_alive()) {
-         this->worms.erase(it++);
-      } else {
-         ++it;
-      }
+    if (!it->second->is_alive()) {
+      delete it->second;
+      it = this->worms.erase(it);
+    } else {
+      ++it;
+    }
   }
 
 }

@@ -40,6 +40,7 @@ Projectile::Projectile(const Projectile &other) : Entity(3), world(other.world),
 }
 
 Projectile::~Projectile() {
+  std::cout << "weapon destroyed: " << this->name << '\n';
   this->world->DestroyBody(this->body);
 }
 
@@ -52,7 +53,8 @@ Projectile* Projectile::operator=(const Projectile &other) {
 }
 
 int Projectile::get_timer() {
-  return this->timer;
+  //return this->timer;
+  return difftime(time(NULL), this->t);
 }
 
 b2Vec2 Projectile::get_point() {
@@ -100,12 +102,25 @@ void Projectile::proximity_explosion(float radius, float power) {
     return;
   //TODO: timer!!
   if (this->timer != 0) {
-    if (this->t == 0)
+    this->name = W_Timer;
+    std::cout << "timer: " << this->timer << "\n";
       time(&(this->t));
-    else if (difftime(this->t,time(NULL)) < this->timer)
+    std::cout << "t: " << this->t << "\n";
+    return;
+    if (this->t == 0) {
       return;
+    }
+    if (difftime(this->t,time(NULL)) < this->timer)
+      return;
+    return;
   }
   //if (this->name == Green_Grenade) &&
+  this->radius = radius;
+  this->power = power;
+  this->explode();
+}
+
+void Projectile::explode() {
   std::cout << "explosion!\n" ;
   ExplosionQueryCallback query_callback;
   b2AABB aabb;
@@ -182,8 +197,22 @@ void Projectile::dynamite(int time_to_explode, int s) {
 
 void Projectile::explosion() {
   this->timer--;
-  std::cout << "timer: " << this->timer << "\n";
   if (this-> timer == 0)
     this->alive = false;
   return;
+}
+
+bool Projectile::is_time_to_explode() {
+  if ((this->timer != 0) && (this->name == W_Timer)) {
+    std::cout << "difftime: " << difftime(time(NULL),this->t) << "\n";
+    std::cout << "t: " << this->t << "\n";
+    if (difftime(time(NULL), this->t) < this->timer)
+      return false;
+    return true;
+  }
+  return false;
+}
+
+bool Projectile::has_timer() {
+  return (this->timer != 0);
 }

@@ -27,6 +27,9 @@ private:
   int counter = 0;
   int timer = 0;
   time_t t = 0;
+  float radius = 0;
+  float power = 0;
+
 public:
   Projectile(b2World *world, Weapon_Name name, float x, float y);
   Projectile(const Projectile &other);
@@ -36,11 +39,14 @@ public:
   Weapon_Name get_name() { return this->name;}
   int get_timer();
   void explosion();
+  bool is_time_to_explode();
+  bool has_timer();
 
   void proximity_explosion(float blastRadius, float blastPower);
+  void explode();
   void shoot(int power, float degrees, Direction dir, int time_to_explode);
 
-  bool is_alive() {return this->alive;}
+  bool is_alive() { return (this->alive && (this->body->GetPosition().y < 100));}
   b2Vec2 get_point();
   std::vector<b2Vec2> get_points();
 

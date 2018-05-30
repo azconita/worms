@@ -18,6 +18,7 @@
 #define TYPE_WORM 1
 
 class Worm : public Entity {
+  b2World* world;
   b2Body* body;
   Weapon_Name weapon = None;
   int life;

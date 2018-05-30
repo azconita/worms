@@ -9,7 +9,7 @@
 #include "Constants.h"
 #include <string>
 
-Worm::Worm(b2World* world, float x, float y) : Entity(1) {
+Worm::Worm(b2World* world, float x, float y) : Entity(1), world(world) {
   b2BodyDef bodyDef;
   bodyDef.type = b2_dynamicBody;
   bodyDef.position.Set(x, y);
@@ -27,18 +27,20 @@ Worm::Worm(b2World* world, float x, float y) : Entity(1) {
   this->life = Constants::worm_initial_life;
 }
 
-Worm::Worm(const Worm& other) : Entity(1), body(other.body), life(other.life) {
+Worm::Worm(const Worm& other) : Entity(1), body(other.body), life(other.life), world(world) {
   this->body->SetUserData(this);
   std::cout << "wormDir(&other): " << this << '\n';
 }
 
-Worm::Worm() : Entity(1), body(NULL), life(0) {
+Worm::Worm() : Entity(1), body(NULL), life(0), world(NULL) {
   std::cout << "wormDir(): " << this << '\n';
 
 }
 
 Worm::~Worm() {
   // TODO Auto-generated destructor stub
+  std::cout << "worm destroyed " << '\n';
+  this->world->DestroyBody(this->body);
 }
 
 Worm* Worm::operator=(const Worm &other) {
