@@ -31,6 +31,7 @@ enum Weapon_Name {
     W_Bazooka, //b
     Dynamite, //d
     Mortar, //m
+    W_Fragment,
     Green_Granade,//g
     Holy_Granade,//h
     Red_Granade,//r

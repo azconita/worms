@@ -80,7 +80,9 @@ void Worm::jump_back() {
   this->body->ApplyLinearImpulse(b2Vec2(-impulse,impulse), this->body->GetWorldCenter(), true);
 }
 
-
+int Worm::get_life() {
+  return this->life;
+}
 
 std::vector<b2Vec2> Worm::get_points() {
   std::vector<b2Vec2> points;
@@ -99,4 +101,15 @@ void Worm::took_weapon(Weapon_Name weapon) {
 
 void Worm::use_weapon(float x, float y, int power, float degrees) {
 
+}
+
+void Worm::teleport(float x, float y, Direction dir) {
+  this->body->SetTransform(b2Vec2(x,y),body->GetAngle());
+}
+
+void Worm::apply_damage(int d) {
+  std::cout << "worm damaged: " << d << "\n";
+  this->life = this->life - d;
+  //if (this->life <= 0)
+    //this->alive = false;
 }

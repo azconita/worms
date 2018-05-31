@@ -31,6 +31,42 @@ namespace Constants {
   //bazooka
   extern const float bazooka_damage = config["bazooka_damage"].as<float>();
   extern const float bazooka_radius = config["bazooka_radius"].as<float>();
+  //dynamite
+  extern const float dynamite_damage = 50;
+  extern const float dynamite_radius = 4;
+  extern const float dynamite_ammo = 5;
+  //air attack
+  extern const float airattack_damage = 40;
+  extern const float airattack_radius = 2;
+  extern const float airattack_ammo = 2;
+  //mortar
+  extern const float mortar_damage = 50;
+  extern const float mortar_radius = 2;
+  extern const float mortar_second_damage = 10;
+  extern const float mortar_second_radius = 2;
+  extern const float mortar_second_fragmets = 6;
+  extern const float mortar_ammo = 10;
+  //green grenade
+  extern const float greengrenade_damage = 30;
+  extern const float greengrenade_radius = 2;
+  //holy grenade
+  extern const float holygrenade_damage = 110;
+  extern const float holygrenade_radius = 8;
+  extern const float holygrenade_ammo = 2;
+  //red grenade
+  extern const float redgrenade_damage = 30;
+  extern const float redgrenade_radius = 2;
+  extern const float redgrenade_second_damage = 10;
+  extern const float redgrenade_second_radius = 2;
+  extern const float redgrenade_second_fragments = 6;
+  extern const float redgrenade_ammo = 10;
+  //banana
+  extern const float banana_damage = 70;
+  extern const float banana_radius = 4;
+  extern const float banana_ammo = 5;
+  //baseball bat
+  extern const float baseballbat_damage = 10;
+  extern const float baseballbat_radius = 1;
 
 
 } /* namespace Constants */

@@ -29,6 +29,7 @@ private:
   time_t t = 0;
   float radius = 0;
   float power = 0;
+  float damage = 50;
 
 public:
   Projectile(b2World *world, Weapon_Name name, float x, float y);
@@ -44,6 +45,7 @@ public:
 
   void proximity_explosion(float blastRadius, float blastPower);
   void explode();
+  void apply_explosion_impulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint, float blastPower);
   void shoot(int power, float degrees, Direction dir, int time_to_explode);
 
   bool is_alive() { return (this->alive && (this->body->GetPosition().y < 100));}

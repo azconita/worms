@@ -6,7 +6,7 @@ position_iterations: 3
 beam_width: 0.8
 beam_height: 3
 
-worm_initial_life: 25
+worm_initial_life: 100
 worm_walk_velocity: 5
 worm_jump_velocity: -7
 worm_density: 1

@@ -125,15 +125,20 @@ void Stage::make_action(ActionDTO & action) {
       //this->worms[worm]->use_weapon(action.x, action.y, action.power, action.weapon_degrees);
 
       //switch(action.weapon) {
+      if (action.weapon == Teletrans) {
+        this->worms[worm]->teleport(action.x, action.y, action.direction);
+
+      } else {
         //case W_Bazooka:
           b2Vec2 pos = this->worms[worm]->get_position();
           Projectile* w = new Projectile(this->world, action.weapon, action.x, action.y);
-          w->shoot(action.power, action.weapon_degrees, action.direction, action.time_to_explode);
+          if (action.weapon != W_Air_Attack)
+            w->shoot(action.power, action.weapon_degrees, action.direction, action.time_to_explode);
           this->explosions.push_back(w);
       //}
+      }
 
       break;
-
     }
   }
 }
@@ -165,7 +170,7 @@ StageDTO Stage::get_stageDTO() {
     std::vector<b2Vec2> vertices = w.second->get_points();
     set_position(worm_element, vertices);
     worm_element.player_id = w.first;
-    worm_element.life = 100;
+    worm_element.life = w.second->get_life();
     //printf("worm %i: x = %f y = %f  h = %f w = %f\n",w.first, worm_element.x, worm_element.y, worm_element.h, worm_element.w);
     s.worms[w.first] = worm_element;
   }

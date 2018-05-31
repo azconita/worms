@@ -12,6 +12,7 @@
 #include <iostream>
 #include <string>
 #include "Constants.h"
+#include "Worm.h"
 #include "DTOs.h"
 
 Projectile::Projectile(b2World *world, Weapon_Name name, float x, float y) : Entity(3), world(world), name(name) {
@@ -32,6 +33,54 @@ Projectile::Projectile(b2World *world, Weapon_Name name, float x, float y) : Ent
     myFixtureDef.density = Constants::weapon_density;
     this->body->CreateFixture(&myFixtureDef);
     this->body->SetUserData(this);
+    //set weapon variables: radius and damage
+    switch (name) {
+      case W_Bazooka: {
+        this->radius = Constants::bazooka_radius;
+        this->damage = Constants::bazooka_damage;
+        break;
+      }
+      case W_Air_Attack: {
+        this->radius = Constants::airattack_radius;
+        this->damage = Constants::airattack_damage;
+        break;
+      }
+      case Dynamite: {
+        this->radius = Constants::dynamite_radius;
+        this->damage = Constants::dynamite_damage;
+        break;
+      }
+      case Mortar: {
+        this->radius = Constants::mortar_radius;
+        this->damage = Constants::mortar_damage;
+        break;
+      }
+      case Green_Granade: {
+        this->radius = Constants::greengrenade_radius;
+        this->damage = Constants::greengrenade_damage;
+        break;
+      }
+      case Holy_Granade: {
+        this->radius = Constants::holygrenade_radius;
+        this->damage = Constants::holygrenade_damage;
+        break;
+      }
+      case Red_Granade: {
+        this->radius = Constants::redgrenade_radius;
+        this->damage = Constants::redgrenade_damage;
+        break;
+      }
+      case Banana: {
+        this->radius = Constants::banana_radius;
+        this->damage = Constants::banana_damage;
+        break;
+      }
+      case Baseboll_Bat: {
+        this->radius = Constants::baseballbat_radius;
+        this->damage = Constants::baseballbat_damage;
+        break;
+      }
+    }
 }
 
 Projectile::Projectile(const Projectile &other) : Entity(3), world(other.world), body(other.body), name(name) {
@@ -73,22 +122,25 @@ std::vector<b2Vec2> Projectile::get_points() {
   return points;
 }
 
-void apply_explosion_impulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint,
+void Projectile::apply_explosion_impulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint,
                         float blastPower) {
-  b2Vec2 blastDir = applyPoint - blastCenter;
-  float distance = blastDir.Normalize();
+  b2Vec2 blast_dir = applyPoint - blastCenter;
+  float distance = blast_dir.Normalize();
   //ignore bodies exactly at the blast point - blast direction is undefined
   if ( distance == 0 )
      return;
   float invDistance = 1 / distance;
-  float impulseMag = blastPower * invDistance * invDistance;
+  float impulse_mag = blastPower * invDistance * invDistance;
   //std::cout << "imp mag: " << impulseMag << ", blastdir: " << blastDir.x << ":" << blastDir.y << "\n";
 
   Entity* entity = (Entity*) (body->GetUserData());
   std::cout<<"body found: " << entity->en_type << '\n';
   if (entity->en_type == 1) {
-    std::cout << "apply explosion: "<<impulseMag <<"\n";
-    body->ApplyLinearImpulse( blastPower * blastDir, body->GetPosition() , true);
+    std::cout << "apply explosion: "<<impulse_mag <<"\n";
+    //((Worm*) entity)->apply_explosion_impulse(blast_dir * impulse_mag, float distance);
+
+    body->ApplyLinearImpulse( impulse_mag * blast_dir, body->GetPosition() , true);
+    ((Worm*) entity)->apply_damage(int(this->damage * invDistance));
   }
 
 }
@@ -122,6 +174,7 @@ void Projectile::proximity_explosion(float radius, float power) {
 
 void Projectile::explode() {
   std::cout << "explosion!\n" ;
+
   ExplosionQueryCallback query_callback;
   b2AABB aabb;
   b2Vec2 center = this->body->GetPosition();
@@ -137,7 +190,7 @@ void Projectile::explode() {
       if ( (bodyCom - center).Length() >= radius )
           continue;
 
-      apply_explosion_impulse(body, center, bodyCom, power );
+      this->apply_explosion_impulse(body, center, bodyCom, power );
   }
   //this->alive = false;
 
@@ -164,6 +217,10 @@ void Projectile::shoot(int power, float degrees, Direction dir, int time_to_expl
     }
     case Dynamite: {
       this->dynamite(time_to_explode, s);
+      break;
+    }
+    case W_Air_Attack: {
+      //this->airattack();
       break;
     }
   }
@@ -194,6 +251,10 @@ void Projectile::dynamite(int time_to_explode, int s) {
   this->timer = timer;
 
 }
+
+//void Projectile::airattack() {
+  //this->body->SetTransform(b2Vec2(this->x, this->y));
+//}
 
 void Projectile::explosion() {
   this->timer--;

@@ -32,6 +32,7 @@ public:
   int get_type() { return TYPE_WORM; }
   std::vector<b2Vec2> get_points();
   b2Vec2 get_position() { return this->body->GetPosition();}
+  int get_life();
   bool is_alive() { return ((this->life > 0) && (this->body->GetPosition().y < 100)); }
 
   //movements
@@ -43,6 +44,8 @@ public:
   //use weapons
   void took_weapon(Weapon_Name weapon);
   void use_weapon(float x, float y, int power, float degrees);
+  void apply_damage(int d);
+  void teleport(float x, float y, Direction dir);
 
   void printPos() {
     std::cout << "worm: " << this->body->GetPosition().x << ":" << this->body->GetPosition().y << "\n";
