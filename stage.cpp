@@ -25,6 +25,7 @@ Stage::Stage(std::string config) {
   this->add_beams(config);
   this->add_worms(config);
   this->add_explosion();
+  this->wind = Constants::wind;
 }
 
 Stage::~Stage() {
@@ -122,20 +123,21 @@ void Stage::make_action(ActionDTO & action) {
     case(Shot_weapon):{
       printf("Se disparo el arma al punto (%i,%i) en metros, con una potencia de %i apuntando a %f grados en la dire %i y con timer %i\n",//
        action.x, action.y, action.power, action.weapon_degrees, action.direction, action.time_to_explode);
-      //this->worms[worm]->use_weapon(action.x, action.y, action.power, action.weapon_degrees);
 
       //switch(action.weapon) {
       if (action.weapon == Teletrans) {
         this->worms[worm]->teleport(action.x, action.y, action.direction);
-
-      } else {
-        //case W_Bazooka:
-          b2Vec2 pos = this->worms[worm]->get_position();
-          Projectile* w = new Projectile(this->world, action.weapon, action.x, action.y);
-          if (action.weapon != W_Air_Attack)
-            w->shoot(action.power, action.weapon_degrees, action.direction, action.time_to_explode);
+      } else if (action.weapon == W_Air_Attack) {
+        //TODO: fix : que no caigan todos juntos! (hace que exploten antes)
+        for (int i = 0; i < 6; ++ i) {
+          Projectile* w = new Projectile(this->world, action.weapon, action.x, 0, this->wind);
           this->explosions.push_back(w);
-      //}
+        }
+      } else {
+        Projectile* w = new Projectile(this->world, action.weapon, action.x, action.y, this->wind);
+        printf("about to shoot");
+        w->shoot(action.power, action.weapon_degrees, action.direction, action.time_to_explode);
+        this->explosions.push_back(w);
       }
 
       break;

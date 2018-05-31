@@ -15,14 +15,13 @@
 #include "Worm.h"
 #include "DTOs.h"
 
-Projectile::Projectile(b2World *world, Weapon_Name name, float x, float y) : Entity(3), world(world), name(name) {
+Projectile::Projectile(b2World *world, Weapon_Name name, float x, float y, float wind) : Entity(3), world(world), wind(wind), name(name) {
   b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     bodyDef.bullet = true;
     bodyDef.position.Set(x, y);
     bodyDef.userData = (void*) this;
     this->body = world->CreateBody(&bodyDef);
-//std::cout << "explosionDir: " << this << '\n';
     //add box fixture
     b2CircleShape shape;
     shape.m_radius = Constants::weapon_size;
@@ -36,6 +35,7 @@ Projectile::Projectile(b2World *world, Weapon_Name name, float x, float y) : Ent
     //set weapon variables: radius and damage
     switch (name) {
       case W_Bazooka: {
+        this->body->SetLinearVelocity(b2Vec2(0,wind));
         this->radius = Constants::bazooka_radius;
         this->damage = Constants::bazooka_damage;
         break;
@@ -70,6 +70,11 @@ Projectile::Projectile(b2World *world, Weapon_Name name, float x, float y) : Ent
         this->damage = Constants::redgrenade_damage;
         break;
       }
+      case W_Fragment: {
+        this->radius = Constants::fragment_radius;
+        this->damage = Constants::fragment_damage;
+        break;
+      }
       case Banana: {
         this->radius = Constants::banana_radius;
         this->damage = Constants::banana_damage;
@@ -81,9 +86,10 @@ Projectile::Projectile(b2World *world, Weapon_Name name, float x, float y) : Ent
         break;
       }
     }
+std::cout << "explosionDir: " << this << '\n';
 }
 
-Projectile::Projectile(const Projectile &other) : Entity(3), world(other.world), body(other.body), name(name) {
+Projectile::Projectile(const Projectile &other) : Entity(3), world(other.world), wind(other.wind), body(other.body), name(name) {
   //std::cout << "explosionDir(&other): " << this << '\n';
   //this->body->SetUserData(this);
 }
@@ -174,7 +180,14 @@ void Projectile::proximity_explosion(float radius, float power) {
 
 void Projectile::explode() {
   std::cout << "explosion!\n" ;
-
+  if (this->name == Red_Granade) {
+    int d = 15;
+    for (int i = 0; i < 6; ++i) {
+      Projectile* w = new Projectile(this->world, W_Fragment, this->body->GetPosition().x, this->body->GetPosition().y, this->wind);
+      w->shoot(this->power, d, Right, 0);
+      d = d + 30;
+    }
+  }
   ExplosionQueryCallback query_callback;
   b2AABB aabb;
   b2Vec2 center = this->body->GetPosition();
@@ -205,6 +218,7 @@ b2Vec2 rad2vec(float r) {
 }
 
 void Projectile::shoot(int power, float degrees, Direction dir, int time_to_explode) {
+  printf("[Projectile] shooting %d", this->name);
   int s = (dir == Right) ? 1 : -1;
   switch (this->name) {
     case W_Bazooka: {

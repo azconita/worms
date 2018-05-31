@@ -16,6 +16,7 @@ namespace Constants {
   extern const float time_step;
   extern const int velocity_iterations;
   extern const int position_iterations;
+  extern const float wind;
 
   //worm constants
   extern const int worm_initial_life;
@@ -42,6 +43,9 @@ namespace Constants {
   //mortar
   extern const float mortar_damage;
   extern const float mortar_radius;
+  //fragment
+  extern const float fragment_damage;
+  extern const float fragment_radius;
   //green grenade
   extern const float greengrenade_damage;
   extern const float greengrenade_radius;

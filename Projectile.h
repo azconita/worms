@@ -20,6 +20,7 @@
 class Projectile : public Entity {
 private:
   b2World *world;
+  float wind;
   b2Body* body;
   Weapon_Name name;
   bool alive = true;
@@ -32,7 +33,7 @@ private:
   float damage = 50;
 
 public:
-  Projectile(b2World *world, Weapon_Name name, float x, float y);
+  Projectile(b2World *world, Weapon_Name name, float x, float y, float wind);
   Projectile(const Projectile &other);
   virtual ~Projectile();
   Projectile* operator=(const Projectile &other);

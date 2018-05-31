@@ -2,6 +2,7 @@ gravity: 9.8
 time_step: 0.1 
 velocity_iterations: 8
 position_iterations: 3
+wind: 0.5
 
 beam_width: 0.8
 beam_height: 3

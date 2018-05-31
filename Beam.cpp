@@ -17,7 +17,6 @@ Beam::Beam(b2World* world, float x, float y) : Entity(0) {
   myBodyDef.position.Set(x, y);
   //myBodyDef.userData = (void*) this;
   this->body = world->CreateBody(&myBodyDef);
-  std::cout << "beamDir: " << this << '\n';
   //add box fixture
   b2PolygonShape shape;
   shape.SetAsBox(1.5,0.4);//Constants::beam_width/2, Constants::beam_height/2);
@@ -30,11 +29,9 @@ Beam::Beam(b2World* world, float x, float y) : Entity(0) {
 
 Beam::Beam(const Beam &other) : Entity(0), body(other.body) {
   //this->body->SetUserData(this);
-  std::cout << "beamDir(&other): " << this << '\n';
 }
 
 Beam* Beam::operator=(const Beam &other) {
-  std::cout << "beamDir=: " << this << '\n';
   this->body = other.body;
   this->body->SetUserData(this);
   return this;

@@ -15,6 +15,7 @@ namespace Constants {
   extern const float time_step = config["time_step"].as<float>();
   extern const int velocity_iterations = config["velocity_iterations"].as<int>();
   extern const int position_iterations = config["position_iterations"].as<int>();
+  extern const float wind = config["wind"].as<float>();
 
   extern const int worm_initial_life = config["worm_initial_life"].as<int>();
   extern const float worm_walk_velocity = config["worm_walk_velocity"].as<float>();
@@ -46,6 +47,9 @@ namespace Constants {
   extern const float mortar_second_radius = 2;
   extern const float mortar_second_fragmets = 6;
   extern const float mortar_ammo = 10;
+  //fragments
+  extern const float fragment_damage = 10;
+  extern const float fragment_radius = 2;
   //green grenade
   extern const float greengrenade_damage = 30;
   extern const float greengrenade_radius = 2;

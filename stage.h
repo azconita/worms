@@ -26,6 +26,8 @@ private:
   WeaponExplosionListener explosion_listener;
   std::vector<Projectile*> explosions;
 
+  float wind;
+
 public:
   Stage(std::string config);
   virtual ~Stage();
