@@ -557,7 +557,7 @@ static const std::vector<State> weapons_states_with_degrees(
     Worm_bat}
 );
 
-
+//armas con intensidad
 static const std::vector<State> weapons_states_with_power(
     {Worm_missile,
     Worm_green_granade,
@@ -675,8 +675,8 @@ void take_weapon(Weapon_Name weapon){
     }else{
         this->weapon_power = 0;
     }
-        
-    
+
+
 
 
 }
@@ -685,7 +685,7 @@ float point_down_weapon(){
     std::map<int,Animation>::iterator animation_iter = animations.find(this->state);
     if(animation_iter->second.point_down()){
         this->degrees-=GRADES_PER_STEP; //31 fotos/180 grados
-        
+
     }
     return this->degrees;
 
@@ -1351,6 +1351,14 @@ bool continue_running(Worm_Animation_Controller& turn_worm){
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+//armas con timer
+static const std::vector<Weapon_Name> weapons_with_timer(
+    {Holy_Granade,
+    Dynamite,
+    Baseboll_Bat,
+    Red_Granade,
+    Banana}
+);
 
 //armas con timer
 static const std::vector<Weapon_Name> weapons_with_timer(
@@ -1398,12 +1406,10 @@ Weapons_Animation_Controller(int i){
         this->animations.insert(std::pair<Weapon_Name,Animation>(Explosion,explosion));
 }
 
+
 bool is_timer_weapon(Weapon_Name weapon){
-     return std::find(weapons_with_timer.begin(), weapons_with_timer.end(), weapon) //
-    != weapons_with_timer.end();
-
+    return std::find(weapons_with_timer.begin(), weapons_with_timer.end(), weapon) != weapons_with_timer.end();
 }
-
 
 void show_weapon( StageDTO s,SDL_Surface * screen, Graphic_Designer & gd){
     for (auto w: s.weapons) {
