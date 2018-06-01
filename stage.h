@@ -4,13 +4,13 @@
 #include <tuple>
 #include <Box2D/Box2D.h>
 #include "Beam.h"
-#include "Projectile.h"
 #include "Weapon.h"
 #include "Worm.h"
 #include "WeaponExplosionListener.h"
 #include "DTOs.h"
 
 #include "Bazooka.h"
+#include "Weapon.h"
 
 #ifndef STAGE_H_
 #define STAGE_H_
@@ -24,9 +24,12 @@ private:
   std::vector<Weapon*> weapons;
 
   WeaponExplosionListener explosion_listener;
-  std::vector<Projectile*> explosions;
+  std::vector<Weapon*> explosions;
 
   float wind;
+
+  bool change = false;
+  Worm* current_player = NULL;
 
 public:
   Stage(std::string config);
@@ -38,6 +41,11 @@ public:
   //por ahora...
   StageDTO get_stageDTO();
 private:
+  void do_explosions();
+  void clean_dead_bodies();
+  void update_player();
+  void change_player();
+
   std::vector<Beam> get_beams();
   std::vector<Worm> get_worms();
   std::vector<Worm> get_weapons();

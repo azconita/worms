@@ -32,12 +32,12 @@ enum Weapon_Name {
     Dynamite, //d
     Mortar, //m
     W_Fragment,
-    Green_Granade,//g
-    Holy_Granade,//h
-    Red_Granade,//r
-    Teletrans,//t
+    Green_Grenade,//g
+    Holy_Grenade,//h
+    Red_Grenade,//r
+    Teleport,//t
     Banana,//u
-    Baseboll_Bat,//v
+    Baseball_Bat,//v
     Explosion,
     None,
     W_Timer

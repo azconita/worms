@@ -9,10 +9,10 @@
 #include "Constants.h"
 #include "WeaponExplosionListener.h"
 #include "Bazooka.h"
-#include "Projectile.h"
 #include "DTOs.h"
 #include "Worm.h"
 #include "Beam.h"
+#include "Weapon.h"
 
 //config: yaml: https://github.com/jbeder/yaml-cpp/
 Stage::Stage(std::string config) {
@@ -40,13 +40,22 @@ Stage::~Stage() {
     delete (*it);
   }
   this->beams.clear();
-  for (std::vector<Projectile*>::iterator it = this->explosions.begin();
+  for (std::vector<Weapon*>::iterator it = this->explosions.begin();
           it != this->explosions.end(); ++it) {
     delete (*it);
   }
   this->explosions.clear();
   printf("delete world!\n");
   delete this->world;
+}
+
+void Stage::do_explosions() {
+  //check for timers in explosion
+  for (auto& w : this->explosions) {
+    if (w->has_timer() && w->is_time_to_explode()) {
+      w->explode();
+    }
+  }
 }
 
 void Stage::update() {
@@ -57,26 +66,28 @@ void Stage::update() {
   this->world->Step( timeStep, velocityIterations, positionIterations);
 
   //check for timers in explosion
-  for (auto &w: this->explosions) {
+  this->do_explosions();
+  //delete weapons exploded and dead worms
+  this->clean_dead_bodies();
+  //check if player change
+  this->update_player();
 
-    if (w->has_timer() && w->is_time_to_explode()) {
-      w->explode();
-    }
-  }
+}
 
+void Stage::clean_dead_bodies() {
   //delete "dead" explosions
-  for (std::vector<Projectile*>::iterator it = this->explosions.begin();
+  for (std::vector<Weapon*>::iterator it = this->explosions.begin();
       it != this->explosions.end();) {
-     if(! (*it)->is_alive()) {
-       printf("it: %x", *it);
-       delete *it;
-       it = this->explosions.erase(it);
-     } else {
-       if ((*it)->has_timer() && (*it)->is_time_to_explode()) {
-         (*it)->explode();
-       }
-       ++it;
-     }
+    if(! (*it)->is_alive()) {
+      printf("it: %x", *it);
+      delete *it;
+      it = this->explosions.erase(it);
+    } else {
+      if ((*it)->has_timer() && (*it)->is_time_to_explode()) {
+        (*it)->explode();
+      }
+      ++it;
+    }
   }
 
   //delete dead worms
@@ -90,6 +101,21 @@ void Stage::update() {
     }
   }
 
+}
+
+void Stage::update_player() {
+  if (this->change)
+    this->change_player();
+}
+
+//TODO sirve así? gusanos mueren... de quien es el turno?
+void Stage::change_player() {
+  int curr_id = this->current_player->get_id();
+  std::map<int, Worm*>::iterator next = this->worms.find(curr_id);
+  if (++next == this->worms.end())
+    this->current_player = this->worms.begin()->second;
+  else
+    this->current_player = next->second;
 }
 
 void Stage::make_action(ActionDTO & action) {
@@ -125,20 +151,22 @@ void Stage::make_action(ActionDTO & action) {
        action.x, action.y, action.power, action.weapon_degrees, action.direction, action.time_to_explode);
 
       //switch(action.weapon) {
-      if (action.weapon == Teletrans) {
+      if (action.weapon == Teleport) {
         this->worms[worm]->teleport(action.x, action.y, action.direction);
       } else if (action.weapon == W_Air_Attack) {
         //TODO: fix : que no caigan todos juntos! (hace que exploten antes)
         for (int i = 0; i < 6; ++ i) {
-          Projectile* w = new Projectile(this->world, action.weapon, action.x, 0, this->wind);
+          Weapon* w = new Weapon(this->world, action.weapon, action.x, 0, this->wind);
           this->explosions.push_back(w);
         }
       } else {
-        Projectile* w = new Projectile(this->world, action.weapon, action.x, action.y, this->wind);
+        Weapon* w = new Weapon(this->world, action.weapon, action.x, action.y, this->wind);
         printf("about to shoot");
         w->shoot(action.power, action.weapon_degrees, action.direction, action.time_to_explode);
         this->explosions.push_back(w);
       }
+      //TODO: esperar 3 segundos antes de cambiar el player
+      this->change_player();
 
       break;
     }
@@ -171,7 +199,7 @@ StageDTO Stage::get_stageDTO() {
     ElementDTO worm_element;
     std::vector<b2Vec2> vertices = w.second->get_points();
     set_position(worm_element, vertices);
-    worm_element.player_id = w.first;
+    worm_element.player_id = w.second->get_player_id();
     worm_element.life = w.second->get_life();
     //printf("worm %i: x = %f y = %f  h = %f w = %f\n",w.first, worm_element.x, worm_element.y, worm_element.h, worm_element.w);
     s.worms[w.first] = worm_element;
@@ -207,6 +235,7 @@ StageDTO Stage::get_stageDTO() {
   }
 
   s.worm_turn = 0;
+  //s.worm_turn = this->current_player->get_id();
   return s;
 }
 
@@ -216,7 +245,7 @@ StageDTO Stage::get_stageDTO() {
 void Stage::add_beams(std::string config) {
   this->beams.push_back(new Beam(this->world, 10,2,  b2_pi));
   this->beams.push_back(new Beam(this->world, 1,2,0));
-  this->beams.push_back(new Beam(this->world, 10,20, b2_pi * 0.125));
+  this->beams.push_back(new Beam(this->world, 10,20, 0));
   this->beams.push_back(new Beam(this->world, 20,10,0));
 
   this->beams.push_back(new Beam(this->world, 30,40,0));
