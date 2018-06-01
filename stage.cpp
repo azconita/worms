@@ -70,7 +70,10 @@ void Stage::update() {
   //delete weapons exploded and dead worms
   this->clean_dead_bodies();
   //check if player change
-  this->update_player();
+  //this->update_player();
+
+  //char t = (this->worms[0]->is_falling()) ? 'y' : 'n';
+  //printf("worm falling: %c\n", t);
 
 }
 
@@ -104,8 +107,10 @@ void Stage::clean_dead_bodies() {
 }
 
 void Stage::update_player() {
-  if (this->change)
+  if (this->change || (difftime(this->player_time,time(NULL)) < 60)) {
     this->change_player();
+    this->change = false;
+  }
 }
 
 //TODO sirve así? gusanos mueren... de quien es el turno?
@@ -116,6 +121,7 @@ void Stage::change_player() {
     this->current_player = this->worms.begin()->second;
   else
     this->current_player = next->second;
+  time(&(this->player_time));
 }
 
 void Stage::make_action(ActionDTO & action) {
@@ -166,8 +172,8 @@ void Stage::make_action(ActionDTO & action) {
         this->explosions.push_back(w);
       }
       //TODO: esperar 3 segundos antes de cambiar el player
-      this->change_player();
-
+      this->change = true;
+      //this->change_player();
       break;
     }
   }
@@ -211,7 +217,7 @@ StageDTO Stage::get_stageDTO() {
     set_position(beam_element, vertices);
     //printf("beam : x = %f y = %f  h = %f w = %f\n", beam_element.x, beam_element.y, beam_element.h, beam_element.w);
     beam_element.angle = b->get_angle();
-    printf("beam angle: %d\n", beam_element.angle);
+    //printf("beam angle: %d\n", beam_element.angle);
     s.beams.push_back(beam_element);
   }
 

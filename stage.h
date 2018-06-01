@@ -17,7 +17,7 @@
 
 class Stage {
 private:
-  std::vector<int> jugadores;
+  //std::vector<int> jugadores;
   b2World* world;
   std::vector<Beam*> beams;
   std::map<int, Worm*> worms;
@@ -30,6 +30,7 @@ private:
 
   bool change = false;
   Worm* current_player = NULL;
+  time_t player_time = 0;
 
 public:
   Stage(std::string config);

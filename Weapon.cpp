@@ -282,8 +282,7 @@ void Weapon::explosion() {
 
 bool Weapon::is_time_to_explode() {
   if ((this->timer != 0) && (this->name == W_Timer)) {
-    std::cout << "difftime: " << difftime(time(NULL),this->t) << "\n";
-    std::cout << "t: " << this->t << "\n";
+    //std::cout << "t: " << this->t << "\n";
     if (difftime(time(NULL), this->t) < this->timer)
       return false;
     return true;
