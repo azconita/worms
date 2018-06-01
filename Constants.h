@@ -28,6 +28,7 @@ namespace Constants {
   //beam constants
   extern const float beam_height;
   extern const float beam_width;
+  extern const float beam_friction;
   //weapons constants
   extern const float weapon_size;
   extern const float weapon_density;

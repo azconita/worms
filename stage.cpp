@@ -182,6 +182,8 @@ StageDTO Stage::get_stageDTO() {
     std::vector<b2Vec2> vertices = b->get_points();
     set_position(beam_element, vertices);
     //printf("beam : x = %f y = %f  h = %f w = %f\n", beam_element.x, beam_element.y, beam_element.h, beam_element.w);
+    beam_element.angle = b->get_angle();
+    printf("beam angle: %d\n", beam_element.angle);
     s.beams.push_back(beam_element);
   }
 
@@ -212,12 +214,12 @@ StageDTO Stage::get_stageDTO() {
 
 // set initial stage
 void Stage::add_beams(std::string config) {
-  this->beams.push_back(new Beam(this->world, 10,2));
-  this->beams.push_back(new Beam(this->world, 10,20));
-  this->beams.push_back(new Beam(this->world, 20,20));
-  this->beams.push_back(new Beam(this->world, 30,20));
+  this->beams.push_back(new Beam(this->world, 10,2,  b2_pi));
+  this->beams.push_back(new Beam(this->world, 1,2,0));
+  this->beams.push_back(new Beam(this->world, 10,20, b2_pi * 0.125));
+  this->beams.push_back(new Beam(this->world, 20,10,0));
 
-  this->beams.push_back(new Beam(this->world, 30,40));
+  this->beams.push_back(new Beam(this->world, 30,40,0));
 }
 
 void Stage::add_worms(std::string config) {

@@ -75,6 +75,7 @@ struct ElementDTO { //puede ser un gusano, un arma o una viga
   float y; //vertice superior izquierdo en metros
   float h;
   float w;
+  float angle;
   int life;
   int player_id;
   Weapon_Name weapon;
