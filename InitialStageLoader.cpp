@@ -26,9 +26,8 @@ struct Beam_y{
 };
 
 struct Stage_y{
-	int initial_life;
 	std::vector<Beam_y> beams;
-	std::map<int, std::vector<int>> players;
+	std::map<int, std::vector<Worm_y>> players;
 };
 
 namespace YAML {
@@ -43,7 +42,7 @@ struct convert<Stage_y> {
   }
   static bool decode(const Node& node, Stage_y& s) {
   	s.beams = node["beams"].as<std::vector<Beam_y>>();
-  	s.players = node["players"].as<std::map<int, std::vector<int>>>();
+  	s.players = node["players"].as<std::map<int, std::vector<Worm_y>>>();
     return true;
   }
 };
@@ -87,8 +86,8 @@ struct convert<Worm_y> {
   	worm.id = node["id"].as<int>();
     worm.pos_x = node["pos_x"].as<double>();
     worm.pos_y = node["pos_y"].as<double>();
-    worm.direction = node["directioction"].as<int>();
-    worm.id = node["life"].as<int>();
+    worm.direction = node["direction"].as<int>();
+    worm.life = node["life"].as<int>();
     worm.inclination = node["inclination"].as<double>();
     return true;
   }
@@ -103,14 +102,16 @@ int main(){
 		cout << "se levanto: beam_y { x: " << b.pos_x << ", y: " << b.pos_y << ", size: " << b.size << ", inclination:" << b.inclination << "}" << endl;
 	}
 	for(auto & pair: s.players){
-		cout << "player" << pair.first << endl;
+		cout << "player  " << pair.first << endl;
 		for(auto w : pair.second){
-			cout << "worms:"<< endl;
+    
+			cout << "worms: { id: "<< w.id << ", x: "<< w.pos_x << " , y: "
+      << w.pos_y << ", direction: "<< w.direction << ", inclination: "<<w.inclination << ", life: " << w.life <<" }"<< endl;
 		}
 	}
 
 
-	Beam_y end;
+	/*Beam_y end;
 	end.pos_x = 10;
 	end.pos_y = 20;
 	end.size = 3;
@@ -125,7 +126,7 @@ int main(){
 	file << initial_stage;
 	
 
-    file.close();
+    file.close();*/
 
 
 }
