@@ -1360,14 +1360,7 @@ static const std::vector<Weapon_Name> weapons_with_timer(
     Banana}
 );
 
-//armas con timer
-static const std::vector<Weapon_Name> weapons_with_timer(
-    {Holy_Granade,
-    Dynamite,
-    Baseboll_Bat,
-    Red_Granade,
-    Banana}
-);
+
 
 
 
@@ -1610,7 +1603,7 @@ int main(int argc, char *args[]){
 
     //------------------------------------
 
-    Stage stage("stage1");
+    Stage stage("file.yaml");
 
     StageDTO s = stage.get_stageDTO();
 

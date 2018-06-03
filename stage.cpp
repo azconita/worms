@@ -15,16 +15,14 @@
 #include "Beam.h"
 
 //config: yaml: https://github.com/jbeder/yaml-cpp/
-Stage::Stage(std::string config) {
-  std::cout << config << '\n';
+Stage::Stage(std::string file_name) {
+  std::cout << file_name << '\n';
   b2Vec2 gravity(0, Constants::gravity); //normal earth gravity
 
   this->world = new b2World(gravity);
   this->explosion_listener;
   this->world->SetContactListener(&this->explosion_listener);
-  this->add_beams(config);
-  this->add_worms(config);
-  this->add_explosion();
+  this->load_initial_stage(file_name);
   this->wind = Constants::wind;
 }
 
@@ -68,7 +66,7 @@ void Stage::update() {
   for (std::vector<Projectile*>::iterator it = this->explosions.begin();
       it != this->explosions.end();) {
      if(! (*it)->is_alive()) {
-       printf("it: %x", *it);
+       //printf("it: %x", *it);
        delete *it;
        it = this->explosions.erase(it);
      } else {
@@ -210,9 +208,30 @@ StageDTO Stage::get_stageDTO() {
 
 
 
-// set initial stage
+void Stage::load_initial_stage(std::string file_name){
+  StageLoader yaml_loader(file_name);
+  Stage_y s = yaml_loader.load_stage();
+   for(auto b: s.beams){
+    cout << "beam_y { x: " << b.pos_x << ", y: " << b.pos_y << ", size: " << b.size << ", inclination:" << b.inclination << "}" << endl;
+     this->beams.push_back(new Beam(this->world,  b.pos_x, b.pos_y));
+  }
+  for(auto & pair: s.players){
+    cout << "player  " << pair.first << endl;
+    cout << "worms: ";
+    for(auto w : pair.second){
+      cout << "{ id: "<< w.id << ", x: "<< w.pos_x << " , y: "
+      << w.pos_y << ", direction: "<< w.direction << ", inclination: "<<w.inclination << ", life: " << w.life <<" }"<< endl;
+      Worm* worm = new Worm(this->world, w.pos_x, w.pos_y);
+      this->worms.emplace(0, worm);
+
+    }
+  }
+}
+
+
+/*// set initial stage
 void Stage::add_beams(std::string config) {
-  this->beams.push_back(new Beam(this->world, 10,2));
+ 
   this->beams.push_back(new Beam(this->world, 10,20));
   this->beams.push_back(new Beam(this->world, 20,20));
   this->beams.push_back(new Beam(this->world, 30,20));
@@ -231,4 +250,4 @@ void Stage::add_weapons(std::string config) {
 
 void Stage::add_explosion() {
   //this->explosions.push_back(new Projectile(this->world, W_Bazooka, 9, 12));
-}
+}*/

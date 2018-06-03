@@ -3,6 +3,7 @@
 #include <map>
 #include <tuple>
 #include <Box2D/Box2D.h>
+#include "StageLoader.h"
 #include "Beam.h"
 #include "Projectile.h"
 #include "Weapon.h"
@@ -42,10 +43,7 @@ private:
   std::vector<Worm> get_worms();
   std::vector<Worm> get_weapons();
 
-  void add_beams(std::string config);
-  void add_worms(std::string config);
-  void add_weapons(std::string config);
-  void add_explosion();
+  void load_initial_stage(std::string file_name);
 
   void set_position(ElementDTO & element , std::vector<b2Vec2> & vertices);
 };
