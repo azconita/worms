@@ -3,14 +3,10 @@
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
 #include "resources_definitions.h"
-
+#include "Colour.h"
 #include "stage.h"
 #include "Beam.h"
 #include "Worm.h"
-
-
-//g++ -std=c++11 main.cpp stage.cpp Beam.cpp Worm.cpp Constants.cpp Weapon.cpp Bazooka.cpp -lBox2D -lSDL -lSDL_image -lyaml-cpp -lSDL_ttf  -g
-
 
 using std::cout;
 using std::endl;
@@ -23,70 +19,6 @@ using std::pair;
 
 
 
-
-/////////////////////////////////////////////////////////////////////////////////////////
-enum Color_name{
-    White,
-    Orange,
-    Green,
-    Purple,
-    Pink,
-    Yellow,
-    Red,
-    Blue
-};
-
-
-class Color{
-public:
-    int r,g,b;
-    Color(int r,int g, int b){
-        this->r = r;
-        this->g = g;
-        this->b = b;
-    }
-
-    static Color create(Color_name color_name){
-        switch(color_name){
-            case(White):{
-                Color white(255,255,255);
-                return white;
-            }
-            case(Orange):{
-                Color orange(244, 95, 66);
-                return orange;
-            }
-            case(Yellow):{
-                Color yellow(229, 220, 57);
-                return yellow;
-            }
-            case(Green):{
-                Color green(57, 229, 114);
-                return green;
-            }
-            case Blue:{
-                Color blue(83, 144, 237);
-                return blue;
-            }
-            case Purple:{
-                Color purple(166, 109, 219);
-                return purple;
-            }
-            case Pink:{
-                Color pink(239, 115, 198);
-                return pink;
-            }
-            case Red:{
-                Color red(237, 78, 102);
-                return red;
-            }
-        }
-        Color black(0,0,0);
-        return black;
-
-    }
-
-};
 
 /////////////////////////////////////////////////////////////////////////////////////////
 
@@ -157,7 +89,7 @@ SDL_Surface * flip(SDL_Surface * original, Uint32 colorkey){
 
 
 public:
-    Picture(const char * bmp_path, Color color, int columns, int rows){
+    Picture(const char * bmp_path, Colour color, int columns, int rows){
         this->rows = rows;
         this->columns = columns;
         this->row_num = 0;
@@ -311,7 +243,7 @@ class Animation {
 
 public:
 
-    Animation(const char * bmp_path, Color color,int columns, int rows):
+    Animation(const char * bmp_path, Colour color,int columns, int rows):
     picture(bmp_path, color, columns, rows ){
         this->figures_num = columns * rows;
         this->step = 0;
@@ -379,75 +311,75 @@ private:
     Animation_Factory(){}
 public:
     static Animation get_worm_walk(){
-        Color colorkey(WORM_WALK_R,WORM_WALK_G,WORM_WALK_B);
+        Colour colorkey(WORM_WALK_R,WORM_WALK_G,WORM_WALK_B);
         Animation worm(WORM_WALK,colorkey,WORM_WALK_COLUMNS,WORM_WALK_ROWS);
         return worm;
     }
 
     static Animation get_worm_jump(){
-        Color colorkey(WORM_JUMP_R,WORM_JUMP_G,WORM_JUMP_B);
+        Colour colorkey(WORM_JUMP_R,WORM_JUMP_G,WORM_JUMP_B);
         Animation worm(WORM_JUMP,colorkey,WORM_JUMP_COLUMNS,WORM_JUMP_ROWS);
         return worm;
 
     }
 
     static Animation get_worm_fall(){
-        Color colorkey(WORM_FALL_R,WORM_FALL_G,WORM_JUMP_B);
+        Colour colorkey(WORM_FALL_R,WORM_FALL_G,WORM_JUMP_B);
         Animation worm(WORM_FALL,colorkey,WORM_FALL_COLUMNS,WORM_FALL_ROWS);
         return worm;
 
     }
 
     static Animation get_worm_missile(){
-        Color colorkey(WORM_MISSILE_R,WORM_MISSILE_G,WORM_MISSILE_B);
+        Colour colorkey(WORM_MISSILE_R,WORM_MISSILE_G,WORM_MISSILE_B);
         Animation worm(WORM_MISSILE,colorkey,WORM_MISSILE_COLUMNS,WORM_MISSILE_ROWS);
         return worm;
     }
 
     static Animation get_worm_bat(){
-        Color colorkey(WORM_BAT_R,WORM_BAT_G,WORM_BAT_B);
+        Colour colorkey(WORM_BAT_R,WORM_BAT_G,WORM_BAT_B);
         Animation worm(WORM_BAT,colorkey,WORM_BAT_COLUMNS,WORM_BAT_ROWS);
         return worm;
     }
 
     static Animation get_worm_banana(){
-        Color colorkey(WORM_BANANA_R,WORM_BANANA_G,WORM_BANANA_B);
+        Colour colorkey(WORM_BANANA_R,WORM_BANANA_G,WORM_BANANA_B);
         Animation worm(WORM_BANANA,colorkey,WORM_BANANA_COLUMNS,WORM_MISSILE_ROWS);
         return worm;
     }
 
     static Animation get_worm_green_granade(){
-        Color colorkey(WORM_GREEN_GRANADE_R,WORM_GREEN_GRANADE_G,WORM_GREEN_GRANADE_B);
+        Colour colorkey(WORM_GREEN_GRANADE_R,WORM_GREEN_GRANADE_G,WORM_GREEN_GRANADE_B);
         Animation worm(WORM_GREEN_GRANADE,colorkey,WORM_GREEN_GRANADE_COLUMNS,WORM_GREEN_GRANADE_ROWS);
         return worm;
     }
 
     static Animation get_worm_red_granade(){
-        Color colorkey(WORM_RED_GRANADE_R,WORM_RED_GRANADE_G,WORM_RED_GRANADE_B);
+        Colour colorkey(WORM_RED_GRANADE_R,WORM_RED_GRANADE_G,WORM_RED_GRANADE_B);
         Animation worm(WORM_RED_GRANADE,colorkey,WORM_RED_GRANADE_COLUMNS,WORM_RED_GRANADE_ROWS);
         return worm;
     }
 
     static Animation get_worm_holy_granade(){
-        Color colorkey(WORM_HOLY_GRANADE_R,WORM_HOLY_GRANADE_G,WORM_HOLY_GRANADE_B);
+        Colour colorkey(WORM_HOLY_GRANADE_R,WORM_HOLY_GRANADE_G,WORM_HOLY_GRANADE_B);
         Animation worm(WORM_HOLY_GRANADE,colorkey,WORM_HOLY_GRANADE_COLUMNS,WORM_HOLY_GRANADE_ROWS);
         return worm;
     }
 
     static Animation get_worm_teletrans(){
-        Color colorkey(WORM_TELETRANS_R,WORM_TELETRANS_G,WORM_TELETRANS_B);
+        Colour colorkey(WORM_TELETRANS_R,WORM_TELETRANS_G,WORM_TELETRANS_B);
         Animation worm(WORM_TELETRANS,colorkey,WORM_TELETRANS_COLUMNS,WORM_TELETRANS_ROWS);
         return worm;
     }
 
     static Animation get_worm_air_attack(){
-        Color colorkey(WORM_AIR_ATTACK_R,WORM_AIR_ATTACK_G,WORM_AIR_ATTACK_B);
+        Colour colorkey(WORM_AIR_ATTACK_R,WORM_AIR_ATTACK_G,WORM_AIR_ATTACK_B);
         Animation worm(WORM_AIR_ATTACK,colorkey,WORM_AIR_ATTACK_COLUMNS,WORM_AIR_ATTACK_ROWS);
         return worm;
     }
 
     static Animation get_worm_dynamite(){
-        Color colorkey(WORM_DYNAMITE_R,WORM_DYNAMITE_G,WORM_DYNAMITE_B);
+        Colour colorkey(WORM_DYNAMITE_R,WORM_DYNAMITE_G,WORM_DYNAMITE_B);
         Animation worm(WORM_DYNAMITE,colorkey,WORM_DYNAMITE_COLUMNS,WORM_DYNAMITE_ROWS);
         return worm;
     }
@@ -456,56 +388,56 @@ public:
 
 
      static Animation get_bazooka(){
-        Color colorkey(BAZOOKA_R,BAZOOKA_G,BAZOOKA_B);
+        Colour colorkey(BAZOOKA_R,BAZOOKA_G,BAZOOKA_B);
         Animation worm(BAZOOKA,colorkey,BAZOOKA_COLUMNS,BAZOOKA_ROWS);
         return worm;
     }
 
        static Animation get_mortar(){
-        Color colorkey(MORTAR_R,MORTAR_G,MORTAR_B);
+        Colour colorkey(MORTAR_R,MORTAR_G,MORTAR_B);
         Animation worm(MORTAR,colorkey,MORTAR_COLUMNS,MORTAR_ROWS);
         return worm;
     }
 
      static Animation get_banana(){
-        Color colorkey(BANANA_R,BANANA_G,BANANA_B);
+        Colour colorkey(BANANA_R,BANANA_G,BANANA_B);
         Animation worm(BANANA,colorkey,BANANA_COLUMNS,BANANA_ROWS);
         return worm;
     }
 
     static Animation get_green_granade(){
-        Color colorkey(GREEN_GRANADE_R,GREEN_GRANADE_G,GREEN_GRANADE_B);
+        Colour colorkey(GREEN_GRANADE_R,GREEN_GRANADE_G,GREEN_GRANADE_B);
         Animation worm(GREEN_GRANADE,colorkey,GREEN_GRANADE_COLUMNS,GREEN_GRANADE_ROWS);
         return worm;
     }
 
     static Animation get_red_granade(){
-        Color colorkey(RED_GRANADE_R,RED_GRANADE_G,RED_GRANADE_B);
+        Colour colorkey(RED_GRANADE_R,RED_GRANADE_G,RED_GRANADE_B);
         Animation worm(RED_GRANADE,colorkey,RED_GRANADE_COLUMNS,RED_GRANADE_ROWS);
         return worm;
     }
 
     static Animation get_holy_granade(){
-        Color colorkey(HOLY_GRANADE_R,HOLY_GRANADE_G,HOLY_GRANADE_B);
+        Colour colorkey(HOLY_GRANADE_R,HOLY_GRANADE_G,HOLY_GRANADE_B);
         Animation worm(HOLY_GRANADE,colorkey,HOLY_GRANADE_COLUMNS,HOLY_GRANADE_ROWS);
         return worm;
     }
 
 
     static Animation get_air_attack(){
-        Color colorkey(AIR_ATTACK_R,AIR_ATTACK_G,AIR_ATTACK_B);
+        Colour colorkey(AIR_ATTACK_R,AIR_ATTACK_G,AIR_ATTACK_B);
         Animation worm(AIR_ATTACK,colorkey,AIR_ATTACK_COLUMNS,AIR_ATTACK_ROWS);
         return worm;
     }
 
     static Animation get_dynamite(){
-        Color colorkey(DYNAMITE_R,DYNAMITE_G,DYNAMITE_B);
+        Colour colorkey(DYNAMITE_R,DYNAMITE_G,DYNAMITE_B);
         Animation worm(DYNAMITE,colorkey,DYNAMITE_COLUMNS,DYNAMITE_ROWS);
         return worm;
     }
 
      static Animation get_explosion(){
-        Color colorkey(EXPLOSION_R,EXPLOSION_G,EXPLOSION_B);
+        Colour colorkey(EXPLOSION_R,EXPLOSION_G,EXPLOSION_B);
         Animation worm(EXPLOSION,colorkey,EXPLOSION_COLUMNS,EXPLOSION_ROWS);
         return worm;
     }
@@ -833,7 +765,7 @@ Graphic_Designer(SDL_Surface * screen, int screen_height, int screen_width){
 
 
 
-void show_life(int life, int x, int y, Color color){
+void show_life(int life, int x, int y, Colour color){
 
     char str_life[10];
     if(life < 100){
@@ -1429,7 +1361,7 @@ void show_weapon( StageDTO s,SDL_Surface * screen, Graphic_Designer & gd){
 
 void show_beams(StageDTO s, SDL_Surface *screen){
 
-    Color colorkey_beam(BEAM_R,BEAM_G,BEAM_B);
+    Colour colorkey_beam(BEAM_R,BEAM_G,BEAM_B);
 
     for (auto beam_info: s.beams) {
 
@@ -1447,7 +1379,7 @@ void show_beams(StageDTO s, SDL_Surface *screen){
 /////////////////////////////////////////////////////////////////////////////
 
 class Water_animation_controller{
-    Color colorkey;
+    Colour colorkey;
     Animation water_left;
     Animation water_right;
     int screen_height;
@@ -1495,7 +1427,7 @@ std::map<int,Worm_Animation_Controller> create_worms(StageDTO s, SDL_Surface *sc
 
     std::map<int,Worm_Animation_Controller> worms;
 
-    Color colorkey(WORM_WALK_R,WORM_WALK_G,WORM_WALK_B);
+    Colour colorkey(WORM_WALK_R,WORM_WALK_G,WORM_WALK_B);
 
     for (auto w: s.worms) {
 
@@ -1520,7 +1452,7 @@ std::map<int,Worm_Animation_Controller> create_worms(StageDTO s, SDL_Surface *sc
 }
 
 
-static  std::vector<Color_name> possible_colors {
+static  std::vector<Colour_name> possible_colors {
     Orange,
     Green,
     Purple,
@@ -1548,7 +1480,7 @@ void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Worm_Animation_Con
             cout << "Error: juego no preparado para mas de 4 jugadores" << endl;
         }
 
-        Color player_color = Color::create(possible_colors.at(worm_info.player_id));
+        Colour player_color = Colour::create(possible_colors.at(worm_info.player_id));
 
         graphic_designer.show_life(worm_info.life,up_left_vertex_x+20,up_left_vertex_y-5,player_color);
         int weapon_power = worms_iter->second.get_weapon_power();
