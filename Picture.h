@@ -13,6 +13,7 @@
 #include <iostream>
 #include "Colour.h"
 #include "DTOs.h"
+#include "Error.h"
 
 
 using std::cout;

@@ -3,6 +3,7 @@
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
 
+#include "Error.h"
 #include "WaterAnimation.h"
 #include "WormAnimation.h"
 #include "EventController.h"
@@ -41,34 +42,22 @@ void debug_box2d_figure(SDL_Surface *screen, ElementDTO element_info){
 
 }
 
-
-
-
-
-
-
-
-
-
-
-//////////////////////////////////////////////////////////////////7
-
-
 //////////////////////////////////////////////////////////////////////////////////////////
 
 
 
 #define SCREEN_DEFAULT_WITH 1366
 #define SCREEN_DEFAULT_HIGH 768
+#define TITLE "Worms game"
+#define INITIAL_STAGE_FILE "file.yaml"
 
 int main(int argc, char *args[]){
 
     if(SDL_Init(SDL_INIT_VIDEO) < 0) {
-        cout << "No se pudo iniciar SDL: " << SDL_GetError() << endl;
-        exit(1);
+        throw Error("No se pudo iniciar SDL: ",SDL_GetError());
     }
 
-atexit(SDL_Quit);
+    atexit(SDL_Quit);
     int screen_width = SCREEN_DEFAULT_WITH;
     int screen_height = SCREEN_DEFAULT_HIGH;
 
@@ -77,45 +66,30 @@ atexit(SDL_Quit);
     screen_height = info->current_h;
 
 
-
     if(SDL_VideoModeOK(screen_width, screen_height, 24, SDL_HWSURFACE|SDL_DOUBLEBUF) == 0) {
-        // Comprobamos que sea compatible el modo de video
-       cout << "Modo video no soportado: " << SDL_GetError() << endl;
-       exit(1);
+       throw Error("Modo video no compatible: ",SDL_GetError());
     }
 
     // Establecemos el modo de video
     SDL_Surface *screen;
     screen = SDL_SetVideoMode(screen_width, screen_height, 24, SDL_HWSURFACE|SDL_DOUBLEBUF);
     if(screen == NULL) {
-        cout << "No se pudo establecer el modo de video: "
-        << SDL_GetError() << endl;
-        exit(1);
+       throw Error("No se pudo establecer el modo de video: ",SDL_GetError());
     }
 
     // Set the title bar
-    SDL_WM_SetCaption("Worms game", "Worms");
+    SDL_WM_SetCaption(TITLE, TITLE);
 
-   
-    //------------------------------------
 
-    Stage stage("file.yaml");
-
+    Stage stage(INITIAL_STAGE_FILE);
     StageDTO s = stage.get_stageDTO();
 
     WaterAnimation water(screen_height, 3);
 
-
-    //------------------------------------
-
     GraphicDesigner graphic_designer(screen, screen_height,screen_width, s);
     
-
-
     //turno harcodeado
     std::map<int,WormAnimation>::iterator turn_worm_iter = graphic_designer.get_turn_worm(0);
-
-
 
     SDL_Event event;
     EventController event_controller(event, stage, screen_height, screen_width, graphic_designer);

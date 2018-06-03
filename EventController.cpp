@@ -12,6 +12,41 @@ float EventController::meters_conversor(int pixel){
     return (pixel+0.0)/23.5;
 
 }
+
+void EventController::weapon_shortcuts(SDL_Event & event, WormAnimation& turn_worm){
+	switch(event.key.keysym.sym){
+		case SDLK_a:
+			air_attack( turn_worm);
+			break;
+	    case SDLK_b:
+	        bazooka( turn_worm);
+	        break;
+	    case SDLK_d:
+	        dynamite( turn_worm);
+	        break;
+	    case SDLK_g:
+	        green_granade( turn_worm);
+	        break;
+	    case SDLK_h:
+	    	holy_granade( turn_worm);
+	        break;
+	    case SDLK_m:
+	       mortar( turn_worm);
+	       break;
+	    case SDLK_r:
+	        red_granade( turn_worm);
+	        break;
+	    case SDLK_t:
+	        teletrans( turn_worm);
+	        break;
+	    case SDLK_u:
+	    	banana( turn_worm);
+	        break;
+	    case SDLK_v:
+	        baseboll_bat( turn_worm);
+	        break;
+	}
+}
 void EventController::air_attack(WormAnimation& turn_worm){
     turn_worm.take_weapon(W_Air_Attack);
     this->wait_for_destination_clicl = true;
@@ -172,7 +207,7 @@ void EventController::space(WormAnimation& turn_worm){
 void EventController::mouse_motion(){
     int x, y;
     SDL_GetMouseState(&x, &y);
-    if(x > screen_width - 5 && y < 5){
+    if(x > screen_width - 5 && y < screen_height/2){
         cout << "Se quiere elegir un arma:" << endl;
         printf("%i %i\n",x,y);
         this->wait_for_weapon_click = true;
@@ -202,6 +237,65 @@ EventController::EventController(SDL_Event & event, Stage & stage, int screen_he
 
 }
 
+void EventController::weapon_action(SDL_Event & event, WormAnimation& turn_worm){
+	switch(event.key.keysym.sym){
+    	case SDLK_SPACE:
+             space( turn_worm);
+             break;
+        case SDLK_0:
+            turn_worm.set_timer(0);
+            break;
+        case SDLK_1:
+           turn_worm.set_timer(1);
+           break;
+        case SDLK_2:
+          turn_worm.set_timer(2);
+          break;
+        case SDLK_3:
+           turn_worm.set_timer(3);
+           break;
+        case SDLK_4:
+        	turn_worm.set_timer(4);
+        	break;
+        case SDLK_5:
+        	turn_worm.set_timer(5);
+            break;
+        case SDLK_6:
+        	turn_worm.set_timer(6);
+            break;
+        case SDLK_7:
+        	turn_worm.set_timer(7);
+            break;
+        case SDLK_8:
+        	turn_worm.set_timer(8);
+            break;
+        case SDLK_9:
+        	turn_worm.set_timer(9);
+            break;
+	}
+
+}
+
+void EventController::movement(SDL_Event & event, WormAnimation& turn_worm){
+	switch(event.key.keysym.sym){
+    	case SDLK_w:
+            weapon_shot(turn_worm);
+            break;
+        case SDLK_LEFT:
+        	left( turn_worm);
+            break;
+        case SDLK_RIGHT:
+        	right( turn_worm);
+        	break;
+        case SDLK_UP:
+        	up( turn_worm);
+        	break;
+        case SDLK_DOWN:
+        	down( turn_worm);
+        	break;
+	}
+}
+
 
 
 bool EventController::continue_running(WormAnimation& turn_worm){
@@ -221,95 +315,16 @@ bool EventController::continue_running(WormAnimation& turn_worm){
         case SDL_MOUSEMOTION:
             mouse_motion();
         case SDL_KEYDOWN:
-            switch(event.key.keysym.sym){
-                case SDLK_ESCAPE:
-                    return false;
-                case SDLK_w:
-                    cout << "disparo" << endl;
-                    weapon_shot(turn_worm);
-                    break;
-                case SDLK_LEFT:
-                    left( turn_worm);
-                    break;
-                case SDLK_RIGHT:
-                    right( turn_worm);
-                    break;
-                case SDLK_UP:
-                    up( turn_worm);
-                    break;
-                case SDLK_DOWN:
-                    down( turn_worm);
-                    break;
-                //-----------potencia..................
-                case SDLK_SPACE:
-                    space( turn_worm);
-                    break;
-                case SDLK_0:
-                    turn_worm.set_timer(0);
-                    break;
-                case SDLK_1:
-                    turn_worm.set_timer(1);
-                    break;
-                case SDLK_2:
-                    turn_worm.set_timer(2);
-                    break;
-                case SDLK_3:
-                    turn_worm.set_timer(3);
-                    break;
-                case SDLK_4:
-                    turn_worm.set_timer(4);
-                    break;
-                case SDLK_5:
-                    turn_worm.set_timer(5);
-                    break;
-                case SDLK_6:
-                    turn_worm.set_timer(6);
-                    break;
-                case SDLK_7:
-                    turn_worm.set_timer(7);
-                    break;
-                case SDLK_8:
-                    turn_worm.set_timer(8);
-                    break;
-                case SDLK_9:
-                    turn_worm.set_timer(9);
-                    break;
-                //-------------ARMAS--------------------
-                case SDLK_a:
-                air_attack( turn_worm);
-                    break;
-                case SDLK_b:
-                    bazooka( turn_worm);
-                    break;
-                case SDLK_d:
-                    dynamite( turn_worm);
-                    break;
-                case SDLK_g:
-                    green_granade( turn_worm);
-                    break;
-                case SDLK_h:
-                    holy_granade( turn_worm);
-                    break;
-                case SDLK_m:
-                    mortar( turn_worm);
-                    break;
-                case SDLK_r:
-                    red_granade( turn_worm);
-                    break;
-                case SDLK_t:
-                    teletrans( turn_worm);
-                    break;
-                case SDLK_u:
-                    banana( turn_worm);
-                    break;
-                case SDLK_v:
-                    baseboll_bat( turn_worm);
-                    break;
-                }
-                break;
+            if(event.key.keysym.sym == SDLK_ESCAPE ){
+            	return false;
+            }
+            movement(event, turn_worm);
+            weapon_shortcuts(event, turn_worm);
+            weapon_action(event, turn_worm);
+            break;
     }
     return true;
-    }
+}
 
 EventController::~EventController(){}
 

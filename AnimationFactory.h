@@ -26,7 +26,7 @@ public:
     static Animation get_worm_teletrans();
     static Animation get_worm_air_attack();
     static Animation get_worm_dynamite();
-    //-----------------------Armas --------------------------------------------------
+    //---------Armas ---------------
      static Animation get_bazooka();
     static Animation get_mortar();
     static Animation get_banana();

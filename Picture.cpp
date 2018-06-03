@@ -5,7 +5,7 @@
  *      Author: jaz
  */
 
-#define BOOST_LOG_DYN_LINK 1
+//#define BOOST_LOG_DYN_LINK 1
 #include "Picture.h"
 
 SDL_Rect Picture::get_dimention(){
@@ -48,8 +48,7 @@ SDL_Surface * Picture::flip(SDL_Surface * original, Uint32 colorkey){
         // Pasamos la imagen a formato de pantalla
         flipped = SDL_DisplayFormat(original);
         if(flipped == NULL) {
-            cout << "No podemos convertir la imagen al formato de pantalla" << endl;
-            return NULL;
+            throw Error("No podemos convertir la imagen al formato de pantalla");
         }
 
         // Preparamos el rectángulo nuevo vacío del color transparente
@@ -76,15 +75,14 @@ Picture::Picture(const char * bmp_path, Colour color, int columns, int rows){
         SDL_Surface *tmp = IMG_Load(bmp_path);
         //SDL_Surface *tmp = SDL_LoadBMP(bmp_path);
         if (!tmp) {
-            cout <<"Couldn't create surface from image:" << bmp_path << SDL_GetError() << endl;
-            return;
+            throw Error("Couldn't create surface from image: ",bmp_path,SDL_GetError());
         }
 
         this->surface = SDL_DisplayFormat(tmp);
         SDL_FreeSurface(tmp);
 
         if(this->surface == NULL) {
-            cout << "Error: " << SDL_GetError() << endl; exit(1);
+            throw Error("Error: ", SDL_GetError());
         }
 
         // Calculamos el color transparente, en nuestro caso el verde

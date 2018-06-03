@@ -20,6 +20,8 @@ class EventController {
 	ActionDTO action;
 	bool wait_for_destination_clicl;
 	bool wait_for_weapon_click;
+
+	void weapon_shortcuts(SDL_Event & event, WormAnimation& turn_worm);
 	float meters_conversor(int pixel);
 	void air_attack(WormAnimation& turn_worm);
 	void bazooka(WormAnimation& turn_worm);
@@ -32,19 +34,21 @@ class EventController {
 	void banana(WormAnimation& turn_worm);
 	void baseboll_bat(WormAnimation& turn_worm);
 
-	void shot(WormAnimation& turn_worm,int x, int y);
+
 
 	void click(WormAnimation& turn_worm);
 
+	void movement(SDL_Event & event, WormAnimation& turn_worm);
 	void up(WormAnimation& turn_worm);
 	void down(WormAnimation& turn_worm);
 	void right(WormAnimation& turn_worm);
 	void left(WormAnimation& turn_worm);
 
-
+	void weapon_action(SDL_Event & event, WormAnimation& turn_worm);
 	void space(WormAnimation& turn_worm);
 	void mouse_motion();
 	void weapon_shot(WormAnimation& turn_worm);
+	void shot(WormAnimation& turn_worm,int x, int y);
 
 public:
 	EventController(SDL_Event & event, Stage & stage, int screen_height, int screen_width, GraphicDesigner & graphic_designer);
