@@ -10,6 +10,8 @@
 #include "Worm.h"
 #include "WeaponExplosionListener.h"
 #include "DTOs.h"
+#include "Logger.h"
+
 
 #include "Bazooka.h"
 

@@ -1,3 +1,5 @@
+
+
 #include <iostream>
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
@@ -10,7 +12,7 @@
 #include "stage.h"
 #include "Beam.h"
 #include "Worm.h"
-#include "Logger.h"
+
 
 
 using std::cout;
@@ -20,7 +22,6 @@ using std::map;
 using std::pair;
 
 logger oLog("prueba.log");
-
 
 
 

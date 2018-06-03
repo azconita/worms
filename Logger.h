@@ -41,3 +41,4 @@ private:
 
 	tm				m_oLocalTime;
 };
+
