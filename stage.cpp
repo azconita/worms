@@ -250,7 +250,7 @@ void Stage::load_initial_stage(std::string file_name){
   Stage_y s = yaml_loader.load_stage();
    for(auto b: s.beams){
     cout << "beam_y { x: " << b.pos_x << ", y: " << b.pos_y << ", size: " << b.size << ", inclination:" << b.inclination << "}" << endl;
-     this->beams.push_back(new Beam(this->world,  b.pos_x, b.pos_y));
+     this->beams.push_back(new Beam(this->world,  b.pos_x, b.pos_y, b.inclination));
   }
   for(auto & pair: s.players){
     cout << "player  " << pair.first << endl;
