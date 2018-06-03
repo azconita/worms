@@ -22,6 +22,7 @@ Stage::Stage(std::string file_name) {
   this->explosion_listener;
   this->world->SetContactListener(&this->explosion_listener);
   this->load_initial_stage(file_name);
+  this->current_player = this->worms.begin()->second;
   this->wind = Constants::wind;
 }
 
@@ -67,7 +68,7 @@ void Stage::update() {
   //delete weapons exploded and dead worms
   this->clean_dead_bodies();
   //check if player change
-  //this->update_player();
+  this->update_player();
 
   //char t = (this->worms[0]->is_falling()) ? 'y' : 'n';
   //printf("worm falling: %c\n", t);
@@ -104,7 +105,9 @@ void Stage::clean_dead_bodies() {
 }
 
 void Stage::update_player() {
-  if (this->change || (difftime(this->player_time,time(NULL)) < 60)) {
+  printf("player time: %d\n", (difftime(this->player_time,time(NULL))) );
+  if (this->change || (difftime(this->player_time,time(NULL)) > 60)) {
+    printf("change player\n");
     this->change_player();
     this->change = false;
   }
@@ -257,7 +260,7 @@ void Stage::load_initial_stage(std::string file_name){
     for(auto w : pair.second){
       cout << "{ id: "<< w.id << ", x: "<< w.pos_x << " , y: "
       << w.pos_y << ", direction: "<< w.direction << ", inclination: "<<w.inclination << ", life: " << w.life <<" }"<< endl;
-      Worm* worm = new Worm(this->world, w.pos_x, w.pos_y);
+      Worm* worm = new Worm(this->world, w.pos_x, w.pos_y, w.id);
       this->worms.emplace(0, worm);
 
     }
