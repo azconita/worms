@@ -2,7 +2,6 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
-#include "Client_Constants.h"
 #include "resources_definitions.h"
 
 #include "stage.h"
