@@ -4,8 +4,9 @@ velocity_iterations: 8
 position_iterations: 3
 wind: 0.5
 
-beam_width: 0.8
-beam_height: 3
+beam_width: 3
+beam_height: 0.8
+beam_friction: 2.8
 
 worm_initial_life: 100
 worm_walk_velocity: 5

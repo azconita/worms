@@ -11,7 +11,7 @@
 
 
 //g++ -std=c++11 main.cpp stage.cpp Beam.cpp Worm.cpp Constants.cpp Weapon.cpp Bazooka.cpp -lBox2D -lSDL -lSDL_image -lyaml-cpp -lSDL_ttf  -g
-
+//g++ -std=c++11 main.cpp stage.cpp Beam.cpp Worm.cpp Constants.cpp Weapon.cpp WeaponExplosionListener.cpp Entity.cpp Client_Constants.cpp -lBox2D -lSDL -lSDL_image -lyaml-cpp -lSDL_ttf -ggdb -o tp
 
 using std::cout;
 using std::endl;
@@ -538,12 +538,12 @@ static  std::map<Weapon_Name, State> weapons_states {
     {W_Bazooka,Worm_missile},
     {Dynamite,Worm_dynamite},
     {Mortar,Worm_missile},
-    {Green_Granade,Worm_green_granade},
-    {Holy_Granade,Worm_holy_granade},
-    {Red_Granade,Worm_red_granade},
-    {Teletrans,Worm_teletrans},
+    {Green_Grenade,Worm_green_granade},
+    {Holy_Grenade,Worm_holy_granade},
+    {Red_Grenade,Worm_red_granade},
+    {Teleport,Worm_teletrans},
     {Banana,Worm_banana},
-    {Baseboll_Bat,Worm_bat}
+    {Baseball_Bat,Worm_bat}
 };
 
 
@@ -926,19 +926,19 @@ Weapon_Name choose_weapon(int x, int y){
 
     }
     if(y < icon_y*2){
-        return Baseboll_Bat;
+        return Baseball_Bat;
     }
     if(y < icon_y*3){
         return W_Bazooka;
     }
     if(y < icon_y*4){
-        return Red_Granade;
+        return Red_Grenade;
     }
     if(y < icon_y*5){
-        return Green_Granade;
+        return Green_Grenade;
     }
     if(y < icon_y*6){
-        return Holy_Granade;
+        return Holy_Grenade;
 
     }
     if(y < icon_y*7){
@@ -946,7 +946,7 @@ Weapon_Name choose_weapon(int x, int y){
 
     }
     if(y < icon_y*8){
-        return Teletrans;
+        return Teleport;
     }
     if(y < icon_y*9){
         return Dynamite;
@@ -1068,16 +1068,16 @@ void dynamite(Worm_Animation_Controller& turn_worm){
 }
 
 void green_granade(Worm_Animation_Controller& turn_worm){
-    turn_worm.take_weapon(Green_Granade);
+    turn_worm.take_weapon(Green_Grenade);
     this->action.type = Take_weapon;
-    this->action.weapon = Green_Granade;
+    this->action.weapon = Green_Grenade;
     this->stage.make_action(this->action);
 }
 
 void holy_granade(Worm_Animation_Controller& turn_worm){
-    turn_worm.take_weapon(Holy_Granade);
+    turn_worm.take_weapon(Holy_Grenade);
     this->action.type = Take_weapon;
-    this->action.weapon = Holy_Granade;
+    this->action.weapon = Holy_Grenade;
     this->stage.make_action(this->action);
 }
 
@@ -1089,16 +1089,16 @@ void mortar(Worm_Animation_Controller& turn_worm){
 }
 
 void red_granade(Worm_Animation_Controller& turn_worm){
-    turn_worm.take_weapon(Red_Granade);
+    turn_worm.take_weapon(Red_Grenade);
     this->action.type = Take_weapon;
-    this->action.weapon = Red_Granade;
+    this->action.weapon = Red_Grenade;
     this->stage.make_action(this->action);
 }
 
 void teletrans(Worm_Animation_Controller& turn_worm){
-    turn_worm.take_weapon(Teletrans);
+    turn_worm.take_weapon(Teleport);
     this->action.type = Take_weapon;
-    this->action.weapon = Teletrans;
+    this->action.weapon = Teleport;
     this->stage.make_action(this->action);
 }
 
@@ -1110,9 +1110,9 @@ void banana(Worm_Animation_Controller& turn_worm){
 }
 
 void baseboll_bat(Worm_Animation_Controller& turn_worm){
-    turn_worm.take_weapon(Baseboll_Bat);
+    turn_worm.take_weapon(Baseball_Bat);
     this->action.type = Take_weapon;
-    this->action.weapon = Baseboll_Bat;
+    this->action.weapon = Baseball_Bat;
     this->stage.make_action(this->action);
 }
 
@@ -1353,10 +1353,10 @@ bool continue_running(Worm_Animation_Controller& turn_worm){
 
 //armas con timer
 static const std::vector<Weapon_Name> weapons_with_timer(
-    {Holy_Granade,
+    {Holy_Grenade,
     Dynamite,
-    Baseboll_Bat,
-    Red_Granade,
+    Baseball_Bat,
+    Red_Grenade,
     Banana}
 );
 
@@ -1381,13 +1381,13 @@ Weapons_Animation_Controller(int i){
         this->animations.insert(std::pair<Weapon_Name,Animation>(Banana,banana));
 
         Animation green_granade = Animation_Factory::get_green_granade();
-        this->animations.insert(std::pair<Weapon_Name,Animation>(Green_Granade,green_granade));
+        this->animations.insert(std::pair<Weapon_Name,Animation>(Green_Grenade,green_granade));
 
         Animation red_granade = Animation_Factory::get_red_granade();
-        this->animations.insert(std::pair<Weapon_Name,Animation>(Red_Granade,red_granade));
+        this->animations.insert(std::pair<Weapon_Name,Animation>(Red_Grenade,red_granade));
 
         Animation holy_granade = Animation_Factory::get_holy_granade();
-        this->animations.insert(std::pair<Weapon_Name,Animation>(Holy_Granade,holy_granade));
+        this->animations.insert(std::pair<Weapon_Name,Animation>(Holy_Grenade,holy_granade));
 
         Animation air_attack = Animation_Factory::get_air_attack();
         this->animations.insert(std::pair<Weapon_Name,Animation>(W_Air_Attack,air_attack));

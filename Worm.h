@@ -18,6 +18,8 @@
 #define TYPE_WORM 1
 
 class Worm : public Entity {
+  int id = -1;
+  int player_id = 0;
   b2World* world;
   b2Body* body;
   Weapon_Name weapon = None;
@@ -33,6 +35,8 @@ public:
   std::vector<b2Vec2> get_points();
   b2Vec2 get_position() { return this->body->GetPosition();}
   int get_life();
+  int get_id() { return this->id;}
+  int get_player_id() { return this->player_id;}
   bool is_alive() { return ((this->life > 0) && (this->body->GetPosition().y < 100)); }
 
   //movements
@@ -50,6 +54,7 @@ public:
   void printPos() {
     std::cout << "worm: " << this->body->GetPosition().x << ":" << this->body->GetPosition().y << "\n";
   }
+  bool is_falling() { return (this->body->GetLinearVelocity().y > 0);}
 private:
   float get_impulse();
   //void rotateTranslate(b2Vec2& vector,const b2Vec2& center,float angle);

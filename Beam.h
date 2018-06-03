@@ -18,12 +18,13 @@ class Beam : public Entity {
 private:
   b2Body* body;
 public:
-  Beam(b2World* world, float x, float y);
+  Beam(b2World* world, float x, float y, float angle);
   Beam(const Beam &other);
   virtual ~Beam();
   Beam* operator=(const Beam &other);
   std::vector<b2Vec2> get_points();
   int get_type() { return TYPE_BEAM; }
+  float get_angle();
 };
 
 #endif /* BEAM_H_ */
