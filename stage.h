@@ -10,7 +10,6 @@
 #include "WeaponExplosionListener.h"
 #include "DTOs.h"
 
-#include "Bazooka.h"
 #include "Weapon.h"
 
 #ifndef STAGE_H_

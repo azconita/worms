@@ -8,7 +8,6 @@
 #include <Box2D/Box2D.h>
 #include "Constants.h"
 #include "WeaponExplosionListener.h"
-#include "Bazooka.h"
 #include "DTOs.h"
 #include "Worm.h"
 #include "Beam.h"
