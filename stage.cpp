@@ -13,6 +13,8 @@
 #include "Beam.h"
 #include "Weapon.h"
 
+
+
 //config: yaml: https://github.com/jbeder/yaml-cpp/
 Stage::Stage(std::string file_name) {
   std::cout << file_name << '\n';
@@ -245,17 +247,20 @@ StageDTO Stage::get_stageDTO() {
 
 
 void Stage::load_initial_stage(std::string file_name){
+  extern  logger oLog;
   StageLoader yaml_loader(file_name);
   Stage_y s = yaml_loader.load_stage();
+  oLog() << "loading initial stage:\n";
    for(auto b: s.beams){
-    cout << "beam_y { x: " << b.pos_x << ", y: " << b.pos_y << ", size: " << b.size << ", inclination:" << b.inclination << "}" << endl;
+	   oLog() << "beam_y { x: " << b.pos_x << ", y: " << b.pos_y << ", size: " << b.size << ", inclination:" << b.inclination << "}" << endl;
      this->beams.push_back(new Beam(this->world,  b.pos_x, b.pos_y, b.inclination));
+
   }
   for(auto & pair: s.players){
-    cout << "player  " << pair.first << endl;
-    cout << "worms: ";
+	oLog() << "player  " << pair.first << endl;
+    oLog() << "worms: ";
     for(auto w : pair.second){
-      cout << "{ id: "<< w.id << ", x: "<< w.pos_x << " , y: "
+    	oLog() << "{ id: "<< w.id << ", x: "<< w.pos_x << " , y: "
       << w.pos_y << ", direction: "<< w.direction << ", inclination: "<<w.inclination << ", life: " << w.life <<" }"<< endl;
       Worm* worm = new Worm(this->world, w.pos_x, w.pos_y);
       this->worms.emplace(0, worm);
@@ -265,25 +270,3 @@ void Stage::load_initial_stage(std::string file_name){
 }
 
 
-/*// set initial stage
-void Stage::add_beams(std::string config) {
-
-  this->beams.push_back(new Beam(this->world, 10,20));
-  this->beams.push_back(new Beam(this->world, 20,20));
-  this->beams.push_back(new Beam(this->world, 30,20));
-
-  this->beams.push_back(new Beam(this->world, 30,40,0));
-}
-
-void Stage::add_worms(std::string config) {
-  Worm* w = new Worm(this->world, 10, 11);
-  this->worms.emplace(0, w);
-}
-
-void Stage::add_weapons(std::string config) {
-
-}
-
-void Stage::add_explosion() {
-  //this->explosions.push_back(new Projectile(this->world, W_Bazooka, 9, 12));
-}*/
