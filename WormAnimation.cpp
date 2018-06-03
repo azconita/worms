@@ -1,49 +1,49 @@
 /*
- * WormAnimationController.cpp
+ * WormAnimation.cpp
  *
  *  Created on: 3 jun. 2018
  *      Author: jaz
  */
 
-#include "WormAnimationController.h"
+#include "WormAnimation.h"
 
-WormAnimationController::Worm_Animation_Controller(int initial_x, int initial_y, Direction initial_dir){
+WormAnimation::WormAnimation(int initial_x, int initial_y, Direction initial_dir){
 
-    Animation worm_walk = Animation_Factory::get_worm_walk();
+    Animation worm_walk = AnimationFactory::get_worm_walk();
     this->animations.insert(std::pair<int,Animation>(Still,worm_walk));
     this->animations.insert(std::pair<int,Animation>(Walk,worm_walk));
 
-    Animation worm_fall = Animation_Factory::get_worm_fall();
+    Animation worm_fall = AnimationFactory::get_worm_fall();
     this->animations.insert(std::pair<int,Animation>(Fall,worm_fall));
 
-    Animation worm_jump = Animation_Factory::get_worm_jump();
+    Animation worm_jump = AnimationFactory::get_worm_jump();
     this->animations.insert(std::pair<int,Animation>(Jump_state,worm_jump));
 
-    Animation worm_missile = Animation_Factory::get_worm_missile();
+    Animation worm_missile = AnimationFactory::get_worm_missile();
     this->animations.insert(std::pair<int,Animation>(Worm_missile,worm_missile));
 
-    Animation worm_banana = Animation_Factory::get_worm_banana();
+    Animation worm_banana = AnimationFactory::get_worm_banana();
     this->animations.insert(std::pair<int,Animation>(Worm_banana,worm_banana));
 
-    Animation worm_bat = Animation_Factory::get_worm_bat();
+    Animation worm_bat = AnimationFactory::get_worm_bat();
     this->animations.insert(std::pair<int,Animation>(Worm_bat,worm_bat));
 
-    Animation worm_green_granade = Animation_Factory::get_worm_green_granade();
+    Animation worm_green_granade = AnimationFactory::get_worm_green_granade();
     this->animations.insert(std::pair<int,Animation>(Worm_green_granade,worm_green_granade));
 
-    Animation worm_red_granade = Animation_Factory::get_worm_red_granade();
+    Animation worm_red_granade = AnimationFactory::get_worm_red_granade();
     this->animations.insert(std::pair<int,Animation>(Worm_red_granade,worm_red_granade));
 
-    Animation worm_holy_granade = Animation_Factory::get_worm_holy_granade();
+    Animation worm_holy_granade = AnimationFactory::get_worm_holy_granade();
     this->animations.insert(std::pair<int,Animation>(Worm_holy_granade,worm_holy_granade));
 
-    Animation worm_teletrans = Animation_Factory::get_worm_teletrans();
+    Animation worm_teletrans = AnimationFactory::get_worm_teletrans();
     this->animations.insert(std::pair<int,Animation>(Worm_teletrans,worm_teletrans));
 
-    Animation worm_air_attack = Animation_Factory::get_worm_air_attack();
+    Animation worm_air_attack = AnimationFactory::get_worm_air_attack();
     this->animations.insert(std::pair<int,Animation>(Worm_air_attack,worm_air_attack));
 
-    Animation worm_dynamite = Animation_Factory::get_worm_dynamite();
+    Animation worm_dynamite = AnimationFactory::get_worm_dynamite();
     this->animations.insert(std::pair<int,Animation>(Worm_dynamite,worm_dynamite));
 
     this->x = initial_x;
@@ -59,20 +59,20 @@ WormAnimationController::Worm_Animation_Controller(int initial_x, int initial_y,
     this->timer = 5;
 }
 
-bool WormAnimationController::has_weapon(){
+bool WormAnimation::has_weapon(){
     return (this->state != Walk && this->state != Still && this->state != Jump_state && this->state != Fall);
 }
 
-bool WormAnimationController::has_weapon_to_click(){
+bool WormAnimation::has_weapon_to_click(){
     return (this->state == Worm_teletrans || this->state == Worm_air_attack);
 }
 
-bool WormAnimationController::has_point_weapon(){ //armas con las que no se puede apuntar
+bool WormAnimation::has_point_weapon(){ //armas con las que no se puede apuntar
     return std::find(weapons_states_with_degrees.begin(), weapons_states_with_degrees.end(), this->state) //
     != weapons_states_with_degrees.end();
 }
 
-void WormAnimationController::change_direction(Direction direction){
+void WormAnimation::change_direction(Direction direction){
     for(std::map<int,Animation>::iterator animation_iter = this->animations.begin();
         animation_iter != this->animations.end();
         animation_iter ++){
@@ -85,11 +85,11 @@ void WormAnimationController::change_direction(Direction direction){
 
 }
 
-void WormAnimationController::change_state(State state){
+void WormAnimation::change_state(State state){
     this->state = state; //sigue en la misma dire que antes
 }
 
-void WormAnimationController::take_weapon(Weapon_Name weapon){
+void WormAnimation::take_weapon(Weapon_Name weapon){
     this->timer = 5;
     this->degrees = -90;
     std::map<Weapon_Name,State>::iterator weapon_state = weapons_states.find(weapon);
@@ -106,7 +106,7 @@ void WormAnimationController::take_weapon(Weapon_Name weapon){
 
 }
 
-float WormAnimationController::point_down_weapon(){
+float WormAnimation::point_down_weapon(){
     std::map<int,Animation>::iterator animation_iter = animations.find(this->state);
     if(animation_iter->second.point_down()){
         this->degrees-=GRADES_PER_STEP; //31 fotos/180 grados
@@ -116,7 +116,7 @@ float WormAnimationController::point_down_weapon(){
 
 }
 
-float WormAnimationController::point_up_weapon(){
+float WormAnimation::point_up_weapon(){
     std::map<int,Animation>::iterator animation_iter = animations.find(this->state);
     if(animation_iter->second.point_up()){
             this->degrees+=GRADES_PER_STEP; //31 fotos/180 grados
@@ -124,38 +124,38 @@ float WormAnimationController::point_up_weapon(){
     return this->degrees;
 }
 
-float WormAnimationController::get_degrees(){
+float WormAnimation::get_degrees(){
     return this->degrees;
 }
 
-bool WormAnimationController::add_power(){
+bool WormAnimation::add_power(){
     if(this->weapon_power < 100){
         this->weapon_power +=1;
         return true;
     }
     return false;
 }
-int WormAnimationController::get_weapon_power(){
+int WormAnimation::get_weapon_power(){
     return this->weapon_power;
 }
 
-void WormAnimationController::set_timer(int timer){
+void WormAnimation::set_timer(int timer){
     this->timer = timer;
 }
 
-int WormAnimationController::get_timer(){
+int WormAnimation::get_timer(){
     return this->timer;
 }
 
 
 
-Direction WormAnimationController::get_direction(){
+Direction WormAnimation::get_direction(){
     std::map<int,Animation>::iterator animation_iter = animations.find(this->state);
     return animation_iter->second.get_current_direction();
 }
 
 
-void WormAnimationController::move(int position_x, int position_y){
+void WormAnimation::move(int position_x, int position_y){
     if(this->x = position_x && this->y == y && this->state == Fall){ // se cayo sobre una viga
         this->state = Still;
     }
@@ -174,20 +174,20 @@ void WormAnimationController::move(int position_x, int position_y){
 
 }
 
-int WormAnimationController::get_x(){
+int WormAnimation::get_x(){
     return this->x;
 }
-int WormAnimationController::get_y(){
+int WormAnimation::get_y(){
     return this->y;
 }
 
-void WormAnimationController::show(SDL_Surface * screen){
+void WormAnimation::show(SDL_Surface * screen){
     std::map<int,Animation>::iterator animation_iter = animations.find(this->state);
     animation_iter->second.draw(screen, this->x, this->y);
 }
 
 
-WormAnimationController::~WormAnimationController() {
+WormAnimation::~WormAnimation() {
 	// TODO Auto-generated destructor stub
 }
 

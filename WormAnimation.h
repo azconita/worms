@@ -5,12 +5,14 @@
  *      Author: jaz
  */
 
-#ifndef WORMANIMATIONCONTROLLER_H_
-#define WORMANIMATIONCONTROLLER_H_
-#include "Animation.h"
+#ifndef WORMANIMATION_H_
+#define WORMANIMATION_H_
+#include "AnimationFactory.h"
+#include <algorithm>
+#include <map>
+
 
 #define GRADES_PER_STEP 5.8064516129 //180/31
-
 
 enum State{
    Still,
@@ -27,7 +29,7 @@ enum State{
    Worm_air_attack,
    Worm_dynamite
 };
-//////////////////////////////////////////////////////
+
 
 
 static  std::map<Weapon_Name, State> weapons_states {
@@ -65,7 +67,7 @@ static const std::vector<State> weapons_states_with_power(
 
 
 
-class WormAnimationController {
+class WormAnimation {
 	int x, y;
 	Direction direction;
 	State state;
@@ -74,7 +76,7 @@ class WormAnimationController {
 	int timer;
 	std::map<int,Animation> animations;
 public:
-	WormAnimationController(int initial_x, int initial_y, Direction initial_dir);
+	WormAnimation(int initial_x, int initial_y, Direction initial_dir);
 	bool has_weapon();
 	bool has_weapon_to_click();
 	bool has_point_weapon();
@@ -93,7 +95,7 @@ public:
 	int get_x();
 	int get_y();
 	void show(SDL_Surface * screen);
-	virtual ~WormAnimationController();
+	virtual ~WormAnimation();
 };
 
-#endif /* WORMANIMATIONCONTROLLER_H_ */
+#endif /* WORMANIMATION_H_ */

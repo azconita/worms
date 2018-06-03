@@ -8,7 +8,7 @@
 #ifndef ANIMATIONFACTORY_H_
 #define ANIMATIONFACTORY_H_
 #include "Animation.h"
-#include "resources_definitions.h"
+#include "ResourcesDefinitions.h"
 
 class AnimationFactory {
 	 AnimationFactory();

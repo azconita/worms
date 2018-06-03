@@ -8,6 +8,7 @@
 #ifndef WATERANIMATION_H_
 #define WATERANIMATION_H_
 #include "Animation.h"
+#include "ResourcesDefinitions.h"
 
 class WaterAnimation {
     Colour colorkey;

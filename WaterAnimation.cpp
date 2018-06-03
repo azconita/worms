@@ -34,11 +34,6 @@ void WaterAnimation::show(SDL_Surface * screen){
 
     }
 
-
-};
-
-
-
 WaterAnimation::~WaterAnimation() {
 	// TODO Auto-generated destructor stub
 }

@@ -3,11 +3,12 @@
 #include <SDL/SDL_image.h>
 #include <SDL/SDL_ttf.h>
 
-#include "WormAnimationController.h"
 #include "WaterAnimation.h"
+#include "WormAnimation.h"
 #include "stage.h"
 #include "Beam.h"
 #include "Worm.h"
+
 
 using std::cout;
 using std::endl;
@@ -294,7 +295,7 @@ float meters_conversor(int pixel){
     return (pixel+0.0)/23.5;
 
 }
-void air_attack(Worm_Animation_Controller& turn_worm){
+void air_attack(WormAnimation& turn_worm){
     turn_worm.take_weapon(W_Air_Attack);
     this->wait_for_destination_clicl = true;
     this->action.type = Take_weapon;
@@ -302,70 +303,70 @@ void air_attack(Worm_Animation_Controller& turn_worm){
     this->stage.make_action(this->action);
 }
 
-void bazooka(Worm_Animation_Controller& turn_worm){
+void bazooka(WormAnimation& turn_worm){
     turn_worm.take_weapon(W_Bazooka);
     this->action.type = Take_weapon;
     this->action.weapon = W_Bazooka;
     this->stage.make_action(this->action);
 }
 
-void dynamite(Worm_Animation_Controller& turn_worm){
+void dynamite(WormAnimation& turn_worm){
     turn_worm.take_weapon(Dynamite);
     this->action.type = Take_weapon;
     this->action.weapon = Dynamite;
     this->stage.make_action(this->action);
 }
 
-void green_granade(Worm_Animation_Controller& turn_worm){
+void green_granade(WormAnimation& turn_worm){
     turn_worm.take_weapon(Green_Granade);
     this->action.type = Take_weapon;
     this->action.weapon = Green_Granade;
     this->stage.make_action(this->action);
 }
 
-void holy_granade(Worm_Animation_Controller& turn_worm){
+void holy_granade(WormAnimation& turn_worm){
     turn_worm.take_weapon(Holy_Granade);
     this->action.type = Take_weapon;
     this->action.weapon = Holy_Granade;
     this->stage.make_action(this->action);
 }
 
-void mortar(Worm_Animation_Controller& turn_worm){
+void mortar(WormAnimation& turn_worm){
     turn_worm.take_weapon(Mortar);
     this->action.type = Take_weapon;
     this->action.weapon = Mortar;
     this->stage.make_action(this->action);
 }
 
-void red_granade(Worm_Animation_Controller& turn_worm){
+void red_granade(WormAnimation& turn_worm){
     turn_worm.take_weapon(Red_Granade);
     this->action.type = Take_weapon;
     this->action.weapon = Red_Granade;
     this->stage.make_action(this->action);
 }
 
-void teletrans(Worm_Animation_Controller& turn_worm){
+void teletrans(WormAnimation& turn_worm){
     turn_worm.take_weapon(Teletrans);
     this->action.type = Take_weapon;
     this->action.weapon = Teletrans;
     this->stage.make_action(this->action);
 }
 
-void banana(Worm_Animation_Controller& turn_worm){
+void banana(WormAnimation& turn_worm){
     turn_worm.take_weapon(Banana);
     this->action.type = Take_weapon;
     this->action.weapon = Banana;
     this->stage.make_action(this->action);
 }
 
-void baseboll_bat(Worm_Animation_Controller& turn_worm){
+void baseboll_bat(WormAnimation& turn_worm){
     turn_worm.take_weapon(Baseboll_Bat);
     this->action.type = Take_weapon;
     this->action.weapon = Baseboll_Bat;
     this->stage.make_action(this->action);
 }
 
-void shot(Worm_Animation_Controller& turn_worm,int x, int y){
+void shot(WormAnimation& turn_worm,int x, int y){
     if(turn_worm.has_weapon()){
         printf("%f %f\n", meters_conversor(x),meters_conversor(y));
         this->action.type = Shot_weapon;
@@ -383,7 +384,7 @@ void shot(Worm_Animation_Controller& turn_worm,int x, int y){
     }
 }
 
-void click(Worm_Animation_Controller& turn_worm){
+void click(WormAnimation& turn_worm){
     int x, y;
     SDL_GetMouseState(&x, &y);
     if(turn_worm.has_weapon_to_click()){
@@ -403,7 +404,7 @@ void click(Worm_Animation_Controller& turn_worm){
 
 }
 
-void up(Worm_Animation_Controller& turn_worm){
+void up(WormAnimation& turn_worm){
     if(turn_worm.has_point_weapon()){
         float degrees = turn_worm.point_up_weapon();
         printf("%f\n",degrees );
@@ -417,7 +418,7 @@ void up(Worm_Animation_Controller& turn_worm){
 
 }
 
-void down(Worm_Animation_Controller& turn_worm){
+void down(WormAnimation& turn_worm){
     if(turn_worm.has_point_weapon()){
         float degrees = turn_worm.point_down_weapon();
         printf("%f\n",degrees );
@@ -425,7 +426,7 @@ void down(Worm_Animation_Controller& turn_worm){
 
 }
 
-void right(Worm_Animation_Controller& turn_worm){
+void right(WormAnimation& turn_worm){
     turn_worm.change_direction(Right);
     this->action.type = Make_move;
     this->action.move = Walk_right;
@@ -433,7 +434,7 @@ void right(Worm_Animation_Controller& turn_worm){
 
 }
 
-void left(Worm_Animation_Controller& turn_worm){
+void left(WormAnimation& turn_worm){
     turn_worm.change_direction(Left);
     this->action.type = Make_move;
     this->action.move = Walk_left;
@@ -441,7 +442,7 @@ void left(Worm_Animation_Controller& turn_worm){
 }
 
 
-void space(Worm_Animation_Controller& turn_worm){
+void space(WormAnimation& turn_worm){
     int power = turn_worm.get_weapon_power();
     if(power >0 && power < 100){
         turn_worm.add_power();
@@ -461,7 +462,7 @@ void mouse_motion(){
     }
 }
 
-void weapon_shot(Worm_Animation_Controller& turn_worm){
+void weapon_shot(WormAnimation& turn_worm){
     shot(turn_worm,turn_worm.get_x(),turn_worm.get_y());
 
 }
@@ -486,7 +487,7 @@ Event_Controller(SDL_Event & event, Stage & stage, int screen_height, int screen
 
 
 
-bool continue_running(Worm_Animation_Controller& turn_worm){
+bool continue_running(WormAnimation& turn_worm){
     if(this->wait_for_weapon_click){
         this->graphic_designer.show_weapons_menu(100);
     }
@@ -600,6 +601,98 @@ bool continue_running(Worm_Animation_Controller& turn_worm){
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+//////////////////////////////////////////////////////////////////////////////////
+
+std::map<int,WormAnimation> create_worms(StageDTO s, SDL_Surface *screen){
+
+    printf("creador de gusanos\n");
+
+    std::map<int,WormAnimation> worms;
+
+    Colour colorkey(WORM_WALK_R,WORM_WALK_G,WORM_WALK_B);
+
+    for (auto w: s.worms) {
+
+        int id = w.first;
+        ElementDTO worm_info = w.second;
+
+        int position_worm_x = get_pixels(worm_info.x);
+        int position_worm_y = get_pixels(worm_info.y);
+
+        //creo el gusano y lo gardo en el vector
+        Direction dir = Left;
+        if(worm_info.player_id %2 == 0){
+            dir = Right;
+        }
+        WormAnimation worm(position_worm_x, position_worm_y, dir);
+        worms.insert(std::pair<int,WormAnimation>(id,worm));
+        worm.show(screen);
+
+    }
+
+    return worms;
+}
+
+
+static  std::vector<Colour_name> possible_colors {
+    Orange,
+    Green,
+    Purple,
+    Pink,
+    Yellow
+};
+
+
+void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,WormAnimation> & worms, Graphic_Designer & graphic_designer){
+
+    for (auto w: s.worms) {
+
+        ElementDTO worm_info = w.second;
+
+        //debug_box2d_figure(screen, worm_info);
+
+        int up_left_vertex_x = get_pixels(worm_info.x);
+        int up_left_vertex_y = get_pixels(worm_info.y);
+
+        std::map<int,WormAnimation>::iterator worms_iter = worms.find(w.first);
+        worms_iter->second.move(up_left_vertex_x, up_left_vertex_y);
+        worms_iter->second.show(screen);
+
+        if(worm_info.player_id > 4){
+            cout << "Error: juego no preparado para mas de 4 jugadores" << endl;
+        }
+
+        Colour player_color = Colour::create(possible_colors.at(worm_info.player_id));
+
+        graphic_designer.show_life(worm_info.life,up_left_vertex_x+20,up_left_vertex_y-5,player_color);
+        int weapon_power = worms_iter->second.get_weapon_power();
+        graphic_designer.show_powerbar(weapon_power);
+
+    }
+}
+
+
+void show_beams(StageDTO s, SDL_Surface *screen){
+
+    Colour colorkey_beam(BEAM_R,BEAM_G,BEAM_B);
+
+    for (auto beam_info: s.beams) {
+
+        //debug_box2d_figure(screen, beam_info);
+
+        int up_left_vertex_x = get_pixels(beam_info.x);
+        int up_left_vertex_y = get_pixels(beam_info.y);
+
+        Picture beam(BEAM, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        beam.draw(screen,up_left_vertex_x, up_left_vertex_y);
+
+    }
+
+}
+
+//////////////////////////////////////////////////////////////////7
+
 //armas con timer
 static const std::vector<Weapon_Name> weapons_with_timer(
     {Holy_Granade,
@@ -620,31 +713,31 @@ public:
 
 Weapons_Animation_Controller(int i){
 
-        Animation bazooka = Animation_Factory::get_bazooka();
+        Animation bazooka = AnimationFactory::get_bazooka();
         this->animations.insert(std::pair<Weapon_Name,Animation>(W_Bazooka, bazooka));
 
-        Animation mortar = Animation_Factory::get_mortar();
+        Animation mortar = AnimationFactory::get_mortar();
         this->animations.insert(std::pair<Weapon_Name,Animation>(Mortar,mortar));
 
-        Animation banana = Animation_Factory::get_banana();
+        Animation banana = AnimationFactory::get_banana();
         this->animations.insert(std::pair<Weapon_Name,Animation>(Banana,banana));
 
-        Animation green_granade = Animation_Factory::get_green_granade();
+        Animation green_granade = AnimationFactory::get_green_granade();
         this->animations.insert(std::pair<Weapon_Name,Animation>(Green_Granade,green_granade));
 
-        Animation red_granade = Animation_Factory::get_red_granade();
+        Animation red_granade = AnimationFactory::get_red_granade();
         this->animations.insert(std::pair<Weapon_Name,Animation>(Red_Granade,red_granade));
 
-        Animation holy_granade = Animation_Factory::get_holy_granade();
+        Animation holy_granade = AnimationFactory::get_holy_granade();
         this->animations.insert(std::pair<Weapon_Name,Animation>(Holy_Granade,holy_granade));
 
-        Animation air_attack = Animation_Factory::get_air_attack();
+        Animation air_attack = AnimationFactory::get_air_attack();
         this->animations.insert(std::pair<Weapon_Name,Animation>(W_Air_Attack,air_attack));
 
-        Animation dynamite = Animation_Factory::get_dynamite();
+        Animation dynamite = AnimationFactory::get_dynamite();
         this->animations.insert(std::pair<Weapon_Name,Animation>(Dynamite,dynamite));
 
-        Animation explosion = Animation_Factory::get_explosion();
+        Animation explosion = AnimationFactory::get_explosion();
         this->animations.insert(std::pair<Weapon_Name,Animation>(Explosion,explosion));
 }
 
@@ -677,94 +770,8 @@ void show_weapon( StageDTO s,SDL_Surface * screen, Graphic_Designer & gd){
 //////////////////////////////////////////////////////////////////////////////
 
 
-void show_beams(StageDTO s, SDL_Surface *screen){
 
-    Colour colorkey_beam(BEAM_R,BEAM_G,BEAM_B);
-
-    for (auto beam_info: s.beams) {
-
-        //debug_box2d_figure(screen, beam_info);
-
-        int up_left_vertex_x = get_pixels(beam_info.x);
-        int up_left_vertex_y = get_pixels(beam_info.y);
-
-        Picture beam(BEAM, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
-        beam.draw(screen,up_left_vertex_x, up_left_vertex_y);
-
-    }
-
-}
-
-
-//////////////////////////////////////////////////////////////////////////////////
-
-std::map<int,Worm_Animation_Controller> create_worms(StageDTO s, SDL_Surface *screen){
-
-    printf("creador de gusanos\n");
-
-    std::map<int,Worm_Animation_Controller> worms;
-
-    Colour colorkey(WORM_WALK_R,WORM_WALK_G,WORM_WALK_B);
-
-    for (auto w: s.worms) {
-
-        int id = w.first;
-        ElementDTO worm_info = w.second;
-
-        int position_worm_x = get_pixels(worm_info.x);
-        int position_worm_y = get_pixels(worm_info.y);
-
-        //creo el gusano y lo gardo en el vector
-        Direction dir = Left;
-        if(worm_info.player_id %2 == 0){
-            dir = Right;
-        }
-        Worm_Animation_Controller worm(position_worm_x, position_worm_y, dir);
-        worms.insert(std::pair<int,Worm_Animation_Controller>(id,worm));
-        worm.show(screen);
-
-    }
-
-    return worms;
-}
-
-
-static  std::vector<Colour_name> possible_colors {
-    Orange,
-    Green,
-    Purple,
-    Pink,
-    Yellow
-};
-
-
-void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Worm_Animation_Controller> & worms, Graphic_Designer & graphic_designer){
-
-    for (auto w: s.worms) {
-
-        ElementDTO worm_info = w.second;
-
-        //debug_box2d_figure(screen, worm_info);
-
-        int up_left_vertex_x = get_pixels(worm_info.x);
-        int up_left_vertex_y = get_pixels(worm_info.y);
-
-        std::map<int,Worm_Animation_Controller>::iterator worms_iter = worms.find(w.first);
-        worms_iter->second.move(up_left_vertex_x, up_left_vertex_y);
-        worms_iter->second.show(screen);
-
-        if(worm_info.player_id > 4){
-            cout << "Error: juego no preparado para mas de 4 jugadores" << endl;
-        }
-
-        Colour player_color = Colour::create(possible_colors.at(worm_info.player_id));
-
-        graphic_designer.show_life(worm_info.life,up_left_vertex_x+20,up_left_vertex_y-5,player_color);
-        int weapon_power = worms_iter->second.get_weapon_power();
-        graphic_designer.show_powerbar(weapon_power);
-
-    }
-}
+//////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -815,10 +822,10 @@ int main(int argc, char *args[]){
 
     StageDTO s = stage.get_stageDTO();
 
-    Water_animation_controller water(screen_height, 3);
+    WaterAnimation water(screen_height, 3);
 
     //dibujo los gusanos en su posicion inicial
-    std::map<int,Worm_Animation_Controller> worms = create_worms(s, screen);
+    std::map<int,WormAnimation> worms = create_worms(s, screen);
     printf(" size = %li\n", worms.size() );
 
     Weapons_Animation_Controller weapons_controller = Weapons_Animation_Controller(1);
@@ -828,7 +835,7 @@ int main(int argc, char *args[]){
 
 
     //turno harcodeado
-    std::map<int,Worm_Animation_Controller>::iterator turn_worm_iter = worms.find(0);
+    std::map<int,WormAnimation>::iterator turn_worm_iter = worms.find(0);
 
 
     SDL_Event event;
