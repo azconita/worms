@@ -10,6 +10,7 @@
 #include "stage.h"
 #include "Beam.h"
 #include "Worm.h"
+#include "Logger.h"
 
 
 using std::cout;
@@ -17,6 +18,8 @@ using std::endl;
 using std::string;
 using std::map;
 using std::pair;
+
+logger oLog("prueba.log");
 
 
 
@@ -64,6 +67,8 @@ int main(int argc, char *args[]){
     const SDL_VideoInfo* info = SDL_GetVideoInfo();   //<-- calls SDL_GetVideoInfo();
     screen_width = info->current_w;
     screen_height = info->current_h;
+
+    oLog() << "Se crea la ventana de juego, height: " << screen_height << ", with: " << screen_width;
 
 
     if(SDL_VideoModeOK(screen_width, screen_height, 24, SDL_HWSURFACE|SDL_DOUBLEBUF) == 0) {
