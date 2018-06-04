@@ -26,6 +26,7 @@ enum Entity_Type {
   E_Explosion
 };
 
+
 enum Weapon_Name {
     W_Air_Attack, //a
     W_Bazooka, //b
@@ -42,6 +43,25 @@ enum Weapon_Name {
     None,
     W_Timer
 };
+
+
+static  std::map<int,Weapon_Name> get_weapon_name{
+    {0,W_Air_Attack}, 
+    {1,W_Bazooka}, 
+    {2,Dynamite}, 
+    {3,Mortar}, 
+    {4,W_Fragment},
+    {5,Green_Grenade},
+    {6,Holy_Grenade},
+    {7,Red_Grenade},
+    {8,Teleport},
+    {9,Banana},
+    {10,Baseball_Bat},
+    {11,Explosion},
+    {12,None},
+    {13,W_Timer}
+};
+
 
 enum Movement {
   Walk_right,
@@ -71,8 +91,8 @@ struct ActionDTO {
 
 
 struct ElementDTO { //puede ser un gusano, un arma o una viga
-  float x;
-  float y; //vertice superior izquierdo en metros
+  float pos_x;
+  float pos_y; //vertice superior izquierdo en metros
   float h;
   float w;
   float angle;
@@ -84,6 +104,8 @@ struct ElementDTO { //puede ser un gusano, un arma o una viga
   bool explosion;
 };
 
+YAML::Emitter& operator << (YAML::Emitter& out, const ElementDTO& e);
+
 struct StageDTO {
   int worm_turn;
   std::map<int,ElementDTO> worms;
@@ -91,13 +113,37 @@ struct StageDTO {
   std::vector<ElementDTO> weapons;
 };
 
+YAML::Emitter& operator << (YAML::Emitter& out, const StageDTO& s);
+
 namespace YAML {
+
+template<>
+struct convert<StageDTO> {
+  static Node encode(const StageDTO& s) {
+    Node node;
+    node["worms"] = s.worms;
+    node["beams"] = s.beams;
+    node["weapons"] = s.weapons;
+ 
+  
+    return node;
+  }
+  static bool decode(const Node& node, StageDTO& s) {
+    s.worms = node["worms"].as<std::map<int, ElementDTO>>();
+    s.beams = node["beams"].as<std::vector<ElementDTO>>();
+    s.weapons = node["weapons"].as<std::vector<ElementDTO>>();
+
+    return true;
+  }
+};
+
+
 template<>
 struct convert<ElementDTO> {
   static Node encode(const ElementDTO& elem) {
     Node node;
-    node["x"] = elem.x;
-    node["y"] = elem.y;
+    node["pos_x"] = elem.pos_x;
+    node["pos_y"] = elem.pos_y;
     node["h"] = elem.h;
     node["w"] = elem.w;
     node["life"] = elem.life;
@@ -112,8 +158,8 @@ struct convert<ElementDTO> {
     if(!node.IsSequence() || node.size() != 9) {
       return false;
     }
-    elem.x = node["x"].as<float>();
-    elem.y = node["y"].as<float>();
+    elem.pos_x = node["pos_x"].as<float>();
+    elem.pos_y = node["pos_y"].as<float>();
     elem.h = node["h"].as<float>();
     elem.w = node["w"].as<float>();
     elem.life = node["life"].as<int>();
@@ -125,6 +171,8 @@ struct convert<ElementDTO> {
     return true;
   }
 };
+
+
 }
 
 #endif /* DTOS_H_ */

@@ -1015,8 +1015,8 @@ void debug_box2d_figure(SDL_Surface *screen, ElementDTO element_info){
 
     //dibujo un rectangulo
     SDL_Rect rectangle;
-    rectangle.x = get_pixels(element_info.x);
-    rectangle.y = get_pixels(element_info.y);
+    rectangle.x = get_pixels(element_info.pos_x);
+    rectangle.y = get_pixels(element_info.pos_y);
     rectangle.h = get_pixels(element_info.h);
     rectangle.w = get_pixels(element_info.w);
 
@@ -1409,15 +1409,19 @@ void show_weapon( StageDTO s,SDL_Surface * screen, Graphic_Designer & gd){
 
         //debug_box2d_figure(screen, w);
 
-        int up_left_vertex_x = get_pixels(w.x);
-        int up_left_vertex_y = get_pixels(w.y);
+        int up_left_vertex_x = get_pixels(w.pos_x);
+        int up_left_vertex_y = get_pixels(w.pos_y);
+
+        int weapon_num = w.weapon;
+
+        Weapon_Name weapon_name = get_weapon_name[weapon_num];
 
 
-        std::map<Weapon_Name,Animation>::iterator weapon_iter = animations.find(w.weapon);
+        std::map<Weapon_Name,Animation>::iterator weapon_iter = animations.find(weapon_name);
         weapon_iter->second.continue_internal_movement();
         weapon_iter->second.draw(screen,up_left_vertex_x, up_left_vertex_y);
 
-        if(is_timer_weapon(w.weapon)){
+        if(is_timer_weapon(weapon_name)){
             gd.show_timer(w.timer);
         }
     }
@@ -1436,8 +1440,8 @@ void show_beams(StageDTO s, SDL_Surface *screen){
 
         //debug_box2d_figure(screen, beam_info);
 
-        int up_left_vertex_x = get_pixels(beam_info.x);
-        int up_left_vertex_y = get_pixels(beam_info.y);
+        int up_left_vertex_x = get_pixels(beam_info.pos_x);
+        int up_left_vertex_y = get_pixels(beam_info.pos_y);
 
         Picture beam(BEAM, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
         beam.draw(screen,up_left_vertex_x, up_left_vertex_y);
@@ -1503,8 +1507,8 @@ std::map<int,Worm_Animation_Controller> create_worms(StageDTO s, SDL_Surface *sc
         int id = w.first;
         ElementDTO worm_info = w.second;
 
-        int position_worm_x = get_pixels(worm_info.x);
-        int position_worm_y = get_pixels(worm_info.y);
+        int position_worm_x = get_pixels(worm_info.pos_x);
+        int position_worm_y = get_pixels(worm_info.pos_y);
 
         //creo el gusano y lo gardo en el vector
         Direction dir = Left;
@@ -1538,8 +1542,8 @@ void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Worm_Animation_Con
 
         //debug_box2d_figure(screen, worm_info);
 
-        int up_left_vertex_x = get_pixels(worm_info.x);
-        int up_left_vertex_y = get_pixels(worm_info.y);
+        int up_left_vertex_x = get_pixels(worm_info.pos_x);
+        int up_left_vertex_y = get_pixels(worm_info.pos_y);
 
         std::map<int,Worm_Animation_Controller>::iterator worms_iter = worms.find(w.first);
         worms_iter->second.move(up_left_vertex_x, up_left_vertex_y);
@@ -1563,7 +1567,7 @@ void show_worms(StageDTO s, SDL_Surface *screen, std::map<int,Worm_Animation_Con
 #define SCREEN_DEFAULT_WITH 1366
 #define SCREEN_DEFAULT_HIGH 768
 
-int main(int argc, char *args[]){
+int run_client(int argc, char *args[]){
 
     if(SDL_Init(SDL_INIT_VIDEO) < 0) {
         cout << "No se pudo iniciar SDL: " << SDL_GetError() << endl;
