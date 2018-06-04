@@ -1,5 +1,10 @@
+stages:
+        -file
+        -easy
+        -hard
+
 gravity: 9.8
-time_step: 0.01 
+time_step: 0.01
 velocity_iterations: 8
 position_iterations: 3
 wind: 0.5

@@ -6,11 +6,16 @@
  */
 
 #include <string>
+#include <vector>
 
 #ifndef CONSTANTS_H_
 #define CONSTANTS_H_
 
 namespace Constants {
+
+  //stages names
+  extern const std::vector<std::string> stages;
+  extern const int players_limit;
 
   extern const float gravity;
   extern const float time_step;

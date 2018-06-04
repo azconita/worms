@@ -5,8 +5,8 @@
 #include "Client_Constants.h"
 #include "resources_definitions.h"
 
-#include "stage.h"
 #include "Beam.h"
+#include "Stage.h"
 #include "Worm.h"
 
 

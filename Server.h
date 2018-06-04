@@ -8,16 +8,23 @@
 #ifndef SERVER_H_
 #define SERVER_H_
 
-#include <thread>
+#include <map>
 #include <string>
-#include "server_socket.h"
+#include <thread>
+#include <vector>
 #include "DTOs.h"
+#include "Game.h"
+#include "server_socket.h"
 
 class Server {
 private:
   std::thread thread;
   ServerSocket acc_socket;
   bool on = true;
+
+  std::map<std::string,std::vector<Game*>> games_by_stage;
+  // deberia existir para no perder referencias?
+  //std::vector<Socket> clients;
 public:
   Server(const std::string port);
   virtual ~Server();

@@ -1,5 +1,3 @@
-#include "stage.h"
-
 #include <algorithm>
 #include <string>
 #include <vector>
@@ -11,6 +9,7 @@
 #include "DTOs.h"
 #include "Worm.h"
 #include "Beam.h"
+#include "Stage.h"
 #include "Weapon.h"
 
 //config: yaml: https://github.com/jbeder/yaml-cpp/

@@ -6,10 +6,15 @@
  */
 
 #include "Constants.h"
+#include <string>
+#include <vector>
 #include <yaml-cpp/yaml.h>
 
 namespace Constants {
   YAML::Node config = YAML::LoadFile("server_config.yaml");
+
+  extern const std::vector<std::string> stages = config["stages"].as<std::vector<std::string>>();
+  extern const int players_limit = 2;
 
   extern const float gravity = config["gravity"].as<float>();
   extern const float time_step = config["time_step"].as<float>();
