@@ -87,9 +87,10 @@ struct ActionDTO {
   int power;
   int time_to_explode;
   Direction direction;
-  int x;
-  int y;
+  int pos_x;
+  int pos_y;
 };
+
 
 
 namespace YAML {
@@ -148,6 +149,42 @@ struct convert<ElementDTO> {
   }
 };
 
+
+template<>
+struct convert<ActionDTO> {
+  static Node encode(const ActionDTO& action) {
+    Node node;
+    node["worm_id"] = action.worm_id;
+    node["type"] = (int) action.type;
+    node["move"] = (int) action.move;
+    node["weapon"] = (int) action.weapon;
+    node["weapon_degrees"] =  action.weapon_degrees;
+    node["power"] =  action.power;
+    node["time_to_explode"] =  action.time_to_explode;
+    node["direction"] = (int) action.direction;
+    node["pos_x"] = action.pos_x;
+    node["pos_y"] = action.pos_y;
+    return node;
+  }
+
+  static bool decode(const Node& node, ActionDTO& action) {
+
+    action.worm_id = node["worm_id"].as<int>(); 
+    action.type = static_cast<Action_Type>(node["type"].as<int>());
+    action.move = static_cast<Movement>(node["move"].as<int>());
+    action.weapon = static_cast<Weapon_Name>(node["weapon"].as<int>());
+    action.weapon_degrees = node["weapon_degrees"].as<float>(); 
+    action.power = node["power"].as<int>();
+    action.time_to_explode= node["time_to_explode"].as<int>(); 
+    action.direction = static_cast<Direction>(node["direction"].as<int>()); 
+  
+    action.pos_x = node["pos_x"].as<int>();
+    action.pos_y = node["pos_y"].as<int>();
+    return true;
+  }
+};
+
+
 }
 
 
@@ -189,6 +226,33 @@ YAML::Emitter& operator << (YAML::Emitter& out, const StageDTO& s) {
   out << YAML::Value << s.weapons;
   out << YAML::Key << "worms";
   out << YAML::Value << s.worms;
+  out << YAML::EndMap;
+  return out;
+}
+
+
+YAML::Emitter& operator << (YAML::Emitter& out, const ActionDTO& a) {
+  out << YAML::BeginMap;
+  out << YAML::Key << "worm_id";
+  out << YAML::Value << a.worm_id;
+  out << YAML::Key << "type";
+  out << YAML::Value << a.type;
+  out << YAML::Key << "move";
+  out << YAML::Value << a.move;
+  out << YAML::Key << "weapon";
+  out << YAML::Value << a.weapon;
+  out << YAML::Key << "weapon_degrees";
+  out << YAML::Value << a.weapon_degrees;
+  out << YAML::Key << "power";
+  out << YAML::Value << a.power;
+  out << YAML::Key << "time_to_explode";
+  out << YAML::Value << a.time_to_explode;
+  out << YAML::Key << "direction";
+  out << YAML::Value << a.direction;
+  out << YAML::Key << "pos_x";
+  out << YAML::Value << a.pos_x;
+  out << YAML::Key <<  "pos_y";
+  out << YAML::Value << a.pos_y;
   out << YAML::EndMap;
   return out;
 }

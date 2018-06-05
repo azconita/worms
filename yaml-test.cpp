@@ -103,4 +103,30 @@ int main(){
   	}	
 
 
+  	ActionDTO action;
+  	action.worm_id = 1;
+  	action.type = Make_move;
+  	action.move = Jump;
+  	action.weapon = Banana;
+  	action.weapon_degrees = 34.5;
+  	action.power = 30;
+  	action.time_to_explode = 5;
+  	action.direction = Right;
+  	action.pos_x = 20;
+  	action.pos_y = 30;
+ 
+ 	YAML::Emitter out2;
+	out2 << YAML::BeginMap;
+  	out2 << YAML::Key << "action";
+  	out2 << YAML::Value << action;
+  	out2 << YAML::EndMap;
+
+    cout << "\n\nse envia unaa accion:\n'" << out2.c_str() <<"'" << endl;
+
+    yaml_received = YAML::Load(out2.c_str());
+    ActionDTO action_received = yaml_received ["action"].as<ActionDTO>();
+    cout << "accion:" << endl;
+   	cout << "weapon_degrees:" << action_received.weapon_degrees << ", pos_x:" << action_received.pos_x << endl; //.....etcetera
+
+
 }
