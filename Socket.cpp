@@ -1,4 +1,5 @@
 #include "Socket.h"
+#include "Error.h"
 #include <sys/un.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -111,12 +112,42 @@ void Socket::shut() {
   shutdown(this->sock, SHUT_RDWR);
 }
 
+////-///////////comunicacion interna///////////////////////
+
+int Socket::get_digits(unsigned int num){
+    int digits = 1;
+    while ( num > 0 ) {
+        num /= 10;
+        digits++;
+    }
+    return digits;
+}
 
 
-int Socket::receive_message(char* buffer, const size_t size){
+
+ssize_t Socket::receive_size_first(){
+  char msg_size[PROTOCOL_MSG_SIZE];
+  receive_message(msg_size, PROTOCOL_MSG_SIZE);
+  return atoi(msg_size);
+}
+
+void Socket::send_size_first(unsigned int size){
+  int digitos = get_digits(size);
+  if(digitos > PROTOCOL_MSG_SIZE){
+    throw Error("Mensaje demasiado largo!");
+  }
+  char msg_size[PROTOCOL_MSG_SIZE];
+  memset(msg_size, 0, PROTOCOL_MSG_SIZE); 
+  snprintf(msg_size,PROTOCOL_MSG_SIZE, "%d", size);
+  send_message(msg_size,PROTOCOL_MSG_SIZE);
+}
+
+
+
+
+int Socket::receive_buffer(char* buffer, const size_t size){
     int total_received = 0;
     int bytes_recived = 0;
-
 
     while ((bytes_recived = recv(this->sock, //
     &buffer[total_received],//
@@ -133,7 +164,7 @@ int Socket::receive_message(char* buffer, const size_t size){
 }
 
 
-int Socket::send_message(const char* buffer,const size_t size){
+int Socket::send_buffer(const char* buffer,const size_t size){
     int total_sent = 0;
     int bytes_sent = 0;
 
@@ -146,3 +177,21 @@ int Socket::send_message(const char* buffer,const size_t size){
     }
     return total_sent;
 }
+
+//////////////////protocolo de comunicacion/////////////////////////////////
+
+void Socket::send_dto(const string & dto_to_send){
+  int size = dto_to_send.size();
+  send_size_first(size);
+  send_buffer(dto_to_send.c_str(),size);
+}
+
+std::string Socket::receive_dto();{
+  ssize_t msg_size = receive_size_first();
+  char chunk[CHUNK_LEN];
+  receive_buffer(chunk, msg_size);
+  chunk[msg_size] = 0;
+  std::string dto_received(chunk);
+  return dto_received; 
+}
+

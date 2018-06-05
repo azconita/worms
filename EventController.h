@@ -12,6 +12,8 @@
 #include "stage.h"
 
 class EventController {
+
+	Socket socket;
 	GraphicDesigner graphic_designer;
 	int screen_height;
 	int screen_width;
@@ -20,6 +22,15 @@ class EventController {
 	ActionDTO action;
 	bool wait_for_destination_clicl;
 	bool wait_for_weapon_click;
+
+public:
+	EventController(Socket & socket,SDL_Event & event, Stage & stage, int screen_height, int screen_width, GraphicDesigner & graphic_designer);
+	bool continue_running(WormAnimation& turn_worm);
+	virtual ~EventController();
+
+
+private:
+	void send_action(ActionDTO action);
 
 	void weapon_shortcuts(SDL_Event & event, WormAnimation& turn_worm);
 	float meters_conversor(int pixel);
@@ -33,8 +44,6 @@ class EventController {
 	void teletrans(WormAnimation& turn_worm);
 	void banana(WormAnimation& turn_worm);
 	void baseboll_bat(WormAnimation& turn_worm);
-
-
 
 	void click(WormAnimation& turn_worm);
 
@@ -50,11 +59,6 @@ class EventController {
 	void weapon_shot(WormAnimation& turn_worm);
 	void shot(WormAnimation& turn_worm,int x, int y);
 
-public:
-	EventController(SDL_Event & event, Stage & stage, int screen_height, int screen_width, GraphicDesigner & graphic_designer);
-	bool continue_running(WormAnimation& turn_worm);
-
-	virtual ~EventController();
 
 };
 

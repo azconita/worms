@@ -1,12 +1,10 @@
 preguntas:
 
-sdl dibuja con solo punto x y (vertice superior de la imagen) despues tiene un heigh y un with segun la foto
+Esta bien usar una variable global para el logger?
 
-box2d me da cuatro puntos, los cuatro vertices
+el stage borra todo y vuelve a dibujar todo cada vez que se actualiza, esta bien eso o hay que hacerlo de otra formA?
 
-nosotras sabemos que el dibujo de la viga mide 141 pixeles y esos deberian ser 6 metros entonces la conversion es
+cual seria una buena practica para encadenar eventos?
 
-pos_pixeles = pos_metros *23.5;
-
-como hacemos el cambio de escala para que los vertices queden justos?
+Se puede hacer un protocolo de comunicacion sin tener que enviar el largo antes?
 

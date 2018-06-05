@@ -5,6 +5,8 @@
 #include <iostream>
 #include <vector>
 
+#define PROTOCOL_MSG_SIZE 4
+
 class Socket {
 protected:
   int sock;
@@ -28,10 +30,17 @@ public:
   int send_buffer(size_t size, unsigned char *buffer);
   int receive_buffer(size_t size, unsigned char *buffer);
 
-  int Socket::receive_message(char* buffer, const size_t size);
-  int Socket::send_message(const char* buffer,const size_t size);
+  void send_dto(const string & dto_to_send);
+  std::string receive_dto();
+
 
 private:
+  int get_digits(unsigned int num);
+  ssize_t receive_size_first();
+  void send_size_first(unsigned int size);
+  int receive_buffer(char* buffer, const size_t size);
+  int send_buffer(const char* buffer,const size_t size);
+  
   int get_hosts(struct addrinfo **result, const char* port, const char* host);
 };
 
