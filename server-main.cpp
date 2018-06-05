@@ -6,6 +6,9 @@
  */
 
 #include "Server.h"
+#include "Logger.h"
+
+logger oLog("server.log");
 
 int main(int argc, char *argv[]) {
   //Inicializa servidor con puerto

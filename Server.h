@@ -10,7 +10,7 @@
 
 #include <thread>
 #include <string>
-#include "server_socket.h"
+#include "ServerSocket.h"
 #include "DTOs.h"
 
 class Server {

@@ -5,7 +5,7 @@
 #define PORT 2
 
 
-logger oLog("server.log");
+logger oLog("client.log");
 
 int main(int argc, char * argv[]){
     if (argc < 3){

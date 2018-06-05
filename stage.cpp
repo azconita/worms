@@ -183,8 +183,8 @@ void Stage::set_position(ElementDTO & element , std::vector<b2Vec2> & vertices){
   b2Vec2 down_right = vertices[2];
 
 
-  element.x = up_left.x;
-  element.y = up_left.y;
+  element.pos_x = up_left.x;
+  element.pos_y = up_left.y;
 
   if(down_right.y > up_left.y){
     element.h = (down_right.y - up_left.y);
@@ -230,8 +230,8 @@ StageDTO Stage::get_stageDTO() {
     //set_position(weapon, vertices);
 
     b2Vec2 point = w->get_point();
-    weapon.x = point.x;
-    weapon.y = point.y;
+    weapon.pos_x = point.x;
+    weapon.pos_y = point.y;
     weapon.h = 0.5;
     weapon.w = 0.5;
     weapon.weapon = w->get_name();

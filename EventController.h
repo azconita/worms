@@ -10,7 +10,7 @@
 #include <SDL/SDL.h>
 #include "GraphicDesigner.h"
 #include "Socket.h"
-//#include "DTOs.h"
+#include "DTOs.h"
 
 class EventController {
 
