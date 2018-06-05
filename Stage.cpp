@@ -6,11 +6,13 @@
 #include <Box2D/Box2D.h>
 #include "Constants.h"
 #include "WeaponExplosionListener.h"
-#include "DTOs.h"
+#include "Dtos.h"
 #include "Worm.h"
 #include "Beam.h"
 #include "Stage.h"
 #include "Weapon.h"
+
+
 
 //config: yaml: https://github.com/jbeder/yaml-cpp/
 Stage::Stage(std::string file_name) {
@@ -161,19 +163,19 @@ void Stage::make_action(ActionDTO & action) {
 
     case(Shot_weapon):{
       printf("Se disparo el arma al punto (%i,%i) en metros, con una potencia de %i apuntando a %f grados en la dire %i y con timer %i\n",//
-       action.x, action.y, action.power, action.weapon_degrees, action.direction, action.time_to_explode);
+       action.pos_x, action.pos_y, action.power, action.weapon_degrees, action.direction, action.time_to_explode);
 
       //switch(action.weapon) {
       if (action.weapon == Teleport) {
-        this->worms[worm]->teleport(action.x, action.y, action.direction);
+        this->worms[worm]->teleport(action.pos_x, action.pos_y, action.direction);
       } else if (action.weapon == W_Air_Attack) {
         //TODO: fix : que no caigan todos juntos! (hace que exploten antes)
         for (int i = 0; i < 6; ++ i) {
-          Weapon* w = new Weapon(this->world, action.weapon, action.x, 0, this->wind);
+          Weapon* w = new Weapon(this->world, action.weapon, action.pos_x, 0, this->wind);
           this->explosions.push_back(w);
         }
       } else {
-        Weapon* w = new Weapon(this->world, action.weapon, action.x, action.y, this->wind);
+        Weapon* w = new Weapon(this->world, action.weapon, action.pos_x, action.pos_y, this->wind);
         printf("about to shoot");
         w->shoot(action.power, action.weapon_degrees, action.direction, action.time_to_explode);
         this->explosions.push_back(w);
@@ -191,8 +193,8 @@ void Stage::set_position(ElementDTO & element , std::vector<b2Vec2> & vertices){
   b2Vec2 down_right = vertices[2];
 
 
-  element.x = up_left.x;
-  element.y = up_left.y;
+  element.pos_x = up_left.x;
+  element.pos_y = up_left.y;
 
   if(down_right.y > up_left.y){
     element.h = (down_right.y - up_left.y);
@@ -238,8 +240,8 @@ StageDTO Stage::get_stageDTO() {
     //set_position(weapon, vertices);
 
     b2Vec2 point = w->get_point();
-    weapon.x = point.x;
-    weapon.y = point.y;
+    weapon.pos_x = point.x;
+    weapon.pos_y = point.y;
     weapon.h = 0.5;
     weapon.w = 0.5;
     weapon.weapon = w->get_name();
@@ -255,17 +257,20 @@ StageDTO Stage::get_stageDTO() {
 
 
 void Stage::load_initial_stage(std::string file_name){
+  extern  logger oLog;
   StageLoader yaml_loader(file_name);
   Stage_y s = yaml_loader.load_stage();
+  oLog() << "loading initial stage:\n";
    for(auto b: s.beams){
-    cout << "beam_y { x: " << b.pos_x << ", y: " << b.pos_y << ", size: " << b.size << ", inclination:" << b.inclination << "}" << endl;
+	   oLog() << "beam_y { x: " << b.pos_x << ", y: " << b.pos_y << ", size: " << b.size << ", inclination:" << b.inclination << "}" << endl;
      this->beams.push_back(new Beam(this->world,  b.pos_x, b.pos_y, b.inclination));
+
   }
   for(auto & pair: s.players){
-    cout << "player  " << pair.first << endl;
-    cout << "worms: ";
+	oLog() << "player  " << pair.first << endl;
+    oLog() << "worms: ";
     for(auto w : pair.second){
-      cout << "{ id: "<< w.id << ", x: "<< w.pos_x << " , y: "
+    	oLog() << "{ id: "<< w.id << ", x: "<< w.pos_x << " , y: "
       << w.pos_y << ", direction: "<< w.direction << ", inclination: "<<w.inclination << ", life: " << w.life <<" }"<< endl;
       Worm* worm = new Worm(this->world, w.pos_x, w.pos_y, w.id);
       this->worms.emplace(0, worm);
@@ -275,25 +280,3 @@ void Stage::load_initial_stage(std::string file_name){
 }
 
 
-/*// set initial stage
-void Stage::add_beams(std::string config) {
-
-  this->beams.push_back(new Beam(this->world, 10,20));
-  this->beams.push_back(new Beam(this->world, 20,20));
-  this->beams.push_back(new Beam(this->world, 30,20));
-
-  this->beams.push_back(new Beam(this->world, 30,40,0));
-}
-
-void Stage::add_worms(std::string config) {
-  Worm* w = new Worm(this->world, 10, 11);
-  this->worms.emplace(0, w);
-}
-
-void Stage::add_weapons(std::string config) {
-
-}
-
-void Stage::add_explosion() {
-  //this->explosions.push_back(new Projectile(this->world, W_Bazooka, 9, 12));
-}*/

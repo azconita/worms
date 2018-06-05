@@ -10,7 +10,7 @@
 #include <iostream>
 #include "Weapon.h"
 #include "Entity.h"
-#include "DTOs.h"
+#include "Dtos.h"
 
 #ifndef WORM_H_
 #define WORM_H_

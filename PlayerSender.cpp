@@ -31,6 +31,21 @@ void PlayerSender::operator()() {
 }
 
 std::string PlayerSender::get_yaml(StageDTO &s) {
+  /*Stage stage("file.yaml");
+    Socket client = this->acc_socket.accept_client();
+    while (this->on) {
+      stage.update();
+      StageDTO s = stage.get_stageDTO();
+
+      YAML::Emitter out;
+      out << YAML::BeginMap;
+      out << YAML::Key << "stage";
+      out << YAML::Value << s;
+      out << YAML::EndMap;
+
+      client.send_dto(out.c_str());*/
+
+
   YAML::Node node;
   node["worm_turn"] = s.worm_turn;
   YAML::Node worms;

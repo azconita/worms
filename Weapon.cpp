@@ -13,7 +13,7 @@
 #include <string>
 #include "Constants.h"
 #include "Worm.h"
-#include "DTOs.h"
+#include "Dtos.h"
 
 Weapon::Weapon(b2World *world, Weapon_Name name, float x, float y, float wind) : Entity(3), world(world), wind(wind), name(name) {
   b2BodyDef bodyDef;

@@ -9,6 +9,7 @@
 
 #include "Constants.h"
 #include "Stage.h"
+#include "Dtos.h"
 
 Server::Server(const std::string port) : acc_socket(port) {
   // inicializar vector de escenarios posibles
@@ -65,4 +66,3 @@ void Server::run() {
 void Server::stop() {
   this->on = false;
 }
-

@@ -12,7 +12,7 @@
 #include <string>
 #include <thread>
 #include <vector>
-#include "DTOs.h"
+#include "Dtos.h"
 #include "Game.h"
 #include "server_socket.h"
 

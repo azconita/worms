@@ -8,10 +8,6 @@ stage:
       pos_y: 21
       size: 3
       inclination: 0
-    - pos_x: 30
-      pos_y: 20
-      size: 3
-      inclination: 0
   players:
     0:
       - id: 1
