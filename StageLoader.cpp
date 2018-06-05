@@ -9,7 +9,7 @@ Stage_y StageLoader::load_stage(){
   YAML::Node initial_stage = YAML::LoadFile(this->file_name);
   Stage_y s = initial_stage["stage"].as<Stage_y>();
   for(auto b: s.beams){
-    cout << "se levanto: beam_y { x: " << b.pos_x << ", y: " << b.pos_y << ", size: " << b.size << ", inclination:" << b.inclination << "}" << endl;
+    cout << "se levanto: beam_y { x: " << b.pos_x << ", y: " << b.pos_y << ", h: " << b.h <<", w: " << b.w <<  ", angle:" << b.angle << "}" << endl;
   }
   for(auto & pair: s.players){
     cout << "player  " << pair.first << endl;
