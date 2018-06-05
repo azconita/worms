@@ -24,7 +24,9 @@ Client::Client(char * host_name, char * port)://
 }
 
 StageDTO Client::receive_stage(){
+    printf("se quiere recibir del socket\n");
     string stage_str = (this->socket).receive_dto();
+    printf("se recibio \n");
     YAML::Node yaml_received = YAML::Load(stage_str);
     StageDTO stage_received = yaml_received ["stage"].as<StageDTO>();
     return stage_received;
@@ -65,7 +67,9 @@ void Client::run(){
     SDL_WM_SetCaption(TITLE, TITLE);
 
 
+    oLog() << "Se va a recibir el StageDTO";
     StageDTO s = receive_stage();
+    oLog() << "Se recibio el StageDTO";
 
     WaterAnimation water(screen_height, 3);
 

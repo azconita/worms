@@ -4,6 +4,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include "Logger.h"
 
 #define PROTOCOL_MSG_SIZE 4
 #define CHUNK_LEN 512

@@ -128,6 +128,7 @@ int Socket::get_digits(unsigned int num){
 ssize_t Socket::receive_size_first(){
   char msg_size[PROTOCOL_MSG_SIZE];
   receive_buffer(msg_size, PROTOCOL_MSG_SIZE);
+  printf("largo recibido %i\n",atoi(msg_size) );
   return atoi(msg_size);
 }
 
@@ -181,17 +182,56 @@ int Socket::send_buffer(const char* buffer,const size_t size){
 //////////////////protocolo de comunicacion/////////////////////////////////
 
 void Socket::send_dto(const std::string & dto_to_send){
-  int size = dto_to_send.size();
-  send_size_first(size);
-  send_buffer(dto_to_send.c_str(),size);
+    int dto_size = dto_to_send.size();
+    send_size_first(dto_size);
+   
+    int bytes_sent = 0;
+    int total_sent = 0;
+    char request[CHUNK_LEN+1];
+
+    while (total_sent < dto_size ){
+
+      int request_len = CHUNK_LEN;
+      if (dto_size - total_sent < CHUNK_LEN){
+        request_len = dto_size - total_sent;
+      } 
+
+      std::string dto_chunk = dto_to_send.substr(bytes_sent,bytes_sent +request_len);
+      printf("se quiere enviar chunk:\n   %s\n\n", dto_chunk.c_str());
+      memcpy(request, dto_chunk.c_str() , request_len);
+      bytes_sent = send_buffer(request, request_len);
+        
+      if (bytes_sent < 0){
+        break;
+      }
+      total_sent += bytes_sent;
+    }
 }
 
 std::string Socket::receive_dto(){
-  ssize_t msg_size = receive_size_first();
-  char chunk[CHUNK_LEN];
-  receive_buffer(chunk, msg_size);
-  chunk[msg_size] = 0;
-  std::string dto_received(chunk);
+   std::string dto_received;
+  ssize_t dto_size = receive_size_first();
+  char chunk[CHUNK_LEN+1];
+  int total_received = 0;
+  int bytes_received = 0;
+  while (total_received < dto_size){
+        memset(chunk, 0, CHUNK_LEN+1);
+
+        int request_len = CHUNK_LEN;
+        if (dto_size - total_received < CHUNK_LEN){
+            request_len = dto_size - total_received;
+        }
+        bytes_received = receive_buffer(chunk, request_len); 
+        
+        total_received +=bytes_received;
+        if (bytes_received <= 0){
+          break;
+        }
+        printf("se recibio un chunk: %s\n", chunk );
+        dto_received.append(chunk);
+
+    }
   return dto_received; 
 }
+
 

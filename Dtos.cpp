@@ -13,8 +13,8 @@
 #include <string>
 
 
+
 YAML::Emitter& operator << (YAML::Emitter& out, const ElementDTO& e) {
-  printf("serializando element dto\n");
   out << YAML::BeginMap;
   out << YAML::Key << "pos_x";
   out << YAML::Value << e.pos_x;
@@ -42,6 +42,8 @@ YAML::Emitter& operator << (YAML::Emitter& out, const ElementDTO& e) {
 
 
 YAML::Emitter& operator << (YAML::Emitter& out, const StageDTO& s) {
+  extern  logger oLog; 
+  oLog() << "se envia StageDTO";
   out << YAML::BeginMap;
   out << YAML::Key << "worm_turn";
   out << YAML::Value << s.worm_turn;
@@ -57,6 +59,8 @@ YAML::Emitter& operator << (YAML::Emitter& out, const StageDTO& s) {
 
 
 YAML::Emitter& operator << (YAML::Emitter& out, const ActionDTO& a) {
+  extern  logger oLog; 
+  oLog() << "se envia ActionDTO";
   out << YAML::BeginMap;
   out << YAML::Key << "worm_id";
   out << YAML::Value << a.worm_id;

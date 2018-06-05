@@ -9,6 +9,7 @@
 #define DTOS_H_
 
 #include "yaml-cpp/yaml.h"
+#include "Logger.h"
 #include <map>
 #include <vector>
 #include <string>
