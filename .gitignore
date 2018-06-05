@@ -35,6 +35,7 @@
 .project
 .settings
 CMakeCache.txt
+CMakeFiles/*
 cmake_install.cmake
 tp
 faltantes
