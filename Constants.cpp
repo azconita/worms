@@ -13,6 +13,8 @@
 namespace Constants {
   YAML::Node config = YAML::LoadFile("server_config.yaml");
 
+  extern const int max_blocking_queue = 1000;
+
   extern const std::vector<std::string> stages = config["stages"].as<std::vector<std::string>>();
   extern const int players_limit = 2;
 

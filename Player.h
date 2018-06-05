@@ -12,9 +12,14 @@
 
 class Player {
   Socket &client;
+  BlockingQueue<StageDTO> *send_queue;
+  BlockingQueue<ActionDTO> *recv_queue;
 public:
   Player(Socket &client);
   virtual ~Player();
+
+  void add_stage_queues(BlockingQueue<StageDTO> *send_queue,
+                        BlockingQueue<ActionDTO> *recv_queue);
 };
 
 #endif /* PLAYER_H_ */

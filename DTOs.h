@@ -52,7 +52,8 @@ enum Movement {
 enum Action_Type {
   Make_move,
   Take_weapon,
-  Shot_weapon
+  Shot_weapon,
+  Timer_update
 };
 
 struct ActionDTO {

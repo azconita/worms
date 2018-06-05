@@ -13,6 +13,8 @@
 
 namespace Constants {
 
+  extern const int max_blocking_queue;
+
   //stages names
   extern const std::vector<std::string> stages;
   extern const int players_limit;
