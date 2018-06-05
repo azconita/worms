@@ -19,10 +19,12 @@ Player::Player(Socket &client) : client(client) {
 
 Player::~Player() {
   // TODO Auto-generated destructor stub
+  this->sender.join();
+  this->receiver.join();
 }
 
 void Player::start() {
-  this->sender {PlayerSender(this->client, this->send_queue, this->recv_queue)};
-  this->receiver(this->client, this->send_queue, this->recv_queue);
+  this->sender = std::thread{PlayerSender(this->client, this->send_queue, this->recv_queue)};
+  this->receiver = std::thread{PlayerReceiver(this->client, this->send_queue, this->recv_queue)};
 
 }

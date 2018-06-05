@@ -69,22 +69,3 @@ void Game::run() {
   //this->players.send_string(str);
 }
 
-
-std::string Game::get_yaml(StageDTO &s) {
-  YAML::Node node;
-  node["worm_turn"] = s.worm_turn;
-  YAML::Node worms;
-  for (auto &w : s.worms) {
-    worms[w.first] = w.second;
-  }
-  node["worms"] = worms;
-  for (auto &b : s.beams) {
-    node["beams"].push_back(b);
-  }
-  for (auto &b : s.beams) {
-    node["weapons"].push_back(b);
-  }
-  std::string str;
-  node >> str;
-  return str;
-}

@@ -15,14 +15,17 @@
 class PlayerReceiver {
 private:
   Socket &client;
-  BlockingQueue<StageDTO> *send_queue;
   BlockingQueue<ActionDTO> *recv_queue;
+
+  bool finished = false;
 public:
-  PlayerReceiver(Socket &client, BlockingQueue<StageDTO> *send_queue,
-      BlockingQueue<ActionDTO> *recv_queue);
+  PlayerReceiver(Socket &client, BlockingQueue<ActionDTO> *recv_queue);
   virtual ~PlayerReceiver();
 
   void operator()();
+
+private:
+  ActionDTO get_dto(std::string str);
 };
 
 #endif /* PLAYERRECEIVER_H_ */

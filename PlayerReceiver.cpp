@@ -7,9 +7,8 @@
 
 #include "PlayerReceiver.h"
 
-PlayerReceiver::PlayerReceiver(Socket &client, BlockingQueue<StageDTO> *send_queue,
-    BlockingQueue<ActionDTO> *recv_queue) :
-    client(client), send_queue(send_queue), recv_queue(recv_queue){
+PlayerReceiver::PlayerReceiver(Socket &client, BlockingQueue<ActionDTO> *recv_queue) :
+    client(client), recv_queue(recv_queue){
   // TODO Auto-generated constructor stub
 
 }
@@ -19,5 +18,16 @@ PlayerReceiver::~PlayerReceiver() {
 }
 
 void PlayerReceiver::operator ()() {
+  while (!this->finished) {
+    std::string str = this->client.recv_string();
+    ActionDTO dto = this->get_dto(str);
+    this->recv_queue(dto);
+  }
+}
 
+//TODO que use lo de jaz!
+ActionDTO PlayerReceiver::get_dto(std::string str) {
+  ActionDTO dto;
+  dto.type = Timer_update;
+  return dto;
 }

@@ -69,8 +69,12 @@ void Stage::update() {
   //check if player change
   this->update_player();
 
+  //check falling worms
   //char t = (this->worms[0]->is_falling()) ? 'y' : 'n';
   //printf("worm falling: %c\n", t);
+}
+
+bool Stage::finished() {
 
 }
 
@@ -113,6 +117,7 @@ void Stage::update_player() {
 }
 
 //TODO sirve así? gusanos mueren... de quien es el turno?
+//cuantos players puede haber????
 void Stage::change_player() {
   int curr_id = this->current_player->get_id();
   std::map<int, Worm*>::iterator next = this->worms.find(curr_id);

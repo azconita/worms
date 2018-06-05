@@ -30,7 +30,6 @@ class Game : public Thread {
 
   TimerStage timer;
 
-
 public:
   Game(std::string &stage_name, Socket &client);
   virtual ~Game();
@@ -42,7 +41,7 @@ public:
 
 private:
   void prepare();
-  //std::string get_yaml(StageDTO &s);
+
 };
 
 #endif /* GAME_H_ */

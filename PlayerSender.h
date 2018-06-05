@@ -16,13 +16,16 @@ class PlayerSender {
 private:
   Socket &client;
   BlockingQueue<StageDTO> *send_queue;
-  BlockingQueue<ActionDTO> *recv_queue;
+
+  bool finished = false;
 public:
-  PlayerSender(Socket &client, BlockingQueue<StageDTO> *send_queue,
-      BlockingQueue<ActionDTO> *recv_queue);
+  PlayerSender(Socket &client, BlockingQueue<StageDTO> *send_queue);
   virtual ~PlayerSender();
 
   void operator()();
+
+private:
+  std::string get_yaml(StageDTO &s);
 };
 
 #endif /* PLAYERSENDER_H_ */

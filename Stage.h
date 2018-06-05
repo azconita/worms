@@ -39,6 +39,8 @@ public:
   void update();
   void make_action(ActionDTO & action);
 
+  bool finished();
+
   //por ahora...
   StageDTO get_stageDTO();
 private:
