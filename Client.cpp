@@ -19,9 +19,11 @@ void Client::debug_box2d_figure(SDL_Surface *screen, ElementDTO element_info){
 }
 
 Client::Client(char * host_name, char * port)://
-    socket(){  
+    socket(),
+    actions_queues(1000){  
     this->socket.connect_to_server(host_name, port);
 }
+
 
 StageDTO Client::receive_stage(){
     printf("se quiere recibir del socket\n");
@@ -30,6 +32,17 @@ StageDTO Client::receive_stage(){
     YAML::Node yaml_received = YAML::Load(stage_str);
     StageDTO stage_received = yaml_received ["stage"].as<StageDTO>();
     return stage_received;
+}
+
+void Client::send_action(ActionDTO action){
+    YAML::Emitter out;
+    out << YAML::BeginMap;
+    out << YAML::Key << "action";
+    out << YAML::Value << action;
+    out << YAML::EndMap;
+    printf("se enviaa una accion por el socket\n");
+    (this->socket).send_dto(out.c_str());
+
 }
 
 void Client::run(){  
@@ -66,10 +79,7 @@ void Client::run(){
     // Set the title bar
     SDL_WM_SetCaption(TITLE, TITLE);
 
-
-    oLog() << "Se va a recibir el StageDTO";
     StageDTO s = receive_stage();
-    oLog() << "Se recibio el StageDTO";
 
     WaterAnimation water(screen_height, 3);
 
@@ -79,7 +89,7 @@ void Client::run(){
     std::map<int,WormAnimation>::iterator turn_worm_iter = graphic_designer.get_turn_worm(0);
 
     SDL_Event event;
-    EventController event_controller(socket, event, screen_height, screen_width, graphic_designer);
+    EventController event_controller(event, screen_height, screen_width, graphic_designer);
 
     //para controlar el tiempo
     Uint32 t0 = SDL_GetTicks();
@@ -96,6 +106,7 @@ void Client::run(){
         t1 = SDL_GetTicks();
 
         //update
+        printf("updateeee del stage\n");
         StageDTO s = receive_stage();
 
         if((t1 -t0) > 100) {
@@ -117,3 +128,8 @@ void Client::run(){
 
     }
 }
+
+Client::~Client(){
+    this->socket.shut();
+}
+

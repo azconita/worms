@@ -14,7 +14,6 @@
 
 class EventController {
 
-	Socket socket;
 	GraphicDesigner graphic_designer;
 	int screen_height;
 	int screen_width;
@@ -24,7 +23,7 @@ class EventController {
 	bool wait_for_weapon_click;
 
 public:
-	EventController(Socket & socket,SDL_Event & event, int screen_height, int screen_width, GraphicDesigner & graphic_designer);
+	EventController(SDL_Event & event, int screen_height, int screen_width, GraphicDesigner & graphic_designer);
 	bool continue_running(WormAnimation& turn_worm);
 	virtual ~EventController();
 

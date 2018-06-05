@@ -29,8 +29,6 @@ public:
   Socket accept_connection();
   bool not_valid();
   void shut();
-  int send_buffer(size_t size, unsigned char *buffer);
-  int receive_buffer(size_t size, unsigned char *buffer);
 
   void send_dto(const std::string & dto_to_send);
   std::string receive_dto();

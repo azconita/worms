@@ -10,6 +10,7 @@
 #include "WaterAnimation.h"
 #include "WormAnimation.h"
 #include "EventController.h"
+#include "BlockingQueue.h"
 
 using std::string;
 using std::map;
@@ -24,11 +25,14 @@ using std::pair;
 
 class Client{
 	Socket socket;
+	BlockingQueue<ActionDTO> actions_queues;
 
 public:
 	Client(char * host_name, char * port);
 	void run();
 	StageDTO receive_stage();
+	void send_action(ActionDTO action);
+	~Client();
 	//para debuguear
 	float get_pixels(float meter_position);
 	void debug_box2d_figure(SDL_Surface *screen, ElementDTO element_info);
