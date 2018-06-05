@@ -1,7 +1,15 @@
+
 //g++ -std=c++11 DTOs.cpp yaml-test.cpp -lyaml-cpp -g
+/*
+ * yaml-test.cpp
+ *
+ *  Created on: Jun 3, 2018
+ *      Author: gabi
+ */
 
 #include <iostream>
 #include "DTOs.h"
+
 
 using std::cout;
 using std::endl;

@@ -44,3 +44,11 @@ void Server::run() {
 void Server::stop() {
   this->on = false;
 }
+
+//private
+std::string Server::get_yaml(StageDTO &s) {
+  YAML::Emitter out;
+  out << s;
+  return out.c_str();
+}
+
