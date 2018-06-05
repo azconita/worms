@@ -27,8 +27,8 @@ std::map<int,WormAnimation> GraphicDesigner::create_worms(StageDTO s){
         int id = w.first;
         ElementDTO worm_info = w.second;
 
-        int position_worm_x = get_pixels(worm_info.x);
-        int position_worm_y = get_pixels(worm_info.y);
+        int position_worm_x = get_pixels(worm_info.pos_x);
+        int position_worm_y = get_pixels(worm_info.pos_y);
 
         //creo el gusano y lo gardo en el vector
         Direction dir = Left;
@@ -140,8 +140,8 @@ void GraphicDesigner::show_beams(StageDTO s, SDL_Surface *screen){
 
         //debug_box2d_figure(screen, beam_info);
 
-        int up_left_vertex_x = get_pixels(beam_info.x);
-        int up_left_vertex_y = get_pixels(beam_info.y);
+        int up_left_vertex_x = get_pixels(beam_info.pos_x);
+        int up_left_vertex_y = get_pixels(beam_info.pos_y);
 
         Picture beam(BEAM, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
         beam.draw(screen,up_left_vertex_x, up_left_vertex_y);
@@ -158,8 +158,8 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
 
         //debug_box2d_figure(screen, worm_info);
 
-        int up_left_vertex_x = get_pixels(worm_info.x);
-        int up_left_vertex_y = get_pixels(worm_info.y);
+        int up_left_vertex_x = get_pixels(worm_info.pos_x);
+        int up_left_vertex_y = get_pixels(worm_info.pos_y);
 
         std::map<int,WormAnimation>::iterator worms_iter = this->worms.find(w.first);
         worms_iter->second.move(up_left_vertex_x, up_left_vertex_y);
@@ -188,8 +188,8 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
 
         //debug_box2d_figure(screen, w);
 
-        int up_left_vertex_x = get_pixels(w.x);
-        int up_left_vertex_y = get_pixels(w.y);
+        int up_left_vertex_x = get_pixels(w.pos_x);
+        int up_left_vertex_y = get_pixels(w.pos_y);
 
 
         std::map<Weapon_Name,Animation>::iterator weapon_iter = this->weapons.find(w.weapon);

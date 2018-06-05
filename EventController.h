@@ -10,6 +10,7 @@
 #include <SDL/SDL.h>
 #include "GraphicDesigner.h"
 #include "Socket.h"
+//#include "DTOs.h"
 
 class EventController {
 
@@ -29,6 +30,8 @@ public:
 
 
 private:
+
+	void send_action();
 
 	void weapon_shortcuts(SDL_Event & event, WormAnimation& turn_worm);
 	float meters_conversor(int pixel);
