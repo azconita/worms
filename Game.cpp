@@ -12,10 +12,10 @@
 #include "DTOs.h"
 
 Game::Game(std::string &stage_name, Socket &client) :
-           stage(stage_name), players(Player(client)),
-           stage_queue(Constants::max_blocking_queue) {
+           stage(stage_name),
+           stage_queue(Constants::max_blocking_queue), timer(stage_queue) {
   // TODO Auto-generated constructor stub
-
+  this->players.push_back(Player(client));
 }
 
 Game::~Game() {
@@ -37,8 +37,7 @@ void Game::add_player(Socket client) {
 }
 
 void Game::prepare() {
-  //crear colas bloqueantes
-  //colas de los jugadores
+  //crear colas bloqueantes de los jugadores
   for (auto& p : this->players) {
     BlockingQueue<StageDTO>* q = new BlockingQueue<StageDTO>(Constants::max_blocking_queue);
     this->players_queues.push_back(q);
@@ -51,7 +50,7 @@ void Game::prepare() {
 void Game::run() {
   // inicializar players, colas, timer
   prepare();
-
+  // start game!
   while (!this->stage.finished()) {
     // sacar action de la cola: action de player o action del timer(update)
     ActionDTO &action = this->stage_queue.pop();
@@ -64,8 +63,5 @@ void Game::run() {
       q->push(s);
     }
   }
-
-  //std::string str = this->get_yaml(s);
-  //this->players.send_string(str);
 }
 

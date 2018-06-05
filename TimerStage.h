@@ -9,10 +9,14 @@
 #define TIMERSTAGE_H_
 
 #include "common_thread.h"
+#include "DTOs.h"
+#include "BlockingQueue.h"
 
 class TimerStage : public Thread {
+private:
+  BlockingQueue<ActionDTO> &stage_queue;
 public:
-  TimerStage();
+  TimerStage(BlockingQueue<ActionDTO> &q);
   virtual ~TimerStage();
 
   virtual void run() override;
