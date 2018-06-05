@@ -28,7 +28,6 @@ public:
   int send_buffer(size_t size, unsigned char *buffer);
   int receive_buffer(size_t size, unsigned char *buffer);
 
-  //Wrappers para enviar/recibir int, string y file
   int Socket::receive_message(char* buffer, const size_t size);
   int Socket::send_message(const char* buffer,const size_t size);
 
