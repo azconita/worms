@@ -1,5 +1,18 @@
+#include <iostream>
+#include <SDL/SDL.h>
+#include <SDL/SDL_image.h>
+#include <SDL/SDL_ttf.h>
 
+#include "Error.h"
 #include "Socket.h"
+#include "DTOs.h"
+#include "WaterAnimation.h"
+#include "WormAnimation.h"
+#include "EventController.h"
+
+using std::string;
+using std::map;
+using std::pair;
 
 
 #define SCREEN_DEFAULT_WITH 1366

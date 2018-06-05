@@ -30,7 +30,6 @@ public:
 
 
 private:
-	void send_action(ActionDTO action);
 
 	void weapon_shortcuts(SDL_Event & event, WormAnimation& turn_worm);
 	float meters_conversor(int pixel);

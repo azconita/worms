@@ -1,4 +1,5 @@
 #include "Client.h"
+
 float Client::get_pixels(float meter_position){
     return  23.5*meter_position;
 }
