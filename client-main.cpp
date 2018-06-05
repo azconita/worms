@@ -1,13 +1,11 @@
+#include "Logger.h"
 #include "Error.h"
 #include "Client.h"
-
-
-logger oLog("server.log");
-
-
 #define SERVER_NAME 1 
 #define PORT 2
 
+
+logger oLog("server.log");
 
 int main(int argc, char * argv[]){
     if (argc < 3){

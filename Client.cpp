@@ -1,5 +1,7 @@
 #include "Client.h"
 
+logger oLog("server.log");
+
 float Client::get_pixels(float meter_position){
     return  23.5*meter_position;
 }
@@ -7,8 +9,8 @@ float Client::get_pixels(float meter_position){
 void Client::debug_box2d_figure(SDL_Surface *screen, ElementDTO element_info){
     //dibujo un rectangulo
     SDL_Rect rectangle;
-    rectangle.x = get_pixels(element_info.x);
-    rectangle.y = get_pixels(element_info.y);
+    rectangle.x = get_pixels(element_info.pos_x);
+    rectangle.y = get_pixels(element_info.pos_y);
     rectangle.h = get_pixels(element_info.h);
     rectangle.w = get_pixels(element_info.w);
 
@@ -18,8 +20,8 @@ void Client::debug_box2d_figure(SDL_Surface *screen, ElementDTO element_info){
 }
 
 Client::Client(char * host_name, char * port)://
-Socket(host_name, port){  
-    this->socket.connection();
+    socket(){  
+    this->socket.connect_to_server(host_name, port);
 }
 
 StageDTO Client::receive_stage(){
@@ -29,7 +31,7 @@ StageDTO Client::receive_stage(){
     return stage_received;
 }
 
-void Client::run(int argc, char *args[]){   
+void Client::run(){   
 
 
     if(SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -72,7 +74,7 @@ void Client::run(int argc, char *args[]){
     std::map<int,WormAnimation>::iterator turn_worm_iter = graphic_designer.get_turn_worm(0);
 
     SDL_Event event;
-    EventController event_controller(event, stage, screen_height, screen_width, graphic_designer);
+    EventController event_controller(socket, event, screen_height, screen_width, graphic_designer);
 
     //para controlar el tiempo
     Uint32 t0 = SDL_GetTicks();
@@ -87,9 +89,9 @@ void Client::run(int argc, char *args[]){
 
         // Referencia de tiempo
         t1 = SDL_GetTicks();
+
         //update
-        stage.update();
-        StageDTO s = stage.get_stageDTO();
+        StageDTO s = receive_stage();
 
         if((t1 -t0) > 100) {
             // Nueva referencia de tiempo
@@ -109,6 +111,4 @@ void Client::run(int argc, char *args[]){
         }
 
     }
-
-    return 0;
 }

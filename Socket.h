@@ -6,6 +6,7 @@
 #include <vector>
 
 #define PROTOCOL_MSG_SIZE 4
+#define CHUNK_LEN 512
 
 class Socket {
 protected:
@@ -30,7 +31,7 @@ public:
   int send_buffer(size_t size, unsigned char *buffer);
   int receive_buffer(size_t size, unsigned char *buffer);
 
-  void send_dto(const string & dto_to_send);
+  void send_dto(const std::string & dto_to_send);
   std::string receive_dto();
 
 

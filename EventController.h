@@ -9,7 +9,7 @@
 #define EVENTCONTROLLER_H_
 #include <SDL/SDL.h>
 #include "GraphicDesigner.h"
-#include "stage.h"
+#include "Socket.h"
 
 class EventController {
 
@@ -17,14 +17,13 @@ class EventController {
 	GraphicDesigner graphic_designer;
 	int screen_height;
 	int screen_width;
-	Stage & stage;
 	SDL_Event &  event;
 	ActionDTO action;
 	bool wait_for_destination_clicl;
 	bool wait_for_weapon_click;
 
 public:
-	EventController(Socket & socket,SDL_Event & event, Stage & stage, int screen_height, int screen_width, GraphicDesigner & graphic_designer);
+	EventController(Socket & socket,SDL_Event & event, int screen_height, int screen_width, GraphicDesigner & graphic_designer);
 	bool continue_running(WormAnimation& turn_worm);
 	virtual ~EventController();
 

@@ -37,8 +37,7 @@ void Server::run() {
     out << YAML::Value << s;
     out << YAML::EndMap;
 
-
-    client.send_string(str);
+    client.send_dto(out.c_str());
   }
 }
 

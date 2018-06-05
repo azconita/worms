@@ -5,6 +5,7 @@
 
 #include "Error.h"
 #include "Socket.h"
+#include "Logger.h"
 #include "DTOs.h"
 #include "WaterAnimation.h"
 #include "WormAnimation.h"
@@ -31,4 +32,4 @@ public:
 	//para debuguear
 	float get_pixels(float meter_position);
 	void debug_box2d_figure(SDL_Surface *screen, ElementDTO element_info);
-}
+};

@@ -127,7 +127,7 @@ int Socket::get_digits(unsigned int num){
 
 ssize_t Socket::receive_size_first(){
   char msg_size[PROTOCOL_MSG_SIZE];
-  receive_message(msg_size, PROTOCOL_MSG_SIZE);
+  receive_buffer(msg_size, PROTOCOL_MSG_SIZE);
   return atoi(msg_size);
 }
 
@@ -139,7 +139,7 @@ void Socket::send_size_first(unsigned int size){
   char msg_size[PROTOCOL_MSG_SIZE];
   memset(msg_size, 0, PROTOCOL_MSG_SIZE); 
   snprintf(msg_size,PROTOCOL_MSG_SIZE, "%d", size);
-  send_message(msg_size,PROTOCOL_MSG_SIZE);
+  send_buffer(msg_size,PROTOCOL_MSG_SIZE);
 }
 
 
@@ -180,13 +180,13 @@ int Socket::send_buffer(const char* buffer,const size_t size){
 
 //////////////////protocolo de comunicacion/////////////////////////////////
 
-void Socket::send_dto(const string & dto_to_send){
+void Socket::send_dto(const std::string & dto_to_send){
   int size = dto_to_send.size();
   send_size_first(size);
   send_buffer(dto_to_send.c_str(),size);
 }
 
-std::string Socket::receive_dto();{
+std::string Socket::receive_dto(){
   ssize_t msg_size = receive_size_first();
   char chunk[CHUNK_LEN];
   receive_buffer(chunk, msg_size);

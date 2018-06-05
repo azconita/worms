@@ -9,10 +9,9 @@
 
 
 
-EventController::EventController(Socket & socket, SDL_Event & event, Stage & stage, int screen_height, int screen_width, GraphicDesigner & graphic_designer):
-        socket(socket);
+EventController::EventController(Socket & socket, SDL_Event & event, int screen_height, int screen_width, GraphicDesigner & graphic_designer):
+        socket(std::move(socket)),
         event(event),
-        stage(stage),
         graphic_designer(graphic_designer){
             this->screen_height = screen_height;
             this-> screen_width = screen_width;
