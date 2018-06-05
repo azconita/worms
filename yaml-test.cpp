@@ -1,4 +1,4 @@
-//g++ -std=c++11 prueba-emmiter-yaml.cpp -lyaml-cpp -g
+//g++ -std=c++11 DTOs.cpp yaml-test.cpp -lyaml-cpp -g
 
 #include <iostream>
 #include "DTOs.h"
