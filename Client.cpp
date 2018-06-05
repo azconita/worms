@@ -30,7 +30,9 @@ StageDTO Client::receive_stage(){
     return stage_received;
 }
 
-void Client::run(){   
+void Client::run(){  
+
+    extern  logger oLog; 
 
 
     if(SDL_Init(SDL_INIT_VIDEO) < 0) {

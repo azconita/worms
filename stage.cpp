@@ -8,7 +8,7 @@
 #include <Box2D/Box2D.h>
 #include "Constants.h"
 #include "WeaponExplosionListener.h"
-#include "DTOs.h"
+#include "Dtos.h"
 #include "Worm.h"
 #include "Beam.h"
 #include "Weapon.h"
@@ -153,19 +153,19 @@ void Stage::make_action(ActionDTO & action) {
 
     case(Shot_weapon):{
       printf("Se disparo el arma al punto (%i,%i) en metros, con una potencia de %i apuntando a %f grados en la dire %i y con timer %i\n",//
-       action.x, action.y, action.power, action.weapon_degrees, action.direction, action.time_to_explode);
+       action.pos_x, action.pos_y, action.power, action.weapon_degrees, action.direction, action.time_to_explode);
 
       //switch(action.weapon) {
       if (action.weapon == Teleport) {
-        this->worms[worm]->teleport(action.x, action.y, action.direction);
+        this->worms[worm]->teleport(action.pos_x, action.pos_y, action.direction);
       } else if (action.weapon == W_Air_Attack) {
         //TODO: fix : que no caigan todos juntos! (hace que exploten antes)
         for (int i = 0; i < 6; ++ i) {
-          Weapon* w = new Weapon(this->world, action.weapon, action.x, 0, this->wind);
+          Weapon* w = new Weapon(this->world, action.weapon, action.pos_x, 0, this->wind);
           this->explosions.push_back(w);
         }
       } else {
-        Weapon* w = new Weapon(this->world, action.weapon, action.x, action.y, this->wind);
+        Weapon* w = new Weapon(this->world, action.weapon, action.pos_x, action.pos_y, this->wind);
         printf("about to shoot");
         w->shoot(action.power, action.weapon_degrees, action.direction, action.time_to_explode);
         this->explosions.push_back(w);

@@ -11,7 +11,7 @@
 #include <SDL/SDL_ttf.h>
 #include <vector>
 #include "Colour.h"
-#include "DTOs.h"
+#include "Dtos.h"
 #include "WormAnimation.h"
 
 

@@ -89,8 +89,6 @@ struct ActionDTO {
   Direction direction;
   int pos_x;
   int pos_y;
-  int x;
-  int y;
 };
 
 
@@ -105,8 +103,8 @@ struct convert<StageDTO> {
     node["worms"] = s.worms;
     node["beams"] = s.beams;
     node["weapons"] = s.weapons;
- 
-  
+
+
     return node;
   }
   static bool decode(const Node& node, StageDTO& s) {
@@ -171,15 +169,15 @@ struct convert<ActionDTO> {
 
   static bool decode(const Node& node, ActionDTO& action) {
 
-    action.worm_id = node["worm_id"].as<int>(); 
+    action.worm_id = node["worm_id"].as<int>();
     action.type = static_cast<Action_Type>(node["type"].as<int>());
     action.move = static_cast<Movement>(node["move"].as<int>());
     action.weapon = static_cast<Weapon_Name>(node["weapon"].as<int>());
-    action.weapon_degrees = node["weapon_degrees"].as<float>(); 
+    action.weapon_degrees = node["weapon_degrees"].as<float>();
     action.power = node["power"].as<int>();
-    action.time_to_explode= node["time_to_explode"].as<int>(); 
-    action.direction = static_cast<Direction>(node["direction"].as<int>()); 
-  
+    action.time_to_explode= node["time_to_explode"].as<int>();
+    action.direction = static_cast<Direction>(node["direction"].as<int>());
+
     action.pos_x = node["pos_x"].as<int>();
     action.pos_y = node["pos_y"].as<int>();
     return true;
@@ -190,11 +188,9 @@ struct convert<ActionDTO> {
 }
 
 
-YAML::Emitter& operator << (YAML::Emitter& out, const ElementDTO& e);
-
+YAML::Emitter& operator<<(YAML::Emitter& out, const ElementDTO& e);
 
 YAML::Emitter& operator << (YAML::Emitter& out, const StageDTO& s);
-
 
 YAML::Emitter& operator << (YAML::Emitter& out, const ActionDTO& a);
 

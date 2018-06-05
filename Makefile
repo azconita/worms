@@ -12,7 +12,7 @@ extension = cpp
 # No poner cabeceras (.h).
 fuentes_client = client-main.cpp Client.cpp Animation.cpp AnimationFactory.cpp Colour.cpp EventController.cpp GraphicDesigner.cpp Picture.cpp WaterAnimation.cpp WormAnimation.cpp
 fuentes_server = server-main.cpp Server.cpp Constants.cpp ServerSocket.cpp Beam.cpp Entity.cpp StageLoader.cpp Weapon.cpp WeaponExplosionListener.cpp Worm.cpp stage.cpp
-fuentes_common = Socket.cpp Error.cpp Logger.cpp 
+fuentes_common = Socket.cpp Error.cpp Logger.cpp Dtos.cpp
 
 # Descomentar si se quiere ver como se invoca al compilador
 verbose = si

@@ -148,8 +148,8 @@ void EventController::shot(WormAnimation& turn_worm,int x, int y){
     if(turn_worm.has_weapon()){
         printf("%f %f\n", meters_conversor(x),meters_conversor(y));
         this->action.type = Shot_weapon;
-        this->action.x = meters_conversor(x);
-        this->action.y = meters_conversor(y);
+        this->action.pos_x = meters_conversor(x);
+        this->action.pos_y = meters_conversor(y);
         this->action.weapon_degrees = turn_worm.get_degrees();
         this->action.direction = turn_worm.get_direction();
         this->action.power = turn_worm.get_weapon_power();

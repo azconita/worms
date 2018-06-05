@@ -7,7 +7,7 @@
 
 #include "Server.h"
 #include "stage.h"
-#include "DTOs.h"
+#include "Dtos.h"
 
 Server::Server(const std::string port) : acc_socket(port) {
   // TODO Auto-generated constructor stub
@@ -45,10 +45,4 @@ void Server::stop() {
   this->on = false;
 }
 
-//private
-std::string Server::get_yaml(StageDTO &s) {
-  YAML::Emitter out;
-  out << s;
-  return out.c_str();
-}
 

@@ -11,7 +11,7 @@
 #include <thread>
 #include <string>
 #include "ServerSocket.h"
-#include "DTOs.h"
+#include "Dtos.h"
 
 class Server {
 private:

@@ -1,4 +1,17 @@
-#include "DTOs.h"
+/*
+ * DTOs.cpp
+ *
+ *  Created on: Jun 5, 2018
+ *      Author: gabi
+ */
+
+#include "Dtos.h"
+
+#include "yaml-cpp/yaml.h"
+#include <map>
+#include <vector>
+#include <string>
+
 
 YAML::Emitter& operator << (YAML::Emitter& out, const ElementDTO& e) {
   printf("serializando element dto\n");
@@ -42,6 +55,7 @@ YAML::Emitter& operator << (YAML::Emitter& out, const StageDTO& s) {
   return out;
 }
 
+
 YAML::Emitter& operator << (YAML::Emitter& out, const ActionDTO& a) {
   out << YAML::BeginMap;
   out << YAML::Key << "worm_id";
@@ -61,9 +75,9 @@ YAML::Emitter& operator << (YAML::Emitter& out, const ActionDTO& a) {
   out << YAML::Key << "direction";
   out << YAML::Value << a.direction;
   out << YAML::Key << "pos_x";
-  out << YAML::Value << a.x;
+  out << YAML::Value << a.pos_x;
   out << YAML::Key <<  "pos_y";
-  out << YAML::Value << a.y;
+  out << YAML::Value << a.pos_y;
   out << YAML::EndMap;
   return out;
 }
