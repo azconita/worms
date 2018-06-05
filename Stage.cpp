@@ -125,6 +125,9 @@ void Stage::change_player() {
 
 void Stage::make_action(ActionDTO & action) {
   int worm = action.worm_id;
+  //VALIDAR TURNO!!
+  if (worm != this->current_player->id)
+    return;//lanzar excepcion o algo: gusano invalido!
   switch (action.type) {
     case (Make_move):{
       switch(action.move){
