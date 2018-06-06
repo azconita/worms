@@ -20,7 +20,7 @@ void Client::debug_box2d_figure(SDL_Surface *screen, ElementDTO element_info){
 
 Client::Client(char * host_name, char * port)://
     socket(),
-    actions_queues(1000){  
+    actions_queue(1000){  
     this->socket.connect_to_server(host_name, port);
 }
 
@@ -34,7 +34,8 @@ StageDTO Client::receive_stage(){
     return stage_received;
 }
 
-void Client::send_action(ActionDTO action){
+void Client::send_action(){
+    ActionDTO action = this->actions_queue.pop();
     YAML::Emitter out;
     out << YAML::BeginMap;
     out << YAML::Key << "action";
@@ -89,7 +90,7 @@ void Client::run(){
     std::map<int,WormAnimation>::iterator turn_worm_iter = graphic_designer.get_turn_worm(0);
 
     SDL_Event event;
-    EventController event_controller(event, screen_height, screen_width, graphic_designer);
+    EventController event_controller(this->actions_queue,event, screen_height, screen_width, graphic_designer);
 
     //para controlar el tiempo
     Uint32 t0 = SDL_GetTicks();

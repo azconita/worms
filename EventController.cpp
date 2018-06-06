@@ -9,7 +9,9 @@
 
 
 
-EventController::EventController(SDL_Event & event, int screen_height, int screen_width, GraphicDesigner & graphic_designer):
+EventController::EventController(BlockingQueue<ActionDTO> & actions_queue, SDL_Event & event, 
+    int screen_height, int screen_width, GraphicDesigner & graphic_designer):
+        actions_queue(actions_queue),
         event(event),
         graphic_designer(graphic_designer){
             this->screen_height = screen_height;
@@ -123,7 +125,7 @@ void EventController::click(WormAnimation& turn_worm){
             turn_worm.take_weapon(weapon);
             this->action.type = Take_weapon;
             this->action.weapon = weapon;
-            //send_action(this->action);
+            send_action(this->action);
         }
     }
     this->wait_for_weapon_click = false;
@@ -154,7 +156,7 @@ void EventController::shot(WormAnimation& turn_worm,int x, int y){
         this->action.power = turn_worm.get_weapon_power();
         this->action.time_to_explode = turn_worm.get_timer();
         this->wait_for_destination_clicl = true;
-        //send_action(this->action);
+        send_action(this->action);
     }
     else{
         cout << "no tiene arma para disparar" << endl;
@@ -172,7 +174,7 @@ void EventController::up(WormAnimation& turn_worm){
         this->action.type = Make_move;
         this->action.move = Jump;
         this->action.direction = turn_worm.get_direction();
-        //send_action(this->action);
+        send_action(this->action);
     }
 
 }
@@ -189,7 +191,7 @@ void EventController::right(WormAnimation& turn_worm){
     turn_worm.change_direction(Right);
     this->action.type = Make_move;
     this->action.move = Walk_right;
-    //send_action(this->action);
+    send_action(this->action);
 
 }
 
@@ -197,7 +199,7 @@ void EventController::left(WormAnimation& turn_worm){
     turn_worm.change_direction(Left);
     this->action.type = Make_move;
     this->action.move = Walk_left;
-    //send_action(this->action);
+    send_action(this->action);
 }
 
 
@@ -221,6 +223,10 @@ void EventController::weapon_shot(WormAnimation& turn_worm){
 float EventController::meters_conversor(int pixel){
     return (pixel+0.0)/23.5;    
 
+}
+
+void EventController::send_action(ActionDTO action){
+    (this->actions_queue).push(action);
 }
 
 
@@ -270,70 +276,70 @@ void EventController::air_attack(WormAnimation& turn_worm){
     this->wait_for_destination_clicl = true;
     this->action.type = Take_weapon;
     this->action.weapon = W_Air_Attack;
-    //send_action(this->action);
+    send_action(this->action);
 }
 
 void EventController::bazooka(WormAnimation& turn_worm){
     turn_worm.take_weapon(W_Bazooka);
     this->action.type = Take_weapon;
     this->action.weapon = W_Bazooka;
-    //send_action(this->action);
+    send_action(this->action);
 }
 
 void EventController::dynamite(WormAnimation& turn_worm){
     turn_worm.take_weapon(Dynamite);
     this->action.type = Take_weapon;
     this->action.weapon = Dynamite;
-    //send_action(this->action);
+    send_action(this->action);
 }
 
 void EventController::green_granade(WormAnimation& turn_worm){
     turn_worm.take_weapon(Green_Grenade);
     this->action.type = Take_weapon;
     this->action.weapon = Green_Grenade;
-    //send_action(this->action);
+    send_action(this->action);
 }
 
 void EventController::holy_granade(WormAnimation& turn_worm){
     turn_worm.take_weapon(Holy_Grenade);
     this->action.type = Take_weapon;
     this->action.weapon = Holy_Grenade;
-    //send_action(this->action);
+    send_action(this->action);
 }
 
 void EventController::mortar(WormAnimation& turn_worm){
     turn_worm.take_weapon(Mortar);
     this->action.type = Take_weapon;
     this->action.weapon = Mortar;
-    //send_action(this->action);
+    send_action(this->action);
 }
 
 void EventController::red_granade(WormAnimation& turn_worm){
     turn_worm.take_weapon(Red_Grenade);
     this->action.type = Take_weapon;
     this->action.weapon = Red_Grenade;
-    //send_action(this->action);
+    send_action(this->action);
 }
 
 void EventController::teletrans(WormAnimation& turn_worm){
     turn_worm.take_weapon(Teleport);
     this->action.type = Take_weapon;
     this->action.weapon = Teleport;
-    //send_action(this->action);
+    send_action(this->action);
 }
 
 void EventController::banana(WormAnimation& turn_worm){
     turn_worm.take_weapon(Banana);
     this->action.type = Take_weapon;
     this->action.weapon = Banana;
-    //send_action(this->action);
+    send_action(this->action);
 }
 
 void EventController::baseboll_bat(WormAnimation& turn_worm){
     turn_worm.take_weapon(Baseball_Bat);
     this->action.type = Take_weapon;
     this->action.weapon = Baseball_Bat;
-    //send_action(this->action);
+    send_action(this->action);
 }
 
 EventController::~EventController(){}

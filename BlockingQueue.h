@@ -63,6 +63,5 @@ private:
 
 };
 
-template struct BlockingQueue<ActionDTO>;
 
 #endif /* BLOCKINGQUEUE_H_ */

@@ -25,13 +25,13 @@ using std::pair;
 
 class Client{
 	Socket socket;
-	BlockingQueue<ActionDTO> actions_queues;
+	BlockingQueue<ActionDTO> actions_queue;
 
 public:
 	Client(char * host_name, char * port);
 	void run();
 	StageDTO receive_stage();
-	void send_action(ActionDTO action);
+	void send_action();
 	~Client();
 	//para debuguear
 	float get_pixels(float meter_position);
