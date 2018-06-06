@@ -9,24 +9,28 @@
 #include "stage.h"
 #include "Dtos.h"
 
-Server::Server(const std::string port) : acc_socket(port) {
+Server::Server(const std::string port) : 
+  acc_socket(port),
+  stage("file.yaml"){
   this->on = true;
+  
 
 }
 
 void Server::start() {
+  this->client = std::move(this->acc_socket.accept_client());
   this->sending_thread = std::thread(&Server::send, this);
   this->receiving_thread = std::thread(&Server::receive, this);
 }
 
 
 void Server::send() {
-  Stage stage("file.yaml");
-  Socket client = this->acc_socket.accept_client();
+  
+
   extern logger oLog;
   
   while (this->on) {
-    stage.update();
+    this->stage.update();
     StageDTO s = stage.get_stageDTO();
     
     YAML::Emitter out;
@@ -35,7 +39,8 @@ void Server::send() {
     out << YAML::Value << s;
     out << YAML::EndMap;
     try{
-      client.send_dto(out.c_str());
+      printf("se envia %s\n", out.c_str());
+      this->client.send_dto(out.c_str());
     }catch(Error e){
         oLog() << "Player quit (peer socket closed).";
         stop();
@@ -47,7 +52,7 @@ void Server::send() {
 void Server::receive(){
   extern logger oLog;
   while(this->on){
-    oLog() << "reciviendo en otro hilo";
+    oLog() << "recibiendo";
   }
 
 }

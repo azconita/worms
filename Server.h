@@ -13,12 +13,18 @@
 #include "Error.h"
 #include "ServerSocket.h"
 #include "Dtos.h"
+#include "stage.h"
+
+
 
 class Server {
 private:
   std::thread sending_thread;
   std::thread receiving_thread;
   ServerSocket acc_socket;
+  Socket client;
+  Stage stage;
+
   bool on;
 public:
   Server(const std::string port);
