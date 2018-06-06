@@ -33,6 +33,7 @@ bool EventController::continue_running(WormAnimation& turn_worm){
     }
     switch(event.type){
         case SDL_QUIT:
+            quit();
             return false;
         case SDL_MOUSEBUTTONUP:
             click(turn_worm);
@@ -41,7 +42,8 @@ bool EventController::continue_running(WormAnimation& turn_worm){
             mouse_motion();
         case SDL_KEYDOWN:
             if(event.key.keysym.sym == SDLK_ESCAPE ){
-            	return false;
+                quit();
+                return false;
             }
             movement(event, turn_worm);
             weapon_shortcuts(event, turn_worm);
@@ -230,6 +232,11 @@ void EventController::send_action(ActionDTO action){
 }
 
 
+void EventController::quit(){
+    this->action.type = Quit;
+
+    send_action(this->action);
+}
 
 
 

@@ -10,6 +10,7 @@
 
 #include <thread>
 #include <string>
+#include "Error.h"
 #include "ServerSocket.h"
 #include "Dtos.h"
 

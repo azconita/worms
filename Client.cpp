@@ -34,17 +34,6 @@ StageDTO Client::receive_stage(){
     return stage_received;
 }
 
-void Client::send_action(){
-    ActionDTO action = this->actions_queue.pop();
-    YAML::Emitter out;
-    out << YAML::BeginMap;
-    out << YAML::Key << "action";
-    out << YAML::Value << action;
-    out << YAML::EndMap;
-    printf("se enviaa una accion por el socket\n");
-    (this->socket).send_dto(out.c_str());
-
-}
 
 void Client::run(){  
 
@@ -91,6 +80,8 @@ void Client::run(){
 
     SDL_Event event;
     EventController event_controller(this->actions_queue,event, screen_height, screen_width, graphic_designer);
+    Actioner actioner(this->socket,this->actions_queue);
+    actioner.start();
 
     //para controlar el tiempo
     Uint32 t0 = SDL_GetTicks();

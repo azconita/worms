@@ -63,6 +63,8 @@ private:
 	void weapon_shot(WormAnimation& turn_worm);
 	void shot(WormAnimation& turn_worm,int x, int y);
 
+	void quit();
+
 
 };
 

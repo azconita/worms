@@ -25,6 +25,7 @@ void Server::start() {
 }
 
 void Server::run() {
+  extern logger oLog;
   Stage stage("file.yaml");
   Socket client = this->acc_socket.accept_client();
   while (this->on) {
@@ -37,12 +38,16 @@ void Server::run() {
     out << YAML::Value << s;
     out << YAML::EndMap;
 
-    client.send_dto(out.c_str());
+    try{
+      oLog() << "senfing StageDTO: " << out.c_str();
+      client.send_dto(out.c_str());
+    }catch(Error e){
+        oLog() << "Player quit (peer socket closed).";
+    }
   }
 }
 
 void Server::stop() {
   this->on = false;
 }
-
 
