@@ -128,7 +128,6 @@ int Socket::get_digits(unsigned int num){
 ssize_t Socket::receive_size_first(){
   char msg_size[PROTOCOL_MSG_SIZE];
   receive_buffer(msg_size, PROTOCOL_MSG_SIZE);
-  printf("largo recibido %i\n",atoi(msg_size) );
   return atoi(msg_size);
 }
 
@@ -197,7 +196,6 @@ void Socket::send_dto(const std::string & dto_to_send){
       } 
 
       std::string dto_chunk = dto_to_send.substr(bytes_sent,bytes_sent +request_len);
-      printf("se quiere enviar chunk:\n   %s\n\n", dto_chunk.c_str());
       memcpy(request, dto_chunk.c_str() , request_len);
       bytes_sent = send_buffer(request, request_len);
         
@@ -228,7 +226,6 @@ std::string Socket::receive_dto(){
         if (bytes_received <= 0){
           break;
         }
-        printf("se recibio un chunk: %s\n", chunk );
         dto_received.append(chunk);
 
     }

@@ -16,14 +16,16 @@
 
 class Server {
 private:
-  std::thread thread;
+  std::thread sending_thread;
+  std::thread receiving_thread;
   ServerSocket acc_socket;
-  bool on = true;
+  bool on;
 public:
   Server(const std::string port);
   virtual ~Server();
   void start();
-  void run();
+  void send();
+  void receive();
   void stop();
 };
 

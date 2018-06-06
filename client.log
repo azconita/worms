@@ -1,27 +1,31 @@
-[2018-06-05 16:21:34][Info]	Se crea la ventana de juego, height: 768, with: 1366
-[2018-06-05 16:21:34][Info]	Se va a recibir el StageDTO
-[2018-06-05 16:26:37][Info]	Se crea la ventana de juego, height: 768, with: 1366
-[2018-06-05 16:26:37][Info]	Se va a recibir el StageDTO
-[2018-06-05 16:40:47][Info]	Se crea la ventana de juego, height: 768, with: 1366
-[2018-06-05 16:40:47][Info]	Se va a recibir el StageDTO
-[2018-06-05 17:15:16][Info]	Se crea la ventana de juego, height: 768, with: 1366
-[2018-06-05 17:15:16][Info]	Se va a recibir el StageDTO
-[2018-06-05 17:15:16][Info]	Se recibio el StageDTO
-[2018-06-05 17:46:35][Info]	Se crea la ventana de juego, height: 768, with: 1366
-[2018-06-05 17:46:35][Info]	Se va a recibir el StageDTO
-[2018-06-05 17:46:35][Info]	Se recibio el StageDTO
-[2018-06-05 17:49:21][Info]	Se crea la ventana de juego, height: 768, with: 1366
-[2018-06-05 17:49:44][Info]	Se va a recibir el StageDTO
-[2018-06-05 17:50:14][Info]	Se recibio el StageDTO
-[2018-06-05 17:57:33][Info]	Se crea la ventana de juego, height: 768, with: 1366
-[2018-06-05 17:57:33][Info]	Se va a recibir el StageDTO
-[2018-06-05 17:57:33][Info]	Se recibio el StageDTO
-[2018-06-05 18:05:02][Info]	Se crea la ventana de juego, height: 768, with: 1366
-[2018-06-05 18:05:02][Info]	Se va a recibir el StageDTO
-[2018-06-05 18:05:02][Info]	Se recibio el StageDTO
-[2018-06-05 18:11:02][Info]	Se crea la ventana de juego, height: 768, with: 1366
-[2018-06-05 18:15:31][Info]	Se crea la ventana de juego, height: 768, with: 1366
-[2018-06-05 19:40:29][Info]	Se crea la ventana de juego, height: 768, with: 1366
-[2018-06-06 00:45:09][Info]	Se crea la ventana de juego, height: 768, with: 1366
-[2018-06-06 19:00:44][Info]	Se crea la ventana de juego, height: 768, with: 1366
-[2018-06-06 19:00:48][Info]	player quit. 
+[2018-06-06 19:06:30][Info]	Se crea la ventana de juego, height: 768, with: 1366
+[2018-06-06 19:06:33][Info]	player quit. 
+[2018-06-06 19:10:52][Info]	Se crea la ventana de juego, height: 768, with: 1366
+[2018-06-06 19:10:55][Info]	se envia ActionDTO
+[2018-06-06 19:10:55][Info]	sending ActionDTO:
+  action:
+  worm_id: 0
+  type: 0
+  move: 2
+  weapon: 0
+  weapon_degrees: 1.037238e-08
+  power: 842150450
+  time_to_explode: 842150450
+  direction: 0
+  pos_x: 0
+  pos_y: 0
+[2018-06-06 19:10:58][Info]	player quit. 
+[2018-06-06 19:28:04][Info]	Se crea la ventana de juego, height: 768, with: 1366
+[2018-06-06 19:28:07][Info]	player quit. 
+[2018-06-06 19:28:47][Info]	Se crea la ventana de juego, height: 768, with: 1366
+[2018-06-06 19:28:49][Info]	player quit. 
+[2018-06-06 19:30:29][Info]	Se crea la ventana de juego, height: 768, with: 1366
+[2018-06-06 19:30:32][Info]	player quit. 
+[2018-06-06 19:30:51][Info]	Se crea la ventana de juego, height: 768, with: 1366
+[2018-06-06 19:30:53][Info]	player quit. 
+[2018-06-06 19:31:52][Info]	Se crea la ventana de juego, height: 768, with: 1366
+[2018-06-06 19:31:54][Info]	player quit. 
+[2018-06-06 19:32:10][Info]	Se crea la ventana de juego, height: 768, with: 1366
+[2018-06-06 19:32:11][Info]	player quit. 
+[2018-06-06 19:34:06][Info]	Se crea la ventana de juego, height: 768, with: 1366
+[2018-06-06 19:34:08][Info]	player quit. 

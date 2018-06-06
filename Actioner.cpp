@@ -29,6 +29,7 @@ void Actioner::make_action(){
     	oLog() << "sending ActionDTO:\n  "<< out.c_str();
     	(this->socket).send_dto(out.c_str());
     }
+    
 }
 
 
