@@ -25,7 +25,7 @@ class Worm : public Entity {
   Weapon_Name weapon = None;
   int life;
 public:
-  Worm(b2World* world, float x, float y);
+  Worm(b2World* world, float x, float y, int id);
   Worm(const    Worm& other);
   Worm();
   virtual ~Worm();

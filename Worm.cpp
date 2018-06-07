@@ -9,7 +9,7 @@
 #include "Constants.h"
 #include <string>
 
-Worm::Worm(b2World* world, float x, float y) : Entity(1), world(world) {
+Worm::Worm(b2World* world, float x, float y, int id) : Entity(1), world(world), id(id) {
   b2BodyDef bodyDef;
   bodyDef.type = b2_dynamicBody;
   bodyDef.position.Set(x, y);

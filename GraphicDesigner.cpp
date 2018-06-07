@@ -177,7 +177,7 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
 }
 
  std::map<int,WormAnimation>::iterator GraphicDesigner::get_turn_worm(int id){
-    this->worms.find(id);
+   return this->worms.find(id);
  }
 
 
