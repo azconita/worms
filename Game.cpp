@@ -45,10 +45,12 @@ void Game::prepare() {
     p->start();
   }
   //this->timer.add_queue(&(this->stage_queue));
-  this->timer.run();
+  this->timer.start();
+
 }
 
 void Game::run() {
+  printf("holiss\n");
   // inicializar players, colas, timer
   prepare();
   // start game!

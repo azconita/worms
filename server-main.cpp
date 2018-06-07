@@ -16,7 +16,6 @@ int main(int argc, char *argv[]) {
   char * port = argv[1];
   std::string filename("file.yaml");
   Socket socket(NULL,port);
-  printf("holiss\n");
   socket.bind_and_listen();
   Socket client = socket.accept_socket(); //esto despues va estar en el game una vez por cada jugador que se conecte
   Game game(filename, client);
