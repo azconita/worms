@@ -19,9 +19,9 @@ void Client::debug_box2d_figure(SDL_Surface *screen, ElementDTO element_info){
 }
 
 Client::Client(char * host_name, char * port)://
-    socket(),
+    socket(host_name, port),
     actions_queue(1000){  
-    this->socket.connect_to_server(host_name, port);
+    this->socket.connection();
 }
 
 
@@ -122,6 +122,6 @@ void Client::run(){
 }
 
 Client::~Client(){
-    this->socket.shut();
+    this->socket.stop();
 }
 

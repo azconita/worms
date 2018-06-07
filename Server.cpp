@@ -9,23 +9,19 @@
 #include "stage.h"
 #include "Dtos.h"
 
-Server::Server(const std::string port) : 
-  acc_socket(port),
-  stage("file.yaml"){
+Server::Server(Socket peer) : 
+  stage("file.yaml"),
+  client(std::move(peer)){
   this->on = true;
-  
-
 }
 
-void Server::start() {
-  this->client = std::move(this->acc_socket.accept_client());
+void Server::start() { 
   this->sending_thread = std::thread(&Server::send, this);
   this->receiving_thread = std::thread(&Server::receive, this);
 }
 
 
 void Server::send() {
-  
 
   extern logger oLog;
   
@@ -63,7 +59,6 @@ void Server::stop() {
 }
 
 Server::~Server() {
-  this->acc_socket.shut();
   this->sending_thread.join();
   this->receiving_thread.join();
 }
