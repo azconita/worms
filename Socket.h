@@ -48,7 +48,7 @@ public:
   explicit Socket(int socket_num);
 
   //trata de conectar al socket
-  void connection();
+  void connect_to_server();
 
   //sirve para servidores, 
   //el socket se quedara esperando que se conecten con el 
@@ -87,7 +87,7 @@ public:
   
   std::string receive_dto();
 
-  void stop();
+  void shut();
 
   //destructor del socket
   ~Socket();

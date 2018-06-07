@@ -27,6 +27,6 @@ int main(int argc, char *argv[]) {
     continue;
   }
   server.stop();
-  socket.stop();
+  socket.shut();
   return 0;
 }

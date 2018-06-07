@@ -140,6 +140,55 @@
         return worm;
     }
 
+/*
+    std::map<Picture> AnimationFactory::get_little_beam(){
+        std::vector<Picture> little_beams;
+        Colour colorkey_beam(BEAM_R,BEAM_G,BEAM_B);
+        
+        beam0 = Picture beam(BEAM3_0, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        little_beams.push_back(beam0);
+
+        /*beam1 = Picture beam(BEAM3_22, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        little_beams.push_back(beam0);
+
+        beam2 = Picture beam(BEAM3_45, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        little_beams.push_back(beam0);
+
+        beam3 = Picture beam(BEAM3_65, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        little_beams.push_back(beam0);
+
+        beam0 = Picture beam(BEAM3_90, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        little_beams.push_back(beam0);
+
+        return little_beams;
+    }
+
+
+    std::map<Picture> AnimationFactory::get_big_beam(){
+        std::vector<Picture> big_beams;
+        Colour colorkey_beam(BEAM_R,BEAM_G,BEAM_B);
+        
+        beam0 = Picture beam(BEAM6_0, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        little_beams.push_back(beam0);
+
+        /*beam1 = Picture beam(BEAM6_22, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        little_beams.push_back(beam0);
+
+        beam2 = Picture beam(BEAM6_45, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        little_beams.push_back(beam0);
+
+        beam3 = Picture beam(BEAM6_65, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        little_beams.push_back(beam0);
+
+        beam0 = Picture beam(BEAM6_90, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        little_beams.push_back(beam0);
+
+        return big_beams;
+    }
+
+*/
+
+  
 
 AnimationFactory::~AnimationFactory() {
 	// TODO Auto-generated destructor stub

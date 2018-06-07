@@ -234,7 +234,6 @@ void EventController::send_action(ActionDTO action){
 
 void EventController::quit(){
     this->action.type = Quit;
-
     send_action(this->action);
 }
 

@@ -167,13 +167,21 @@
 #define EXPLOSION_COLUMNS 1
 #define EXPLOSION_ROWS 8
 
-//una viga larga
-#define BEAM "resources/beam.bmp"
-#define BEAM_R 0
-#define BEAM_G 255
-#define BEAM_B 0
-#define BEAM_COLUMNS 1
-#define BEAM_ROWS 2
+//una viga larga horizontal 
+#define BEAM6_0 "resources/beam6-0.bmp"
+#define BEAM6_0_R 128
+#define BEAM6_0_G 128
+#define BEAM6_0_B 192
+#define BEAM6_0_COLUMNS 1
+#define BEAM6_0_ROWS 2
+
+//una viga larga horizontal 
+#define BEAM3_0 "resources/beam3-0.bmp"
+#define BEAM3_0_R 128
+#define BEAM3_0_G 128
+#define BEAM3_0_B 192
+#define BEAM3_0_COLUMNS 1
+#define BEAM3_0_ROWS 2
 
 //el agua
 #define WATER "resources/water.bmp"

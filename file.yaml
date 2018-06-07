@@ -10,14 +10,14 @@ stage:
       inclination: 0
   players:
     0:
-      - id: 1
+      - id: 0
         pos_x: 10
         pos_y: 10
         direction: 0
         life: 100
         inclination: 0
     1:
-      - id: 2
+      - id: 0
         pos_x: 20
         pos_y: 10
         direction: 1

@@ -127,7 +127,7 @@ Socket& Socket::operator=(Socket&& other){
 }
 
 
-void Socket::connection(){
+void Socket::connect_to_server(){
   struct addrinfo *addrinfoNode = addrinfo();
 
   struct addrinfo *node  = define_socket_num(addrinfoNode);
@@ -182,7 +182,7 @@ Socket Socket::accept_socket(){
 }
 
 
-void Socket::stop(){
+void Socket::shut(){
   shutdown(this->socket_num, SHUT_RDWR);
   close(this->socket_num);
 }

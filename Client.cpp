@@ -2,7 +2,7 @@
 
 
 float Client::get_pixels(float meter_position){
-    return  23.5*meter_position;
+    return  PIXEL_CONSTANT*meter_position;
 }
 
 void Client::debug_box2d_figure(SDL_Surface *screen, ElementDTO element_info){
@@ -12,7 +12,6 @@ void Client::debug_box2d_figure(SDL_Surface *screen, ElementDTO element_info){
     rectangle.y = get_pixels(element_info.pos_y);
     rectangle.h = get_pixels(element_info.h);
     rectangle.w = get_pixels(element_info.w);
-
     Uint32 colorkey = SDL_MapRGBA(screen->format, 0, 255, 0,0.5);
     SDL_FillRect(screen, &rectangle, colorkey);
 
@@ -21,14 +20,12 @@ void Client::debug_box2d_figure(SDL_Surface *screen, ElementDTO element_info){
 Client::Client(char * host_name, char * port)://
     socket(host_name, port),
     actions_queue(1000){  
-    this->socket.connection();
+    this->socket.connect_to_server();
 }
 
 
 StageDTO Client::receive_stage(){
-    printf("se quiere recibir del socket\n");
     string stage_str = (this->socket).receive_dto();
-    printf("se recibio \n");
     YAML::Node yaml_received = YAML::Load(stage_str);
     StageDTO stage_received = yaml_received ["stage"].as<StageDTO>();
     return stage_received;
@@ -98,7 +95,6 @@ void Client::run(){
         t1 = SDL_GetTicks();
 
         //update
-        printf("updateeee del stage\n");
         StageDTO s = receive_stage();
 
         if((t1 -t0) > 100) {
@@ -122,6 +118,6 @@ void Client::run(){
 }
 
 Client::~Client(){
-    this->socket.stop();
+    this->socket.shut();
 }
 
