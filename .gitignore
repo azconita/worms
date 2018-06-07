@@ -39,3 +39,6 @@ CMakeFiles/*
 cmake_install.cmake
 tp
 faltantes
+
+#loggs
+*.log

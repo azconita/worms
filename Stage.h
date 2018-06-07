@@ -19,6 +19,7 @@
 
 class Stage {
 private:
+  std::mutex mutex; 
   //std::vector<int> jugadores;
   b2World* world;
   std::vector<Beam*> beams;

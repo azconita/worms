@@ -12,7 +12,7 @@
 #include <vector>
 
 #include "BlockingQueue.h"
-#include "common_socket.h"
+#include "Socket.h"
 #include "common_thread.h"
 #include "Constants.h"
 #include "DTOs.h"
@@ -23,7 +23,7 @@
 class Game : public Thread {
   //thread!!
   Stage stage;
-  std::vector<Player> players;
+  std::vector<Player*> players;
   int limit = Constants::players_limit;
   BlockingQueue<ActionDTO> stage_queue;
   std::vector<BlockingQueue<StageDTO>*> players_queues;
@@ -32,10 +32,10 @@ class Game : public Thread {
 
 public:
   Game(std::string &stage_name, Socket &client);
-  virtual ~Game();
+  ~Game();
 
   bool not_full();
-  void add_player(Socket client);
+  void add_player(Socket &client);
 
   virtual void run() override ;
 

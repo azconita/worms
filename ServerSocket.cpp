@@ -1,9 +1,10 @@
 #include "ServerSocket.h"
 #include <string>
 #include <arpa/inet.h>
+#include "Socket.h"
 
-ServerSocket::ServerSocket(const std::string port) : Socket() {
-  (this->bind_and_listen(port.c_str()) == 0);
+ServerSocket::ServerSocket(const std::string port) : Socket(NULL, port) {
+  (this->bind_and_listen() == 0);
 }
 
 ServerSocket::ServerSocket(ServerSocket&& other) :

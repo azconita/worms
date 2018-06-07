@@ -131,6 +131,7 @@ void Stage::change_player() {
 }
 
 void Stage::make_action(ActionDTO & action) {
+  printf("%i, %i \n", action.type, action.move );
   int worm = action.worm_id;
   //VALIDAR TURNO!!
   if (worm != this->current_player->get_id())
@@ -145,6 +146,7 @@ void Stage::make_action(ActionDTO & action) {
           this->worms[worm]->move_left();
           break;
         case Jump:
+          printf("deberia saltar\n");
           this->worms[worm]->jump(action.direction);
           break;
         case Jump_back:

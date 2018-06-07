@@ -11,107 +11,188 @@
 #include <fstream>
 #include <string>
 
-Socket::Socket() {
-  this->sock = socket(AF_INET, SOCK_STREAM, 0);
-    if (this->sock == -1)
-      throw -1;
-}
 
-Socket::Socket(Socket &&other) {
-  this->sock = other.sock;
-  other.sock = -1;
-}
+#define SUCCESS 0
+#define ERROR 1
 
-Socket::Socket(int sock) : sock(std::move(sock)) {}
 
-int Socket::get_hosts(struct addrinfo **result, const char* port,
-                      const char* host) {
-  struct addrinfo hints;
-  memset(&hints, 0, sizeof(struct addrinfo));
-  hints.ai_family = AF_INET;       // IPv4
-  hints.ai_socktype = SOCK_STREAM; // TCP
-  if (getaddrinfo(host, port, &hints, result) != 0)
-    throw -1;
-  return 0;
+struct addrinfo * Socket::define_socket_num(struct addrinfo * node){
+    while (node != NULL) {
+      socket_num = //
+        socket(node->ai_family, //
+        node->ai_socktype, //
+        node->ai_protocol);
+      if (socket_num != -1) {
+          this->socket_num = socket_num;
+         return node;
+      } 
+      node = node->ai_next;
+    }
+    return NULL;  
 }
 
 
-int Socket::bind_and_listen(const char* port) {
-  struct addrinfo *results, *res;
-  int s;
-  bool not_bound = true;
-  if (this->get_hosts(&results, port, NULL) != 0)
-    return 1;
-  for (res = results; res != NULL && not_bound; res = res->ai_next) {
-    s = bind(this->sock, res->ai_addr, res->ai_addrlen);
-    if (s == 0)  {
-      not_bound = false;
-      break;
+
+void Socket::init(){
+    struct addrinfo *addrinfoNode = addrinfo();
+    if(define_socket_num(addrinfoNode)==NULL){
+      throw Error("Error en init\n");
+    }
+    free(addrinfoNode); 
+}
+
+struct addrinfo * Socket::addrinfo(){
+    struct addrinfo hints;
+    memset(&hints, 0, sizeof(struct addrinfo)); 
+    hints.ai_family = AF_INET;       //IPv4 
+    hints.ai_socktype = SOCK_STREAM; //TCP 
+    hints.ai_flags = 0; 
+
+    struct addrinfo *addrinfoNode;
+    
+
+    int addrinfo_returnvalue = //
+    getaddrinfo(this->host_name, this->port, &hints, &addrinfoNode);
+
+    if (addrinfo_returnvalue != SUCCESS){
+      gai_strerror(addrinfo_returnvalue);
+    }
+    return addrinfoNode;
+} 
+
+bool Socket::is_valid_port(const char * port){
+  for (unsigned int i = 0; i < strlen(port); i ++){
+    if (!isdigit(port[i])){
+      return false;
     }
   }
-  freeaddrinfo(results);
-  if (s != 0) {
-    close(this->sock);
-    return -1;
+  return true;
+}
+
+
+
+
+Socket::Socket(const char * host_name, const char * port){
+    if(!is_valid_port(port)){
+      throw Error("%s no es un purto valido\n"//
+       "deben ser todos caracteres numéricos", port);
+    }
+
+    this->host_name = host_name;
+    this->port = port;
+    this->is_connected = false;
+
+    init();
+    int val = 1;
+    if (setsockopt(this->socket_num, SOL_SOCKET, SO_REUSEADDR, &val, //
+        sizeof(val)) == -1) {
+        close(this->socket_num);
+        throw Error("Error in reuse socket: %s\n", strerror(errno));
+    }
+}
+
+Socket::Socket(int socket_num){
+  this->is_connected = true;
+  this->socket_num = socket_num;
+}
+
+
+
+Socket::Socket(Socket&& other){
+  this->socket_num = other.socket_num;
+  this->host_name = other.host_name;
+  this->port = other.port;
+  this->is_connected = other.is_connected;
+
+  other.socket_num =-1;
+  other.host_name ="null";
+  other.port ="null";
+  other.is_connected = false;
+}
+  
+Socket& Socket::operator=(Socket&& other){
+  if (this == &other) {
+    return *this; // other is myself!
   }
+  this->socket_num = other.socket_num;
+  this->host_name = other.host_name;
+  this->port = other.port;
+  this->is_connected = other.is_connected;
 
-  if (listen(this->sock, 1) == -1) { // cuántos?
-    close(this->sock);
-    return -1;
-  }
-  return 0;
+  other.socket_num =-1;
+  other.host_name ="null";
+  other.port ="null";
+  other.is_connected = false;
+  return *this;
 }
 
 
-int Socket::connect_to_server(const char* host, const char* port) {
-  struct addrinfo *results, *res;
-  int s;
-  if (this->get_hosts(&results, port, host) != 0)
-    return 1;
-  for (res = results; res != NULL; res = res->ai_next) {
-    if ((s = connect(this->sock, res->ai_addr, res->ai_addrlen)) != -1)
-      break;
-    //else
-      //std::cout << "[Error] " << strerror(errno) << '\n';
-  }
-  freeaddrinfo(results);
-  if (s == -1) {
-    close(this->sock);
-    //throw -1;
-    return -1;
-  }
-  return 0;
-}
+void Socket::connection(){
+  struct addrinfo *addrinfoNode = addrinfo();
 
-Socket Socket::accept_connection() {
-  struct sockaddr_un peer_addr;
-  socklen_t peer_addr_size;
-  int s;
-  peer_addr_size = sizeof(struct sockaddr_un);
-  if ((s = accept(this->sock, (struct sockaddr *) &peer_addr,
-          &peer_addr_size)) != -1) {
-    return Socket(s);
-  } else {
-    //std::cout << "[error] [Socket] accept_connection: " << strerror(errno)
-    //        << '\n';
-    return Socket(-1);
-    //throw -1;
+  struct addrinfo *node  = define_socket_num(addrinfoNode);
+  
+  while (node != NULL && this->is_connected == false) {
+      int connection_returnvalue = connect(this->socket_num, //
+        node->ai_addr, node->ai_addrlen);
+      this->is_connected = (connection_returnvalue != -1);
+      if (this->is_connected){
+          break;
+      }
+      node = define_socket_num(addrinfoNode);
+  }
+  freeaddrinfo(addrinfoNode);
+  if (this->is_connected == false) {
+      close(this->socket_num);
+      throw Error("Error in socket connection: %s\n", strerror(errno));
   }
 }
 
-bool Socket::not_valid() {
-  return (this->sock == -1);
+void Socket::bind_and_listen(){
+    struct addrinfo *addrinfoNode = addrinfo();
+
+    int bindReturnValue = -1;
+    while (addrinfoNode != NULL) {
+      bindReturnValue = bind(this->socket_num, //
+      addrinfoNode->ai_addr, //
+      addrinfoNode->ai_addrlen);
+      if (bindReturnValue != -1) {
+          break;
+      }
+      addrinfoNode = addrinfoNode->ai_next;
+    }
+    free(addrinfoNode);
+
+    if (bindReturnValue == -1) {
+      throw Error("Error in bind: %s\n", strerror(errno));
+    }
+    int listenReturnValue = listen(this->socket_num, 20);
+    if (listenReturnValue == -1) {
+      throw Error("Error in listen: %s\n", strerror(errno));
+    }
+    this-> is_connected = true;
 }
 
-Socket::~Socket() {
-  if (this->sock != -1)
-    close(this->sock);
+Socket Socket::accept_socket(){
+    int new_sockfd = accept(this->socket_num, NULL, NULL);
+    if (new_sockfd == -1){
+      throw Error("Error in accept");
+    }
+    return std::move(Socket(new_sockfd));
 }
 
-void Socket::shut() {
-  shutdown(this->sock, SHUT_RDWR);
+
+void Socket::stop(){
+  shutdown(this->socket_num, SHUT_RDWR);
+  close(this->socket_num);
 }
 
+Socket::~Socket(){
+  if (this->socket_num > 0){
+    shutdown(this->socket_num, SHUT_RDWR);
+    close(this->socket_num);
+  } 
+}
 ////-///////////comunicacion interna///////////////////////
 
 int Socket::get_digits(unsigned int num){
@@ -128,7 +209,6 @@ int Socket::get_digits(unsigned int num){
 ssize_t Socket::receive_size_first(){
   char msg_size[PROTOCOL_MSG_SIZE];
   receive_buffer(msg_size, PROTOCOL_MSG_SIZE);
-  printf("largo recibido %i\n",atoi(msg_size) );
   return atoi(msg_size);
 }
 
@@ -150,7 +230,7 @@ int Socket::receive_buffer(char* buffer, const size_t size){
     int total_received = 0;
     int bytes_recived = 0;
 
-    while ((bytes_recived = recv(this->sock, //
+    while ((bytes_recived = recv(this->socket_num, //
     &buffer[total_received],//
     size - total_received, MSG_NOSIGNAL)) >0) {
       total_received += bytes_recived;
@@ -169,7 +249,7 @@ int Socket::send_buffer(const char* buffer,const size_t size){
     int total_sent = 0;
     int bytes_sent = 0;
 
-    while ((bytes_sent = send(this->sock, //
+    while ((bytes_sent = send(this->socket_num, //
       &buffer[total_sent], size-total_sent, MSG_NOSIGNAL)) >0){
         total_sent += bytes_sent;
     }
@@ -197,7 +277,6 @@ void Socket::send_dto(const std::string & dto_to_send){
       } 
 
       std::string dto_chunk = dto_to_send.substr(bytes_sent,bytes_sent +request_len);
-      printf("se quiere enviar chunk:\n   %s\n\n", dto_chunk.c_str());
       memcpy(request, dto_chunk.c_str() , request_len);
       bytes_sent = send_buffer(request, request_len);
         
@@ -209,7 +288,7 @@ void Socket::send_dto(const std::string & dto_to_send){
 }
 
 std::string Socket::receive_dto(){
-  printf("numero del socket ->-----> %i\n",this->sock );
+  printf("numero del socket ->-----> %i\n",this->socket_num );
    std::string dto_received;
   ssize_t dto_size = receive_size_first();
   char chunk[CHUNK_LEN+1];
@@ -228,7 +307,6 @@ std::string Socket::receive_dto(){
         if (bytes_received <= 0){
           break;
         }
-        printf("se recibio un chunk: %s\n", chunk );
         dto_received.append(chunk);
 
     }

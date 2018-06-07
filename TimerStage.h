@@ -15,10 +15,10 @@
 class TimerStage : public Thread {
 private:
   BlockingQueue<ActionDTO> &stage_queue;
+  bool finished = false;
 public:
   TimerStage(BlockingQueue<ActionDTO> &q);
   virtual ~TimerStage();
-
   virtual void run() override;
 };
 

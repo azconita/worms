@@ -9,9 +9,9 @@
 #define PLAYER_H_
 
 #include <thread>
-#include "common_socket.h"
+#include "Socket.h"
 #include "BlockingQueue.h"
-#include "DTOs.h"
+#include "Dtos.h"
 
 class Player {
   Socket &client;
@@ -26,6 +26,9 @@ public:
   void add_stage_queues(BlockingQueue<StageDTO> *send_queue,
                         BlockingQueue<ActionDTO> *recv_queue);
   void start();
+
+  void send();
+  void receive();
 };
 
 #endif /* PLAYER_H_ */

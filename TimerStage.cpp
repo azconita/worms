@@ -6,6 +6,8 @@
  */
 
 #include "TimerStage.h"
+#include <chrono>
+#include <thread>
 
 TimerStage::TimerStage(BlockingQueue<ActionDTO> &q) : stage_queue(q){
   // TODO Auto-generated constructor stub
@@ -17,5 +19,11 @@ TimerStage::~TimerStage() {
 }
 
 void TimerStage::run() {
-
+  while (!this->finished) {
+    //TODO fix this
+    std::this_thread::sleep_for(std::chrono::milliseconds(17));
+    ActionDTO action;
+    action.type = Timer_update;
+    this->stage_queue.push(action);
+  }
 }

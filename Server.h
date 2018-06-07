@@ -14,12 +14,12 @@
 #include <vector>
 #include "Dtos.h"
 #include "Game.h"
-#include "server_socket.h"
+#include "Socket.h"
 
 class Server {
 private:
   std::thread thread;
-  ServerSocket acc_socket;
+  Socket acc_socket;
   bool on = true;
 
   std::map<std::string,std::vector<Game*>> games_by_stage;

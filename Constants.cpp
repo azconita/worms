@@ -15,7 +15,7 @@ namespace Constants {
 
   extern const int max_blocking_queue = 1000;
 
-  extern const std::vector<std::string> stages = config["stages"].as<std::vector<std::string>>();
+  //extern const std::vector<std::string> stages = config["stages"].as<std::vector<std::string>>();
   extern const int players_limit = 2;
 
   extern const float gravity = config["gravity"].as<float>();

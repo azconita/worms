@@ -4,34 +4,29 @@
  *  Created on: Jun 3, 2018
  *      Author: gabi
  */
-
 #include "Server.h"
 
 #include "Constants.h"
 #include "Stage.h"
 #include "Dtos.h"
+#include "Socket.h"
 
-Server::Server(const std::string port) : acc_socket(port) {
+Server::Server(const std::string port) :
+                     acc_socket(NULL, port.c_str()) {
   // inicializar vector de escenarios posibles
   for (auto &s : Constants::stages) {
-    this->games_by_stage[s] = std::vector();
+    this->games_by_stage[s] = std::vector<Game*>();
   }
 }
 
-Server::~Server() {
-  // TODO Auto-generated destructor stub
-  this->acc_socket.shut();
-  this->thread.join();
+void Server::start() {
 }
 
-void Server::start() {
-  this->thread = std::thread(&Server::run, this);
-}
 
 void Server::run() {
   while (this->on) {
-    Socket client = this->acc_socket.accept_client();
-    std::string stage = client.recv_string();
+    Socket client = this->acc_socket.accept_socket();
+    std::string stage = client.receive_dto();
     std::map<std::string,std::vector<Game*>>::iterator it = this->games_by_stage.find(stage);
     if (it == this->games_by_stage.end()) {
       // no se encontro el stage: responder al cliente
@@ -62,6 +57,7 @@ void Server::run() {
 
   }
 }
+
 
 void Server::stop() {
   this->on = false;
