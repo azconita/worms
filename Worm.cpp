@@ -24,6 +24,7 @@ Worm::Worm(b2World* world, float x, float y) : Entity(1), world(world) {
   myFixtureDef.density = Constants::worm_density;
   this->body->CreateFixture(&myFixtureDef);
   this->body->SetUserData(this);
+  printf("creacion   %p\n", this->body );
   this->life = Constants::worm_initial_life;
 }
 
@@ -70,6 +71,7 @@ void Worm::move_left() {
 //TODO: fix me!!
 void Worm::jump(Direction dir) {
   std::cout << "dir: " << dir << "\n";
+  printf("jump.....%p\n", this->body );
   int d = (dir == Left) ? 1 : -1;
   float impulse = body->GetMass() * Constants::worm_jump_velocity;
   this->body->ApplyLinearImpulse(b2Vec2(d * impulse /2,impulse), this->body->GetWorldCenter(), true);

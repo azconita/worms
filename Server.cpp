@@ -24,7 +24,8 @@ void Server::send() {
   
   while (this->on) {
     this->stage.update();
-    StageDTO s = stage.get_stageDTO();
+    StageDTO s = this->stage.get_stageDTO();
+
     
     YAML::Emitter out;
     out << YAML::BeginMap;
@@ -46,6 +47,9 @@ void Server::receive(){
   extern logger oLog;
   while(this->on){
     try{
+
+       
+
       std::string action_str = this->client.receive_dto();
       printf("%s\n",action_str.c_str() );
       oLog() << "recibiendo";
