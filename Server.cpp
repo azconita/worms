@@ -4,10 +4,7 @@
  *  Created on: Jun 3, 2018
  *      Author: gabi
  */
-
 #include "Server.h"
-#include "stage.h"
-#include "Dtos.h"
 
 Server::Server(Socket peer) : 
   stage("file.yaml"),
@@ -48,11 +45,21 @@ void Server::send() {
 void Server::receive(){
   extern logger oLog;
   while(this->on){
-    std::string action_str = this->client.receive_dto();
-    printf("%s\n",action_str.c_str() );
-    oLog() << "recibiendo";
+    try{
+      std::string action_str = this->client.receive_dto();
+      printf("%s\n",action_str.c_str() );
+      oLog() << "recibiendo";
+      YAML::Node yaml_received = YAML::Load(action_str);
+      ActionDTO action_received = yaml_received["action"].as<ActionDTO>();
+      this->stage.make_action(action_received);
+      if(action_received.type == Make_move){
+        printf("saltaar\n" );
+      }
+    }catch(Error e){
+        stop();
+        break;
+    } 
   }
-
 }
 
 

@@ -58,6 +58,7 @@ void Stage::do_explosions() {
 }
 
 void Stage::update() {
+  //Lock l(mutex);
   float32 timeStep = Constants::time_step; //segundos del step
   int32 velocityIterations = Constants::velocity_iterations;   //how strongly to correct velocity
   int32 positionIterations = Constants::position_iterations;   //how strongly to correct position
@@ -124,6 +125,8 @@ void Stage::change_player() {
 }
 
 void Stage::make_action(ActionDTO & action) {
+  //Lock l(mutex);
+  printf("%i, %i \n", action.type, action.move );
   int worm = action.worm_id;
   switch (action.type) {
     case (Make_move):{
@@ -135,6 +138,7 @@ void Stage::make_action(ActionDTO & action) {
           this->worms[worm]->move_left();
           break;
         case Jump:
+          printf("deberia saltar\n");
           this->worms[worm]->jump(action.direction);
           break;
         case Jump_back:

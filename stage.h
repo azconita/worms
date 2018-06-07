@@ -10,6 +10,7 @@
 #include "WeaponExplosionListener.h"
 #include "Dtos.h"
 #include "Logger.h"
+#include "Lock.h"
 
 
 #include "Weapon.h"
@@ -19,6 +20,7 @@
 
 class Stage {
 private:
+  std::mutex mutex; 
   //std::vector<int> jugadores;
   b2World* world;
   std::vector<Beam*> beams;
