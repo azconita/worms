@@ -6,8 +6,16 @@ stage:
       inclination: 0
     - pos_x: 20
       pos_y: 21
-      size: 3
+      size: 6
       inclination: 0
+    - pos_x: 25
+      pos_y: 18
+      size: 6
+      inclination: 45
+    - pos_x: 35
+      pos_y: 18
+      size: 3
+      inclination: 90
   players:
     0:
       - id: 0

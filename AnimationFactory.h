@@ -8,6 +8,7 @@
 #ifndef ANIMATIONFACTORY_H_
 #define ANIMATIONFACTORY_H_
 #include "Animation.h"
+#include <vector>
 #include "ResourcesDefinitions.h"
 
 class AnimationFactory {
@@ -36,6 +37,8 @@ public:
     static Animation get_air_attack();
     static Animation get_dynamite();
     static Animation get_explosion();
+    static std::vector<Picture> get_little_beams();
+    static std::vector<Picture> get_big_beams();
 
 	virtual ~AnimationFactory();
 

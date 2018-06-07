@@ -125,16 +125,17 @@ GraphicDesigner::GraphicDesigner(SDL_Surface * screen, int screen_height, int sc
 
 
     this->worms = create_worms(initial_stage);
-    printf(" size = %li\n", this->worms.size() );
 
     this->weapons = create_weapons();
+
+    this->little_beams =  AnimationFactory::get_little_beams();
+    this->big_beams = AnimationFactory::get_big_beams();
 
 }
 
 
 void GraphicDesigner::show_beams(StageDTO s, SDL_Surface *screen){
-
-    Colour colorkey_beam(BEAM_R,BEAM_G,BEAM_B);
+    
 
     for (auto beam_info: s.beams) {
 
@@ -143,12 +144,43 @@ void GraphicDesigner::show_beams(StageDTO s, SDL_Surface *screen){
         int up_left_vertex_x = get_pixels(beam_info.pos_x);
         int up_left_vertex_y = get_pixels(beam_info.pos_y);
 
-        Picture beam(BEAM, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
-        beam.draw(screen,up_left_vertex_x, up_left_vertex_y);
 
+        if(beam_info.w == 3){
+            Picture beam = inclinate_beam(this->little_beams, beam_info.angle);
+            beam.draw(screen,up_left_vertex_x, up_left_vertex_y);
+        }else{
+            Picture beam = inclinate_beam(this->big_beams, beam_info.angle);
+             beam.draw(screen,up_left_vertex_x, up_left_vertex_y);
+        } 
     }
+}
+
+Picture GraphicDesigner::inclinate_beam(std::vector<Picture> beams, float degree){
+    if(beams.size() < 5){
+        throw Error("No se cargaron todas las imagenes de las vigas");
+    }
+    if(degree < 5){
+        Picture beam = beams[0];
+        return beam;
+    }
+    if(degree < 33){
+        Picture beam = beams[1];
+        return beam;
+    }
+    if(degree < 55){
+        Picture beam = beams[2];
+        return beam;
+    }
+     if(degree < 80){
+        Picture beam = beams[3];
+        return beam;
+    }
+    Picture beam = beams[4];
+    return beam;
+    
 
 }
+
 
 void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
 

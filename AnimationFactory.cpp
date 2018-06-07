@@ -140,53 +140,53 @@
         return worm;
     }
 
-/*
-    std::map<Picture> AnimationFactory::get_little_beam(){
+
+    std::vector<Picture> AnimationFactory::get_little_beams(){
         std::vector<Picture> little_beams;
         Colour colorkey_beam(BEAM_R,BEAM_G,BEAM_B);
         
-        beam0 = Picture beam(BEAM3_0, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        Picture beam0(BEAM3_0, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
         little_beams.push_back(beam0);
 
-        /*beam1 = Picture beam(BEAM3_22, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
-        little_beams.push_back(beam0);
+        Picture beam22(BEAM3_22, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        little_beams.push_back(beam22);
 
-        beam2 = Picture beam(BEAM3_45, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
-        little_beams.push_back(beam0);
+        Picture beam45(BEAM3_45, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        little_beams.push_back(beam45);
 
-        beam3 = Picture beam(BEAM3_65, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
-        little_beams.push_back(beam0);
+        Picture beam65(BEAM3_65, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        little_beams.push_back(beam65);
 
-        beam0 = Picture beam(BEAM3_90, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
-        little_beams.push_back(beam0);
+        Picture beam90(BEAM3_90, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        little_beams.push_back(beam90);
 
         return little_beams;
     }
 
 
-    std::map<Picture> AnimationFactory::get_big_beam(){
+    std::vector<Picture> AnimationFactory::get_big_beams(){
         std::vector<Picture> big_beams;
         Colour colorkey_beam(BEAM_R,BEAM_G,BEAM_B);
         
-        beam0 = Picture beam(BEAM6_0, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
-        little_beams.push_back(beam0);
+        Picture beam0(BEAM6_0, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        big_beams.push_back(beam0);
 
-        /*beam1 = Picture beam(BEAM6_22, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
-        little_beams.push_back(beam0);
+        Picture beam22(BEAM6_22, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        big_beams.push_back(beam22);
 
-        beam2 = Picture beam(BEAM6_45, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
-        little_beams.push_back(beam0);
+        Picture beam45(BEAM6_45, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        big_beams.push_back(beam45);
 
-        beam3 = Picture beam(BEAM6_65, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
-        little_beams.push_back(beam0);
+        Picture beam65(BEAM6_65, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        big_beams.push_back(beam65);
 
-        beam0 = Picture beam(BEAM6_90, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
-        little_beams.push_back(beam0);
+        Picture beam90(BEAM6_90, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        big_beams.push_back(beam90);
 
         return big_beams;
     }
 
-*/
+
 
   
 

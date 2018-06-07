@@ -45,11 +45,15 @@ class GraphicDesigner {
 	SDL_Surface * weapons_menu;
 	std::map<int,WormAnimation> worms;
 	std::map<Weapon_Name,Animation> weapons;
+	std::vector<Picture> little_beams;
+    std::vector<Picture> big_beams;
+
 
 	float get_pixels(float meter_position);
 	std::map<int,WormAnimation> create_worms(StageDTO s);
 	std::map<Weapon_Name,Animation> create_weapons();
 	bool is_timer_weapon(Weapon_Name weapon);
+	Picture inclinate_beam(std::vector<Picture> beams, float degree);
 
 
 
