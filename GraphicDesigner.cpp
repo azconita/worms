@@ -20,8 +20,6 @@ std::map<int,WormAnimation> GraphicDesigner::create_worms(StageDTO s){
 
     std::map<int,WormAnimation> worms;
 
-    Colour colorkey(WORM_WALK_R,WORM_WALK_G,WORM_WALK_B);
-
     for (auto w: s.worms) {
 
         int id = w.first;
@@ -41,36 +39,6 @@ std::map<int,WormAnimation> GraphicDesigner::create_worms(StageDTO s){
     return worms;
 }
 
-std::map<Weapon_Name,Animation> GraphicDesigner::create_weapons(){
-    std::map<Weapon_Name,Animation> animations;
-    Animation bazooka = AnimationFactory::get_bazooka();
-    animations.insert(std::pair<Weapon_Name,Animation>(W_Bazooka, bazooka));
-
-    Animation mortar = AnimationFactory::get_mortar();
-    animations.insert(std::pair<Weapon_Name,Animation>(Mortar,mortar));
-
-    Animation banana = AnimationFactory::get_banana();
-    animations.insert(std::pair<Weapon_Name,Animation>(Banana,banana));
-
-    Animation green_granade = AnimationFactory::get_green_granade();
-    animations.insert(std::pair<Weapon_Name,Animation>(Green_Grenade,green_granade));
-
-    Animation red_granade = AnimationFactory::get_red_granade();
-    animations.insert(std::pair<Weapon_Name,Animation>(Red_Grenade,red_granade));
-
-    Animation holy_granade = AnimationFactory::get_holy_granade();
-    animations.insert(std::pair<Weapon_Name,Animation>(Holy_Grenade,holy_granade));
-
-    Animation air_attack = AnimationFactory::get_air_attack();
-    animations.insert(std::pair<Weapon_Name,Animation>(W_Air_Attack,air_attack));
-
-    Animation dynamite = AnimationFactory::get_dynamite();
-    animations.insert(std::pair<Weapon_Name,Animation>(Dynamite,dynamite));
-
-    Animation explosion = AnimationFactory::get_explosion();
-    animations.insert(std::pair<Weapon_Name,Animation>(Explosion,explosion));
-    return animations;
-}
 
 bool GraphicDesigner::is_timer_weapon(Weapon_Name weapon){
     return std::find(weapons_with_timer.begin(), weapons_with_timer.end(), weapon) != weapons_with_timer.end();
@@ -123,10 +91,8 @@ GraphicDesigner::GraphicDesigner(SDL_Surface * screen, int screen_height, int sc
 
     ////////////////////////////////////////////////////////
 
-
     this->worms = create_worms(initial_stage);
-
-    this->weapons = create_weapons();
+    this->weapons = AnimationFactory::get_weapons();
 
     this->little_beams =  AnimationFactory::get_little_beams();
     this->big_beams = AnimationFactory::get_big_beams();

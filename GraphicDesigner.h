@@ -51,7 +51,6 @@ class GraphicDesigner {
 
 	float get_pixels(float meter_position);
 	std::map<int,WormAnimation> create_worms(StageDTO s);
-	std::map<Weapon_Name,Animation> create_weapons();
 	bool is_timer_weapon(Weapon_Name weapon);
 	Picture inclinate_beam(std::vector<Picture> beams, float degree);
 

@@ -7,14 +7,13 @@
 
 #ifndef ANIMATIONFACTORY_H_
 #define ANIMATIONFACTORY_H_
-#include "Animation.h"
 #include <vector>
+#include "Animation.h"
+#include "Dtos.h"
 #include "ResourcesDefinitions.h"
 
 class AnimationFactory {
 	 AnimationFactory();
-public:
-
 	static Animation get_worm_walk();
 	static Animation get_worm_jump();
     static Animation get_worm_fall();
@@ -37,8 +36,11 @@ public:
     static Animation get_air_attack();
     static Animation get_dynamite();
     static Animation get_explosion();
+public:
     static std::vector<Picture> get_little_beams();
     static std::vector<Picture> get_big_beams();
+    static std::map<Weapon_Name,Animation> get_weapons();
+    static std::map<State,Animation> get_wormsAnimations();
 
 	virtual ~AnimationFactory();
 

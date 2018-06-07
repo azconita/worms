@@ -22,6 +22,23 @@ enum Direction{
     Left
 };
 
+enum State{
+   Still,
+   Walk,
+   Fall,
+   Jump_state,
+   Worm_missile,
+   Worm_banana,
+   Worm_bat,
+   Worm_green_granade,
+   Worm_red_granade,
+   Worm_holy_granade,
+   Worm_teletrans,
+   Worm_air_attack,
+   Worm_dynamite
+};
+
+
 enum Entity_Type {
   E_Beam,
   E_Worm,
