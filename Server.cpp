@@ -35,7 +35,7 @@ void Server::send() {
     out << YAML::Value << s;
     out << YAML::EndMap;
     try{
-      printf("se envia %s\n", out.c_str());
+      //printf("se envia %s\n", out.c_str());
       this->client.send_dto(out.c_str());
     }catch(Error e){
         oLog() << "Player quit (peer socket closed).";
@@ -48,6 +48,8 @@ void Server::send() {
 void Server::receive(){
   extern logger oLog;
   while(this->on){
+    std::string action_str = this->client.receive_dto();
+    printf("%s\n",action_str.c_str() );
     oLog() << "recibiendo";
   }
 
