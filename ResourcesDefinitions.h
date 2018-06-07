@@ -176,12 +176,12 @@
 #define BEAM6_0_ROWS 2
 
 //una viga larga horizontal 
-#define BEAM3_0 "resources/beam3-0.bmp"
-#define BEAM3_0_R 128
-#define BEAM3_0_G 128
-#define BEAM3_0_B 192
-#define BEAM3_0_COLUMNS 1
-#define BEAM3_0_ROWS 2
+#define BEAM "resources/beam3-0.bmp"
+#define BEAM_R 128
+#define BEAM_G 128
+#define BEAM_B 192
+#define BEAM_COLUMNS 1
+#define BEAM_ROWS 2
 
 //el agua
 #define WATER "resources/water.bmp"
