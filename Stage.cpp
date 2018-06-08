@@ -279,7 +279,7 @@ void Stage::load_initial_stage(std::string file_name){
     	oLog() << "{ id: "<< w.id << ", x: "<< w.pos_x << " , y: "
       << w.pos_y << ", direction: "<< w.direction << ", inclination: "<<w.inclination << ", life: " << w.life <<" }"<< endl;
       Worm* worm = new Worm(this->world, w.pos_x, w.pos_y, w.id);
-      this->worms.emplace(0, worm);
+      this->worms.emplace(w.id, worm);
 
     }
   }

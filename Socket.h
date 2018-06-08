@@ -6,7 +6,6 @@
 #include <vector>
 #include "Logger.h"
 
-#define PROTOCOL_MSG_SIZE 4
 #define CHUNK_LEN 10
 
 class Socket {

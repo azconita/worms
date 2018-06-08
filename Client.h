@@ -21,7 +21,6 @@ using std::pair;
 #define SCREEN_DEFAULT_WITH 1366
 #define SCREEN_DEFAULT_HIGH 768
 #define TITLE "Worms game"
-#define CHUNK_LEN 512
 #define PIXEL_CONSTANT 23.5
 
 

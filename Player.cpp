@@ -15,15 +15,10 @@
 //#include "PlayerSender.h"
 
 Player::Player(Socket &client) : client(client) {
-  // TODO Auto-generated constructor stub
+  this->on = true;
 
 }
 
-Player::~Player() {
-  // TODO Auto-generated destructor stub
-  this->sender.join();
-  this->receiver.join();
-}
 
 void Player::start() {
   this->sender = std::thread(&Player::send, this);
@@ -32,7 +27,7 @@ void Player::start() {
 void Player::send() {
 
   extern logger oLog;
-  while (true) {
+  while (this->on) {
     StageDTO s = this->send_queue->pop();
     printf("[Player] send stage\n");
     YAML::Emitter out;
@@ -41,18 +36,18 @@ void Player::send() {
     out << YAML::Value << s;
     out << YAML::EndMap;
     try{
-      //printf("se envia %s\n", out.c_str());
+      oLog() << "se envia" << out.c_str();
       this->client.send_dto(out.c_str());
     }catch(Error e){
-        oLog() << "Player quit (peer socket closed).";
-        //this->stop();
+        //oLog() << "Player quit (peer socket closed).";
+        this->stop();
     }
   }
 }
 
 void Player::receive(){
   extern logger oLog;
-  while (true) {
+  while (this->on) {
     try{
       std::string action_str = this->client.receive_dto();
       printf("%s\n",action_str.c_str() );
@@ -64,7 +59,7 @@ void Player::receive(){
         printf("saltaar\n" );
       }
     }catch(Error e){
-        //stop();
+        stop();
     }
   }
 }
@@ -74,3 +69,15 @@ void Player::add_stage_queues(BlockingQueue<StageDTO> *send_queue,
   this->send_queue = send_queue;
   this->recv_queue = recv_queue;
 }
+
+void Player::stop(){
+  this->on = false; 
+}
+
+Player::~Player() {
+  this->sender.join();
+  this->receiver.join();
+  this->client.shut();
+}
+
+

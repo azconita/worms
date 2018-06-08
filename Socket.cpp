@@ -197,7 +197,9 @@ Socket::~Socket(){
 
 int Socket::receive_size_first(){
   int msg_size;
-  this->receive_buffer((char *) &msg_size, sizeof(int));
+  if(this->receive_buffer((char *) &msg_size, sizeof(int)) < (int) sizeof(int)){
+    throw Error("Socket: error al recibir el tamaño  %i del dto\n",ntohl(msg_size));
+  }
   return ntohl(msg_size);
 }
 

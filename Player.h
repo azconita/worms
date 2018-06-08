@@ -19,6 +19,7 @@ class Player {
   BlockingQueue<ActionDTO> *recv_queue;
   std::thread sender;
   std::thread receiver;
+  bool on;
 public:
   Player(Socket &client);
   virtual ~Player();
@@ -29,6 +30,7 @@ public:
 
   void send();
   void receive();
+  void stop();
 };
 
 #endif /* PLAYER_H_ */
