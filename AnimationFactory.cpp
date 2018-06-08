@@ -8,6 +8,98 @@
 #include "AnimationFactory.h"
 
 
+    std::vector<Picture> AnimationFactory::get_little_beams(){
+        std::vector<Picture> little_beams;
+        Colour colorkey_beam(BEAM_R,BEAM_G,BEAM_B);
+        
+        Picture beam0(BEAM3_0, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        little_beams.push_back(beam0);
+
+        Picture beam22(BEAM3_22, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        little_beams.push_back(beam22);
+
+        Picture beam45(BEAM3_45, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        little_beams.push_back(beam45);
+
+        Picture beam65(BEAM3_65, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        little_beams.push_back(beam65);
+
+        Picture beam90(BEAM3_90, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        little_beams.push_back(beam90);
+
+        return little_beams;
+    }
+
+
+    std::vector<Picture> AnimationFactory::get_big_beams(){
+        std::vector<Picture> big_beams;
+        Colour colorkey_beam(BEAM_R,BEAM_G,BEAM_B);
+        
+        Picture beam0(BEAM6_0, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        big_beams.push_back(beam0);
+
+        Picture beam22(BEAM6_22, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        big_beams.push_back(beam22);
+
+        Picture beam45(BEAM6_45, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        big_beams.push_back(beam45);
+
+        Picture beam65(BEAM6_65, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        big_beams.push_back(beam65);
+
+        Picture beam90(BEAM6_90, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
+        big_beams.push_back(beam90);
+
+        return big_beams;
+    }
+
+
+
+std::map<State,Animation> AnimationFactory::get_wormsAnimations(){
+    std::map<State,Animation> animations;
+
+    Animation worm_walk = AnimationFactory::get_worm_walk();
+    animations .insert(std::pair<State,Animation>(Still,worm_walk));
+    animations .insert(std::pair<State,Animation>(Walk,worm_walk));
+
+    Animation worm_fall = AnimationFactory::get_worm_fall();
+    animations .insert(std::pair<State,Animation>(Fall,worm_fall));
+
+    Animation worm_jump = AnimationFactory::get_worm_jump();
+    animations .insert(std::pair<State,Animation>(Jump_state,worm_jump));
+
+    Animation worm_missile = AnimationFactory::get_worm_missile();
+    animations .insert(std::pair<State,Animation>(Worm_missile,worm_missile));
+
+    Animation worm_banana = AnimationFactory::get_worm_banana();
+    animations .insert(std::pair<State,Animation>(Worm_banana,worm_banana));
+
+    Animation worm_bat = AnimationFactory::get_worm_bat();
+    animations .insert(std::pair<State,Animation>(Worm_bat,worm_bat));
+
+    Animation worm_green_granade = AnimationFactory::get_worm_green_granade();
+    animations .insert(std::pair<State,Animation>(Worm_green_granade,worm_green_granade));
+
+    Animation worm_red_granade = AnimationFactory::get_worm_red_granade();
+    animations .insert(std::pair<State,Animation>(Worm_red_granade,worm_red_granade));
+
+    Animation worm_holy_granade = AnimationFactory::get_worm_holy_granade();
+    animations .insert(std::pair<State,Animation>(Worm_holy_granade,worm_holy_granade));
+
+    Animation worm_teletrans = AnimationFactory::get_worm_teletrans();
+    animations .insert(std::pair<State,Animation>(Worm_teletrans,worm_teletrans));
+
+    Animation worm_air_attack = AnimationFactory::get_worm_air_attack();
+    animations .insert(std::pair<State,Animation>(Worm_air_attack,worm_air_attack));
+
+    Animation worm_dynamite = AnimationFactory::get_worm_dynamite();
+    animations .insert(std::pair<State,Animation>(Worm_dynamite,worm_dynamite));
+
+    return animations;
+
+}
+
+
      Animation AnimationFactory::get_worm_walk(){
         Colour colorkey(WORM_WALK_R,WORM_WALK_G,WORM_WALK_B);
         Animation worm(WORM_WALK,colorkey,WORM_WALK_COLUMNS,WORM_WALK_ROWS);
@@ -85,7 +177,41 @@
     //-----------------------Armas --------------------------------------------------
 
 
-      Animation AnimationFactory::get_bazooka(){
+std::map<Weapon_Name,Animation> AnimationFactory::get_weapons(){
+    std::map<Weapon_Name,Animation> animations;
+
+    Animation bazooka = AnimationFactory::get_bazooka();
+    animations.insert(std::pair<Weapon_Name,Animation>(W_Bazooka, bazooka));
+
+    Animation mortar = AnimationFactory::get_mortar();
+    animations.insert(std::pair<Weapon_Name,Animation>(Mortar,mortar));
+
+    Animation banana = AnimationFactory::get_banana();
+    animations.insert(std::pair<Weapon_Name,Animation>(Banana,banana));
+
+    Animation green_granade = AnimationFactory::get_green_granade();
+    animations.insert(std::pair<Weapon_Name,Animation>(Green_Grenade,green_granade));
+
+    Animation red_granade = AnimationFactory::get_red_granade();
+    animations.insert(std::pair<Weapon_Name,Animation>(Red_Grenade,red_granade));
+
+    Animation holy_granade = AnimationFactory::get_holy_granade();
+    animations.insert(std::pair<Weapon_Name,Animation>(Holy_Grenade,holy_granade));
+
+    Animation air_attack = AnimationFactory::get_air_attack();
+    animations.insert(std::pair<Weapon_Name,Animation>(W_Air_Attack,air_attack));
+
+    Animation dynamite = AnimationFactory::get_dynamite();
+    animations.insert(std::pair<Weapon_Name,Animation>(Dynamite,dynamite));
+
+    Animation explosion = AnimationFactory::get_explosion();
+    animations.insert(std::pair<Weapon_Name,Animation>(Explosion,explosion));
+    
+    return animations;
+}
+
+
+    Animation AnimationFactory::get_bazooka(){
         Colour colorkey(BAZOOKA_R,BAZOOKA_G,BAZOOKA_B);
         Animation worm(BAZOOKA,colorkey,BAZOOKA_COLUMNS,BAZOOKA_ROWS);
         return worm;
@@ -140,6 +266,11 @@
         return worm;
     }
 
+
+
+
+
+  
 
 AnimationFactory::~AnimationFactory() {
 	// TODO Auto-generated destructor stub

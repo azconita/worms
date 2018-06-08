@@ -9,17 +9,32 @@
 #define EVENTCONTROLLER_H_
 #include <SDL/SDL.h>
 #include "GraphicDesigner.h"
-#include "stage.h"
+#include "BlockingQueue.h"
+#include "Socket.h"
+#include "Dtos.h"
 
 class EventController {
+
 	GraphicDesigner graphic_designer;
-	int screen_height;
-	int screen_width;
-	Stage & stage;
+	BlockingQueue<ActionDTO> & actions_queue;
 	SDL_Event &  event;
 	ActionDTO action;
+	int screen_height;
+	int screen_width;
+	
 	bool wait_for_destination_clicl;
 	bool wait_for_weapon_click;
+
+public:
+	EventController(BlockingQueue<ActionDTO> & actions_queue, SDL_Event & event, int screen_height, int screen_width, 
+		GraphicDesigner & graphic_designer);
+	bool continue_running(WormAnimation& turn_worm);
+	virtual ~EventController();
+
+
+private:
+
+	void send_action(ActionDTO action);
 
 	void weapon_shortcuts(SDL_Event & event, WormAnimation& turn_worm);
 	float meters_conversor(int pixel);
@@ -33,8 +48,6 @@ class EventController {
 	void teletrans(WormAnimation& turn_worm);
 	void banana(WormAnimation& turn_worm);
 	void baseboll_bat(WormAnimation& turn_worm);
-
-
 
 	void click(WormAnimation& turn_worm);
 
@@ -50,11 +63,8 @@ class EventController {
 	void weapon_shot(WormAnimation& turn_worm);
 	void shot(WormAnimation& turn_worm,int x, int y);
 
-public:
-	EventController(SDL_Event & event, Stage & stage, int screen_height, int screen_width, GraphicDesigner & graphic_designer);
-	bool continue_running(WormAnimation& turn_worm);
+	void quit();
 
-	virtual ~EventController();
 
 };
 

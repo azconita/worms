@@ -20,15 +20,13 @@ std::map<int,WormAnimation> GraphicDesigner::create_worms(StageDTO s){
 
     std::map<int,WormAnimation> worms;
 
-    Colour colorkey(WORM_WALK_R,WORM_WALK_G,WORM_WALK_B);
-
     for (auto w: s.worms) {
 
         int id = w.first;
         ElementDTO worm_info = w.second;
 
-        int position_worm_x = get_pixels(worm_info.x);
-        int position_worm_y = get_pixels(worm_info.y);
+        int position_worm_x = get_pixels(worm_info.pos_x);
+        int position_worm_y = get_pixels(worm_info.pos_y);
 
         //creo el gusano y lo gardo en el vector
         Direction dir = Left;
@@ -41,36 +39,6 @@ std::map<int,WormAnimation> GraphicDesigner::create_worms(StageDTO s){
     return worms;
 }
 
-std::map<Weapon_Name,Animation> GraphicDesigner::create_weapons(){
-    std::map<Weapon_Name,Animation> animations;
-    Animation bazooka = AnimationFactory::get_bazooka();
-    animations.insert(std::pair<Weapon_Name,Animation>(W_Bazooka, bazooka));
-
-    Animation mortar = AnimationFactory::get_mortar();
-    animations.insert(std::pair<Weapon_Name,Animation>(Mortar,mortar));
-
-    Animation banana = AnimationFactory::get_banana();
-    animations.insert(std::pair<Weapon_Name,Animation>(Banana,banana));
-
-    Animation green_granade = AnimationFactory::get_green_granade();
-    animations.insert(std::pair<Weapon_Name,Animation>(Green_Grenade,green_granade));
-
-    Animation red_granade = AnimationFactory::get_red_granade();
-    animations.insert(std::pair<Weapon_Name,Animation>(Red_Grenade,red_granade));
-
-    Animation holy_granade = AnimationFactory::get_holy_granade();
-    animations.insert(std::pair<Weapon_Name,Animation>(Holy_Grenade,holy_granade));
-
-    Animation air_attack = AnimationFactory::get_air_attack();
-    animations.insert(std::pair<Weapon_Name,Animation>(W_Air_Attack,air_attack));
-
-    Animation dynamite = AnimationFactory::get_dynamite();
-    animations.insert(std::pair<Weapon_Name,Animation>(Dynamite,dynamite));
-
-    Animation explosion = AnimationFactory::get_explosion();
-    animations.insert(std::pair<Weapon_Name,Animation>(Explosion,explosion));
-    return animations;
-}
 
 bool GraphicDesigner::is_timer_weapon(Weapon_Name weapon){
     return std::find(weapons_with_timer.begin(), weapons_with_timer.end(), weapon) != weapons_with_timer.end();
@@ -123,32 +91,62 @@ GraphicDesigner::GraphicDesigner(SDL_Surface * screen, int screen_height, int sc
 
     ////////////////////////////////////////////////////////
 
-
     this->worms = create_worms(initial_stage);
-    printf(" size = %li\n", this->worms.size() );
+    this->weapons = AnimationFactory::get_weapons();
 
-    this->weapons = create_weapons();
+    this->little_beams =  AnimationFactory::get_little_beams();
+    this->big_beams = AnimationFactory::get_big_beams();
 
 }
 
 
 void GraphicDesigner::show_beams(StageDTO s, SDL_Surface *screen){
-
-    Colour colorkey_beam(BEAM_R,BEAM_G,BEAM_B);
+    
 
     for (auto beam_info: s.beams) {
 
         //debug_box2d_figure(screen, beam_info);
 
-        int up_left_vertex_x = get_pixels(beam_info.x);
-        int up_left_vertex_y = get_pixels(beam_info.y);
+        int up_left_vertex_x = get_pixels(beam_info.pos_x);
+        int up_left_vertex_y = get_pixels(beam_info.pos_y);
 
-        Picture beam(BEAM, colorkey_beam,BEAM_COLUMNS,BEAM_ROWS);
-        beam.draw(screen,up_left_vertex_x, up_left_vertex_y);
 
+        if(beam_info.w == 3){
+            Picture beam = inclinate_beam(this->little_beams, beam_info.angle);
+            beam.draw(screen,up_left_vertex_x, up_left_vertex_y);
+        }else{
+            Picture beam = inclinate_beam(this->big_beams, beam_info.angle);
+             beam.draw(screen,up_left_vertex_x, up_left_vertex_y);
+        } 
     }
+}
+
+Picture GraphicDesigner::inclinate_beam(std::vector<Picture> beams, float degree){
+    if(beams.size() < 5){
+        throw Error("No se cargaron todas las imagenes de las vigas");
+    }
+    if(degree < 5){
+        Picture beam = beams[0];
+        return beam;
+    }
+    if(degree < 33){
+        Picture beam = beams[1];
+        return beam;
+    }
+    if(degree < 55){
+        Picture beam = beams[2];
+        return beam;
+    }
+     if(degree < 80){
+        Picture beam = beams[3];
+        return beam;
+    }
+    Picture beam = beams[4];
+    return beam;
+    
 
 }
+
 
 void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
 
@@ -158,8 +156,8 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
 
         //debug_box2d_figure(screen, worm_info);
 
-        int up_left_vertex_x = get_pixels(worm_info.x);
-        int up_left_vertex_y = get_pixels(worm_info.y);
+        int up_left_vertex_x = get_pixels(worm_info.pos_x);
+        int up_left_vertex_y = get_pixels(worm_info.pos_y);
 
         std::map<int,WormAnimation>::iterator worms_iter = this->worms.find(w.first);
         worms_iter->second.move(up_left_vertex_x, up_left_vertex_y);
@@ -179,7 +177,7 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
 }
 
  std::map<int,WormAnimation>::iterator GraphicDesigner::get_turn_worm(int id){
-    this->worms.find(id);
+   return this->worms.find(id);
  }
 
 
@@ -188,8 +186,8 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
 
         //debug_box2d_figure(screen, w);
 
-        int up_left_vertex_x = get_pixels(w.x);
-        int up_left_vertex_y = get_pixels(w.y);
+        int up_left_vertex_x = get_pixels(w.pos_x);
+        int up_left_vertex_y = get_pixels(w.pos_y);
 
 
         std::map<Weapon_Name,Animation>::iterator weapon_iter = this->weapons.find(w.weapon);

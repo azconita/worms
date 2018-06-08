@@ -5,21 +5,22 @@ stage:
       size: 3
       inclination: 0
     - pos_x: 20
-      pos_y: 21
+      pos_y: 10
+      size: 6
+      inclination: 65
+    - pos_x: 25
+      pos_y: 18
+      size: 6
+      inclination: 45
+    - pos_x: 35
+      pos_y: 18
       size: 3
-      inclination: 0
+      inclination: 90
   players:
     0:
-      - id: 1
+      - id: 0
         pos_x: 10
         pos_y: 10
         direction: 0
-        life: 100
-        inclination: 0
-    1:
-      - id: 2
-        pos_x: 20
-        pos_y: 10
-        direction: 1
         life: 100
         inclination: 0

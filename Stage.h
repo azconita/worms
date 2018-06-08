@@ -10,7 +10,6 @@
 #include "WeaponExplosionListener.h"
 #include "Dtos.h"
 #include "Logger.h"
-#include "Lock.h"
 
 
 #include "Weapon.h"
@@ -20,7 +19,7 @@
 
 class Stage {
 private:
-  std::mutex mutex; 
+  std::mutex mutex;
   //std::vector<int> jugadores;
   b2World* world;
   std::vector<Beam*> beams;
@@ -36,12 +35,17 @@ private:
   Worm* current_player = NULL;
   time_t player_time = 0;
 
+  bool finish = false;
+
 public:
   Stage(std::string config);
   virtual ~Stage();
 
   void update();
   void make_action(ActionDTO & action);
+
+  bool finished();
+  void end();
 
   //por ahora...
   StageDTO get_stageDTO();

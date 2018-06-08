@@ -1,61 +1,42 @@
+#include "Client.h"
 
 
-
-#include <iostream>
-#include <SDL/SDL.h>
-#include <SDL/SDL_image.h>
-#include <SDL/SDL_ttf.h>
-
-#include "Error.h"
-#include "WaterAnimation.h"
-#include "WormAnimation.h"
-#include "EventController.h"
-#include "stage.h"
-#include "Beam.h"
-#include "Worm.h"
-
-
-
-using std::cout;
-using std::endl;
-using std::string;
-using std::map;
-using std::pair;
-
-logger oLog("prueba.log");
-
-
-
-//////////////////////////////////////////////////////////////////////////////////////////
-
-//para borrar
-float get_pixels(float meter_position){
-    return  23.5*meter_position;
+float Client::get_pixels(float meter_position){
+    return  PIXEL_CONSTANT*meter_position;
 }
 
-void debug_box2d_figure(SDL_Surface *screen, ElementDTO element_info){
-
+void Client::debug_box2d_figure(SDL_Surface *screen, ElementDTO element_info){
     //dibujo un rectangulo
     SDL_Rect rectangle;
-    rectangle.x = get_pixels(element_info.x);
-    rectangle.y = get_pixels(element_info.y);
+    rectangle.x = get_pixels(element_info.pos_x);
+    rectangle.y = get_pixels(element_info.pos_y);
     rectangle.h = get_pixels(element_info.h);
     rectangle.w = get_pixels(element_info.w);
-
     Uint32 colorkey = SDL_MapRGBA(screen->format, 0, 255, 0,0.5);
     SDL_FillRect(screen, &rectangle, colorkey);
 
 }
-////////////////////////////////////////////////////////////////////////////////////////////
+
+Client::Client(char * host_name, char * port)://
+    socket(host_name, port),
+    actions_queue(1000){  
+    this->socket.connect_to_server();
+}
 
 
+StageDTO Client::receive_stage(){
+    string stage_str = (this->socket).receive_dto();
+    printf("%s\n", stage_str.c_str());
+    YAML::Node yaml_received = YAML::Load(stage_str);
+    StageDTO stage_received = yaml_received ["stage"].as<StageDTO>();
+    return stage_received;
+}
 
-#define SCREEN_DEFAULT_WITH 1366
-#define SCREEN_DEFAULT_HIGH 768
-#define TITLE "Worms game"
-#define INITIAL_STAGE_FILE "file.yaml"
 
-int main(int argc, char *args[]){
+void Client::run(){  
+
+    extern  logger oLog; 
+
 
     if(SDL_Init(SDL_INIT_VIDEO) < 0) {
         throw Error("No se pudo iniciar SDL: ",SDL_GetError());
@@ -86,9 +67,7 @@ int main(int argc, char *args[]){
     // Set the title bar
     SDL_WM_SetCaption(TITLE, TITLE);
 
-
-    Stage stage(INITIAL_STAGE_FILE);
-    StageDTO s = stage.get_stageDTO();
+    StageDTO s = receive_stage();
 
     WaterAnimation water(screen_height, 3);
 
@@ -98,7 +77,9 @@ int main(int argc, char *args[]){
     std::map<int,WormAnimation>::iterator turn_worm_iter = graphic_designer.get_turn_worm(0);
 
     SDL_Event event;
-    EventController event_controller(event, stage, screen_height, screen_width, graphic_designer);
+    EventController event_controller(this->actions_queue,event, screen_height, screen_width, graphic_designer);
+    Actioner actioner(this->socket,this->actions_queue);
+    actioner.start();
 
     //para controlar el tiempo
     Uint32 t0 = SDL_GetTicks();
@@ -113,9 +94,9 @@ int main(int argc, char *args[]){
 
         // Referencia de tiempo
         t1 = SDL_GetTicks();
+
         //update
-        stage.update();
-        StageDTO s = stage.get_stageDTO();
+        StageDTO s = receive_stage();
 
         if((t1 -t0) > 100) {
             // Nueva referencia de tiempo
@@ -135,6 +116,9 @@ int main(int argc, char *args[]){
         }
 
     }
-
-    return 0;
 }
+
+Client::~Client(){
+    this->socket.shut();
+}
+

@@ -14,23 +14,6 @@
 
 #define GRADES_PER_STEP 5.8064516129 //180/31
 
-enum State{
-   Still,
-   Walk,
-   Fall,
-   Jump_state,
-   Worm_missile,
-   Worm_banana,
-   Worm_bat,
-   Worm_green_granade,
-   Worm_red_granade,
-   Worm_holy_granade,
-   Worm_teletrans,
-   Worm_air_attack,
-   Worm_dynamite
-};
-
-
 
 static  std::map<Weapon_Name, State> weapons_states {
     {W_Air_Attack, Worm_air_attack},
@@ -74,7 +57,7 @@ class WormAnimation {
 	float degrees;
 	int weapon_power;
 	int timer;
-	std::map<int,Animation> animations;
+	std::map<State,Animation> animations;
 public:
 	WormAnimation(int initial_x, int initial_y, Direction initial_dir);
 	bool has_weapon();

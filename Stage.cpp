@@ -1,5 +1,3 @@
-#include "stage.h"
-
 #include <algorithm>
 #include <string>
 #include <vector>
@@ -11,6 +9,7 @@
 #include "Dtos.h"
 #include "Worm.h"
 #include "Beam.h"
+#include "Stage.h"
 #include "Weapon.h"
 
 
@@ -24,6 +23,7 @@ Stage::Stage(std::string file_name) {
   this->explosion_listener;
   this->world->SetContactListener(&this->explosion_listener);
   this->load_initial_stage(file_name);
+  this->current_player = this->worms.begin()->second;
   this->wind = Constants::wind;
 }
 
@@ -58,7 +58,6 @@ void Stage::do_explosions() {
 }
 
 void Stage::update() {
-  Lock l(mutex);
   float32 timeStep = Constants::time_step; //segundos del step
   int32 velocityIterations = Constants::velocity_iterations;   //how strongly to correct velocity
   int32 positionIterations = Constants::position_iterations;   //how strongly to correct position
@@ -72,9 +71,17 @@ void Stage::update() {
   //check if player change
   //this->update_player();
 
+  //check falling worms
   //char t = (this->worms[0]->is_falling()) ? 'y' : 'n';
   //printf("worm falling: %c\n", t);
+}
 
+bool Stage::finished() {
+  return this->finish;
+}
+
+void Stage::end() {
+  this->finish = true;
 }
 
 void Stage::clean_dead_bodies() {
@@ -107,13 +114,16 @@ void Stage::clean_dead_bodies() {
 }
 
 void Stage::update_player() {
-  if (this->change || (difftime(this->player_time,time(NULL)) < 60)) {
+  //printf("player time: %d\n", (difftime(this->player_time,time(NULL))) );
+  if (this->change || (difftime(this->player_time,time(NULL)) > 60)) {
+    printf("change player\n");
     this->change_player();
     this->change = false;
   }
 }
 
 //TODO sirve así? gusanos mueren... de quien es el turno?
+//cuantos players puede haber????
 void Stage::change_player() {
   int curr_id = this->current_player->get_id();
   std::map<int, Worm*>::iterator next = this->worms.find(curr_id);
@@ -125,9 +135,11 @@ void Stage::change_player() {
 }
 
 void Stage::make_action(ActionDTO & action) {
-  Lock l(mutex);
-  printf("%i, %i worm id = %i \n", action.type, action.move , action.worm_id);
+  printf("%i, %i \n", action.type, action.move );
   int worm = action.worm_id;
+  //VALIDAR TURNO!!
+  if (worm != this->current_player->get_id())
+    return;//lanzar excepcion o algo: gusano invalido!
   switch (action.type) {
     case (Make_move):{
       switch(action.move){
@@ -138,6 +150,7 @@ void Stage::make_action(ActionDTO & action) {
           this->worms[worm]->move_left();
           break;
         case Jump:
+          printf("deberia saltar\n");
           this->worms[worm]->jump(action.direction);
           break;
         case Jump_back:
@@ -265,11 +278,9 @@ void Stage::load_initial_stage(std::string file_name){
     for(auto w : pair.second){
     	oLog() << "{ id: "<< w.id << ", x: "<< w.pos_x << " , y: "
       << w.pos_y << ", direction: "<< w.direction << ", inclination: "<<w.inclination << ", life: " << w.life <<" }"<< endl;
-      Worm* worm = new Worm(this->world, w.pos_x, w.pos_y);
+      Worm* worm = new Worm(this->world, w.pos_x, w.pos_y, w.id);
       this->worms.emplace(0, worm);
 
     }
   }
 }
-
-

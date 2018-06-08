@@ -9,7 +9,7 @@
 #include <vector>
 #include <iostream>
 #include <Box2D/Box2D.h>
-#include "DTOs.h"
+#include "Dtos.h"
 #include <time.h>
 
 #ifndef WEAPON_H_
