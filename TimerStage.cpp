@@ -22,7 +22,7 @@ void TimerStage::run() {
   while (!this->finished) {
     printf("[TimerStage] push update\n");
     //TODO fix this
-    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    std::this_thread::sleep_for(std::chrono::milliseconds(17));
     ActionDTO action;
     action.type = Timer_update;
     this->stage_queue.push(action);
