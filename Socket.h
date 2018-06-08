@@ -7,7 +7,7 @@
 #include "Logger.h"
 
 #define PROTOCOL_MSG_SIZE 4
-#define CHUNK_LEN 512
+#define CHUNK_LEN 10
 
 class Socket {
   private:
@@ -59,8 +59,8 @@ public:
   Socket accept_socket();
 
 private:
-  int get_digits(unsigned int num);
-  ssize_t receive_size_first();
+ 
+  int receive_size_first();
   void send_size_first(unsigned int size);
 
   //Debe estar conectado con el socket cuyo numero sea skt_num

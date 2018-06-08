@@ -195,34 +195,17 @@ Socket::~Socket(){
 }
 ////-///////////comunicacion interna///////////////////////
 
-int Socket::get_digits(unsigned int num){
-    int digits = 1;
-    while ( num > 0 ) {
-        num /= 10;
-        digits++;
-    }
-    return digits;
+int Socket::receive_size_first(){
+  int msg_size;
+  this->receive_buffer((char *) &msg_size, sizeof(int));
+  return ntohl(msg_size);
 }
 
-
-
-ssize_t Socket::receive_size_first(){
-  char msg_size[PROTOCOL_MSG_SIZE];
-  receive_buffer(msg_size, PROTOCOL_MSG_SIZE);
-  return atoi(msg_size);
-}
 
 void Socket::send_size_first(unsigned int size){
-  int digitos = get_digits(size);
-  if(digitos > PROTOCOL_MSG_SIZE){
-    throw Error("Mensaje demasiado largo!");
-  }
-  char msg_size[PROTOCOL_MSG_SIZE];
-  memset(msg_size, 0, PROTOCOL_MSG_SIZE); 
-  snprintf(msg_size,PROTOCOL_MSG_SIZE, "%d", size);
-  send_buffer(msg_size,PROTOCOL_MSG_SIZE);
+  int msg_size = htonl(size);
+  this->send_buffer((char *) &msg_size, sizeof(int));
 }
-
 
 
 
@@ -276,7 +259,7 @@ void Socket::send_dto(const std::string & dto_to_send){
         request_len = dto_size - total_sent;
       } 
 
-      std::string dto_chunk = dto_to_send.substr(bytes_sent,bytes_sent +request_len);
+      std::string dto_chunk = dto_to_send.substr(total_sent,bytes_sent +request_len);
       memcpy(request, dto_chunk.c_str() , request_len);
       bytes_sent = send_buffer(request, request_len);
         
@@ -290,7 +273,7 @@ void Socket::send_dto(const std::string & dto_to_send){
 std::string Socket::receive_dto(){
   printf("numero del socket ->-----> %i\n",this->socket_num );
    std::string dto_received;
-  ssize_t dto_size = receive_size_first();
+  int dto_size = receive_size_first();
   char chunk[CHUNK_LEN+1];
   int total_received = 0;
   int bytes_received = 0;
