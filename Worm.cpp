@@ -120,3 +120,7 @@ void Worm::apply_damage(int d) {
   //if (this->life <= 0)
     //this->alive = false;
 }
+
+b2Vec2 Worm::get_center(){
+  return this->body->GetPosition();
+}

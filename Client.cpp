@@ -109,10 +109,10 @@ void Client::run(){
             //toda la pantalla en negro
             SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format,0,0,0));
             //dibujo las vigas y el agua
+
+            graphic_designer.show_background();
             water.show(screen);
             graphic_designer.show_beams(s, screen);
-
-            //dibujo los gusanos
             graphic_designer.show_worms(s, screen);
             graphic_designer.show_weapon(s, screen);
 

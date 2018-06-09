@@ -62,7 +62,8 @@ private:
 
 
   void load_initial_stage(std::string file_name);
-  void set_position(ElementDTO & element , std::vector<b2Vec2> & vertices);
+
+  void set_position(ElementDTO & element ,b2Vec2 & center);
 };
 
 #endif

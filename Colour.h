@@ -17,7 +17,8 @@ enum Colour_name{
     Pink,
     Yellow,
     Red,
-    Blue
+    Blue,
+    Black
 };
 
 

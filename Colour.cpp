@@ -47,6 +47,9 @@ Colour Colour::create(Colour_name colour_name){
                 Colour red(237, 78, 102);
                 return red;
             }
+            case Black:
+                Colour black(0,0,0);
+                return black;
         }
         Colour black(0,0,0);
         return black;

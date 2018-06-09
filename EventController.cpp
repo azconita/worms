@@ -39,6 +39,7 @@ bool EventController::continue_running(WormAnimation& turn_worm){
             click(turn_worm);
             break;
         case SDL_MOUSEMOTION:
+            printf("motiooooonnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n");
             mouse_motion();
         case SDL_KEYDOWN:
             if(event.key.keysym.sym == SDLK_ESCAPE ){
@@ -136,13 +137,17 @@ void EventController::click(WormAnimation& turn_worm){
 
 
 void EventController::mouse_motion(){
+    printf("mmooovimientooo detectaddooooooooo\n");
     int x, y;
     SDL_GetMouseState(&x, &y);
-    if(x > screen_width - 5 && y < screen_height/2){
+    if(x > screen_width - 5 && y < 5){
         cout << "Se quiere elegir un arma:" << endl;
         printf("%i %i\n",x,y);
         this->wait_for_weapon_click = true;
+        return;
     }
+
+   this->graphic_designer.scroll(x,y);
 }
 
 

@@ -13,6 +13,7 @@
 #include "Colour.h"
 #include "Dtos.h"
 #include "WormAnimation.h"
+#include "ResourcesDefinitions.h" 
 
 
 static  std::vector<Colour_name> possible_colors {
@@ -37,6 +38,7 @@ static const std::vector<Weapon_Name> weapons_with_timer(
 
 class GraphicDesigner {
 	SDL_Surface * screen;
+	SDL_Rect camera;
 	int screen_height;
 	int screen_width;
 	TTF_Font *font;
@@ -58,6 +60,8 @@ class GraphicDesigner {
 
 public:
 	GraphicDesigner(SDL_Surface * screen, int screen_height, int screen_width,StageDTO initial_stage);
+	void scroll(int x, int y);
+	void show_background();
 	void show_beams(StageDTO s, SDL_Surface *screen);
 	void show_worms(StageDTO s, SDL_Surface *screen);
 	void show_weapon( StageDTO s,SDL_Surface * screen);

@@ -1,20 +1,20 @@
 stage:
   beams:
-    - pos_x: 10
+    - pos_x: 50
       pos_y: 20
       size: 6
-      inclination: 0
+      inclination: 22
     - pos_x: 20
       pos_y: 20
       size: 6
       inclination: 0
-    - pos_x: 25
-      pos_y: 18
+    - pos_x: 0
+      pos_y: 10
       size: 6
-      inclination: 45
+      inclination: 0
     - pos_x: 35
       pos_y: 18
-      size: 3
+      size: 6
       inclination: 90
   worms:
     - id: 0

@@ -115,8 +115,7 @@ int Weapon::get_timer() {
   return difftime(time(NULL), this->t);
 }
 
-b2Vec2 Weapon::get_point() {
-  //return ((b2CircleShape*) this->body->GetFixtureList()->GetShape())->m_p;
+b2Vec2 Weapon::get_center() {
   return this->body->GetPosition();
 }
 

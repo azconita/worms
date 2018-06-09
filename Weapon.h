@@ -50,7 +50,7 @@ public:
   void shoot(int power, float degrees, Direction dir, int time_to_explode);
 
   bool is_alive() { return (this->alive && (this->body->GetPosition().y < 100));}
-  b2Vec2 get_point();
+  b2Vec2 get_center();
   std::vector<b2Vec2> get_points();
 
   void bazooka(int power, float degrees, int s);
