@@ -77,6 +77,7 @@ struct ElementDTO { //puede ser un gusano, un arma o una viga
 };
 
 struct StageDTO {
+  //bool finish = false;
   int worm_turn;
   std::vector<ElementDTO> beams;
   std::map<int,ElementDTO> worms;

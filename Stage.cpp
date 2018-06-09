@@ -116,7 +116,7 @@ void Stage::clean_dead_bodies() {
 }
 
 void Stage::update_player() {
-  printf("player time: %d\n", (difftime(time(NULL),this->player_time)) );
+  printf("player time: %d\n", difftime(time(NULL), this->player_time));
   if (this->change || (difftime(time(NULL),this->player_time) > 10)) {
     printf("change player\n");
     this->change_player();
@@ -141,8 +141,10 @@ void Stage::make_action(ActionDTO & action) {
   printf("%i, %i \n", action.type, action.move );
   int worm = action.worm_id;
   //VALIDAR TURNO!!
-  if (worm != this->current_player->get_id())
-    return;//lanzar excepcion o algo: gusano invalido!
+  //if (worm != this->current_player->get_id()) {
+    //printf("not current player: current: %d, sent: %d\n", this->current_player->get_id(), worm);
+    //return;//lanzar excepcion o algo: gusano invalido!
+  //}
   switch (action.type) {
     case (Make_move):{
       switch(action.move){

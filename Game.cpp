@@ -21,6 +21,7 @@ Game::Game(std::string &stage_name, Socket &client) :
 Game::~Game() {
   // TODO Auto-generated destructor stub
   this->timer.join();
+  //delete players!
 }
 
 bool Game::not_full() {
@@ -61,12 +62,20 @@ void Game::run() {
     // sacar action de la cola: action de player o action del timer(update)
     ActionDTO action = this->stage_queue.pop();
     //printf("[Game] pop action: %d\n", action.type);
-    if (action.type == Timer_update)
-      this->stage.update();
-    else
-      this->stage.make_action(action);
+    StageDTO s;
+    if (action.type == Quit) {
+      this->stage.end();
+      //s.finish = true;
+      s.worm_turn = -1;
+      this->timer.stop();
+    } else {
+      if (action.type == Timer_update)
+        this->stage.update();
+      else
+        this->stage.make_action(action);
+      s = stage.get_stageDTO();
+    }
     for (auto &q : this->players_queues) {
-      StageDTO s = stage.get_stageDTO();
       q->push(s);
     }
   }

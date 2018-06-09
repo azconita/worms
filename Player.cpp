@@ -34,18 +34,22 @@ void Player::send() {
   extern logger oLog;
   while (this->on) {
     StageDTO s = this->send_queue->pop();
-    //printf("[Player] send stage\n");
-    YAML::Emitter out;
-    out << YAML::BeginMap;
-    out << YAML::Key << "stage";
-    out << YAML::Value << s;
-    out << YAML::EndMap;
-    try{
-      //printf("se envia %s\n", out.c_str());
-      this->client.send_dto(out.c_str());
-    }catch(Error e){
-        //oLog() << "Player quit (peer socket closed).";
+    if (s.worm_turn == -1) {
+      this->stop();
+    } else {
+      //printf("[Player] send stage\n");
+      YAML::Emitter out;
+      out << YAML::BeginMap;
+      out << YAML::Key << "stage";
+      out << YAML::Value << s;
+      out << YAML::EndMap;
+      try{
+        //printf("se envia %s\n", out.c_str());
+        this->client.send_dto(out.c_str());
+      }catch(Error e){
+        oLog() << "Player quit (peer socket closed).";
         this->stop();
+      }
     }
   }
 }
@@ -64,7 +68,10 @@ void Player::receive(){
         printf("saltaar\n" );
       }
     }catch(Error e){
-        stop();
+      ActionDTO a;
+      a.type = Quit;
+      this->recv_queue->push(a);
+      stop();
     }
   }
 }

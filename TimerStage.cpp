@@ -28,3 +28,7 @@ void TimerStage::run() {
     this->stage_queue.push(action);
   }
 }
+
+void TimerStage::stop() {
+  this->finished = true;
+}
