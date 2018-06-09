@@ -64,9 +64,15 @@ class Dot{
 	    if(this->x < camera_pos.x ){
 	    	camera_pos.x = this->x; 
 	    }
+	    if(this->x > camera_pos.x + screen_height){
+	    	camera_pos.x = this->x -screen_height;
+	    }
 	    if(this->y < camera_pos.y ){
 	    	camera_pos.y = this->y;
 	    } 
+	    if(this->y > camera_pos.y + screen_width){
+	    	camera_pos.y = this->y -screen_width;
+	    }
 	}
 };
 
