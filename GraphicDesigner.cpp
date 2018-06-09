@@ -91,12 +91,7 @@ GraphicDesigner::GraphicDesigner(SDL_Surface * screen, int screen_height, int sc
 
     ////////////////////////////////////////////////////////
 
-    SDL_Surface *background = SDL_LoadBMP(BACKGROUND);
-    Sint16 x = background->w/2 - this->screen_height/2;
-    Sint16 y = background->h/2 -this->screen_height/2;
-    Uint16 h = this->screen_height;
-    Uint16 w = this->screen_width;
-    this->camera = { 0,0, w, h};
+    this->camera = new Camera(this->screen_height, this->screen_width);
 
     this->worms = create_worms(initial_stage);
     this->weapons = AnimationFactory::get_weapons();
@@ -107,41 +102,48 @@ GraphicDesigner::GraphicDesigner(SDL_Surface * screen, int screen_height, int sc
 }
 
 void GraphicDesigner::scroll(int x, int y){
-    std::lock_guard<std::mutex> lck (mutex);
     printf("moviendooo en x=%i y = %i\n",x, y);
-    printf("H: %i W: %i\n",this->camera.y, this->camera.x );
     if(x < 15){
-        this->camera.x -=10;
+        this->camera->move(-10,0);
+        return;
     }
     if(y < 15){
         printf("se deberia mover para arriba\n");
-        this->camera.y -=10;
-        printf("camara y %i\n", this->camera.y);
+        this->camera->move(0,-10);
+        return;
     }
-    if(x > this->camera.x -15){
-        this->camera.x += 10;
+    if(x > this->screen_width -15){
+       this-> camera->move(10,0);
+        return;
     }
-    if(y > this->camera.y -15){
-        this->camera.y += 10;
+    if(y > this->screen_height -15){
+        this->camera->move(0,10);
+       return;
     }
 }
 
 void GraphicDesigner::show_background(){
-    printf("camara y %i\n", this->camera.y);
+    SDL_Rect camera_position = camera->get_focus();
     SDL_Surface *background = SDL_LoadBMP(BACKGROUND);
-    SDL_BlitSurface(background, &this->camera, this->screen, NULL);
+    SDL_BlitSurface(background, &camera_position, this->screen, NULL);
+}
+
+void GraphicDesigner::show_elements(StageDTO s, SDL_Surface *screen){
+    show_beams(s,screen);
+    show_worms(s,screen);
+    show_weapon(s,screen);
 }
 
 
 void GraphicDesigner::show_beams(StageDTO s, SDL_Surface *screen){
-    
+    SDL_Rect camera_position = this->camera->get_focus();
 
     for (auto beam_info: s.beams) {
 
         //debug_box2d_figure(screen, beam_info);
 
-        int up_left_vertex_x = get_pixels(beam_info.pos_x) - this->camera.x;
-        int up_left_vertex_y = get_pixels(beam_info.pos_y) - this->camera.y;
+        int up_left_vertex_x = get_pixels(beam_info.pos_x) - camera_position.x;
+        int up_left_vertex_y = get_pixels(beam_info.pos_y) - camera_position.y;
 
 
         if(beam_info.w == 3){
@@ -182,15 +184,15 @@ Picture GraphicDesigner::inclinate_beam(std::vector<Picture> beams, float degree
 
 
 void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
-
+    SDL_Rect camera_position = this->camera->get_focus();
     for (auto w: s.worms) {
 
         ElementDTO worm_info = w.second;
 
         //debug_box2d_figure(screen, worm_info);
 
-        int up_left_vertex_x = get_pixels(worm_info.pos_x) - this->camera.x;
-        int up_left_vertex_y = get_pixels(worm_info.pos_y) - this->camera.y;
+        int up_left_vertex_x = get_pixels(worm_info.pos_x) - camera_position.x;
+        int up_left_vertex_y = get_pixels(worm_info.pos_y) - camera_position.y;
 
         std::map<int,WormAnimation>::iterator worms_iter = this->worms.find(w.first);
         worms_iter->second.move(up_left_vertex_x, up_left_vertex_y);
@@ -215,12 +217,13 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
 
 
  void GraphicDesigner::show_weapon( StageDTO s,SDL_Surface * screen){
+    SDL_Rect camera_position = this->camera->get_focus();
     for (auto w: s.weapons) {
 
         //debug_box2d_figure(screen, w);
 
-        int up_left_vertex_x = get_pixels(w.pos_x) - this->camera.x;
-        int up_left_vertex_y = get_pixels(w.pos_y) - this->camera.y;
+        int up_left_vertex_x = get_pixels(w.pos_x) - camera_position.x;
+        int up_left_vertex_y = get_pixels(w.pos_y) - camera_position.y;
 
 
         std::map<Weapon_Name,Animation>::iterator weapon_iter = this->weapons.find(w.weapon);
@@ -411,6 +414,6 @@ void GraphicDesigner::show_timer(int second){
 
 
 GraphicDesigner::~GraphicDesigner() {
-	// TODO Auto-generated destructor stub
+	delete(this->camera);
 }
 

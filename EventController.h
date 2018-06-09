@@ -15,7 +15,7 @@
 
 class EventController {
 
-	GraphicDesigner graphic_designer;
+	GraphicDesigner & graphic_designer;
 	BlockingQueue<ActionDTO> & actions_queue;
 	SDL_Event &  event;
 	ActionDTO action;

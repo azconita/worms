@@ -87,7 +87,7 @@ Picture::Picture(const char * bmp_path, Colour color, int columns, int rows){
             throw Error("Error: ", SDL_GetError());
         }
 
-        // Calculamos el color transparente, en nuestro caso el verde
+        // Calculamos el color transparente
          Uint32 colorkey = SDL_MapRGB(this->surface->format, color.r, color.g, color.b);
         // Lo establecemos como color transparente
         SDL_SetColorKey(this->surface, SDL_SRCCOLORKEY, colorkey);

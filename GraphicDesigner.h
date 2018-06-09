@@ -14,6 +14,7 @@
 #include "Dtos.h"
 #include "WormAnimation.h"
 #include "ResourcesDefinitions.h" 
+#include "Camera.h"
 
 
 static  std::vector<Colour_name> possible_colors {
@@ -38,7 +39,7 @@ static const std::vector<Weapon_Name> weapons_with_timer(
 
 class GraphicDesigner {
 	SDL_Surface * screen;
-	SDL_Rect camera;
+	Camera * camera;
 	int screen_height;
 	int screen_width;
 	TTF_Font *font;
@@ -50,23 +51,22 @@ class GraphicDesigner {
 	std::vector<Picture> little_beams;
     std::vector<Picture> big_beams;
 
-
 	float get_pixels(float meter_position);
 	std::map<int,WormAnimation> create_worms(StageDTO s);
 	bool is_timer_weapon(Weapon_Name weapon);
 	Picture inclinate_beam(std::vector<Picture> beams, float degree);
-
+	void show_beams(StageDTO s, SDL_Surface *screen);
+	void show_worms(StageDTO s, SDL_Surface *screen);
+	void show_weapon(StageDTO s,SDL_Surface * screen);
+	void show_life(int life, int x, int y, Colour color);
 
 
 public:
 	GraphicDesigner(SDL_Surface * screen, int screen_height, int screen_width,StageDTO initial_stage);
+	std::map<int,WormAnimation>::iterator get_turn_worm(int i);
 	void scroll(int x, int y);
 	void show_background();
-	void show_beams(StageDTO s, SDL_Surface *screen);
-	void show_worms(StageDTO s, SDL_Surface *screen);
-	void show_weapon( StageDTO s,SDL_Surface * screen);
-	std::map<int,WormAnimation>::iterator get_turn_worm(int i);
-	void show_life(int life, int x, int y, Colour color);
+	void show_elements(StageDTO s, SDL_Surface *screen);
 	void show_powerbar(int power);
 	void show_weapons_menu(int size);
 	bool is_inside_weapon_menu(int x, int y);
@@ -76,3 +76,4 @@ public:
 };
 
 #endif /* GRAPHICDESIGNER_H_ */
+

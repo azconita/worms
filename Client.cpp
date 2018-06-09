@@ -29,7 +29,6 @@ StageDTO Client::receive_stage(){
     //printf("%s\n", stage_str.c_str());
     YAML::Node yaml_received = YAML::Load(stage_str);
     StageDTO stage_received = yaml_received ["stage"].as<StageDTO>();
-    printf("worm turn: %d\n", stage_received.worm_turn);
     return stage_received;
 }
 
@@ -74,6 +73,7 @@ void Client::run(){
 
     GraphicDesigner graphic_designer(screen, screen_height,screen_width, s);
     
+    printf("soy un cliente nuevo\n");
     //turno harcodeado
     printf("worm turn: %d", s.worm_turn);
     std::map<int,WormAnimation>::iterator turn_worm_iter = graphic_designer.get_turn_worm(s.worm_turn);
@@ -112,10 +112,8 @@ void Client::run(){
 
             graphic_designer.show_background();
             water.show(screen);
-            graphic_designer.show_beams(s, screen);
-            graphic_designer.show_worms(s, screen);
-            graphic_designer.show_weapon(s, screen);
-
+            graphic_designer.show_elements(s,screen);
+        
         }
 
     }
