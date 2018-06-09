@@ -96,7 +96,7 @@ GraphicDesigner::GraphicDesigner(SDL_Surface * screen, int screen_height, int sc
     Sint16 y = background->h/2 -this->screen_height/2;
     Uint16 h = this->screen_height;
     Uint16 w = this->screen_width;
-    this->camera = { x,y, w, h};
+    this->camera = { 0,0, w, h};
 
     this->worms = create_worms(initial_stage);
     this->weapons = AnimationFactory::get_weapons();
@@ -107,6 +107,7 @@ GraphicDesigner::GraphicDesigner(SDL_Surface * screen, int screen_height, int sc
 }
 
 void GraphicDesigner::scroll(int x, int y){
+    std::lock_guard<std::mutex> lck (mutex);
     printf("moviendooo en x=%i y = %i\n",x, y);
     printf("H: %i W: %i\n",this->camera.y, this->camera.x );
     if(x < 15){
@@ -115,7 +116,7 @@ void GraphicDesigner::scroll(int x, int y){
     if(y < 15){
         printf("se deberia mover para arriba\n");
         this->camera.y -=10;
-        printf("camara y\n", this->camera.y);
+        printf("camara y %i\n", this->camera.y);
     }
     if(x > this->camera.x -15){
         this->camera.x += 10;
@@ -126,6 +127,7 @@ void GraphicDesigner::scroll(int x, int y){
 }
 
 void GraphicDesigner::show_background(){
+    printf("camara y %i\n", this->camera.y);
     SDL_Surface *background = SDL_LoadBMP(BACKGROUND);
     SDL_BlitSurface(background, &this->camera, this->screen, NULL);
 }
