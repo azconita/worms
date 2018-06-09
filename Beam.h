@@ -25,6 +25,7 @@ public:
   std::vector<b2Vec2> get_points();
   int get_type() { return TYPE_BEAM; }
   float get_angle();
+  b2Vec2 get_center();
 };
 
 #endif /* BEAM_H_ */

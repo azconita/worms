@@ -53,3 +53,7 @@ std::vector<b2Vec2> Beam::get_points() {
 float Beam::get_angle() {
   return this->body->GetAngle();
 }
+
+b2Vec2 Beam::get_center(){
+  return this->body->GetPosition();
+}

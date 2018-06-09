@@ -194,32 +194,18 @@ void Stage::make_action(ActionDTO & action) {
   }
 }
 
-void Stage::set_position(ElementDTO & element , std::vector<b2Vec2> & vertices){
-  b2Vec2 up_left = vertices[0];
-  b2Vec2 down_right = vertices[2];
+void Stage::set_position(ElementDTO & element , b2Vec2 & center){
+  element.pos_x = center.x;
+  element.pos_y = center.y;
 
-
-  element.pos_x = up_left.x;
-  element.pos_y = up_left.y;
-
-  if(down_right.y > up_left.y){
-    element.h = (down_right.y - up_left.y);
-  }else{
-    element.h = (up_left.y - down_right.y);
-  }
-  if(down_right.x > up_left.x){
-    element.w = (down_right.x - up_left.x);
-  }else{
-    element.w = (up_left.x - down_right.x);
-  }
 }
 
 StageDTO Stage::get_stageDTO() {
   StageDTO s;
   for (auto w: this->worms) {
     ElementDTO worm_element;
-    std::vector<b2Vec2> vertices = w.second->get_points();
-    set_position(worm_element, vertices);
+    b2Vec2 center = w.second->get_center();
+    set_position(worm_element, center);
     worm_element.player_id = w.second->get_player_id();
     worm_element.life = w.second->get_life();
     //printf("worm %i: x = %f y = %f  h = %f w = %f\n",w.first, worm_element.x, worm_element.y, worm_element.h, worm_element.w);
@@ -228,8 +214,8 @@ StageDTO Stage::get_stageDTO() {
 
   for (auto b: this->beams) {
     ElementDTO beam_element;
-    std::vector<b2Vec2> vertices = b->get_points();
-    set_position(beam_element, vertices);
+    b2Vec2 center = b->get_center();
+    set_position(beam_element, center);
     //printf("beam : x = %f y = %f  h = %f w = %f\n", beam_element.x, beam_element.y, beam_element.h, beam_element.w);
     beam_element.angle = b->get_angle();
     //printf("beam angle: %d\n", beam_element.angle);
@@ -245,11 +231,8 @@ StageDTO Stage::get_stageDTO() {
     //std::vector<b2Vec2> vertices = w->get_points();
     //set_position(weapon, vertices);
 
-    b2Vec2 point = w->get_point();
-    weapon.pos_x = point.x;
-    weapon.pos_y = point.y;
-    weapon.h = 0.5;
-    weapon.w = 0.5;
+    b2Vec2 center = w->get_center();
+    set_position(weapon, center);
     weapon.weapon = w->get_name();
     weapon.timer = w->get_timer();
     s.weapons.push_back(weapon);
