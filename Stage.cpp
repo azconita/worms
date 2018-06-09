@@ -116,7 +116,7 @@ void Stage::clean_dead_bodies() {
 }
 
 void Stage::update_player() {
-  printf("player time: %d\n", time(NULL) - this->player_time);
+  //printf("player time: %d\n", time(NULL) - this->player_time);
   if (this->change || (time(NULL) - this->player_time > 4)) {
     printf("change player\n");
     this->change_player();
@@ -240,6 +240,8 @@ StageDTO Stage::get_stageDTO() {
     set_position(beam_element, vertices);
     //printf("beam : x = %f y = %f  h = %f w = %f\n", beam_element.x, beam_element.y, beam_element.h, beam_element.w);
     beam_element.angle = b->get_angle();
+    if (beam_element.angle < 0.01)
+      beam_element.angle = 0;
     //printf("beam angle: %d\n", beam_element.angle);
     s.beams.push_back(beam_element);
   }
@@ -265,6 +267,7 @@ StageDTO Stage::get_stageDTO() {
 
   //s.worm_turn = 0;
   s.worm_turn = this->current_player->get_id();
+  //printf("send turn: %d", s.worm_turn);
   return s;
 }
 
