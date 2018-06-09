@@ -39,14 +39,14 @@ class Dot{
     }
     
     //Shows the dot on the screen
-    void show(SDL_Rect & camera_pos, SDL_Surface *screen){
+    void show(SDL_Rect & camera_pos, SDL_Surface *screen,int r,int g,int b){
     	//Show the dot
     	 SDL_Rect rectangle;
     	rectangle.x = x - camera_pos.x;
     	rectangle.y = y - camera_pos.y;
     	rectangle.h = DOT_HEIGHT;
     	rectangle.w = DOT_WIDTH; 
-    	Uint32 colorkey = SDL_MapRGBA(screen->format, 255, 255, 255,0.5);
+    	Uint32 colorkey = SDL_MapRGB(screen->format, r, g, b);
     	SDL_FillRect(screen, &rectangle, colorkey);
     	
     	//apply_surface( x - camera_pos.x, y - camera_pos.y, this, screen );
@@ -96,7 +96,7 @@ void keep_camera_pos_in_bounds(SDL_Rect & camera_pos, int max_height, int max_wi
 
 
 
-bool event_controller(SDL_Event &event,  Dot &myDot, SDL_Rect &camera_pos , int screen_height, int screen_width){
+bool event_controller(SDL_Event &event,  Dot &turno, SDL_Rect &camera_pos , int screen_height, int screen_width){
 	if(SDL_PollEvent(&event) != 1){
         return true; // no hay nuevos event
     }
@@ -127,16 +127,16 @@ bool event_controller(SDL_Event &event,  Dot &myDot, SDL_Rect &camera_pos , int 
             }
             switch(event.key.keysym.sym){
 		        case SDLK_LEFT:
-		            myDot.left();
+		            turno.left();
 		            break;
 		        case SDLK_RIGHT:
-		            myDot.right();
+		            turno.right();
 		            break;
 		        case SDLK_UP:
-		            myDot.up();
+		            turno.up();
 		            break;
 		        case SDLK_DOWN:
-		            myDot.down();
+		            turno.down();
 		            break;
 		    }
     }
@@ -168,7 +168,9 @@ int main(){
     printf("imagen de fondo = w:%i h:%i\n", background->w, background->h );
 
     SDL_Rect camera_pos = { 500, 500, screen_width, screen_height};
-    Dot myDot(800,800);
+    Dot turno(800,800);
+
+    Dot otro(500, 500);
 
 
     SDL_Event event;
@@ -179,8 +181,8 @@ int main(){
     bool running=true;
     while(running ){
 
-    	running = event_controller(event, myDot, camera_pos, screen_height, screen_width);
-       //running = event_controller(event, myDot, camera_pos, screen_height, screen_width);
+    	running = event_controller(event, turno, camera_pos, screen_height, screen_width);
+       //running = event_controller(event, turno, camera_pos, screen_height, screen_width);
         //actualiza el dibujo de la superficie en la pantalla
         SDL_Flip(screen);
 
@@ -197,14 +199,14 @@ int main(){
             SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format,0,0,0));
             
             //Set the camera_pos
-        	myDot.follow(camera_pos, screen_height, screen_width);
-
+        	turno.follow(camera_pos, screen_height, screen_width);
         	keep_camera_pos_in_bounds(camera_pos,background->h,background->w +10);
         	SDL_BlitSurface(background, &camera_pos, screen, NULL);
         
         
         	//Show the dot on the screen
-        	myDot.show(camera_pos, screen);
+        	turno.show(camera_pos, screen,255,0,255);
+        	otro.show(camera_pos, screen,255,255,0);
             
 
         }
