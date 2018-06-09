@@ -40,7 +40,7 @@ bool EventController::continue_running(WormAnimation& turn_worm){
             click(turn_worm);
             break;
         case SDL_MOUSEMOTION:
-            printf("motiooooonnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn\n");
+            printf("motiooooonnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn q\n");
             mouse_motion();
         case SDL_KEYDOWN:
             if(event.key.keysym.sym == SDLK_ESCAPE ){

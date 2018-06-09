@@ -19,7 +19,7 @@ void Client::debug_box2d_figure(SDL_Surface *screen, ElementDTO element_info){
 
 Client::Client(char * host_name, char * port)://
     socket(host_name, port),
-    actions_queue(1000){  
+    actions_queue(1000){
     this->socket.connect_to_server();
 }
 
@@ -29,14 +29,13 @@ StageDTO Client::receive_stage(){
     YAML::Node yaml_received = YAML::Load(stage_str);
     printf("%s\n", stage_str.c_str());
     StageDTO stage_received = yaml_received ["stage"].as<StageDTO>();
-    printf("worm turn: %d\n", stage_received.worm_turn);
     return stage_received;
 }
 
 
-void Client::run(){  
+void Client::run(){
 
-    extern  logger oLog; 
+    extern  logger oLog;
 
 
     if(SDL_Init(SDL_INIT_VIDEO) < 0) {
@@ -74,7 +73,7 @@ void Client::run(){
     WaterAnimation water(screen_height, 3);
 
     GraphicDesigner graphic_designer(screen, screen_height,screen_width, s);
-    
+
     std::map<int,WormAnimation>::iterator turn_worm_iter = graphic_designer.get_turn_worm(s.worm_turn);
 
     SDL_Event event;
@@ -111,9 +110,7 @@ void Client::run(){
 
             graphic_designer.show_background();
             water.show(screen);
-            graphic_designer.show_beams(s, screen);
-            graphic_designer.show_worms(s, screen);
-            graphic_designer.show_weapon(s, screen);
+            graphic_designer.show_elements(s,screen);
 
         }
 
@@ -123,4 +120,3 @@ void Client::run(){
 Client::~Client(){
     this->socket.shut();
 }
-
