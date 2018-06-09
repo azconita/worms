@@ -8,8 +8,11 @@
 
 class Camera {
 private:
-	SDL_Rect camera_position;
+	SDL_Rect camera_pos;
+	int max_height, max_width;
 	std::mutex mtx;
+
+	void keep_camera_pos_in_bounds();
 
 public:
 	Camera(int screen_h, int screen_w);
