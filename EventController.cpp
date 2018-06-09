@@ -10,10 +10,11 @@
 
 
 EventController::EventController(BlockingQueue<ActionDTO> & actions_queue, SDL_Event & event, 
-    int screen_height, int screen_width, GraphicDesigner & graphic_designer):
+    int screen_height, int screen_width, GraphicDesigner & graphic_designer, int id) :
         actions_queue(actions_queue),
         event(event),
-        graphic_designer(graphic_designer){
+        graphic_designer(graphic_designer),
+        id(id) {
             this->screen_height = screen_height;
             this-> screen_width = screen_width;
             this->wait_for_destination_clicl = false;
@@ -46,9 +47,11 @@ bool EventController::continue_running(WormAnimation& turn_worm){
                 quit();
                 return false;
             }
-            movement(event, turn_worm);
-            weapon_shortcuts(event, turn_worm);
-            weapon_action(event, turn_worm);
+            if (this->id == turn_worm.get_player_id()) {
+              movement(event, turn_worm);
+              weapon_shortcuts(event, turn_worm);
+              weapon_action(event, turn_worm);
+            }
             break;
     }
     return true;

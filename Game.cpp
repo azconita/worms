@@ -22,6 +22,12 @@ Game::~Game() {
   // TODO Auto-generated destructor stub
   this->timer.join();
   //delete players!
+  for (auto &q : this->players_queues) {
+    delete q;
+  }
+  for (auto &p : this->players) {
+    delete p;
+  }
 }
 
 bool Game::not_full() {
@@ -42,7 +48,10 @@ void Game::prepare() {
   //set players in stage
   this->stage.set_worms_to_players(this->players.size());
   //crear colas bloqueantes de los jugadores
+  int i = 0;
   for (auto& p : this->players) {
+    p->set_id(i);
+    i++;
     BlockingQueue<StageDTO>* q = new BlockingQueue<StageDTO>(1000);
     this->players_queues.push_back(q);
     p->add_stage_queues(q, &(this->stage_queue));

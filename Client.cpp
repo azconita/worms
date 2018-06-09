@@ -26,8 +26,8 @@ Client::Client(char * host_name, char * port)://
 
 StageDTO Client::receive_stage(){
     string stage_str = (this->socket).receive_dto();
-    //printf("%s\n", stage_str.c_str());
     YAML::Node yaml_received = YAML::Load(stage_str);
+    printf("%s\n", stage_str.c_str());
     StageDTO stage_received = yaml_received ["stage"].as<StageDTO>();
     printf("worm turn: %d\n", stage_received.worm_turn);
     return stage_received;
@@ -69,17 +69,16 @@ void Client::run(){
     SDL_WM_SetCaption(TITLE, TITLE);
 
     StageDTO s = receive_stage();
+    this->id = s.player_id;
 
     WaterAnimation water(screen_height, 3);
 
     GraphicDesigner graphic_designer(screen, screen_height,screen_width, s);
     
-    //turno harcodeado
-    printf("worm turn: %d", s.worm_turn);
     std::map<int,WormAnimation>::iterator turn_worm_iter = graphic_designer.get_turn_worm(s.worm_turn);
 
     SDL_Event event;
-    EventController event_controller(this->actions_queue,event, screen_height, screen_width, graphic_designer);
+    EventController event_controller(this->actions_queue,event, screen_height, screen_width, graphic_designer, this->id);
     Actioner actioner(this->socket,this->actions_queue);
     actioner.start();
 
@@ -101,7 +100,7 @@ void Client::run(){
         StageDTO s = receive_stage();
         turn_worm_iter = graphic_designer.get_turn_worm(s.worm_turn);
 
-        if((t1 -t0) > 100) {
+        if((t1 -t0) > 17) {
             // Nueva referencia de tiempo
             t0 = SDL_GetTicks();
 
