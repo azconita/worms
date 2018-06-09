@@ -116,25 +116,29 @@ void Stage::clean_dead_bodies() {
 }
 
 void Stage::update_player() {
-  printf("player time: %d\n", difftime(time(NULL), this->player_time));
-  if (this->change || (difftime(time(NULL),this->player_time) > 10)) {
+  printf("player time: %d\n", time(NULL) - this->player_time);
+  if (this->change || (time(NULL) - this->player_time > 4)) {
     printf("change player\n");
     this->change_player();
     this->change = false;
+    this->player_time = time(NULL);
   }
 }
 
 //TODO sirve así? gusanos mueren... de quien es el turno?
 //cuantos players puede haber????
 void Stage::change_player() {
-  int curr_id = this->current_player->get_id();
+  /*int curr_id = this->current_player->get_id();
   int curr_play_id = this->current_player->get_player_id();
   std::map<int, Worm*>::iterator next = this->worms.find(curr_id);
   if (++next == this->worms.end())
     this->current_player = this->worms.begin()->second;
   else
     this->current_player = next->second;
-  time(&(this->player_time));
+  time(&(this->player_time));*/
+  int new_player_id = ((this->last_player_id + 1) == this->players_turn.size()) ? 0 : this->last_player_id + 1;
+  this->current_player = this->worms[this->players_turn.at(new_player_id).get_next()];
+  printf("next player id: %d, worm id: %d\n", new_player_id, this->current_player->get_id());
 }
 
 void Stage::make_action(ActionDTO & action) {
@@ -283,17 +287,6 @@ void Stage::load_initial_stage(std::string file_name){
 }
 
 void Stage::set_worms_to_players(int total_players) {
-  //int randNum = rand()%(total_players);
-  //not random!! hacer shuffle del dict?
-  /*for (auto &w : this->worms) {
-    this->players_worms[randNum].push_back(w.first);
-    if (++randNum == total_players)
-      randNum = 0;
-  }
-  for (int i = 0; i < total_players; ++i) {
-    this->players_last_worm[i] = *(this->players_worms[i].begin());
-  }*/
-
   //get vector of worms ids
   std::vector<int> ids;
   std::transform(this->worms.begin(), this->worms.end(), std::back_inserter(ids),
@@ -303,9 +296,13 @@ void Stage::set_worms_to_players(int total_players) {
   std::shuffle(std::begin(ids), std::end(ids), rng);
   //create turn helpers
   int wq = this->worms.size() / total_players;
+  printf("total players: %d, worms for each: %d", total_players, wq);
   for (int i = 0; i < total_players; i++) {
-    this->players_turn.emplace(i, TurnHelper(std::vector<int>(ids[i*wq], ids[(i+1)*wq]), i));
+    //(i+1)*wq == ids.size()) ? ids.end() : ids[(i+1)*wq])
+    std::vector<int> v;
+    std::copy(ids.begin() + i*wq, ids.begin() + (i+1)*wq, std::back_inserter(v));
+    this->players_turn.emplace(i, TurnHelper(v, i));
   }
   //compensar jugador con menos gusanos!!
-  this->current_player = this->worms[*(ids.begin())];
+  this->current_player = this->worms[0];
 }

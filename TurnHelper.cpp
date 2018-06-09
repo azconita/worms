@@ -8,11 +8,12 @@
 #include "TurnHelper.h"
 
 #include <algorithm>
+#include <cstdio>
 
 TurnHelper::TurnHelper(std::vector<int> worms_ids, int id) :
             ids(worms_ids),
             last(0), player_id(id) {
-
+  printf("cantidad de gusanos en el turn helper: %d", this->ids.size());
 }
 
 TurnHelper::~TurnHelper() {

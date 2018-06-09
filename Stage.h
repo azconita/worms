@@ -25,16 +25,16 @@ private:
   std::vector<Beam*> beams;
   std::map<int, Worm*> worms;
   std::vector<Weapon*> weapons;
-  //std::map<int, std::vector<int>> players_worms;
-  //std::map<int, int> players_last_worm;
-  std::map<int, TurnHelper> players_turn;
-  int last_player_id = 0;
 
   WeaponExplosionListener explosion_listener;
   std::vector<Weapon*> explosions;
 
   float wind;
 
+  //std::map<int, std::vector<int>> players_worms;
+  //std::map<int, int> players_last_worm;
+  std::map<int, TurnHelper> players_turn;
+  int last_player_id = 0;
   bool change = false;
   Worm* current_player = NULL;
   time_t player_time = time(NULL);
