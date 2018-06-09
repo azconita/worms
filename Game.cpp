@@ -20,6 +20,7 @@ Game::Game(std::string &stage_name, Socket &client) :
 
 Game::~Game() {
   // TODO Auto-generated destructor stub
+  this->timer.join();
 }
 
 bool Game::not_full() {
@@ -37,6 +38,8 @@ void Game::add_player(Socket &client) {
 }
 
 void Game::prepare() {
+  //set players in stage
+  this->stage.set_worms_to_players(this->players.size());
   //crear colas bloqueantes de los jugadores
   for (auto& p : this->players) {
     BlockingQueue<StageDTO>* q = new BlockingQueue<StageDTO>(1000);
@@ -57,7 +60,7 @@ void Game::run() {
   while (!this->stage.finished()) {
     // sacar action de la cola: action de player o action del timer(update)
     ActionDTO action = this->stage_queue.pop();
-    printf("[Game] pop action: %d\n", action.type);
+    //printf("[Game] pop action: %d\n", action.type);
     if (action.type == Timer_update)
       this->stage.update();
     else

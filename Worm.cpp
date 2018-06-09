@@ -9,7 +9,8 @@
 #include "Constants.h"
 #include <string>
 
-Worm::Worm(b2World* world, float x, float y, int id) : Entity(1), world(world), id(id) {
+Worm::Worm(b2World* world, float x, float y, int id) :
+          Entity(1), world(world), id(id) {
   b2BodyDef bodyDef;
   bodyDef.type = b2_dynamicBody;
   bodyDef.position.Set(x, y);
@@ -103,6 +104,10 @@ void Worm::took_weapon(Weapon_Name weapon) {
 
 void Worm::use_weapon(float x, float y, int power, float degrees) {
 
+}
+
+int Worm::get_player_id() {
+  return this->player_id;
 }
 
 void Worm::teleport(float x, float y, Direction dir) {

@@ -2,7 +2,7 @@ stage:
   beams:
     - pos_x: 10
       pos_y: 20
-      size: 3
+      size: 6
       inclination: 0
     - pos_x: 20
       pos_y: 20
@@ -16,17 +16,16 @@ stage:
       pos_y: 18
       size: 3
       inclination: 90
-  players:
-    0:
-      - id: 0
-        pos_x: 10
-        pos_y: 10
-        direction: 0
-        life: 100
-        inclination: 0
-      - id: 1
-        pos_x: 20
-        pos_y: 10
-        direction: 0
-        life: 100
-        inclination: 0
+  worms:
+    - id: 0
+      pos_x: 10
+      pos_y: 10
+      direction: 0
+      life: 100
+      inclination: 0
+    - id: 1
+      pos_x: 9
+      pos_y: 10
+      direction: 0
+      life: 100
+      inclination: 0

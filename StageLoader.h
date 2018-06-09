@@ -29,7 +29,7 @@ struct Beam_y{
 
 struct Stage_y{
 	std::vector<Beam_y> beams;
-	std::map<int, std::vector<Worm_y>> players;
+	std::vector<Worm_y> worms;
 };
 
 namespace YAML {
@@ -38,13 +38,13 @@ struct convert<Stage_y> {
   static Node encode(const Stage_y& s) {
   	Node node;
 	node["beams"] = s.beams;
-	node["players"] = s.players;
+	node["worms"] = s.worms;
 	
     return node;
   }
   static bool decode(const Node& node, Stage_y& s) {
   	s.beams = node["beams"].as<std::vector<Beam_y>>();
-  	s.players = node["players"].as<std::map<int, std::vector<Worm_y>>>();
+  	s.worms = node["worms"].as<std::vector<Worm_y>>();
     return true;
   }
 };

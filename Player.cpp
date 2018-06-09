@@ -11,32 +11,37 @@
 #include "Dtos.h"
 #include "Error.h"
 #include <yaml-cpp/yaml.h>
-//#include "PlayerReceiver.h"
-//#include "PlayerSender.h"
 
 Player::Player(Socket &client) : client(client) {
   this->on = true;
 
 }
 
+Player::~Player() {
+  // TODO Auto-generated destructor stub
+  this->sender.join();
+  this->receiver.join();
+  //quien deberia borrar el socket??
+  this->client.shut();
+}
 
 void Player::start() {
   this->sender = std::thread(&Player::send, this);
   this->receiver = std::thread(&Player::receive, this);
 }
-void Player::send() {
 
+void Player::send() {
   extern logger oLog;
   while (this->on) {
     StageDTO s = this->send_queue->pop();
-    printf("[Player] send stage\n");
+    //printf("[Player] send stage\n");
     YAML::Emitter out;
     out << YAML::BeginMap;
     out << YAML::Key << "stage";
     out << YAML::Value << s;
     out << YAML::EndMap;
     try{
-      oLog() << "se envia" << out.c_str();
+      //printf("se envia %s\n", out.c_str());
       this->client.send_dto(out.c_str());
     }catch(Error e){
         //oLog() << "Player quit (peer socket closed).";
@@ -50,7 +55,7 @@ void Player::receive(){
   while (this->on) {
     try{
       std::string action_str = this->client.receive_dto();
-      printf("%s\n",action_str.c_str() );
+      //printf("%s\n",action_str.c_str() );
       oLog() << "recibiendo";
       YAML::Node yaml_received = YAML::Load(action_str);
       ActionDTO action_received = yaml_received["action"].as<ActionDTO>();
@@ -71,13 +76,6 @@ void Player::add_stage_queues(BlockingQueue<StageDTO> *send_queue,
 }
 
 void Player::stop(){
-  this->on = false; 
+  this->on = false;
 }
-
-Player::~Player() {
-  this->sender.join();
-  this->receiver.join();
-  this->client.shut();
-}
-
 

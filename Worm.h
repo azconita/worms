@@ -36,8 +36,8 @@ public:
   b2Vec2 get_position() { return this->body->GetPosition();}
   int get_life();
   int get_id() { return this->id;}
-  int get_player_id() { return this->player_id;}
   bool is_alive() { return ((this->life > 0) && (this->body->GetPosition().y < 100)); }
+  int get_player_id();
 
   //movements
   void move_left(); //vel: 0.2 m/s

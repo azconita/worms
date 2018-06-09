@@ -10,7 +10,7 @@
 #include "WeaponExplosionListener.h"
 #include "Dtos.h"
 #include "Logger.h"
-
+#include "TurnHelper.h"
 
 #include "Weapon.h"
 
@@ -25,6 +25,10 @@ private:
   std::vector<Beam*> beams;
   std::map<int, Worm*> worms;
   std::vector<Weapon*> weapons;
+  //std::map<int, std::vector<int>> players_worms;
+  //std::map<int, int> players_last_worm;
+  std::map<int, TurnHelper> players_turn;
+  int last_player_id = 0;
 
   WeaponExplosionListener explosion_listener;
   std::vector<Weapon*> explosions;
@@ -33,7 +37,7 @@ private:
 
   bool change = false;
   Worm* current_player = NULL;
-  time_t player_time = 0;
+  time_t player_time = time(NULL);
 
   bool finish = false;
 
@@ -49,18 +53,15 @@ public:
 
   //por ahora...
   StageDTO get_stageDTO();
+  void set_worms_to_players(int total_players);
 private:
   void do_explosions();
   void clean_dead_bodies();
   void update_player();
   void change_player();
 
-  std::vector<Beam> get_beams();
-  std::vector<Worm> get_worms();
-  std::vector<Worm> get_weapons();
 
   void load_initial_stage(std::string file_name);
-
   void set_position(ElementDTO & element , std::vector<b2Vec2> & vertices);
 };
 
