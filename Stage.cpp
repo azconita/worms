@@ -215,7 +215,10 @@ StageDTO Stage::get_stageDTO() {
   for (auto b: this->beams) {
     ElementDTO beam_element;
     b2Vec2 center = b->get_center();
-    set_position(beam_element, center);
+    set_position(beam_element, center); 
+    std::vector<b2Vec2> vertices = b->get_points();
+    beam_element.h = abs(vertices[0].y - vertices[2].y);
+    beam_element.w = abs(vertices[0].x - vertices[1].x);
     //printf("beam : x = %f y = %f  h = %f w = %f\n", beam_element.x, beam_element.y, beam_element.h, beam_element.w);
     beam_element.angle = b->get_angle();
     //printf("beam angle: %d\n", beam_element.angle);
@@ -252,7 +255,7 @@ void Stage::load_initial_stage(std::string file_name){
   oLog() << "loading initial stage:\n";
    for(auto b: s.beams){
 	   oLog() << "beam_y { x: " << b.pos_x << ", y: " << b.pos_y << ", size: " << b.size << ", inclination:" << b.inclination << "}" << endl;
-     this->beams.push_back(new Beam(this->world,  b.pos_x, b.pos_y, b.inclination));
+     this->beams.push_back(new Beam(this->world, b.size, b.pos_x, b.pos_y, b.inclination));
 
   }
   for(auto & pair: s.players){

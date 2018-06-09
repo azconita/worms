@@ -26,7 +26,7 @@ Client::Client(char * host_name, char * port)://
 
 StageDTO Client::receive_stage(){
     string stage_str = (this->socket).receive_dto();
-    printf("%s\n", stage_str.c_str());
+    //printf("%s\n", stage_str.c_str());
     YAML::Node yaml_received = YAML::Load(stage_str);
     StageDTO stage_received = yaml_received ["stage"].as<StageDTO>();
     return stage_received;
@@ -106,10 +106,10 @@ void Client::run(){
             //toda la pantalla en negro
             SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format,0,0,0));
             //dibujo las vigas y el agua
+
+            graphic_designer.show_background();
             water.show(screen);
             graphic_designer.show_beams(s, screen);
-
-            //dibujo los gusanos
             graphic_designer.show_worms(s, screen);
             graphic_designer.show_weapon(s, screen);
 

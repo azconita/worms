@@ -9,8 +9,9 @@
 #include <iostream>
 #include <vector>
 #include "Constants.h"
+#include "Logger.h"
 
-Beam::Beam(b2World* world, float x, float y, float angle) : Entity(0) {
+Beam::Beam(b2World* world, float size, float x, float y, float angle) : Entity(0) {
   //set up static body, store in class variable
   b2BodyDef bodyDef;
   bodyDef.type = b2_staticBody;
@@ -20,7 +21,9 @@ Beam::Beam(b2World* world, float x, float y, float angle) : Entity(0) {
   this->body = world->CreateBody(&bodyDef);
   //add box fixture
   b2PolygonShape shape;
-  shape.SetAsBox(Constants::beam_width /2, Constants::beam_height /2);//, b2Vec2(x, y), angle);
+  extern  logger oLog; 
+  oLog() << "beam wight" << size;
+  shape.SetAsBox((size+0.0)/2, Constants::beam_height /2);//, b2Vec2(x, y), angle);
   b2FixtureDef fixture;
   fixture.shape = &shape;
   fixture.friction = Constants::beam_friction;

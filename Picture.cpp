@@ -71,8 +71,8 @@ Picture::Picture(const char * bmp_path, Colour color, int columns, int rows){
         this->column_num = 0;
         this->default_direction = Left; //todas las fotos estan para la izquierda
 
-
-        SDL_Surface *tmp = IMG_Load(bmp_path);
+        SDL_Surface *tmp =  SDL_LoadBMP(bmp_path);
+        //SDL_Surface *tmp = IMG_Load(bmp_path);
         //tmp = rotozoomSurface(tmp,90.0, 10,0);     
 
 
@@ -109,8 +109,8 @@ int Picture::get_width(){
 
 void Picture::draw(SDL_Surface *screen, int x, int y){
     SDL_Rect position;
-    position.x = x - this->w/2;
-    position.y = y -this->h/2;
+    position.x = x - (this->w/2);
+    position.y = y - (this->h/2);
     draw(screen, position, this->default_direction);
 }
 

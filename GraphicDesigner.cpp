@@ -91,12 +91,43 @@ GraphicDesigner::GraphicDesigner(SDL_Surface * screen, int screen_height, int sc
 
     ////////////////////////////////////////////////////////
 
+    SDL_Surface *background = SDL_LoadBMP(BACKGROUND);
+    Sint16 x = background->w/2 - this->screen_height/2;
+    Sint16 y = background->h/2 -this->screen_height/2;
+    Uint16 h = this->screen_height;
+    Uint16 w = this->screen_width;
+    this->camera = { x,y, w, h};
+
     this->worms = create_worms(initial_stage);
     this->weapons = AnimationFactory::get_weapons();
 
     this->little_beams =  AnimationFactory::get_little_beams();
     this->big_beams = AnimationFactory::get_big_beams();
 
+}
+
+void GraphicDesigner::scroll(int x, int y){
+    printf("moviendooo en x=%i y = %i\n",x, y);
+    printf("H: %i W: %i\n",this->camera.y, this->camera.x );
+    if(x < 15){
+        this->camera.x -=10;
+    }
+    if(y < 15){
+        printf("se deberia mover para arriba\n");
+        this->camera.y -=10;
+        printf("camara y\n", this->camera.y);
+    }
+    if(x > this->camera.x -15){
+        this->camera.x += 10;
+    }
+    if(y > this->camera.y -15){
+        this->camera.y += 10;
+    }
+}
+
+void GraphicDesigner::show_background(){
+    SDL_Surface *background = SDL_LoadBMP(BACKGROUND);
+    SDL_BlitSurface(background, &this->camera, this->screen, NULL);
 }
 
 
@@ -107,16 +138,16 @@ void GraphicDesigner::show_beams(StageDTO s, SDL_Surface *screen){
 
         //debug_box2d_figure(screen, beam_info);
 
-        int up_left_vertex_x = get_pixels(beam_info.pos_x);
-        int up_left_vertex_y = get_pixels(beam_info.pos_y);
+        int up_left_vertex_x = get_pixels(beam_info.pos_x) - this->camera.x;
+        int up_left_vertex_y = get_pixels(beam_info.pos_y) - this->camera.y;
 
 
         if(beam_info.w == 3){
             Picture beam = inclinate_beam(this->little_beams, beam_info.angle);
-            beam.draw(screen,up_left_vertex_x, up_left_vertex_y);
+            beam.draw(this->screen,up_left_vertex_x, up_left_vertex_y);
         }else{
             Picture beam = inclinate_beam(this->big_beams, beam_info.angle);
-             beam.draw(screen,up_left_vertex_x, up_left_vertex_y);
+             beam.draw(this->screen,up_left_vertex_x, up_left_vertex_y);
         } 
     }
 }
@@ -156,12 +187,12 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
 
         //debug_box2d_figure(screen, worm_info);
 
-        int up_left_vertex_x = get_pixels(worm_info.pos_x);
-        int up_left_vertex_y = get_pixels(worm_info.pos_y);
+        int up_left_vertex_x = get_pixels(worm_info.pos_x) - this->camera.x;
+        int up_left_vertex_y = get_pixels(worm_info.pos_y) - this->camera.y;
 
         std::map<int,WormAnimation>::iterator worms_iter = this->worms.find(w.first);
         worms_iter->second.move(up_left_vertex_x, up_left_vertex_y);
-        worms_iter->second.show(screen);
+        worms_iter->second.show(this->screen);
 
         if(worm_info.player_id > 4){
             cout << "Error: juego no preparado para mas de 4 jugadores" << endl;
@@ -186,13 +217,13 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
 
         //debug_box2d_figure(screen, w);
 
-        int up_left_vertex_x = get_pixels(w.pos_x);
-        int up_left_vertex_y = get_pixels(w.pos_y);
+        int up_left_vertex_x = get_pixels(w.pos_x) - this->camera.x;
+        int up_left_vertex_y = get_pixels(w.pos_y) - this->camera.y;
 
 
         std::map<Weapon_Name,Animation>::iterator weapon_iter = this->weapons.find(w.weapon);
         weapon_iter->second.continue_internal_movement();
-        weapon_iter->second.draw(screen,up_left_vertex_x, up_left_vertex_y);
+        weapon_iter->second.draw(this->screen,up_left_vertex_x, up_left_vertex_y);
 
         if(is_timer_weapon(w.weapon)){
             show_timer(w.timer);
@@ -228,8 +259,8 @@ void GraphicDesigner::show_life(int life, int x, int y, Colour color){
     rectangle.y = y-2;
     rectangle.h = text->h + 2;
     rectangle.w = text->w + 4 ;
-    Uint32 colorkey = SDL_MapRGBA(screen->format, color.r, color.g, color.b,0.2);
-    SDL_FillRect(screen, &rectangle, colorkey);
+    Uint32 colorkey = SDL_MapRGBA(this->screen->format, color.r, color.g, color.b,0.2);
+    SDL_FillRect(this->screen, &rectangle, colorkey);
 
     SDL_Rect dimention;
     dimention.x = 0;
@@ -242,7 +273,7 @@ void GraphicDesigner::show_life(int life, int x, int y, Colour color){
     position.y = y;
     position.h = text->h;
     position.w = text->w;
-    SDL_BlitSurface(text, &dimention, screen, &position);
+    SDL_BlitSurface(text, &dimention, this->screen, &position);
 
 
 }
@@ -259,7 +290,11 @@ void GraphicDesigner::show_powerbar(int power){
     position.y = 5;
     position.h = this->power_bar->h;
     position.w = this->power_bar->w;
-    SDL_BlitSurface(this->power_bar, &dimention, screen, &position);
+
+    Colour color = Colour::create(Black);
+    Uint32 colorkey = SDL_MapRGB(this->power_bar->format, color.r, color.g, color.b);
+    SDL_SetColorKey(this->power_bar, SDL_SRCCOLORKEY, colorkey);
+    SDL_BlitSurface(this->power_bar, &dimention, this->screen, &position);
 
 
 }
@@ -276,7 +311,7 @@ void GraphicDesigner::show_weapons_menu(int size){
     position.y = 5;
     position.h = this->weapons_menu->h;
     position.w = this->weapons_menu->w;
-    SDL_BlitSurface(this->weapons_menu, &dimention, screen, &position);
+    SDL_BlitSurface(this->weapons_menu, &dimention, this->screen, &position);
 }
 
 bool GraphicDesigner::is_inside_weapon_menu(int x, int y){
@@ -344,16 +379,16 @@ void GraphicDesigner::show_timer(int second){
     white_rec.y = 25 - 4;
     white_rec.h = text->h + 8;
     white_rec.w = text->w + 8;
-    Uint32 withe  = SDL_MapRGBA(screen->format, 255, 255,255,100);
-    SDL_FillRect(screen, &white_rec, withe);
+    Uint32 withe  = SDL_MapRGBA(this->screen->format, 255, 255,255,100);
+    SDL_FillRect(this->screen, &white_rec, withe);
 
     SDL_Rect rectangle;
     rectangle.x = this->screen_width/2 - 2;
     rectangle.y = 25;
     rectangle.h = text->h;
     rectangle.w = text->w;
-    Uint32 colorkey = SDL_MapRGBA(screen->format, 0, 0, 0, 0);
-    SDL_FillRect(screen, &rectangle, colorkey);
+    Uint32 colorkey = SDL_MapRGBA(this->screen->format, 0, 0, 0, 0);
+    SDL_FillRect(this->screen, &rectangle, colorkey);
 
     SDL_Rect dimention;
     dimention.x = 0;
@@ -366,7 +401,7 @@ void GraphicDesigner::show_timer(int second){
     position.y = 25;
     position.h = text->h;
     position.w = text->w;
-    SDL_BlitSurface(text, &dimention, screen, &position);
+    SDL_BlitSurface(text, &dimention, this->screen, &position);
 
 
 }

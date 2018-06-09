@@ -13,7 +13,7 @@
 #include "Error.h"
 #include "ServerSocket.h"
 #include "Dtos.h"
-#include "stage.h"
+#include "Stage.h"
 
 
 
