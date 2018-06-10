@@ -17,6 +17,7 @@ private:
 public:
 	Camera(int screen_h, int screen_w);
 	void move(int x, int y);
+	void follow(int x, int y);
 	SDL_Rect get_focus();
 };
 #endif

@@ -139,11 +139,23 @@ void WormAnimation::move(int position_x, int position_y){
 
 }
 
-int WormAnimation::get_x(){
-    return this->x;
+float WormAnimation::get_up_left_x(){//esta funcion se usa para centara la camara en el gusano
+    std::map<State,Animation>::iterator animation_iter = this->animations.begin();
+    printf("x = %i\n", this->x);
+    printf("ancho %f\n", ((float )animation_iter->second.get_width()/2) );
+    printf("arriba %f\n",this->x - ((float )animation_iter->second.get_width()/2));
+    return this->x - ((float )animation_iter->second.get_width()/2);
+}
+float WormAnimation::get_up_left_y(){
+    std::map<State,Animation>::iterator animation_iter = this->animations.begin();
+    return this->y - ((float )animation_iter->second.get_height()/2);
+}
+
+int WormAnimation::get_x(){ 
+    return this->x; 
 }
 int WormAnimation::get_y(){
-    return this->y;
+    return this->y ;
 }
 
 void WormAnimation::show(SDL_Surface * screen){

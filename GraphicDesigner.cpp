@@ -113,7 +113,7 @@ void GraphicDesigner::scroll(int x, int y){
         return;
     }
     if(x > this->screen_width -15){
-       this-> camera->move(10,0);
+       this->camera->move(10,0);
         return;
     }
     if(y > this->screen_height -15){
@@ -123,6 +123,7 @@ void GraphicDesigner::scroll(int x, int y){
 }
 
 void GraphicDesigner::show_background(){
+
     SDL_Rect camera_position = camera->get_focus();
     SDL_Surface *background = SDL_LoadBMP(BACKGROUND);
     SDL_BlitSurface(background, &camera_position, this->screen, NULL);
@@ -142,16 +143,16 @@ void GraphicDesigner::show_beams(StageDTO s, SDL_Surface *screen){
 
         //debug_box2d_figure(screen, beam_info);
 
-        int up_left_vertex_x = get_pixels(beam_info.pos_x) - camera_position.x;
-        int up_left_vertex_y = get_pixels(beam_info.pos_y) - camera_position.y;
+        int center_x = get_pixels(beam_info.pos_x) - camera_position.x;
+        int center_y = get_pixels(beam_info.pos_y) - camera_position.y;
 
 
         if(beam_info.w == 3){
             Picture beam = inclinate_beam(this->little_beams, beam_info.angle);
-            beam.draw(this->screen,up_left_vertex_x, up_left_vertex_y);
+            beam.draw(this->screen,center_x, center_y);
         }else{
             Picture beam = inclinate_beam(this->big_beams, beam_info.angle);
-             beam.draw(this->screen,up_left_vertex_x, up_left_vertex_y);
+             beam.draw(this->screen,center_x, center_y);
         } 
     }
 }
@@ -184,18 +185,29 @@ Picture GraphicDesigner::inclinate_beam(std::vector<Picture> beams, float degree
 
 
 void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
-    SDL_Rect camera_position = this->camera->get_focus();
+   
     for (auto w: s.worms) {
-
+        
         ElementDTO worm_info = w.second;
+        int center_x = get_pixels(worm_info.pos_x);
+        int center_y = get_pixels(worm_info.pos_y);
 
-        //debug_box2d_figure(screen, worm_info);
 
-        int up_left_vertex_x = get_pixels(worm_info.pos_x) - camera_position.x;
-        int up_left_vertex_y = get_pixels(worm_info.pos_y) - camera_position.y;
+        if(s.worm_turn == w.first){
+            //float up_left_x = worms_iter->second.get_up_left_x();
+            //float up_left_y = worms_iter->second.get_up_left_y();
+            printf(" es mi turno %i, estoy en el centro de la camera ja\n x=%i y=%i\n", w.first, get_pixels(worm_info.pos_x), get_pixels(worm_info.pos_y));
+            this->camera->follow(get_pixels(worm_info.pos_x),get_pixels(worm_info.pos_y)); 
+        }
+        SDL_Rect camera_position = this->camera->get_focus();
+
+        center_x = get_pixels(worm_info.pos_x) - camera_position.x;
+        center_y = get_pixels(worm_info.pos_y) - camera_position.y;
 
         std::map<int,WormAnimation>::iterator worms_iter = this->worms.find(w.first);
-        worms_iter->second.move(up_left_vertex_x, up_left_vertex_y);
+        worms_iter->second.move(center_x, center_y);
+
+
         worms_iter->second.show(this->screen);
 
         if(worm_info.player_id > 4){
@@ -204,7 +216,7 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
 
         Colour player_color = Colour::create(possible_colors.at(worm_info.player_id));
 
-        show_life(worm_info.life,up_left_vertex_x+20,up_left_vertex_y-5,player_color);
+        show_life(worm_info.life,center_x+20,center_y-5,player_color);
         int weapon_power = worms_iter->second.get_weapon_power();
         show_powerbar(weapon_power);
 
@@ -222,13 +234,16 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
 
         //debug_box2d_figure(screen, w);
 
-        int up_left_vertex_x = get_pixels(w.pos_x) - camera_position.x;
-        int up_left_vertex_y = get_pixels(w.pos_y) - camera_position.y;
+        int center_x = get_pixels(w.pos_x) - camera_position.x;
+        int center_y = get_pixels(w.pos_y) - camera_position.y;
 
 
         std::map<Weapon_Name,Animation>::iterator weapon_iter = this->weapons.find(w.weapon);
         weapon_iter->second.continue_internal_movement();
-        weapon_iter->second.draw(this->screen,up_left_vertex_x, up_left_vertex_y);
+        weapon_iter->second.draw(this->screen,center_x, center_y);
+
+        /*this->camera->follow(center_x - ((float) weapon_iter->second.get_width()/2),//
+                             center_y - ((float) weapon_iter->second.get_height()/2));*/
 
         if(is_timer_weapon(w.weapon)){
             show_timer(w.timer);
@@ -236,9 +251,6 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
     }
 
 }
-
-
-
 
 
 void GraphicDesigner::show_life(int life, int x, int y, Colour color){

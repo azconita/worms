@@ -77,6 +77,8 @@ public:
 	void move(int position_x, int position_y);
 	int get_x();
 	int get_y();
+	float get_up_left_x();
+	float get_up_left_y();
 	void show(SDL_Surface * screen);
 	virtual ~WormAnimation();
 };

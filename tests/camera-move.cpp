@@ -52,27 +52,12 @@ class Dot{
     	//apply_surface( x - camera_pos.x, y - camera_pos.y, this, screen );
     }
     
-    //Sets the camera_pos over the dot
-    void set_camera_pos(SDL_Rect & camera_pos, int screen_width, int screen_height){
-	    //Center the camera_pos over the dot
-	    camera_pos.x = ( this->x + DOT_WIDTH / 2 ) - screen_width / 2;
-	    camera_pos.y = ( this->y + DOT_HEIGHT / 2 ) - screen_height / 2;    
-	}
 
-	 void follow(SDL_Rect & camera_pos, int screen_width, int screen_height){
+	 void follow(SDL_Rect & camera_pos, int screen_height, int screen_width){
 	    //Center the camera_pos over the dot
-	    if(this->x < camera_pos.x ){
-	    	camera_pos.x = this->x; 
-	    }
-	    if(this->x > camera_pos.x + screen_height){
-	    	camera_pos.x = this->x -screen_height;
-	    }
-	    if(this->y < camera_pos.y ){
-	    	camera_pos.y = this->y;
-	    } 
-	    if(this->y > camera_pos.y + screen_width){
-	    	camera_pos.y = this->y -screen_width;
-	    }
+
+        camera_pos.x = ( this->x + DOT_WIDTH / 2 ) - (screen_width/2);
+	    camera_pos.y = ( this->y + DOT_HEIGHT / 2 )  - (screen_height/2);
 	}
 };
 
@@ -128,15 +113,19 @@ bool event_controller(SDL_Event &event,  Dot &turno, SDL_Rect &camera_pos , int 
             switch(event.key.keysym.sym){
 		        case SDLK_LEFT:
 		            turno.left();
+                    turno.follow(camera_pos, screen_height, screen_width);
 		            break;
 		        case SDLK_RIGHT:
 		            turno.right();
+                    turno.follow(camera_pos, screen_height, screen_width);
 		            break;
 		        case SDLK_UP:
 		            turno.up();
+                    turno.follow(camera_pos, screen_height, screen_width);
 		            break;
 		        case SDLK_DOWN:
 		            turno.down();
+                    turno.follow(camera_pos, screen_height, screen_width);
 		            break;
 		    }
     }
@@ -199,7 +188,7 @@ int main(){
             SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format,0,0,0));
             
             //Set the camera_pos
-        	turno.follow(camera_pos, screen_height, screen_width);
+        	
         	keep_camera_pos_in_bounds(camera_pos,background->h,background->w +10);
         	SDL_BlitSurface(background, &camera_pos, screen, NULL);
         

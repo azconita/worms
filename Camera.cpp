@@ -13,16 +13,16 @@ Camera::Camera(int screen_h, int screen_w){
 }
 
 void Camera::move(int x, int y){
+	printf("see mueveee\n");
 	std::unique_lock<std::mutex> lck(this->mtx);
 	this->camera_pos.x = this->camera_pos.x + x;
 	this->camera_pos.y = this->camera_pos.y + y;
 	this->keep_camera_pos_in_bounds();
-	    
-
-
+	   
 }
 
 void Camera::keep_camera_pos_in_bounds(){
+	printf("seee acomoda\n");
 		if( this->camera_pos.x < 0 ){
 	        this->camera_pos.x = 0;    
 	    }
@@ -30,17 +30,20 @@ void Camera::keep_camera_pos_in_bounds(){
 	        this->camera_pos.y = 0;    
 	    }
 
-	    printf("x = %i max = %i\n", this->camera_pos.x + this->camera_pos.w, this->max_width );
-	    
 	    if( this->camera_pos.x + this->camera_pos.w > this->max_width){
 	        this->camera_pos.x = this->max_width - this->camera_pos.w;   
-	        printf("quedaaaaa %i\n", this->camera_pos.x ); 
 	    }
 	    if( this->camera_pos.y + this->camera_pos.h> this->max_height){
 	        this->camera_pos.y = this->max_height - this->camera_pos.h;    
 	    }
 }
 
+ void Camera::follow(int x, int y){
+	    std::unique_lock<std::mutex> lck(this->mtx);
+        this->camera_pos.x = x - ((float)this->camera_pos.w/2);
+	    this->camera_pos.y = y  - ((float)this->camera_pos.h/2);
+	    //this->keep_camera_pos_in_bounds();
+	}
 
 SDL_Rect Camera::get_focus(){
 	std::unique_lock<std::mutex> lck(this->mtx);
