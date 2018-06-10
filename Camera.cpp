@@ -40,7 +40,7 @@ void Camera::keep_camera_pos_in_bounds(){
 	    std::unique_lock<std::mutex> lck(this->mtx);
         this->camera_pos.x = x - ((float)this->camera_pos.w/2);
 	    this->camera_pos.y = y  - ((float)this->camera_pos.h/2);
-	    //this->keep_camera_pos_in_bounds();
+	    this->keep_camera_pos_in_bounds();
 	}
 
 SDL_Rect Camera::get_focus(){
