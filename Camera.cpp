@@ -13,7 +13,6 @@ Camera::Camera(int screen_h, int screen_w){
 }
 
 void Camera::move(int x, int y){
-	printf("see mueveee\n");
 	std::unique_lock<std::mutex> lck(this->mtx);
 	this->camera_pos.x = this->camera_pos.x + x;
 	this->camera_pos.y = this->camera_pos.y + y;
@@ -22,7 +21,6 @@ void Camera::move(int x, int y){
 }
 
 void Camera::keep_camera_pos_in_bounds(){
-	printf("seee acomoda\n");
 		if( this->camera_pos.x < 0 ){
 	        this->camera_pos.x = 0;    
 	    }

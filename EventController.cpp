@@ -39,7 +39,6 @@ bool EventController::continue_running(WormAnimation& turn_worm){
             click(turn_worm);
             break;
         case SDL_MOUSEMOTION:
-            printf("motiooooonnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn q\n");
             mouse_motion();
         case SDL_KEYDOWN:
             if(event.key.keysym.sym == SDLK_ESCAPE ){
@@ -137,7 +136,6 @@ void EventController::click(WormAnimation& turn_worm){
 
 
 void EventController::mouse_motion(){
-    printf("mmooovimientooo detectaddooooooooo\n");
     int x, y;
     SDL_GetMouseState(&x, &y);
     if(x > screen_width - 5 && y < 5){

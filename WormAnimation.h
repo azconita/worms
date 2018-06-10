@@ -78,8 +78,6 @@ public:
 	void move(int position_x, int position_y);
 	int get_x();
 	int get_y();
-	float get_up_left_x();
-	float get_up_left_y();
 	bool is_in_movement();
 	void show(SDL_Surface * screen, SDL_Rect camera_position);
 	virtual ~WormAnimation();
