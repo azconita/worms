@@ -46,7 +46,7 @@ struct addrinfo * Socket::addrinfo(){
     memset(&hints, 0, sizeof(struct addrinfo)); 
     hints.ai_family = AF_INET;       //IPv4 
     hints.ai_socktype = SOCK_STREAM; //TCP 
-    hints.ai_flags = 0; 
+    hints.ai_flags = AI_PASSIVE;
 
     struct addrinfo *addrinfoNode;
     
@@ -74,7 +74,7 @@ bool Socket::is_valid_port(const char * port){
 
 Socket::Socket(const char * host_name, const char * port){
     if(!is_valid_port(port)){
-      throw Error("%s no es un purto valido\n"//
+      throw Error("%s no es un puerto valido\n"//
        "deben ser todos caracteres numéricos", port);
     }
 
@@ -139,7 +139,7 @@ void Socket::connect_to_server(){
       if (this->is_connected){
           break;
       }
-      node = define_socket_num(addrinfoNode);
+      node = define_socket_num(node->ai_next);
   }
   freeaddrinfo(addrinfoNode);
   if (this->is_connected == false) {
