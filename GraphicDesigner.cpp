@@ -185,30 +185,36 @@ Picture GraphicDesigner::inclinate_beam(std::vector<Picture> beams, float degree
 
 
 void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
+    /*std::map<int,WormAnimation>::iterator worms_iter = this->worms.find(s.worm_turn);
+    std::map<int,ElementDTO>::iterator worms_info_iter = s.worms.find(s.worm_turn);
+    if(worms_iter->second.is_in_movement()){
+            ElementDTO worm_info =  worms_info_iter->second;
+            int center_x = get_pixels(worm_info.pos_x);
+            int center_y = get_pixels(worm_info.pos_y);
+            float up_left_x = worms_iter->second.get_up_left_x();
+            float up_left_y = worms_iter->second.get_up_left_y();
+            printf(" es mi turno %i, estoy en el centro de la camera ja\n x=%i y=%i\n", s.worm_turn, get_pixels(worm_info.pos_x), get_pixels(worm_info.pos_y));
+            //this->camera->follow(get_pixels(worm_info.pos_x),get_pixels(worm_info.pos_y)); 
+    }*/
+
+    
+
    
     for (auto w: s.worms) {
+        std::map<int,WormAnimation>::iterator worms_iter = this->worms.find(w.first);
         
         ElementDTO worm_info = w.second;
         int center_x = get_pixels(worm_info.pos_x);
         int center_y = get_pixels(worm_info.pos_y);
+        worms_iter->second.move(center_x, center_y);
 
-
-        if(s.worm_turn == w.first){
-            //float up_left_x = worms_iter->second.get_up_left_x();
-            //float up_left_y = worms_iter->second.get_up_left_y();
+        if(w.first == s.worm_turn && worms_iter->second.is_in_movement()){
             printf(" es mi turno %i, estoy en el centro de la camera ja\n x=%i y=%i\n", w.first, get_pixels(worm_info.pos_x), get_pixels(worm_info.pos_y));
             this->camera->follow(get_pixels(worm_info.pos_x),get_pixels(worm_info.pos_y)); 
         }
         SDL_Rect camera_position = this->camera->get_focus();
+        worms_iter->second.show(this->screen, camera_position);
 
-        center_x = get_pixels(worm_info.pos_x) - camera_position.x;
-        center_y = get_pixels(worm_info.pos_y) - camera_position.y;
-
-        std::map<int,WormAnimation>::iterator worms_iter = this->worms.find(w.first);
-        worms_iter->second.move(center_x, center_y);
-
-
-        worms_iter->second.show(this->screen);
 
         if(worm_info.player_id > 4){
             cout << "Error: juego no preparado para mas de 4 jugadores" << endl;

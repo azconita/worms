@@ -57,6 +57,7 @@ class WormAnimation {
 	float degrees;
 	int weapon_power;
 	int timer;
+	bool in_movement;
 	std::map<State,Animation> animations;
 public:
 	WormAnimation(int initial_x, int initial_y, Direction initial_dir);
@@ -79,7 +80,8 @@ public:
 	int get_y();
 	float get_up_left_x();
 	float get_up_left_y();
-	void show(SDL_Surface * screen);
+	bool is_in_movement();
+	void show(SDL_Surface * screen, SDL_Rect camera_position);
 	virtual ~WormAnimation();
 };
 

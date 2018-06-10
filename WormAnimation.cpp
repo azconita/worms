@@ -22,6 +22,7 @@ WormAnimation::WormAnimation(int initial_x, int initial_y, Direction initial_dir
     }
     this->weapon_power = 0;
     this->timer = 5;
+    this->in_movement = false;
 }
 
 bool WormAnimation::has_weapon(){
@@ -121,6 +122,11 @@ Direction WormAnimation::get_direction(){
 
 
 void WormAnimation::move(int position_x, int position_y){
+    if(this->x != position_x || this->y != position_y){
+        this->in_movement = true;
+    }else{
+        in_movement = false;
+    }
     if(this->x = position_x && this->y == y && this->state == Fall){ // se cayo sobre una viga
         this->state = Still;
     }
@@ -151,6 +157,10 @@ float WormAnimation::get_up_left_y(){
     return this->y - ((float )animation_iter->second.get_height()/2);
 }
 
+bool WormAnimation::is_in_movement(){
+    return this->in_movement;
+}
+
 int WormAnimation::get_x(){ 
     return this->x; 
 }
@@ -158,9 +168,9 @@ int WormAnimation::get_y(){
     return this->y ;
 }
 
-void WormAnimation::show(SDL_Surface * screen){
+void WormAnimation::show(SDL_Surface * screen, SDL_Rect camera_position){
     std::map<State,Animation>::iterator animation_iter = animations.find(this->state);
-    animation_iter->second.draw(screen, this->x, this->y);
+    animation_iter->second.draw(screen, this->x -camera_position.x, this->y -camera_position.y);
 }
 
 
