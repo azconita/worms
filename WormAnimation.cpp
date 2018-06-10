@@ -7,7 +7,7 @@
 
 #include "WormAnimation.h"
 
-WormAnimation::WormAnimation(int initial_x, int initial_y, Direction initial_dir){
+WormAnimation::WormAnimation(int initial_x, int initial_y, Direction initial_dir, int player, int wormid) : player_id(player), worm_id(wormid) {
     this->animations = AnimationFactory::get_wormsAnimations();
     printf("tamaño del vector de estados de gusano %lu\n", this->animations.size() );
 
@@ -145,18 +145,6 @@ void WormAnimation::move(int position_x, int position_y){
 
 }
 
-float WormAnimation::get_up_left_x(){//esta funcion se usa para centara la camara en el gusano
-    std::map<State,Animation>::iterator animation_iter = this->animations.begin();
-    printf("x = %i\n", this->x);
-    printf("ancho %f\n", ((float )animation_iter->second.get_width()/2) );
-    printf("arriba %f\n",this->x - ((float )animation_iter->second.get_width()/2));
-    return this->x - ((float )animation_iter->second.get_width()/2);
-}
-float WormAnimation::get_up_left_y(){
-    std::map<State,Animation>::iterator animation_iter = this->animations.begin();
-    return this->y - ((float )animation_iter->second.get_height()/2);
-}
-
 bool WormAnimation::is_in_movement(){
     return this->in_movement;
 }
@@ -166,6 +154,14 @@ int WormAnimation::get_x(){
 }
 int WormAnimation::get_y(){
     return this->y ;
+}
+
+int WormAnimation::get_player_id() {
+  return this->player_id;
+}
+
+int WormAnimation::get_id() {
+  return this->worm_id;
 }
 
 void WormAnimation::show(SDL_Surface * screen, SDL_Rect camera_position){

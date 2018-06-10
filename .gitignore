@@ -39,8 +39,10 @@ CMakeFiles/*
 cmake_install.cmake
 tp
 faltantes
-client
-server
 
 #loggs
 *.log
+
+client
+server
+

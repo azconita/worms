@@ -79,6 +79,7 @@ struct ElementDTO { //puede ser un gusano, un arma o una viga
 struct StageDTO {
   //bool finish = false;
   int worm_turn;
+  int player_id;
   std::vector<ElementDTO> beams;
   std::map<int,ElementDTO> worms;
   std::vector<ElementDTO> weapons;
@@ -121,6 +122,7 @@ struct convert<StageDTO> {
   static Node encode(const StageDTO& s) {
     Node node;
     node["worm_turn"] = s.worm_turn;
+    node["player_id"] = s.player_id;
     node["worms"] = s.worms;
     node["beams"] = s.beams;
     node["weapons"] = s.weapons;
@@ -130,6 +132,7 @@ struct convert<StageDTO> {
   }
   static bool decode(const Node& node, StageDTO& s) {
     s.worm_turn = node["worm_turn"].as<int>();
+    s.player_id = node["player_id"].as<int>();
     s.beams = node["beams"].as<std::vector<ElementDTO>>();
     s.weapons = node["weapons"].as<std::vector<ElementDTO>>();
     s.worms = node["worms"].as<std::map<int, ElementDTO>>();

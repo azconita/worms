@@ -25,6 +25,10 @@ Player::~Player() {
   this->client.shut();
 }
 
+void Player::set_id(int id) {
+  this->id = id;
+}
+
 void Player::start() {
   this->sender = std::thread(&Player::send, this);
   this->receiver = std::thread(&Player::receive, this);
@@ -34,6 +38,7 @@ void Player::send() {
   extern logger oLog;
   while (this->on) {
     StageDTO s = this->send_queue->pop();
+    s.player_id = this->id;
     if (s.worm_turn == -1) {
       this->stop();
     } else {

@@ -51,6 +51,8 @@ static const std::vector<State> weapons_states_with_power(
 
 
 class WormAnimation {
+    int player_id = -1;
+    int worm_id = -1;
 	int x, y;
 	Direction direction;
 	State state;
@@ -60,7 +62,7 @@ class WormAnimation {
 	bool in_movement;
 	std::map<State,Animation> animations;
 public:
-	WormAnimation(int initial_x, int initial_y, Direction initial_dir);
+	WormAnimation(int initial_x, int initial_y, Direction initial_dir, int player, int wormid);
 	bool has_weapon();
 	bool has_weapon_to_click();
 	bool has_point_weapon();
@@ -80,6 +82,8 @@ public:
 	int get_y();
 	bool is_in_movement();
 	void show(SDL_Surface * screen, SDL_Rect camera_position);
+	int get_player_id();
+	int get_id();
 	virtual ~WormAnimation();
 };
 

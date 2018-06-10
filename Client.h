@@ -27,7 +27,7 @@ using std::pair;
 class Client{
 	Socket socket;
 	BlockingQueue<ActionDTO> actions_queue;
-
+	int id = -1;
 public:
 	Client(char * host_name, char * port);
 	void run();

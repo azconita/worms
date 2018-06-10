@@ -145,10 +145,10 @@ void Stage::make_action(ActionDTO & action) {
   printf("%i, %i \n", action.type, action.move );
   int worm = action.worm_id;
   //VALIDAR TURNO!!
-  //if (worm != this->current_player->get_id()) {
-    //printf("not current player: current: %d, sent: %d\n", this->current_player->get_id(), worm);
-    //return;//lanzar excepcion o algo: gusano invalido!
-  //}
+  if (worm != this->current_player->get_id()) {
+    printf("not current player: current: %d, sent: %d\n", this->current_player->get_id(), worm);
+    return;//lanzar excepcion o algo: gusano invalido!
+  }
   switch (action.type) {
     case (Make_move):{
       switch(action.move){
@@ -230,7 +230,7 @@ StageDTO Stage::get_stageDTO() {
     beam_element.w = abs(vertices[0].x - vertices[1].x);
     //printf("beam : x = %f y = %f  h = %f w = %f\n", beam_element.x, beam_element.y, beam_element.h, beam_element.w);
     beam_element.angle = b->get_angle();
-    if (beam_element.angle < 0.01)
+    if ((beam_element.angle < 0.01) && (beam_element.angle > -0.01))
       beam_element.angle = 0;
     //printf("beam angle: %d\n", beam_element.angle);
     s.beams.push_back(beam_element);

@@ -15,6 +15,7 @@
 
 class Player {
   Socket &client;
+  int id = -1;
   BlockingQueue<StageDTO> *send_queue;
   BlockingQueue<ActionDTO> *recv_queue;
   std::thread sender;
@@ -23,7 +24,7 @@ class Player {
 public:
   Player(Socket &client);
   virtual ~Player();
-
+  void set_id(int id);
   void add_stage_queues(BlockingQueue<StageDTO> *send_queue,
                         BlockingQueue<ActionDTO> *recv_queue);
   void start();

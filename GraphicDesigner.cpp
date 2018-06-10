@@ -33,7 +33,7 @@ std::map<int,WormAnimation> GraphicDesigner::create_worms(StageDTO s){
         if(worm_info.player_id %2 == 0){
             dir = Right;
         }
-        WormAnimation worm(position_worm_x, position_worm_y, dir);
+        WormAnimation worm(position_worm_x, position_worm_y, dir, worm_info.player_id, id);
         worms.insert(std::pair<int,WormAnimation>(id,worm));
     }
     return worms;

@@ -21,13 +21,14 @@ class EventController {
 	ActionDTO action;
 	int screen_height;
 	int screen_width;
+	int id;
 	
 	bool wait_for_destination_clicl;
 	bool wait_for_weapon_click;
 
 public:
 	EventController(BlockingQueue<ActionDTO> & actions_queue, SDL_Event & event, int screen_height, int screen_width, 
-		GraphicDesigner & graphic_designer);
+		GraphicDesigner & graphic_designer, int id);
 	bool continue_running(WormAnimation& turn_worm);
 	virtual ~EventController();
 
