@@ -9,7 +9,7 @@
 #include <chrono>
 #include <thread>
 
-#define SLEEPNANOSECONDS 50000000
+#define SLEEPNANOSECONDS 100000000
 
 TimerStage::TimerStage(BlockingQueue<ActionDTO> &q) : stage_queue(q){
   // TODO Auto-generated constructor stub

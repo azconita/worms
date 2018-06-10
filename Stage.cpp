@@ -18,7 +18,7 @@
 Stage::Stage(std::string file_name) {
   std::cout << file_name << '\n';
   b2Vec2 gravity(0, Constants::gravity); //normal earth gravity
-
+  printf("[Stage] Stage -> new World\n");
   this->world = new b2World(gravity);
   this->explosion_listener;
   this->world->SetContactListener(&this->explosion_listener);
@@ -186,10 +186,12 @@ void Stage::make_action(ActionDTO & action) {
       } else if (action.weapon == W_Air_Attack) {
         //TODO: fix : que no caigan todos juntos! (hace que exploten antes)
         for (int i = 0; i < 6; ++ i) {
+          printf("[Stage] make_action -> new Weapon\n");
           Weapon* w = new Weapon(this->world, action.weapon, action.pos_x, 0, this->wind);
           this->explosions.push_back(w);
         }
       } else {
+        printf("[Stage] make_action -> new Weapon\n");
         Weapon* w = new Weapon(this->world, action.weapon, action.pos_x, action.pos_y, this->wind);
         printf("about to shoot");
         w->shoot(action.power, action.weapon_degrees, action.direction, action.time_to_explode);
@@ -217,6 +219,7 @@ StageDTO Stage::get_stageDTO() {
     set_position(worm_element, center);
     worm_element.player_id = w.second->get_player_id();
     worm_element.life = w.second->get_life();
+    worm_element.angle = 0;
     //printf("worm %i: x = %f y = %f  h = %f w = %f\n",w.first, worm_element.x, worm_element.y, worm_element.h, worm_element.w);
     s.worms[w.first] = worm_element;
   }
@@ -264,15 +267,17 @@ void Stage::load_initial_stage(std::string file_name){
   Stage_y s = yaml_loader.load_stage();
   oLog() << "loading initial stage:\n";
   for(auto b: s.beams){
-	   oLog() << "beam_y { x: " << b.pos_x << ", y: " << b.pos_y << ", size: " << b.size << ", inclination:" << b.inclination << "}" << endl;
-     this->beams.push_back(new Beam(this->world, b.size, b.pos_x, b.pos_y, b.inclination));
+    oLog() << "beam_y { x: " << b.pos_x << ", y: " << b.pos_y << ", size: " << b.size << ", inclination:" << b.inclination << "}" << endl;
+    printf("[Stage] load_initial_stage -> new Beam\n");
+	this->beams.push_back(new Beam(this->world, b.size, b.pos_x, b.pos_y, b.inclination));
 
   }
   for(auto & w: s.worms){
     oLog() << "worms: { id: "<< w.id << ", x: "<< w.pos_x << " , y: "
       << w.pos_y << ", direction: "<< w.direction << ", inclination: "<<w.inclination << ", life: " << w.life <<" }"<< endl;
-      Worm* worm = new Worm(this->world, w.pos_x, w.pos_y, w.id);
-      this->worms.emplace(w.id, worm);
+    printf("[Stage] load_initial_stage -> new Worm\n");
+    Worm* worm = new Worm(this->world, w.pos_x, w.pos_y, w.id);
+    this->worms.emplace(w.id, worm);
   }
 }
 
