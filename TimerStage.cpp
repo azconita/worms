@@ -9,6 +9,8 @@
 #include <chrono>
 #include <thread>
 
+#define SLEEPNANOSECONDS 50000000
+
 TimerStage::TimerStage(BlockingQueue<ActionDTO> &q) : stage_queue(q){
   // TODO Auto-generated constructor stub
 
@@ -24,13 +26,13 @@ void TimerStage::run() {
   while (!this->finished) {
     //printf("[TimerStage] push update\n");
     auto start = std::chrono::high_resolution_clock::now();
-    std::this_thread::sleep_for(std::chrono::nanoseconds(17000000) - diff);
+    std::this_thread::sleep_for(std::chrono::nanoseconds(SLEEPNANOSECONDS) - diff);
     ActionDTO action;
     action.type = Timer_update;
     this->stage_queue.push(action);
     auto end = std::chrono::high_resolution_clock::now();
 
-    diff = std::chrono::duration_cast<std::chrono::nanoseconds>(end-start) - std::chrono::nanoseconds(17000000);
+    diff = std::chrono::duration_cast<std::chrono::nanoseconds>(end-start) - std::chrono::nanoseconds(SLEEPNANOSECONDS);
     diff = (diff.count() > 0) ? diff : std::chrono::nanoseconds(0);
   }
 }

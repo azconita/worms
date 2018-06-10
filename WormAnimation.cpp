@@ -7,7 +7,7 @@
 
 #include "WormAnimation.h"
 
-WormAnimation::WormAnimation(int initial_x, int initial_y, Direction initial_dir, int player) : player_id(player) {
+WormAnimation::WormAnimation(int initial_x, int initial_y, Direction initial_dir, int player, int wormid) : player_id(player), worm_id(wormid) {
     this->animations = AnimationFactory::get_wormsAnimations();
     printf("tamaño del vector de estados de gusano %lu\n", this->animations.size() );
 
@@ -148,6 +148,10 @@ int WormAnimation::get_y(){
 
 int WormAnimation::get_player_id() {
   return this->player_id;
+}
+
+int WormAnimation::get_id() {
+  return this->worm_id;
 }
 
 void WormAnimation::show(SDL_Surface * screen){
