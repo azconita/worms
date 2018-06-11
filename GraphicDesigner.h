@@ -59,7 +59,7 @@ class GraphicDesigner {
 	void show_beams(StageDTO s, SDL_Surface *screen);
 	void show_worms(StageDTO s, SDL_Surface *screen);
 	void show_weapon(StageDTO s,SDL_Surface * screen);
-	void show_life(int life, int x, int y, Colour color);
+	void show_life(int life, int worm_x, int worm_y, SDL_Rect camera_position, Colour color);
 
 
 public:

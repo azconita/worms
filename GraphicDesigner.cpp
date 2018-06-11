@@ -186,7 +186,7 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
 
         Colour player_color = Colour::create(possible_colors.at(worm_info.player_id));
 
-        show_life(worm_info.life,center_x+20,center_y-5,player_color);
+        show_life(worm_info.life,center_x,center_y, camera_position,player_color);
         int weapon_power = worms_iter->second.get_weapon_power();
         show_powerbar(weapon_power);
 
@@ -221,7 +221,7 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
 }
 
 
-void GraphicDesigner::show_life(int life, int x, int y, Colour color){
+void GraphicDesigner::show_life(int life, int worm_x, int worm_y, SDL_Rect camera_position, Colour color){
     printf("life %i\n", life );
     char str_life[10];
     if(life < 100){
@@ -235,6 +235,9 @@ void GraphicDesigner::show_life(int life, int x, int y, Colour color){
     if (text == NULL){
         throw Error("TTF_RenderText_Solid(): ",TTF_GetError());
     }
+
+    int x = worm_x - camera_position.x + 20;
+    int y = worm_y - camera_position.y - 5;
 
     SDL_Rect rectangle;
     rectangle.x = x-2;
@@ -251,7 +254,7 @@ void GraphicDesigner::show_life(int life, int x, int y, Colour color){
     dimention.w = text->w;
 
     SDL_Rect position;
-    position.x = x;
+    position.x = x; 
     position.y = y;
     position.h = text->h;
     position.w = text->w;
