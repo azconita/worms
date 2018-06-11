@@ -51,6 +51,7 @@ private:
 	void baseboll_bat(WormAnimation& turn_worm);
 
 	void click(WormAnimation& turn_worm);
+	bool keep_clicking(WormAnimation& turn_worm);
 
 	void movement(SDL_Event & event, WormAnimation& turn_worm);
 	void up(WormAnimation& turn_worm);

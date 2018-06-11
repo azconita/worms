@@ -82,6 +82,7 @@ GraphicDesigner::GraphicDesigner(SDL_Surface * screen, int screen_height, int sc
 
     this->power_bar = power_bar;
     this->weapons_menu = weapons_menu;
+    this->menu_size = 0;
 
 }
 
@@ -114,6 +115,7 @@ void GraphicDesigner::show_elements(StageDTO s, SDL_Surface *screen){
     show_beams(s,screen);
     show_worms(s,screen);
     show_weapon(s,screen);
+    this->show_weapons_menu(this->menu_size);
 }
 
 
@@ -284,18 +286,26 @@ void GraphicDesigner::show_powerbar(int power){
 }
 
 void GraphicDesigner::show_weapons_menu(int size){
+    int width = this->weapons_menu->w*size/100;
+    SDL_Rect position;
+    position.x = this->screen_width - width -2;
+    position.y = 5;
+    position.h = this->weapons_menu->h;
+    position.w = this->weapons_menu->w;
+
     SDL_Rect dimention;
     dimention.x = 0;
     dimention.y = 0;
     dimention.h = this->weapons_menu->h;
-    dimention.w = this->weapons_menu->w*size/100;
+    dimention.w = width;
+    SDL_BlitSurface(this->weapons_menu, &dimention, this->screen, &position);  
+}
 
-    SDL_Rect position;
-    position.x = this->screen_width - this->weapons_menu->w -5;
-    position.y = 5;
-    position.h = this->weapons_menu->h;
-    position.w = this->weapons_menu->w;
-    SDL_BlitSurface(this->weapons_menu, &dimention, this->screen, &position);
+void GraphicDesigner::make_appear_weapons_menu(){
+    while(this->menu_size < 100){
+        this->show_weapons_menu(this->menu_size);
+        this-> menu_size ++;
+    }  
 }
 
 bool GraphicDesigner::is_inside_weapon_menu(int x, int y){
@@ -309,6 +319,7 @@ bool GraphicDesigner::is_inside_weapon_menu(int x, int y){
 
 
 Weapon_Name GraphicDesigner::choose_weapon(int x, int y){
+    this->menu_size = 0;
     int icon_y = this->weapons_menu->h/10;
     if(y < icon_y){
         return W_Air_Attack;
@@ -338,6 +349,7 @@ Weapon_Name GraphicDesigner::choose_weapon(int x, int y){
         return Dynamite;
     }
     return Banana;
+
 }
 
 void GraphicDesigner::show_timer(int second){
