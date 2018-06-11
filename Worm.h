@@ -25,6 +25,7 @@ class Worm : public Entity {
   b2World* world;
   b2Body* body;
   Weapon_Name weapon = None;
+  b2Vec2 start_falling = b2Vec2(0,0);
   int life;
 public:
   Worm(b2World* world, float x, float y, int id);
@@ -36,6 +37,7 @@ public:
   int get_type() { return TYPE_WORM; }
   std::vector<b2Vec2> get_points();
   b2Vec2 get_center();
+  b2Vec2 get_velocity();
   int get_life();
   int get_id() { return this->id;}
   bool is_alive() { return ((this->life > 0) && (this->body->GetPosition().y < 100)); }
@@ -45,6 +47,7 @@ public:
   State get_state();
   Direction get_direction();
   void change_state(State state);
+  void update_state();
   void move_left(); //vel: 0.2 m/s
   void move_right();
   void jump(Direction dir); // 1m adelante y 0.5m alto

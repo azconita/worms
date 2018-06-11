@@ -14,15 +14,12 @@
 #include <vector>
 #include <string>
 
-
-
-
-enum Direction{
+enum Direction {
     Right,
     Left
 };
 
-enum State{
+enum State {
    Still,
    Walk,
    Fall,
