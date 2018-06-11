@@ -222,7 +222,6 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
 
 
 void GraphicDesigner::show_life(int life, int worm_x, int worm_y, SDL_Rect camera_position, Colour color){
-    printf("life %i\n", life );
     char str_life[10];
     if(life < 100){
         sprintf(str_life, " %d ", life);
@@ -236,10 +235,10 @@ void GraphicDesigner::show_life(int life, int worm_x, int worm_y, SDL_Rect camer
         throw Error("TTF_RenderText_Solid(): ",TTF_GetError());
     }
 
-    int x = worm_x - camera_position.x + 20;
-    int y = worm_y - camera_position.y - 5;
+    Sint16 x = worm_x - camera_position.x + 20;
+    Sint16 y = worm_y - camera_position.y - 5;
 
-    SDL_Rect rectangle;
+    SDL_Rect rectangle; 
     rectangle.x = x-2;
     rectangle.y = y-2;
     rectangle.h = text->h + 2;
@@ -259,7 +258,7 @@ void GraphicDesigner::show_life(int life, int worm_x, int worm_y, SDL_Rect camer
     position.h = text->h;
     position.w = text->w;
     SDL_BlitSurface(text, &dimention, this->screen, &position);
-    //SDL_FreeSurface(text);
+    SDL_FreeSurface(text);
 }
 
 void GraphicDesigner::show_powerbar(int power){
