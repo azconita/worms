@@ -90,7 +90,7 @@ GraphicDesigner::GraphicDesigner(SDL_Surface * screen, int screen_height, int sc
     this->weapons_menu = weapons_menu;
 
     ////////////////////////////////////////////////////////
-
+    printf("[GraphicDesigner] new\n");
     this->camera = new Camera(this->screen_height, this->screen_width);
 
     this->worms = create_worms(initial_stage);

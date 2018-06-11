@@ -6,7 +6,7 @@
 #include <vector>
 #include "Logger.h"
 
-#define CHUNK_LEN 10
+#define CHUNK_LEN 1400
 
 class Socket {
   private:

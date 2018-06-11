@@ -66,6 +66,7 @@ void Player::receive(){
       std::string action_str = this->client.receive_dto();
       //printf("%s\n",action_str.c_str() );
       oLog() << "recibiendo";
+      oLog() << action_str.c_str();
       YAML::Node yaml_received = YAML::Load(action_str);
       ActionDTO action_received = yaml_received["action"].as<ActionDTO>();
       this->recv_queue->push(action_received);

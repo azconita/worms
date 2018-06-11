@@ -9,7 +9,7 @@ Actioner::Actioner(Socket & socket, BlockingQueue<ActionDTO> & queue):
 
 void Actioner::start(){
 	this->principal_thread = std::thread(&Actioner::make_action, this);
-} 	
+}
 
 void Actioner::make_action(){
 	extern logger oLog;

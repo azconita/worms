@@ -13,8 +13,9 @@
 
 Game::Game(std::string &stage_name, Socket &client) :
            stage(stage_name),
-           stage_queue(1000), timer(stage_queue) {
+           stage_queue(100), timer(stage_queue) {
   // TODO Auto-generated constructor stub
+  printf("[Game] Game -> new Player");
   this->players.push_back(new Player(client));
 }
 
@@ -38,6 +39,7 @@ void Game::add_player(Socket &client) {
   if (this->players.size() >= this->limit)
     return;
 
+  printf("[Game] add_player -> new Player\n");
   this->players.push_back(new Player(client));
   //TODO: init game? add worms to initiated game?
   //if (this->players.size() == this->limit)
@@ -52,13 +54,13 @@ void Game::prepare() {
   for (auto& p : this->players) {
     p->set_id(i);
     i++;
-    BlockingQueue<StageDTO>* q = new BlockingQueue<StageDTO>(1000);
+    printf("[Game] prepare -> new BlockingQueue\n");
+    BlockingQueue<StageDTO>* q = new BlockingQueue<StageDTO>(100);
     this->players_queues.push_back(q);
     p->add_stage_queues(q, &(this->stage_queue));
     printf("[Game]starting player\n");
     p->start();
   }
-  //this->timer.add_queue(&(this->stage_queue));
   this->timer.start();
 
 }
@@ -73,8 +75,8 @@ void Game::run() {
     //printf("[Game] pop action: %d\n", action.type);
     StageDTO s;
     if (action.type == Quit) {
+      //end game: send block with endgame??
       this->stage.end();
-      //s.finish = true;
       s.worm_turn = -1;
       this->timer.stop();
     } else {
