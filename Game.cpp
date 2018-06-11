@@ -14,8 +14,6 @@
 Game::Game(std::string &stage_name, Socket &client) :
            stage(stage_name),
            stage_queue(100), timer(stage_queue) {
-  // TODO Auto-generated constructor stub
-  printf("[Game] Game -> new Player");
   this->players.push_back(new Player(client));
 }
 

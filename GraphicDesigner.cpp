@@ -86,14 +86,13 @@ GraphicDesigner::GraphicDesigner(SDL_Surface * screen, int screen_height, int sc
 }
 
 void GraphicDesigner::scroll(int x, int y){
-    printf("moviendooo en x=%i y = %i\n",x, y);
+    //printf("moviendooo en x=%i y = %i\n",x, y);
     if(x < 15){
         this->camera->move(-10,0);
         return;
     }
     if(y < 15){
-        printf("se deberia mover para arriba\n");
-        this->camera->move(0,-10);
+        this->camera->move(0,-10); // esto no estaria funcionando
         return;
     }
     if(x > this->screen_width -15){
@@ -171,6 +170,7 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
         ElementDTO worm_info = w.second;
         int center_x = get_pixels(worm_info.pos_x);
         int center_y = get_pixels(worm_info.pos_y);
+
         worms_iter->second.move(center_x, center_y,  worm_info.worm_state,worm_info.direction);
 
         if(w.first == s.worm_turn && worms_iter->second.is_in_movement()){
@@ -184,6 +184,7 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
             cout << "Error: juego no preparado para mas de 4 jugadores" << endl;
         }
 
+        //printf("player id: %i \n", worm_info.player_id );
         Colour player_color = Colour::create(possible_colors.at(worm_info.player_id));
 
         show_life(worm_info.life,center_x,center_y, camera_position,player_color);

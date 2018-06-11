@@ -191,7 +191,7 @@ void EventController::down(WormAnimation& turn_worm){
     if(turn_worm.has_point_weapon()){
         float degrees = turn_worm.point_down_weapon();
         printf("%f\n",degrees );
-    }
+    }   
 
 }
 

@@ -9,7 +9,7 @@
 #include "Constants.h"
 #include <string>
 
-Worm::Worm(b2World* world, float x, float y, int id) :
+Worm::Worm(b2World* world, float x, float y, int id, Direction direction) :
           Entity(1), world(world), id(id) {
   b2BodyDef bodyDef;
   bodyDef.type = b2_dynamicBody;
@@ -25,10 +25,9 @@ Worm::Worm(b2World* world, float x, float y, int id) :
   myFixtureDef.density = Constants::worm_density;
   this->body->CreateFixture(&myFixtureDef);
   this->body->SetUserData(this);
-  printf("creacion   %p\n", this->body );
   this->life = Constants::worm_initial_life;
   this->state = Still;
-  this->direction = Left;
+  this->direction = direction;
 }
 
 Worm::Worm(const Worm& other) : Entity(1), body(other.body), life(other.life), world(world) {
@@ -76,6 +75,7 @@ Direction Worm::get_direction(){
 void Worm::move_right() {
   if(this-> direction != Right){
       this->direction = Right;
+      change_state(Still);
       return;
   }
   change_state(Walk);
@@ -86,10 +86,10 @@ void Worm::move_right() {
 void Worm::move_left() {
   if(this-> direction != Left){
       this->direction = Left;
+      change_state(Still);
       return;
   }
   change_state(Walk);
-
   float impulse = this->get_impulse();
   this->body->ApplyLinearImpulse(b2Vec2(-Constants::worm_walk_velocity,0), this->body->GetWorldCenter(), true);
 }
@@ -97,7 +97,6 @@ void Worm::move_left() {
 //TODO: fix me!!
 void Worm::jump(Direction dir) {
   std::cout << "dir: " << dir << "\n";
-  printf("jump.....%p\n", this->body );
   change_state(Jump_state);
   int d = (dir == Left) ? 1 : -1;
   float impulse = body->GetMass() * Constants::worm_jump_velocity;

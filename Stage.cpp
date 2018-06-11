@@ -143,8 +143,8 @@ void Stage::make_action(ActionDTO & action) {
   printf("%i, %i \n", action.type, action.move );
   int worm = action.worm_id;
   //VALIDAR TURNO!!
-  if (worm != this->current_player->get_id()) {
-    throw Error("not current player: current: %d, sent: %d\n", this->current_player->get_id(), worm);
+  if (worm != this->current_player->get_id()) { 
+    //throw Error("not current player: current: %d, sent: %d\n", this->current_player->get_id(), worm);
   }
   switch (action.type) {
     case (Make_move):{
@@ -216,6 +216,7 @@ StageDTO Stage::get_stageDTO() {
     worm_element.life = w.second->get_life();
     worm_element.angle = 0;
     worm_element.worm_state = w.second->get_state();
+    worm_element.direction = w.second->get_direction();
     s.worms[w.first] = worm_element;
   }
 
@@ -264,9 +265,9 @@ void Stage::load_initial_stage(std::string file_name){
 
   }
   for(auto & w: s.worms){
-    oLog() << "worms: { id: "<< w.id << ", x: "<< w.pos_x << " , y: "
-      << w.pos_y << ", direction: "<< w.direction << ", inclination: "<<w.inclination << ", life: " << w.life <<" }"<< endl;
-    Worm* worm = new Worm(this->world, w.pos_x, w.pos_y, w.id);
+    oLog() << "worms: { id: "<< w.id << ", x: "<< w.pos_x << " , y: " << w.pos_y
+       << ", direction: "<< w.direction << ", inclination: "<<w.inclination << ", life: " << w.life <<" }"<< endl;
+    Worm* worm = new Worm(this->world, w.pos_x, w.pos_y, w.id, static_cast<Direction>( w.direction));
     this->worms.emplace(w.id, worm);
   }
 }
@@ -281,7 +282,11 @@ void Stage::set_worms_to_players(int total_players) {
   std::shuffle(std::begin(ids), std::end(ids), rng);
   //create turn helpers
   int wq = this->worms.size() / total_players;
-  printf("total players: %d, worms for each: %d", total_players, wq);
+  if(wq < 0){
+    throw Error("Error in worms quantity:\nplayers = %d"//
+      ", total worms = %i", total_players, this->worms.size());
+  }
+  printf("total players: %d, worms for each: %d\n", total_players, wq);
   for (int i = 0; i < total_players; i++) {
     //(i+1)*wq == ids.size()) ? ids.end() : ids[(i+1)*wq])
     std::vector<int> v;
