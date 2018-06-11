@@ -206,7 +206,7 @@
 #define TIMER_FONT "resources/DS-DIGI.ttf"
 
 
-#define BACKGROUND "resources/background_jupiter.bmp"
+#define BACKGROUND "resources/background_forest.bmp"
 
 
 #endif

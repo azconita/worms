@@ -23,6 +23,7 @@ using std::pair;
 #define TITLE "Worms game"
 #define PIXEL_CONSTANT 23.5
 
+extern  logger oLog;
 
 class Client{
 	Socket socket;

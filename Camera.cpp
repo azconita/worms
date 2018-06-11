@@ -8,6 +8,7 @@ Camera::Camera(int screen_h, int screen_w){
     Sint16 y = background->h/2 - screen_h/2;
     Uint16 h = screen_h;
     Uint16 w = screen_w;
+    SDL_FreeSurface(background);
     this->camera_pos = { x,y, w, h};
 
 }

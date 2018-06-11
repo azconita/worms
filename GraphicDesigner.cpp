@@ -123,8 +123,6 @@ void GraphicDesigner::show_beams(StageDTO s, SDL_Surface *screen){
 
     for (auto beam_info: s.beams) {
 
-        //debug_box2d_figure(screen, beam_info);
-
         int center_x = get_pixels(beam_info.pos_x) - camera_position.x;
         int center_y = get_pixels(beam_info.pos_y) - camera_position.y;
 
@@ -173,11 +171,9 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
         ElementDTO worm_info = w.second;
         int center_x = get_pixels(worm_info.pos_x);
         int center_y = get_pixels(worm_info.pos_y);
-        worms_iter->second.move(center_x, center_y);
+        worms_iter->second.move(center_x, center_y,  worm_info.worm_state,worm_info.direction);
 
         if(w.first == s.worm_turn && worms_iter->second.is_in_movement()){
-            //printf(" es mi turno %i, estoy en el centro de la camera ja\n x=%i y=%i\n",//
-             //w.first, get_pixels(worm_info.pos_x), get_pixels(worm_info.pos_y));
             this->camera->follow(get_pixels(worm_info.pos_x),get_pixels(worm_info.pos_y)); 
         }
         SDL_Rect camera_position = this->camera->get_focus();
@@ -206,8 +202,6 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
     SDL_Rect camera_position = this->camera->get_focus();
     for (auto w: s.weapons) {
 
-        //debug_box2d_figure(screen, w);
-
         int center_x = get_pixels(w.pos_x) - camera_position.x;
         int center_y = get_pixels(w.pos_y) - camera_position.y;
 
@@ -228,6 +222,7 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
 
 
 void GraphicDesigner::show_life(int life, int x, int y, Colour color){
+    printf("life %i\n", life );
     char str_life[10];
     if(life < 100){
         sprintf(str_life, " %d ", life);
@@ -261,7 +256,7 @@ void GraphicDesigner::show_life(int life, int x, int y, Colour color){
     position.h = text->h;
     position.w = text->w;
     SDL_BlitSurface(text, &dimention, this->screen, &position);
-    SDL_FreeSurface(text);
+    //SDL_FreeSurface(text);
 }
 
 void GraphicDesigner::show_powerbar(int power){
@@ -311,11 +306,9 @@ bool GraphicDesigner::is_inside_weapon_menu(int x, int y){
 
 
 Weapon_Name GraphicDesigner::choose_weapon(int x, int y){
-
     int icon_y = this->weapons_menu->h/10;
     if(y < icon_y){
         return W_Air_Attack;
-
     }
     if(y < icon_y*2){
         return Baseball_Bat;
@@ -331,11 +324,9 @@ Weapon_Name GraphicDesigner::choose_weapon(int x, int y){
     }
     if(y < icon_y*6){
         return Holy_Grenade;
-
     }
     if(y < icon_y*7){
         return Mortar;
-
     }
     if(y < icon_y*8){
         return Teleport;
@@ -384,7 +375,7 @@ void GraphicDesigner::show_timer(int second){
     position.h = text->h;
     position.w = text->w;
     SDL_BlitSurface(text, &dimention, this->screen, &position);
-    SDL_FreeSurface(text);
+    //SDL_FreeSurface(text);
 
 
 }

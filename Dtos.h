@@ -27,6 +27,7 @@ enum State{
    Walk,
    Fall,
    Jump_state,
+   Jump_back_state,
    Worm_missile,
    Worm_banana,
    Worm_bat,
@@ -37,6 +38,8 @@ enum State{
    Worm_air_attack,
    Worm_dynamite
 };
+
+
 
 
 enum Entity_Type {
@@ -63,11 +66,26 @@ enum Weapon_Name {
     W_Timer
 };
 
+static std::map<Weapon_Name, State> weapons_states {
+    {W_Air_Attack, Worm_air_attack},
+    {W_Bazooka,Worm_missile},
+    {Dynamite,Worm_dynamite},
+    {Mortar,Worm_missile},
+    {Green_Grenade,Worm_green_granade},
+    {Holy_Grenade,Worm_holy_granade},
+    {Red_Grenade,Worm_red_granade},
+    {Teleport,Worm_teletrans},
+    {Banana,Worm_banana},
+    {Baseball_Bat,Worm_bat}
+};
+
 struct ElementDTO { //puede ser un gusano, un arma o una viga
   float pos_x;
   float pos_y; //vertice superior izquierdo en metros
   float h;
   float w;
+  State worm_state;
+  Direction direction;
   float angle;
   int life;
   int player_id;
@@ -145,10 +163,13 @@ template<>
 struct convert<ElementDTO> {
   static Node encode(const ElementDTO& elem) {
     Node node;
+  
     node["pos_x"] = elem.pos_x;
     node["pos_y"] = elem.pos_y;
     node["h"] = elem.h;
     node["w"] = elem.w;
+    node["worm_state"] = (int)elem.worm_state;
+    node["direction"] = (int)elem.direction;
     node["life"] = elem.life;
     node["player_id"] = elem.player_id;
     node["weapon"] = (int)elem.weapon;
@@ -163,6 +184,8 @@ struct convert<ElementDTO> {
     elem.pos_y = node["pos_y"].as<float>();
     elem.h = node["h"].as<float>();
     elem.w = node["w"].as<float>();
+    elem.worm_state = static_cast<State>(node["worm_state"].as<int>());
+    elem.direction = static_cast<Direction>(node["direction"].as<int>());
     elem.life = node["life"].as<int>();
     elem.player_id = node["player_id"].as<int>();
     elem.weapon = static_cast<Weapon_Name>(node["weapon"].as<int>());

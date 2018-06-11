@@ -11,14 +11,18 @@
 #include "Dtos.h"
 #include "Logger.h"
 #include "TurnHelper.h"
+#include "Error.h"
 
 #include "Weapon.h"
 
 #ifndef STAGE_H_
 #define STAGE_H_
 
+extern logger oLog;
+
 class Stage {
 private:
+
   std::mutex mutex;
   //std::vector<int> jugadores;
   b2World* world;

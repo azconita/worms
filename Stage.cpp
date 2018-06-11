@@ -18,7 +18,6 @@
 Stage::Stage(std::string file_name) {
   std::cout << file_name << '\n';
   b2Vec2 gravity(0, Constants::gravity); //normal earth gravity
-  printf("[Stage] Stage -> new World\n");
   this->world = new b2World(gravity);
   this->explosion_listener;
   this->world->SetContactListener(&this->explosion_listener);
@@ -44,7 +43,6 @@ Stage::~Stage() {
     delete (*it);
   }
   this->explosions.clear();
-  printf("delete world!\n");
   delete this->world;
 }
 
@@ -146,8 +144,7 @@ void Stage::make_action(ActionDTO & action) {
   int worm = action.worm_id;
   //VALIDAR TURNO!!
   if (worm != this->current_player->get_id()) {
-    printf("not current player: current: %d, sent: %d\n", this->current_player->get_id(), worm);
-    return;//lanzar excepcion o algo: gusano invalido!
+    throw Error("not current player: current: %d, sent: %d\n", this->current_player->get_id(), worm);
   }
   switch (action.type) {
     case (Make_move):{
@@ -159,7 +156,6 @@ void Stage::make_action(ActionDTO & action) {
           this->worms[worm]->move_left();
           break;
         case Jump:
-          printf("deberia saltar\n");
           this->worms[worm]->jump(action.direction);
           break;
         case Jump_back:
@@ -169,7 +165,6 @@ void Stage::make_action(ActionDTO & action) {
       break;
     }
     case(Take_weapon):{
-      printf("Se tomo el arma %i\n", action.weapon);
       // cuando sea el fin del turno, asignar NONE al arma del gusano
       this->worms[worm]->took_weapon(action.weapon);
       break;
@@ -177,8 +172,9 @@ void Stage::make_action(ActionDTO & action) {
     }
 
     case(Shot_weapon):{
-      printf("Se disparo el arma al punto (%i,%i) en metros, con una potencia de %i apuntando a %f grados en la dire %i y con timer %i\n",//
-       action.pos_x, action.pos_y, action.power, action.weapon_degrees, action.direction, action.time_to_explode);
+      oLog() << "Se disparo el arma al punto ("<< action.pos_x <<"," << action.pos_y <<") en metros,"//
+      <<" con una potencia de" << action.power <<  "apuntando a"  << action.weapon_degrees <<" grados" //
+      << "en la dire "<< action.direction <<" y con timer" << action.time_to_explode << "\n";
 
       //switch(action.weapon) {
       if (action.weapon == Teleport) {
@@ -186,20 +182,19 @@ void Stage::make_action(ActionDTO & action) {
       } else if (action.weapon == W_Air_Attack) {
         //TODO: fix : que no caigan todos juntos! (hace que exploten antes)
         for (int i = 0; i < 6; ++ i) {
-          printf("[Stage] make_action -> new Weapon\n");
           Weapon* w = new Weapon(this->world, action.weapon, action.pos_x, 0, this->wind);
           this->explosions.push_back(w);
         }
       } else {
-        printf("[Stage] make_action -> new Weapon\n");
         Weapon* w = new Weapon(this->world, action.weapon, action.pos_x, action.pos_y, this->wind);
-        printf("about to shoot");
         w->shoot(action.power, action.weapon_degrees, action.direction, action.time_to_explode);
         this->explosions.push_back(w);
       }
       //TODO: esperar 3 segundos antes de cambiar el player
       this->change = true;
       //this->change_player();
+
+      this->worms[worm]->change_state(Still);
       break;
     }
   }
@@ -220,7 +215,7 @@ StageDTO Stage::get_stageDTO() {
     worm_element.player_id = w.second->get_player_id();
     worm_element.life = w.second->get_life();
     worm_element.angle = 0;
-    //printf("worm %i: x = %f y = %f  h = %f w = %f\n",w.first, worm_element.x, worm_element.y, worm_element.h, worm_element.w);
+    worm_element.worm_state = w.second->get_state();
     s.worms[w.first] = worm_element;
   }
 
@@ -231,20 +226,20 @@ StageDTO Stage::get_stageDTO() {
     std::vector<b2Vec2> vertices = b->get_points();
     beam_element.h = abs(vertices[0].y - vertices[2].y);
     beam_element.w = abs(vertices[0].x - vertices[1].x);
-    //printf("beam : x = %f y = %f  h = %f w = %f\n", beam_element.x, beam_element.y, beam_element.h, beam_element.w);
     beam_element.angle = b->get_angle();
     if ((beam_element.angle < 0.01) && (beam_element.angle > -0.01))
       beam_element.angle = 0;
-    //printf("beam angle: %d\n", beam_element.angle);
     s.beams.push_back(beam_element);
   }
 
   for (auto w: this->explosions) {
     ElementDTO weapon;
-    if (w->get_name() == None)
+    if (w->get_name() == None){
       continue;
-    if (w->get_name() == Explosion)
+    }
+    if (w->get_name() == Explosion){
       w->explosion();
+    }
     //std::vector<b2Vec2> vertices = w->get_points();
     //set_position(weapon, vertices);
 
@@ -255,27 +250,22 @@ StageDTO Stage::get_stageDTO() {
     s.weapons.push_back(weapon);
   }
 
-  //s.worm_turn = 0;
   s.worm_turn = this->current_player->get_id();
-  //printf("send turn: %d", s.worm_turn);
   return s;
 }
 
 void Stage::load_initial_stage(std::string file_name){
-  extern  logger oLog;
   StageLoader yaml_loader(file_name);
   Stage_y s = yaml_loader.load_stage();
   oLog() << "loading initial stage:\n";
   for(auto b: s.beams){
     oLog() << "beam_y { x: " << b.pos_x << ", y: " << b.pos_y << ", size: " << b.size << ", inclination:" << b.inclination << "}" << endl;
-    printf("[Stage] load_initial_stage -> new Beam\n");
 	this->beams.push_back(new Beam(this->world, b.size, b.pos_x, b.pos_y, b.inclination));
 
   }
   for(auto & w: s.worms){
     oLog() << "worms: { id: "<< w.id << ", x: "<< w.pos_x << " , y: "
       << w.pos_y << ", direction: "<< w.direction << ", inclination: "<<w.inclination << ", life: " << w.life <<" }"<< endl;
-    printf("[Stage] load_initial_stage -> new Worm\n");
     Worm* worm = new Worm(this->world, w.pos_x, w.pos_y, w.id);
     this->worms.emplace(w.id, worm);
   }

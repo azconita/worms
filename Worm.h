@@ -20,6 +20,8 @@
 class Worm : public Entity {
   int id = -1;
   int player_id = 0;
+  State state;
+  Direction direction;
   b2World* world;
   b2Body* body;
   Weapon_Name weapon = None;
@@ -40,6 +42,9 @@ public:
   int get_player_id();
 
   //movements
+  State get_state();
+  Direction get_direction();
+  void change_state(State state);
   void move_left(); //vel: 0.2 m/s
   void move_right();
   void jump(Direction dir); // 1m adelante y 0.5m alto
@@ -54,7 +59,7 @@ public:
   void printPos() {
     std::cout << "worm: " << this->body->GetPosition().x << ":" << this->body->GetPosition().y << "\n";
   }
-  bool is_falling() { return (this->body->GetLinearVelocity().y > 0);}
+  bool is_falling() { return (this->body->GetLinearVelocity().y > 0);} //no puede ser que este bajando de un salto?
 private:
   float get_impulse();
   //void rotateTranslate(b2Vec2& vector,const b2Vec2& center,float angle);

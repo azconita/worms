@@ -45,10 +45,6 @@ void WormAnimation::change_direction(Direction direction){
         animation_iter->second.set_current_direction(direction);
     }
     this->direction = direction;
-    if(this->state == Still){
-        change_state(Walk);
-    }
-
 }
 
 void WormAnimation::change_state(State state){
@@ -66,10 +62,6 @@ void WormAnimation::take_weapon(Weapon_Name weapon){
     }else{
         this->weapon_power = 0;
     }
-
-
-
-
 }
 
 float WormAnimation::point_down_weapon(){
@@ -120,14 +112,29 @@ Direction WormAnimation::get_direction(){
     return animation_iter->second.get_current_direction();
 }
 
-
-void WormAnimation::move(int position_x, int position_y){
-    if(this->x != position_x || this->y != position_y){
+void WormAnimation::define_movement(int position_x, int position_y){
+     if(this->x != position_x || this->y != position_y){
         this->in_movement = true;
     }else{
         in_movement = false;
     }
-    if(this->x = position_x && this->y == y && this->state == Fall){ // se cayo sobre una viga
+}
+
+
+
+void WormAnimation::move(int position_x, int position_y, State state, Direction direction){
+    this->define_movement(position_x,position_y);
+
+    if(this->direction != direction){
+        this->change_direction(direction);
+        return;
+    }
+
+    if(this->state != state && this->state != Fall){
+        change_state(state);
+    }
+
+    if(this->x = position_x && this->y == position_y && this->state == Fall){ // se cayo sobre una viga
         this->state = Still;
     }
     if(this->state != Jump_state && position_y > this->y){ //aumenta el y, se cae
@@ -137,7 +144,7 @@ void WormAnimation::move(int position_x, int position_y){
     this->y = position_y;
     std::map<State,Animation>::iterator animation_iter = animations.find(this->state);
 
-    if(this->state == Jump_state || this->state ==Walk){
+    if(this->state == Jump_state || this->state == Walk || this->state == Fall){
         if(!animation_iter->second.continue_internal_movement()){
             this->state = Still;
         }

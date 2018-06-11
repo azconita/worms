@@ -196,7 +196,6 @@ void EventController::down(WormAnimation& turn_worm){
 }
 
 void EventController::right(WormAnimation& turn_worm){
-    turn_worm.change_direction(Right);
     this->action.type = Make_move;
     this->action.move = Walk_right;
     send_action(this->action);
@@ -204,7 +203,6 @@ void EventController::right(WormAnimation& turn_worm){
 }
 
 void EventController::left(WormAnimation& turn_worm){
-    turn_worm.change_direction(Left);
     this->action.type = Make_move;
     this->action.move = Walk_left;
     this->action.worm_id = turn_worm.get_id();

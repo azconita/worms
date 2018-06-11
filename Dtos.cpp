@@ -24,6 +24,10 @@ YAML::Emitter& operator << (YAML::Emitter& out, const ElementDTO& e) {
   out << YAML::Value << e.h;
   out << YAML::Key <<  "w";
   out << YAML::Value << e.w;
+  out << YAML::Key << "worm_state";
+  out << YAML::Value << e.worm_state;
+  out << YAML::Key << "direction";
+  out << YAML::Value << e.direction;
   out << YAML::Key <<  "angle";
   out << YAML::Value << e.angle;
   out << YAML::Key <<  "life";

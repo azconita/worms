@@ -27,6 +27,8 @@ Worm::Worm(b2World* world, float x, float y, int id) :
   this->body->SetUserData(this);
   printf("creacion   %p\n", this->body );
   this->life = Constants::worm_initial_life;
+  this->state = Still;
+  this->direction = Left;
 }
 
 Worm::Worm(const Worm& other) : Entity(1), body(other.body), life(other.life), world(world) {
@@ -59,12 +61,35 @@ float Worm::get_impulse() {
   return body->GetMass() * velChange;
 }
 
+State Worm::get_state(){
+  return this->state;
+}
+
+void Worm::change_state(State state){
+  this->state = state;
+}
+
+Direction Worm::get_direction(){
+  return this-> direction;
+}
+
 void Worm::move_right() {
+  if(this-> direction != Right){
+      this->direction = Right;
+      return;
+  }
+  change_state(Walk);
   float impulse = this->get_impulse();
   this->body->ApplyLinearImpulse(b2Vec2(Constants::worm_walk_velocity,0), this->body->GetWorldCenter(), true);
 }
 
 void Worm::move_left() {
+  if(this-> direction != Left){
+      this->direction = Left;
+      return;
+  }
+  change_state(Walk);
+
   float impulse = this->get_impulse();
   this->body->ApplyLinearImpulse(b2Vec2(-Constants::worm_walk_velocity,0), this->body->GetWorldCenter(), true);
 }
@@ -73,12 +98,14 @@ void Worm::move_left() {
 void Worm::jump(Direction dir) {
   std::cout << "dir: " << dir << "\n";
   printf("jump.....%p\n", this->body );
+  change_state(Jump_state);
   int d = (dir == Left) ? 1 : -1;
   float impulse = body->GetMass() * Constants::worm_jump_velocity;
   this->body->ApplyLinearImpulse(b2Vec2(d * impulse /2,impulse), this->body->GetWorldCenter(), true);
 }
 //TODO: fix me!!
 void Worm::jump_back() {
+  change_state(Jump_back_state);
   float impulse = this->get_impulse();
   this->body->ApplyLinearImpulse(b2Vec2(-impulse,impulse), this->body->GetWorldCenter(), true);
 }
@@ -100,6 +127,8 @@ std::vector<b2Vec2> Worm::get_points() {
 
 void Worm::took_weapon(Weapon_Name weapon) {
   this->weapon = weapon;
+  std::map<Weapon_Name,State>::iterator weapon_state = weapons_states.find(weapon);
+  change_state(weapon_state->second);
 }
 
 void Worm::use_weapon(float x, float y, int power, float degrees) {

@@ -15,19 +15,6 @@
 #define GRADES_PER_STEP 5.8064516129 //180/31
 
 
-static  std::map<Weapon_Name, State> weapons_states {
-    {W_Air_Attack, Worm_air_attack},
-    {W_Bazooka,Worm_missile},
-    {Dynamite,Worm_dynamite},
-    {Mortar,Worm_missile},
-    {Green_Grenade,Worm_green_granade},
-    {Holy_Grenade,Worm_holy_granade},
-    {Red_Grenade,Worm_red_granade},
-    {Teleport,Worm_teletrans},
-    {Banana,Worm_banana},
-    {Baseball_Bat,Worm_bat}
-};
-
 
 //armas con mira
 static const std::vector<State> weapons_states_with_degrees(
@@ -77,7 +64,8 @@ public:
 	void set_timer(int timer);
 	int get_timer();
 	Direction get_direction();
-	void move(int position_x, int position_y);
+	void move(int position_x, int position_y, State state, Direction direction);
+	void define_movement(int position_x, int position_y);
 	int get_x();
 	int get_y();
 	bool is_in_movement();
