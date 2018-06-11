@@ -74,8 +74,6 @@ Picture::Picture(const char * bmp_path, Colour color, int columns, int rows){
         SDL_Surface *tmp =  SDL_LoadBMP(bmp_path);
         //SDL_Surface *tmp = IMG_Load(bmp_path);
         //tmp = rotozoomSurface(tmp,90.0, 10,0);     
-
-
         if (!tmp) {
             throw Error("Couldn't create surface from image: ",bmp_path,SDL_GetError());
         }
@@ -199,7 +197,8 @@ bool Picture::is_in_last_figure(Direction direction){
 }
 
 
-Picture::~Picture() {
-	// TODO Auto-generated destructor stub
+Picture::~Picture() {   
+    //SDL_FreeSurface(this->surface);
+	
 }
 

@@ -57,10 +57,8 @@ void Client::run(){
        throw Error("Modo video no compatible: ",SDL_GetError());
     }
 
-    // Establecemos el modo de video
-    SDL_Surface *screen;
-    screen = SDL_SetVideoMode(screen_width, screen_height, 24, SDL_HWSURFACE|SDL_DOUBLEBUF);
-    if(screen == NULL) {
+    this->screen = SDL_SetVideoMode(screen_width, screen_height, 24, SDL_HWSURFACE|SDL_DOUBLEBUF);
+    if(this->screen == NULL) {
        throw Error("No se pudo establecer el modo de video: ",SDL_GetError());
     }
 
@@ -133,5 +131,6 @@ void Client::run(){
 }
 
 Client::~Client(){
+    SDL_FreeSurface(this->screen);
     this->socket.shut();
 }

@@ -52,45 +52,26 @@ GraphicDesigner::GraphicDesigner(SDL_Surface * screen, int screen_height, int sc
     this->screen_width = screen_width;
 
     if (TTF_Init() != 0) {
-      cout << "TTF_Init() Failed: " << TTF_GetError() << endl;
-      SDL_Quit();
-      exit(1);
+      throw Error("TTF_Init() Failed: ",TTF_GetError());
     }
     this->font = TTF_OpenFont(FONT_FILE, FONT_SIZE);
-    if (this->font == NULL){
-        cout << "TTF_OpenFont() Fail: " << TTF_GetError() << endl;
-        TTF_Quit();
-        SDL_Quit();
-        exit(1);
-    }
-
     this->time_font = TTF_OpenFont(TIMER_FONT, TIMER_SIZE);
-    if (this->time_font == NULL){
-        cout << "TTF_OpenFont() Fail: " << TTF_GetError() << endl;
-        TTF_Quit();
-        SDL_Quit();
-        exit(1);
+    if (this->font == NULL ||  this->time_font == NULL){
+        throw Error("TTF_OpenFont() Fail: ",TTF_GetError());
     }
-
 
     SDL_Surface *power_bar = IMG_Load(POWER_BAR);
-    if (!power_bar) {
-        cout <<"Couldn't create surface from image:" << POWER_BAR << SDL_GetError() << endl;
-        return;
-    }
     Uint32 colorkey = SDL_MapRGB(power_bar->format, 0, 0, 0);
     SDL_SetColorKey(power_bar, SDL_SRCCOLORKEY, colorkey);
-    this->power_bar = power_bar;
-
     SDL_Surface * weapons_menu = IMG_Load(WEAPONS_MENU);
-    if (!power_bar) {
-        cout <<"Couldn't create surface from image:" << WEAPONS_MENU << SDL_GetError() << endl;
-        return;
+    SDL_Surface * background = IMG_Load(BACKGROUND);
+  
+    if (!power_bar || !weapons_menu || !background) {
+        throw Error("Couldn't create surface from image:",POWER_BAR,SDL_GetError());
     }
-    this->weapons_menu = weapons_menu;
-
     ////////////////////////////////////////////////////////
-    printf("[GraphicDesigner] new\n");
+
+    this->background = background;
     this->camera = new Camera(this->screen_height, this->screen_width);
 
     this->worms = create_worms(initial_stage);
@@ -98,6 +79,9 @@ GraphicDesigner::GraphicDesigner(SDL_Surface * screen, int screen_height, int sc
 
     this->little_beams =  AnimationFactory::get_little_beams();
     this->big_beams = AnimationFactory::get_big_beams();
+
+    this->power_bar = power_bar;
+    this->weapons_menu = weapons_menu;
 
 }
 
@@ -123,10 +107,8 @@ void GraphicDesigner::scroll(int x, int y){
 }
 
 void GraphicDesigner::show_background(){
-
     SDL_Rect camera_position = camera->get_focus();
-    SDL_Surface *background = SDL_LoadBMP(BACKGROUND);
-    SDL_BlitSurface(background, &camera_position, this->screen, NULL);
+    SDL_BlitSurface(this->background, &camera_position, this->screen, NULL);
 }
 
 void GraphicDesigner::show_elements(StageDTO s, SDL_Surface *screen){
@@ -246,7 +228,6 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
 
 
 void GraphicDesigner::show_life(int life, int x, int y, Colour color){
-
     char str_life[10];
     if(life < 100){
         sprintf(str_life, " %d ", life);
@@ -257,10 +238,7 @@ void GraphicDesigner::show_life(int life, int x, int y, Colour color){
     SDL_Color black_text_color = {0,0,0};
     SDL_Surface * text = TTF_RenderText_Solid(font,str_life,black_text_color);
     if (text == NULL){
-        cout << "TTF_RenderText_Solid(): " << TTF_GetError() << endl;
-        TTF_Quit();
-        SDL_Quit();
-        exit(1);
+        throw Error("TTF_RenderText_Solid(): ",TTF_GetError());
     }
 
     SDL_Rect rectangle;
@@ -283,8 +261,7 @@ void GraphicDesigner::show_life(int life, int x, int y, Colour color){
     position.h = text->h;
     position.w = text->w;
     SDL_BlitSurface(text, &dimention, this->screen, &position);
-
-
+    SDL_FreeSurface(text);
 }
 
 void GraphicDesigner::show_powerbar(int power){
@@ -373,14 +350,10 @@ void GraphicDesigner::show_timer(int second){
     char time[10];
     sprintf(time, "00:00:0%d ", second);
 
-
     SDL_Color red_text_color = {255,0,0};
     SDL_Surface * text = TTF_RenderText_Solid(time_font,time,red_text_color);
     if (text == NULL){
-        cout << "TTF_RenderText_Solid(): " << TTF_GetError() << endl;
-        TTF_Quit();
-        SDL_Quit();
-        exit(1);
+        throw Error("TTF_RenderText_Solid(): ",TTF_GetError()); 
     }
 
     SDL_Rect white_rec;
@@ -411,13 +384,16 @@ void GraphicDesigner::show_timer(int second){
     position.h = text->h;
     position.w = text->w;
     SDL_BlitSurface(text, &dimention, this->screen, &position);
+    SDL_FreeSurface(text);
 
 
 }
 
-
-
 GraphicDesigner::~GraphicDesigner() {
 	delete(this->camera);
+    SDL_FreeSurface(this->background);
+    SDL_FreeSurface(this->power_bar);
+    SDL_FreeSurface(this->weapons_menu);
+    TTF_Quit();
 }
 
