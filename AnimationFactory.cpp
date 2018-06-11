@@ -269,8 +269,8 @@ std::map<Weapon_Name,Animation> AnimationFactory::get_weapons(){
     }
 
       Animation AnimationFactory::get_explosion(){
-        Colour colorkey(EXPLOSION_R,EXPLOSION_G,EXPLOSION_B);
-        Animation worm(EXPLOSION,colorkey,EXPLOSION_COLUMNS,EXPLOSION_ROWS);
+        Colour colorkey(BIG_EXPLOSION_R,BIG_EXPLOSION_G,BIG_EXPLOSION_B);
+        Animation worm(BIG_EXPLOSION,colorkey,BIG_EXPLOSION_COLUMNS,BIG_EXPLOSION_ROWS);
         return worm;
     }
 

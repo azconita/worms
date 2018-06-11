@@ -175,6 +175,13 @@
 #define EXPLOSION_COLUMNS 1
 #define EXPLOSION_ROWS 8
 
+#define BIG_EXPLOSION "resources/explosion2.bmp"
+#define BIG_EXPLOSION_R 255
+#define BIG_EXPLOSION_G 255
+#define BIG_EXPLOSION_B 255
+#define BIG_EXPLOSION_COLUMNS 4
+#define BIG_EXPLOSION_ROWS 4
+
 
 //vigas
 #define BEAM_R 128
