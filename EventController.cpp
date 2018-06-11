@@ -82,10 +82,13 @@ void EventController::movement(SDL_Event & event, WormAnimation& turn_worm){
             right( turn_worm);
             break;
         case SDLK_UP:
-            up( turn_worm);
+            up(turn_worm);
             break;
         case SDLK_DOWN:
-            down( turn_worm);
+            down(turn_worm);
+            break;
+        case SDLK_BACKSPACE:
+            up_back(turn_worm);
             break;
     }
 }
@@ -200,6 +203,16 @@ void EventController::up(WormAnimation& turn_worm){
         this->action.direction = turn_worm.get_direction();
         send_action(this->action);
     }
+
+}
+
+void EventController::up_back(WormAnimation& turn_worm){
+    turn_worm.change_state(Jump_back_state);
+    this->action.type = Make_move;
+    this->action.move = Jump_back;
+    this->action.direction = turn_worm.get_direction();
+    send_action(this->action);
+
 
 }
 

@@ -144,7 +144,7 @@ void WormAnimation::move(int position_x, int position_y, State state, Direction 
     this->y = position_y;
     std::map<State,Animation>::iterator animation_iter = animations.find(this->state);
 
-    if(this->state == Jump_state || this->state == Walk || this->state == Fall){
+    if(this->state == Jump_state || this->state == Jump_back_state ||this->state == Walk || this->state == Fall){
         if(!animation_iter->second.continue_internal_movement()){
             this->state = Still;
         }
