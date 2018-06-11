@@ -13,7 +13,7 @@ worm_initial_life: 100
 worm_walk_velocity: 5
 worm_jump_velocity: -7
 worm_density: 1
-worm_size: 0.8
+worm_size: 1.6
 
 weapon_size: 0.1
 weapon_density: 1

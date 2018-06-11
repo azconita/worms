@@ -82,18 +82,18 @@ GraphicDesigner::GraphicDesigner(SDL_Surface * screen, int screen_height, int sc
 
     this->power_bar = power_bar;
     this->weapons_menu = weapons_menu;
+    this->menu_size = 0;
 
 }
 
 void GraphicDesigner::scroll(int x, int y){
-    printf("moviendooo en x=%i y = %i\n",x, y);
+    //printf("moviendooo en x=%i y = %i\n",x, y);
     if(x < 15){
         this->camera->move(-10,0);
         return;
     }
     if(y < 15){
-        printf("se deberia mover para arriba\n");
-        this->camera->move(0,-10);
+        this->camera->move(0,-10); // esto no estaria funcionando
         return;
     }
     if(x > this->screen_width -15){
@@ -115,6 +115,7 @@ void GraphicDesigner::show_elements(StageDTO s, SDL_Surface *screen){
     show_beams(s,screen);
     show_worms(s,screen);
     show_weapon(s,screen);
+    this->show_weapons_menu(this->menu_size);
 }
 
 
@@ -171,6 +172,7 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
         ElementDTO worm_info = w.second;
         int center_x = get_pixels(worm_info.pos_x);
         int center_y = get_pixels(worm_info.pos_y);
+
         worms_iter->second.move(center_x, center_y,  worm_info.worm_state,worm_info.direction);
 
         if(w.first == s.worm_turn && worms_iter->second.is_in_movement()){
@@ -184,6 +186,7 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
             cout << "Error: juego no preparado para mas de 4 jugadores" << endl;
         }
 
+        //printf("player id: %i \n", worm_info.player_id );
         Colour player_color = Colour::create(possible_colors.at(worm_info.player_id));
 
         show_life(worm_info.life,center_x,center_y, camera_position,player_color);
@@ -222,7 +225,6 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
 
 
 void GraphicDesigner::show_life(int life, int worm_x, int worm_y, SDL_Rect camera_position, Colour color){
-    printf("life %i\n", life );
     char str_life[10];
     if(life < 100){
         sprintf(str_life, " %d ", life);
@@ -236,10 +238,10 @@ void GraphicDesigner::show_life(int life, int worm_x, int worm_y, SDL_Rect camer
         throw Error("TTF_RenderText_Solid(): ",TTF_GetError());
     }
 
-    int x = worm_x - camera_position.x + 20;
-    int y = worm_y - camera_position.y - 5;
+    Sint16 x = worm_x - camera_position.x + 20;
+    Sint16 y = worm_y - camera_position.y - 5;
 
-    SDL_Rect rectangle;
+    SDL_Rect rectangle; 
     rectangle.x = x-2;
     rectangle.y = y-2;
     rectangle.h = text->h + 2;
@@ -259,7 +261,7 @@ void GraphicDesigner::show_life(int life, int worm_x, int worm_y, SDL_Rect camer
     position.h = text->h;
     position.w = text->w;
     SDL_BlitSurface(text, &dimention, this->screen, &position);
-    //SDL_FreeSurface(text);
+    SDL_FreeSurface(text);
 }
 
 void GraphicDesigner::show_powerbar(int power){
@@ -284,18 +286,26 @@ void GraphicDesigner::show_powerbar(int power){
 }
 
 void GraphicDesigner::show_weapons_menu(int size){
+    int width = this->weapons_menu->w*size/100;
+    SDL_Rect position;
+    position.x = this->screen_width - width -2;
+    position.y = 5;
+    position.h = this->weapons_menu->h;
+    position.w = this->weapons_menu->w;
+
     SDL_Rect dimention;
     dimention.x = 0;
     dimention.y = 0;
     dimention.h = this->weapons_menu->h;
-    dimention.w = this->weapons_menu->w*size/100;
+    dimention.w = width;
+    SDL_BlitSurface(this->weapons_menu, &dimention, this->screen, &position);  
+}
 
-    SDL_Rect position;
-    position.x = this->screen_width - this->weapons_menu->w -5;
-    position.y = 5;
-    position.h = this->weapons_menu->h;
-    position.w = this->weapons_menu->w;
-    SDL_BlitSurface(this->weapons_menu, &dimention, this->screen, &position);
+void GraphicDesigner::make_appear_weapons_menu(){
+    while(this->menu_size < 100){
+        this->show_weapons_menu(this->menu_size);
+        this-> menu_size ++;
+    }  
 }
 
 bool GraphicDesigner::is_inside_weapon_menu(int x, int y){
@@ -309,6 +319,7 @@ bool GraphicDesigner::is_inside_weapon_menu(int x, int y){
 
 
 Weapon_Name GraphicDesigner::choose_weapon(int x, int y){
+    this->menu_size = 0;
     int icon_y = this->weapons_menu->h/10;
     if(y < icon_y){
         return W_Air_Attack;
@@ -338,6 +349,7 @@ Weapon_Name GraphicDesigner::choose_weapon(int x, int y){
         return Dynamite;
     }
     return Banana;
+
 }
 
 void GraphicDesigner::show_timer(int second){

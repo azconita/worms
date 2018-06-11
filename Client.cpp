@@ -28,15 +28,12 @@ StageDTO Client::receive_stage(){
     string stage_str = (this->socket).receive_dto();
     YAML::Node yaml_received = YAML::Load(stage_str);
     //printf("%s\n", stage_str.c_str());
-    StageDTO stage_received = yaml_received ["stage"].as<StageDTO>();
+    StageDTO stage_received = yaml_received["stage"].as<StageDTO>();
     return stage_received;
 }
 
 
 void Client::run(){
-
-    extern  logger oLog;
-
 
     if(SDL_Init(SDL_INIT_VIDEO) < 0) {
         throw Error("No se pudo iniciar SDL: ",SDL_GetError());

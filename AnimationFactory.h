@@ -16,6 +16,7 @@ class AnimationFactory {
 	 AnimationFactory();
 	static Animation get_worm_walk();
 	static Animation get_worm_jump();
+    static Animation get_worm_jump_back();
     static Animation get_worm_fall();
     static Animation get_worm_missile();
     static Animation get_worm_bat();

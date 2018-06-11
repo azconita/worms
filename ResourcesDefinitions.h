@@ -18,6 +18,14 @@
 #define WORM_JUMP_COLUMNS 1
 #define WORM_JUMP_ROWS 10
 
+//un gusano saltando para atras
+#define WORM_JUMP_BACK "resources/worm_jump_back.bmp"
+#define WORM_JUMP_BACK_R 128
+#define WORM_JUMP_BACK_G 128
+#define WORM_JUMP_BACK_B 192
+#define WORM_JUMP_BACK_COLUMNS 1
+#define WORM_JUMP_BACK_ROWS 22
+
 //un gusano cayendo
 #define WORM_FALL "resources/worm_roll.bmp"
 #define WORM_FALL_R 128

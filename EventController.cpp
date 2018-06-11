@@ -24,13 +24,11 @@ EventController::EventController(BlockingQueue<ActionDTO> & actions_queue, SDL_E
 
 
 
-bool EventController::continue_running(WormAnimation& turn_worm){
-    if(this->wait_for_weapon_click){
-        this->graphic_designer.show_weapons_menu(100);
-    }
 
+
+bool EventController::continue_running(WormAnimation& turn_worm){
     if(SDL_PollEvent(&this->event) != 1){
-        return true; // no hay nuevos event
+        return keep_clicking(turn_worm); // no hay nuevos eventos
     }
     switch(event.type){
         case SDL_QUIT:
@@ -41,12 +39,12 @@ bool EventController::continue_running(WormAnimation& turn_worm){
             break;
         case SDL_MOUSEMOTION:
             mouse_motion();
-        case SDL_KEYDOWN:
+        case SDL_KEYUP:
             if(event.key.keysym.sym == SDLK_ESCAPE ){
                 quit();
                 return false;
             }
-            if (this->id == turn_worm.get_player_id()) {
+            if(this->id == turn_worm.get_player_id()) {
               movement(event, turn_worm);
               weapon_shortcuts(event, turn_worm);
               weapon_action(event, turn_worm);
@@ -54,6 +52,21 @@ bool EventController::continue_running(WormAnimation& turn_worm){
             break;
     }
     return true;
+}
+
+bool EventController::keep_clicking(WormAnimation& turn_worm){
+    switch(this->event.type){
+        case SDL_KEYDOWN:{
+            switch(this->event.key.keysym.sym){
+                case SDLK_SPACE:{
+                    space(turn_worm);
+                    break;
+                }      
+            }
+        }
+    }
+    return true; 
+
 }
 
 
@@ -69,10 +82,13 @@ void EventController::movement(SDL_Event & event, WormAnimation& turn_worm){
             right( turn_worm);
             break;
         case SDLK_UP:
-            up( turn_worm);
+            up(turn_worm);
             break;
         case SDLK_DOWN:
-            down( turn_worm);
+            down(turn_worm);
+            break;
+        case SDLK_BACKSPACE:
+            up_back(turn_worm);
             break;
     }
 }
@@ -81,7 +97,7 @@ void EventController::movement(SDL_Event & event, WormAnimation& turn_worm){
 void EventController::weapon_action(SDL_Event & event, WormAnimation& turn_worm){
     switch(event.key.keysym.sym){
         case SDLK_SPACE:
-             space( turn_worm);
+             weapon_shot(turn_worm);
              break;
         case SDLK_0:
             turn_worm.set_timer(0);
@@ -125,7 +141,9 @@ void EventController::click(WormAnimation& turn_worm){
     }
 
     else if(this->wait_for_weapon_click){
+        printf("estaba esperando que se elija un arma\n");
         if(graphic_designer.is_inside_weapon_menu(x,y)){
+            printf("esta dentro del menu\n");
             Weapon_Name  weapon = graphic_designer.choose_weapon(x,y);
             turn_worm.take_weapon(weapon);
             this->action.type = Take_weapon;
@@ -144,6 +162,7 @@ void EventController::mouse_motion(){
     if(x > screen_width - 5 && y < 5){
         cout << "Se quiere elegir un arma:" << endl;
         printf("%i %i\n",x,y);
+        this->graphic_designer.make_appear_weapons_menu();
         this->wait_for_weapon_click = true;
         return;
     }
@@ -187,11 +206,21 @@ void EventController::up(WormAnimation& turn_worm){
 
 }
 
+void EventController::up_back(WormAnimation& turn_worm){
+    turn_worm.change_state(Jump_back_state);
+    this->action.type = Make_move;
+    this->action.move = Jump_back;
+    this->action.direction = turn_worm.get_direction();
+    send_action(this->action);
+
+
+}
+
 void EventController::down(WormAnimation& turn_worm){
     if(turn_worm.has_point_weapon()){
         float degrees = turn_worm.point_down_weapon();
         printf("%f\n",degrees );
-    }
+    }   
 
 }
 

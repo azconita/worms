@@ -47,6 +47,7 @@ class GraphicDesigner {
 	TTF_Font *time_font;
 	SDL_Surface *power_bar;
 	SDL_Surface * weapons_menu;
+	int menu_size;
 	std::map<int,WormAnimation> worms;
 	std::map<Weapon_Name,Animation> weapons;
 	std::vector<Picture> little_beams;
@@ -56,6 +57,8 @@ class GraphicDesigner {
 	std::map<int,WormAnimation> create_worms(StageDTO s);
 	bool is_timer_weapon(Weapon_Name weapon);
 	Picture inclinate_beam(std::vector<Picture> beams, float degree);
+	void show_weapons_menu(int size);
+	
 	void show_beams(StageDTO s, SDL_Surface *screen);
 	void show_worms(StageDTO s, SDL_Surface *screen);
 	void show_weapon(StageDTO s,SDL_Surface * screen);
@@ -69,7 +72,7 @@ public:
 	void show_background();
 	void show_elements(StageDTO s, SDL_Surface *screen);
 	void show_powerbar(int power);
-	void show_weapons_menu(int size);
+	void make_appear_weapons_menu();
 	bool is_inside_weapon_menu(int x, int y);
 	Weapon_Name choose_weapon(int x, int y);
 	void show_timer(int second);

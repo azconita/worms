@@ -28,7 +28,7 @@ class Worm : public Entity {
   b2Vec2 start_falling = b2Vec2(0,0);
   int life;
 public:
-  Worm(b2World* world, float x, float y, int id);
+  Worm(b2World* world, float x, float y, int id, Direction direction);
   Worm(const    Worm& other);
   Worm();
   virtual ~Worm();

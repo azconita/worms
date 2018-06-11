@@ -68,6 +68,9 @@ std::map<State,Animation> AnimationFactory::get_wormsAnimations(){
     Animation worm_jump = AnimationFactory::get_worm_jump();
     animations.insert(std::pair<State,Animation>(Jump_state,worm_jump));
 
+    Animation worm_jump_back = AnimationFactory::get_worm_jump_back();
+    animations.insert(std::pair<State,Animation>(Jump_back_state,worm_jump_back));
+
     Animation worm_missile = AnimationFactory::get_worm_missile();
     animations.insert(std::pair<State,Animation>(Worm_missile,worm_missile));
 
@@ -110,7 +113,12 @@ std::map<State,Animation> AnimationFactory::get_wormsAnimations(){
         Colour colorkey(WORM_JUMP_R,WORM_JUMP_G,WORM_JUMP_B);
         Animation worm(WORM_JUMP,colorkey,WORM_JUMP_COLUMNS,WORM_JUMP_ROWS);
         return worm;
+    }
 
+    Animation AnimationFactory::get_worm_jump_back(){
+        Colour colorkey(WORM_JUMP_BACK_R,WORM_JUMP_BACK_G,WORM_JUMP_BACK_B);
+        Animation worm(WORM_JUMP_BACK,colorkey,WORM_JUMP_BACK_COLUMNS,WORM_JUMP_BACK_ROWS);
+        return worm;
     }
 
      Animation AnimationFactory::get_worm_fall(){
