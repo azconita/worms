@@ -15,6 +15,7 @@ Worm::Worm(b2World* world, float x, float y, int id, Direction direction) :
   b2BodyDef bodyDef;
   bodyDef.type = b2_dynamicBody;
   bodyDef.position.Set(x, y);
+  bodyDef.bullet = true;
   bodyDef.userData = (void*) this;
   this->body = world->CreateBody(&bodyDef);
   std::cout << "wormDir: " << this << '\n';

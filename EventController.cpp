@@ -20,6 +20,7 @@ EventController::EventController(BlockingQueue<ActionDTO> & actions_queue, SDL_E
             this->wait_for_destination_clicl = false;
             this->wait_for_weapon_click = false;
             this->action.worm_id = 0;
+            this->i = 0;
 }
 
 
@@ -27,6 +28,8 @@ EventController::EventController(BlockingQueue<ActionDTO> & actions_queue, SDL_E
 
 
 bool EventController::continue_running(WormAnimation& turn_worm){
+    printf("event controller %i\n", this->i);
+    this->i++;
     if(SDL_PollEvent(&this->event) != 1){
         return keep_clicking(turn_worm); // no hay nuevos eventos
     }
@@ -35,6 +38,7 @@ bool EventController::continue_running(WormAnimation& turn_worm){
             quit();
             return false;
         case SDL_MOUSEBUTTONUP:
+            printf("se hizo click\n");
             click(turn_worm);
             break;
         case SDL_MOUSEMOTION:

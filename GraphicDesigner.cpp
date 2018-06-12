@@ -127,34 +127,40 @@ void GraphicDesigner::show_beams(StageDTO s, SDL_Surface *screen){
         int center_x = get_pixels(beam_info.pos_x) - camera_position.x;
         int center_y = get_pixels(beam_info.pos_y) - camera_position.y;
 
+        float degrees = beam_info.angle;
+        if(beam_info.direction == Right){
+            degrees = 180-degrees;
+        }
+
 
         if(beam_info.w == 3){
-            Picture beam = inclinate_beam(this->little_beams, beam_info.angle);
-            beam.draw(this->screen,center_x, center_y);
+            Picture beam = inclinate_beam(this->little_beams, degrees);
+            beam.draw(this->screen,center_x, center_y,beam_info.direction);
         }else{
-            Picture beam = inclinate_beam(this->big_beams, beam_info.angle);
-             beam.draw(this->screen,center_x, center_y);
+            Picture beam = inclinate_beam(this->big_beams, degrees);
+             beam.draw(this->screen,center_x, center_y, beam_info.direction);
         } 
     }
 }
 
-Picture GraphicDesigner::inclinate_beam(std::vector<Picture> beams, float degree){
+Picture GraphicDesigner::inclinate_beam(std::vector<Picture> beams, float degrees){
+
     if(beams.size() < 5){
         throw Error("No se cargaron todas las imagenes de las vigas");
     }
-    if(degree < 5){
+    if(degrees < 5){
         Picture beam = beams[0];
         return beam;
     }
-    if(degree < 33){
+    if(degrees < 33){
         Picture beam = beams[1];
         return beam;
     }
-    if(degree < 55){
+    if(degrees < 55){
         Picture beam = beams[2];
         return beam;
     }
-     if(degree < 80){
+     if(degrees < 80){
         Picture beam = beams[3];
         return beam;
     }

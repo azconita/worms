@@ -88,11 +88,11 @@ void Client::run(){
         StageDTO s = receive_stage();
         turn_worm_iter = graphic_designer.get_turn_worm(s.worm_turn);
 
-       // if((t1 -t0) > 17) {
+        if((t1 -t0) > 17) {
 
             // Nueva referencia de tiempo
-            //t0 = SDL_GetTicks();
-            t_start = std::chrono::high_resolution_clock::now();
+            t0 = SDL_GetTicks();
+            //t_start = std::chrono::high_resolution_clock::now();
 
             //borro todo lo que estaba
             //toda la pantalla en negro
@@ -104,13 +104,13 @@ void Client::run(){
             graphic_designer.show_elements(s,screen);
 
         //TODO: revisar con foto de martin!!
-        t_end = std::chrono::high_resolution_clock::now();
-        t_diff = t_tosleep + t_tosleep - std::chrono::duration_cast<std::chrono::nanoseconds>(t_slend - t_end) - std::chrono::duration_cast<std::chrono::nanoseconds>(t_end - t_start);
-        t_diff = (t_diff.count() > 0) ? t_diff : std::chrono::nanoseconds(0);
+        //t_end = std::chrono::high_resolution_clock::now();
+        //t_diff = t_tosleep + t_tosleep - std::chrono::duration_cast<std::chrono::nanoseconds>(t_slend - t_end) - std::chrono::duration_cast<std::chrono::nanoseconds>(t_end - t_start);
+        //t_diff = (t_diff.count() > 0) ? t_diff : std::chrono::nanoseconds(0);
         //t_diff = 2 * t_tosleep - t_start - t_slend;
-        std::this_thread::sleep_for(t_tosleep - t_diff);
-        t_slend = std::chrono::high_resolution_clock::now();
-        //}
+        //std::this_thread::sleep_for(t_tosleep - t_diff);
+        //t_slend = std::chrono::high_resolution_clock::now();
+        }
 
     }
 }

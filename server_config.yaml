@@ -6,7 +6,7 @@ wind: 0.5
 
 beam_width: 6
 beam_height: 0.8
-beam_friction: 15.8
+beam_friction: 150.8
 
 worm_turn_time: 4
 worm_initial_life: 100
