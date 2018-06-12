@@ -32,6 +32,7 @@ public:
   void send();
   void receive();
   void stop();
+  void end_game(int winner);
 };
 
 #endif /* PLAYER_H_ */

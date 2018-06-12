@@ -16,7 +16,7 @@ worm_density: 1
 worm_size: 1.6
 worm_friction: 1
 
-weapon_size: 0.1
+weapon_size: 1
 weapon_density: 1
 explosion_power: 50
 bazooka_damage: 50

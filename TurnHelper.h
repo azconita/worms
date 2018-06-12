@@ -20,6 +20,7 @@ public:
   virtual ~TurnHelper();
 
   int get_next();
+  bool has_worms();
   void delete_id(int id);
 };
 

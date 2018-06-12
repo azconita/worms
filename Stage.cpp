@@ -114,11 +114,18 @@ void Stage::update_player() {
 
 //cuantos players puede haber????
 void Stage::change_player() {
-  int new_player_id = ((this->last_player_id + 1) == this->players_turn.size()) ? 0 : this->last_player_id + 1;
-  printf("next player id: %d,", new_player_id);
-  this->current_player = this->worms[this->players_turn.at(new_player_id).get_next()];
-  printf(" worm id: %d\n", this->current_player->get_id());
-  this->last_player_id = new_player_id;
+  for (int i = 0; i < this->players_turn.size(); ++i) {
+    int new_player_id = ((this->last_player_id + 1) >= this->players_turn.size()) ? 0 : this->last_player_id + 1;
+    this->last_player_id = new_player_id;
+    if (this->players_turn.at(new_player_id).has_worms()) {
+      printf("next player id: %d,", new_player_id);
+      this->current_player = this->worms[this->players_turn.at(new_player_id).get_next()];
+      printf(" worm id: %d\n", this->current_player->get_id());
+      return;
+    }
+  }
+  //después deberia chequear por todos menos el mismo jugador que ya jugo
+  this->finish = true;
 }
 
 void Stage::make_action(ActionDTO & action) {
@@ -285,4 +292,8 @@ void Stage::set_worms_to_players(int total_players) {
   }
   //compensar jugador con menos gusanos!!
   this->current_player = this->worms[0];
+}
+
+int Stage::get_winner() {
+  return this->players_turn.begin()->first;
 }

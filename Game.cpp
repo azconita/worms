@@ -88,6 +88,11 @@ void Game::run() {
       q->push(s);
     }
   }
+  int win = this->stage.get_winner();
+  if (win != -1) {
+    for (auto& p : this->players)
+      p->end_game(win);
+  }
 }
 
 void Game::stop() {
