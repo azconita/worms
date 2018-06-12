@@ -208,12 +208,15 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
 
 
  void GraphicDesigner::show_weapon( StageDTO s,SDL_Surface * screen){
+    
     SDL_Rect camera_position = this->camera->get_focus();
     for (auto w: s.weapons) {
+        printf("arma a graficar\n");
 
         int center_x = get_pixels(w.pos_x) - camera_position.x;
         int center_y = get_pixels(w.pos_y) - camera_position.y;
 
+        printf( "posicion %f %f\n", w.pos_x, w.pos_y);
 
         std::map<Weapon_Name,Animation>::iterator weapon_iter = this->weapons.find(w.weapon);
         weapon_iter->second.continue_internal_movement();
@@ -223,8 +226,10 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
                              center_y - ((float) weapon_iter->second.get_height()/2));*/
 
         if(is_timer_weapon(w.weapon)){
+            printf("tiene timer\n");
             show_timer(w.timer);
         }
+        printf("termino de graficar el arma\n");
     }
 
 }
@@ -359,6 +364,11 @@ Weapon_Name GraphicDesigner::choose_weapon(int x, int y){
 }
 
 void GraphicDesigner::show_timer(int second){
+    if(second > 10){
+        second = 5;
+    }
+    printf("el timer es de %i\n", second );
+
     char time[10];
     sprintf(time, "00:00:0%d ", second);
 
@@ -397,6 +407,7 @@ void GraphicDesigner::show_timer(int second){
     position.w = text->w;
     SDL_BlitSurface(text, &dimention, this->screen, &position);
     //SDL_FreeSurface(text);
+    printf("termino de dibujar el timer\n");
 
 
 }

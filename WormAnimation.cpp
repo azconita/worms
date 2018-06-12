@@ -48,14 +48,9 @@ void WormAnimation::change_direction(Direction direction){
 }
 
 void WormAnimation::change_state(State state){
-    this->state = state; //sigue en la misma dire que antes
-}
-
-void WormAnimation::take_weapon(Weapon_Name weapon){
-    this->timer = 5;
+    this->state = state; 
+     this->timer = 5;
     this->degrees = -90;
-    std::map<Weapon_Name,State>::iterator weapon_state = weapons_states.find(weapon);
-    change_state(weapon_state->second);
     if( std::find(weapons_states_with_power.begin(), weapons_states_with_power.end(), this->state) //
     != weapons_states_with_power.end() && this->weapon_power == 0){
         this->weapon_power = 10;

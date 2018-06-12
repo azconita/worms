@@ -50,6 +50,7 @@ private:
 	void teletrans(WormAnimation& turn_worm);
 	void banana(WormAnimation& turn_worm);
 	void baseboll_bat(WormAnimation& turn_worm);
+	void take_weapon(WormAnimation& turn_worm, Weapon_Name weapon);
 
 	void click(WormAnimation& turn_worm);
 	bool keep_clicking(WormAnimation& turn_worm);

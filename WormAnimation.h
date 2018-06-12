@@ -55,7 +55,6 @@ public:
 	bool has_point_weapon();
 	void change_direction(Direction direction);
 	void change_state(State state);
-	void take_weapon(Weapon_Name weapon);
 	float point_down_weapon();
 	float point_up_weapon();
 	float get_degrees();
