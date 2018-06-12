@@ -223,7 +223,15 @@ void Weapon::shoot(int power, float degrees, Direction dir, int time_to_explode)
       break;
     }
     case Green_Grenade: {
-      this->green_grenade(power, degrees, time_to_explode, s);
+      this->grenade(power, degrees, time_to_explode, s);
+      break;
+    }
+    case Red_Grenade: {
+      this->grenade(power, degrees, time_to_explode, s);
+      break;
+    }
+    case Holy_Grenade: {
+      this->grenade(power, degrees, time_to_explode, s);
       break;
     }
     case Dynamite: {
@@ -244,7 +252,7 @@ void Weapon::bazooka(int power, float degrees, int s) {
 
 }
 
-void Weapon::green_grenade(int power, float degrees, int timer, int s) {
+void Weapon::grenade(int power, float degrees, int timer, int s) {
   this->timer = timer;
   b2Vec2 vel = rad2vec(degrees);
   float velChange = power * vel.x;

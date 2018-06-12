@@ -54,7 +54,7 @@ public:
   std::vector<b2Vec2> get_points();
 
   void bazooka(int power, float degrees, int s);
-  void green_grenade(int power, float degrees, int timer, int s);
+  void grenade(int power, float degrees, int timer, int s);
   void dynamite(int time_to_explode, int s);
 
   void printPos() {
