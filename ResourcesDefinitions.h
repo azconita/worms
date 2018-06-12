@@ -10,6 +10,20 @@
 #define WORM_WALK_COLUMNS 1
 #define WORM_WALK_ROWS 15
 
+#define WORM_WALK_DOWN "resources/worm_walk_down.bmp"
+#define WORM_WALK_DOWN_R 128
+#define WORM_WALK_DOWN_G 128
+#define WORM_WALK_DOWN_B 192
+#define WORM_WALK_DOWN_COLUMNS 1
+#define WORM_WALK_DOWN_ROWS 15
+
+#define WORM_WALK_UP "resources/worm_walk_up.bmp"
+#define WORM_WALK_UP_R 128
+#define WORM_WALK_UP_G 128
+#define WORM_WALK_UP_B 192
+#define WORM_WALK_UP_COLUMNS 1
+#define WORM_WALK_UP_ROWS 15
+
 //un gusano saltando
 #define WORM_JUMP "resources/worm_jump.bmp"
 #define WORM_JUMP_R 128
@@ -17,6 +31,28 @@
 #define WORM_JUMP_B 192
 #define WORM_JUMP_COLUMNS 1
 #define WORM_JUMP_ROWS 10
+
+#define WORM_JUMP_UP "resources/worm_jump_up.bmp"
+#define WORM_JUMP_UP_R 128
+#define WORM_JUMP_UP_G 128
+#define WORM_JUMP_UP_B 192
+#define WORM_JUMP_UP_COLUMNS 1
+#define WORM_JUMP_UP_ROWS 10
+
+#define WORM_JUMP_DOWN "resources/worm_jump_down.bmp"
+#define WORM_JUMP_DOWN_R 128
+#define WORM_JUMP_DOWN_G 128
+#define WORM_JUMP_DOWN_B 192
+#define WORM_JUMP_DOWN_COLUMNS 1
+#define WORM_JUMP_DOWN_ROWS 10
+
+//un gusano saltando para atras
+#define WORM_JUMP_BACK "resources/worm_jump_back.bmp"
+#define WORM_JUMP_BACK_R 128
+#define WORM_JUMP_BACK_G 128
+#define WORM_JUMP_BACK_B 192
+#define WORM_JUMP_BACK_COLUMNS 1
+#define WORM_JUMP_BACK_ROWS 22
 
 //un gusano cayendo
 #define WORM_FALL "resources/worm_roll.bmp"
@@ -167,6 +203,20 @@
 #define EXPLOSION_COLUMNS 1
 #define EXPLOSION_ROWS 8
 
+#define BIG_EXPLOSION "resources/explosion2.bmp"
+#define BIG_EXPLOSION_R 255
+#define BIG_EXPLOSION_G 255
+#define BIG_EXPLOSION_B 255
+#define BIG_EXPLOSION_COLUMNS 4
+#define BIG_EXPLOSION_ROWS 4
+
+#define FRAGMENT "resources/fragment.bmp"
+#define FRAGMENT_R 192
+#define FRAGMENT_G 192
+#define FRAGMENT_B 128
+#define FRAGMENT_COLUMNS 1
+#define FRAGMENT_ROWS 32
+
 
 //vigas
 #define BEAM_R 128
@@ -198,13 +248,15 @@
 
 //barra de poder
 //el agua
-#define POWER_BAR "resources/powerbar.bmp"
+#define POWER_BAR "resources/power_bar.bmp"
 #define WEAPONS_MENU "resources/weapons_menu.bmp"
 #define FONT_FILE "resources/Amiko-Bold.ttf"
 #define FONT_SIZE 10
 #define TIMER_SIZE 35
 #define TIMER_FONT "resources/DS-DIGI.ttf"
 
+
+#define BACKGROUND "resources/background_forest.bmp"
 
 
 #endif

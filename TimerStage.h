@@ -20,6 +20,7 @@ public:
   TimerStage(BlockingQueue<ActionDTO> &q);
   virtual ~TimerStage();
   virtual void run() override;
+  void stop();
 };
 
 #endif /* TIMERSTAGE_H_ */

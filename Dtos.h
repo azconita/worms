@@ -14,19 +14,21 @@
 #include <vector>
 #include <string>
 
-
-
-
-enum Direction{
+enum Direction {
     Right,
     Left
 };
 
-enum State{
+enum State {
    Still,
    Walk,
    Fall,
+   Walk_up,
+   Walk_down,
    Jump_state,
+   Jump_up,
+   Jump_down,
+   Jump_back_state,
    Worm_missile,
    Worm_banana,
    Worm_bat,
@@ -37,6 +39,8 @@ enum State{
    Worm_air_attack,
    Worm_dynamite
 };
+
+
 
 
 enum Entity_Type {
@@ -59,8 +63,22 @@ enum Weapon_Name {
     Banana,//u
     Baseball_Bat,//v
     Explosion,
+    Big_Explosion,
     None,
     W_Timer
+};
+
+static std::map<Weapon_Name, State> weapons_states {
+    {W_Air_Attack, Worm_air_attack},
+    {W_Bazooka,Worm_missile},
+    {Dynamite,Worm_dynamite},
+    {Mortar,Worm_missile},
+    {Green_Grenade,Worm_green_granade},
+    {Holy_Grenade,Worm_holy_granade},
+    {Red_Grenade,Worm_red_granade},
+    {Teleport,Worm_teletrans},
+    {Banana,Worm_banana},
+    {Baseball_Bat,Worm_bat}
 };
 
 struct ElementDTO { //puede ser un gusano, un arma o una viga
@@ -68,6 +86,8 @@ struct ElementDTO { //puede ser un gusano, un arma o una viga
   float pos_y; //vertice superior izquierdo en metros
   float h;
   float w;
+  State worm_state;
+  Direction direction;
   float angle;
   int life;
   int player_id;
@@ -77,7 +97,9 @@ struct ElementDTO { //puede ser un gusano, un arma o una viga
 };
 
 struct StageDTO {
+  //bool finish = false;
   int worm_turn;
+  int player_id;
   std::vector<ElementDTO> beams;
   std::map<int,ElementDTO> worms;
   std::vector<ElementDTO> weapons;
@@ -103,7 +125,7 @@ struct ActionDTO {
   Action_Type type;
   Movement move;
   Weapon_Name weapon;
-  float weapon_degrees;
+  float weapon_degrees = 0;
   int power;
   int time_to_explode;
   Direction direction;
@@ -120,6 +142,7 @@ struct convert<StageDTO> {
   static Node encode(const StageDTO& s) {
     Node node;
     node["worm_turn"] = s.worm_turn;
+    node["player_id"] = s.player_id;
     node["worms"] = s.worms;
     node["beams"] = s.beams;
     node["weapons"] = s.weapons;
@@ -129,6 +152,7 @@ struct convert<StageDTO> {
   }
   static bool decode(const Node& node, StageDTO& s) {
     s.worm_turn = node["worm_turn"].as<int>();
+    s.player_id = node["player_id"].as<int>();
     s.beams = node["beams"].as<std::vector<ElementDTO>>();
     s.weapons = node["weapons"].as<std::vector<ElementDTO>>();
     s.worms = node["worms"].as<std::map<int, ElementDTO>>();
@@ -141,10 +165,13 @@ template<>
 struct convert<ElementDTO> {
   static Node encode(const ElementDTO& elem) {
     Node node;
+  
     node["pos_x"] = elem.pos_x;
     node["pos_y"] = elem.pos_y;
     node["h"] = elem.h;
     node["w"] = elem.w;
+    node["worm_state"] = (int)elem.worm_state;
+    node["direction"] = (int)elem.direction;
     node["life"] = elem.life;
     node["player_id"] = elem.player_id;
     node["weapon"] = (int)elem.weapon;
@@ -159,6 +186,8 @@ struct convert<ElementDTO> {
     elem.pos_y = node["pos_y"].as<float>();
     elem.h = node["h"].as<float>();
     elem.w = node["w"].as<float>();
+    elem.worm_state = static_cast<State>(node["worm_state"].as<int>());
+    elem.direction = static_cast<Direction>(node["direction"].as<int>());
     elem.life = node["life"].as<int>();
     elem.player_id = node["player_id"].as<int>();
     elem.weapon = static_cast<Weapon_Name>(node["weapon"].as<int>());

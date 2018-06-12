@@ -71,9 +71,9 @@ Picture::Picture(const char * bmp_path, Colour color, int columns, int rows){
         this->column_num = 0;
         this->default_direction = Left; //todas las fotos estan para la izquierda
 
-
-        SDL_Surface *tmp = IMG_Load(bmp_path);
-        //SDL_Surface *tmp = SDL_LoadBMP(bmp_path);
+        SDL_Surface *tmp =  SDL_LoadBMP(bmp_path);
+        //SDL_Surface *tmp = IMG_Load(bmp_path);
+        //tmp = rotozoomSurface(tmp,90.0, 10,0);     
         if (!tmp) {
             throw Error("Couldn't create surface from image: ",bmp_path,SDL_GetError());
         }
@@ -85,7 +85,7 @@ Picture::Picture(const char * bmp_path, Colour color, int columns, int rows){
             throw Error("Error: ", SDL_GetError());
         }
 
-        // Calculamos el color transparente, en nuestro caso el verde
+        // Calculamos el color transparente
          Uint32 colorkey = SDL_MapRGB(this->surface->format, color.r, color.g, color.b);
         // Lo establecemos como color transparente
         SDL_SetColorKey(this->surface, SDL_SRCCOLORKEY, colorkey);
@@ -107,11 +107,17 @@ int Picture::get_width(){
 
 void Picture::draw(SDL_Surface *screen, int x, int y){
     SDL_Rect position;
-    position.x = x;
-    position.y = y;
+    position.x = x - (this->w/2);
+    position.y = y - (this->h/2);
     draw(screen, position, this->default_direction);
 }
 
+void Picture::draw(SDL_Surface *screen, int x, int y, Direction direction){
+    SDL_Rect position;
+    position.x = x - (this->w/2);
+    position.y = y - (this->h/2);
+    draw(screen, position, direction);
+}
 
 
 void Picture::draw(SDL_Surface *screen, SDL_Rect position, Direction direction){
@@ -197,7 +203,8 @@ bool Picture::is_in_last_figure(Direction direction){
 }
 
 
-Picture::~Picture() {
-	// TODO Auto-generated destructor stub
+Picture::~Picture() {   
+    //SDL_FreeSurface(this->surface);
+	
 }
 

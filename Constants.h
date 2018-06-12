@@ -19,10 +19,12 @@ namespace Constants {
   extern const float wind;
 
   //worm constants
+  extern const int worm_turn_time;
   extern const int worm_initial_life;
   extern const float worm_walk_velocity;
   extern const float worm_jump_velocity;
   extern const float worm_density;
+  extern const float worm_friction; 
   extern const float worm_size; //lado del cuadrado
 
   //beam constants
@@ -30,6 +32,7 @@ namespace Constants {
   extern const float beam_width;
   extern const float beam_friction;
   //weapons constants
+  extern const float explosion_power;
   extern const float weapon_size;
   extern const float weapon_density;
   //bazooka

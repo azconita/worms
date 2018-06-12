@@ -8,6 +8,7 @@
 #include "Entity.h"
 #include <iostream>
 
+#include "Constants.h"
 #include "WeaponExplosionListener.h"
 #include "Weapon.h"
 
@@ -26,14 +27,14 @@ void WeaponExplosionListener::BeginContact(b2Contact* contact) {
   Entity* bodyUserData = (Entity*) contact->GetFixtureA()->GetBody()->GetUserData();
   std::cout << "entity read " << bodyUserData<< "\n";
   if (bodyUserData->en_type == 3) {
-    static_cast<Weapon*>( bodyUserData )->proximity_explosion(10,10);
+    static_cast<Weapon*>( bodyUserData )->proximity_explosion(Constants::explosion_power);
 
   } else {
   //check if fixture B was a explosion
     bodyUserData = (Entity*) contact->GetFixtureB()->GetBody()->GetUserData();
     //std::cout << "entity read " << bodyUserData<< "\n";
     if ( bodyUserData->en_type == 3 )
-      static_cast<Weapon*>( bodyUserData )->proximity_explosion(10,10);
+      static_cast<Weapon*>( bodyUserData )->proximity_explosion(Constants::explosion_power);
   }
 
 }

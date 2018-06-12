@@ -15,7 +15,12 @@
 class AnimationFactory {
 	 AnimationFactory();
 	static Animation get_worm_walk();
+    static Animation get_worm_walk_up();
+    static Animation get_worm_walk_down();
 	static Animation get_worm_jump();
+    static Animation get_worm_jump_up();
+    static Animation get_worm_jump_down();
+    static Animation get_worm_jump_back();
     static Animation get_worm_fall();
     static Animation get_worm_missile();
     static Animation get_worm_bat();
@@ -36,6 +41,8 @@ class AnimationFactory {
     static Animation get_air_attack();
     static Animation get_dynamite();
     static Animation get_explosion();
+    static Animation get_big_explosion();
+    static Animation get_fragment();
 public:
     static std::vector<Picture> get_little_beams();
     static std::vector<Picture> get_big_beams();

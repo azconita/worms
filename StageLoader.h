@@ -24,12 +24,13 @@ struct Beam_y{
 	double pos_x;
 	double pos_y;
 	int size;
+  int direction;
 	double inclination;
 };
 
 struct Stage_y{
 	std::vector<Beam_y> beams;
-	std::map<int, std::vector<Worm_y>> players;
+	std::vector<Worm_y> worms;
 };
 
 namespace YAML {
@@ -38,13 +39,13 @@ struct convert<Stage_y> {
   static Node encode(const Stage_y& s) {
   	Node node;
 	node["beams"] = s.beams;
-	node["players"] = s.players;
+	node["worms"] = s.worms;
 	
     return node;
   }
   static bool decode(const Node& node, Stage_y& s) {
   	s.beams = node["beams"].as<std::vector<Beam_y>>();
-  	s.players = node["players"].as<std::map<int, std::vector<Worm_y>>>();
+  	s.worms = node["worms"].as<std::vector<Worm_y>>();
     return true;
   }
 };
@@ -56,6 +57,7 @@ struct convert<Beam_y> {
     node["pos_x"] = b.pos_x;
     node["pos_y"] = b.pos_y;
     node["size"] = b.size;
+    node["direction"] = b.direction;
     node["inclination"] = b.inclination;
  
     return node;
@@ -65,6 +67,7 @@ struct convert<Beam_y> {
     beam.pos_x = node["pos_x"].as<double>();
     beam.pos_y = node["pos_y"].as<double>();
     beam.size = node["size"].as<int>();
+    beam.direction = node["direction"].as<int>();
     beam.inclination = node["inclination"].as<double>();
     return true;
   }

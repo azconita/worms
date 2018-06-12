@@ -1,13 +1,28 @@
 #ifndef SOCKET_H
 #define SOCKET_H
 
+
+
+
+#include <algorithm>
 #include <string>
-#include <iostream>
 #include <vector>
+#include <iostream>
+#include <map>
+#include <random>
+#include <Box2D/Box2D.h>
+#include "Constants.h"
+#include "WeaponExplosionListener.h"
+#include "Dtos.h"
+#include "Worm.h"
+#include "Beam.h"
+#include "Stage.h"
+#include "Weapon.h"
 #include "Logger.h"
 
-#define PROTOCOL_MSG_SIZE 4
-#define CHUNK_LEN 512
+
+
+#define CHUNK_LEN 1400
 
 class Socket {
   private:
@@ -59,8 +74,8 @@ public:
   Socket accept_socket();
 
 private:
-  int get_digits(unsigned int num);
-  ssize_t receive_size_first();
+ 
+  int receive_size_first();
   void send_size_first(unsigned int size);
 
   //Debe estar conectado con el socket cuyo numero sea skt_num

@@ -44,17 +44,17 @@ public:
   bool is_time_to_explode();
   bool has_timer();
 
-  void proximity_explosion(float blastRadius, float blastPower);
+  void proximity_explosion(float blastPower);
   void explode();
   void apply_explosion_impulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint, float blastPower);
   void shoot(int power, float degrees, Direction dir, int time_to_explode);
 
   bool is_alive() { return (this->alive && (this->body->GetPosition().y < 100));}
-  b2Vec2 get_point();
+  b2Vec2 get_center();
   std::vector<b2Vec2> get_points();
 
   void bazooka(int power, float degrees, int s);
-  void green_grenade(int power, float degrees, int timer, int s);
+  void grenade(int power, float degrees, int timer, int s);
   void dynamite(int time_to_explode, int s);
 
   void printPos() {

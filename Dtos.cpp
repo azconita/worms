@@ -24,6 +24,10 @@ YAML::Emitter& operator << (YAML::Emitter& out, const ElementDTO& e) {
   out << YAML::Value << e.h;
   out << YAML::Key <<  "w";
   out << YAML::Value << e.w;
+  out << YAML::Key << "worm_state";
+  out << YAML::Value << e.worm_state;
+  out << YAML::Key << "direction";
+  out << YAML::Value << e.direction;
   out << YAML::Key <<  "angle";
   out << YAML::Value << e.angle;
   out << YAML::Key <<  "life";
@@ -42,12 +46,12 @@ YAML::Emitter& operator << (YAML::Emitter& out, const ElementDTO& e) {
 
 
 YAML::Emitter& operator << (YAML::Emitter& out, const StageDTO& s) {
-  extern  logger oLog; 
-  oLog() << "se envia StageDTO";
   out << YAML::BeginMap;
+  out << YAML::Key << "player_id";
+  out << YAML::Value << s.player_id;
   out << YAML::Key << "worm_turn";
   out << YAML::Value << s.worm_turn;
-   out << YAML::Key << "beams";
+  out << YAML::Key << "beams";
   out << YAML::Value << s.beams;
   out << YAML::Key << "weapons";
   out << YAML::Value << s.weapons;
@@ -59,8 +63,6 @@ YAML::Emitter& operator << (YAML::Emitter& out, const StageDTO& s) {
 
 
 YAML::Emitter& operator << (YAML::Emitter& out, const ActionDTO& a) {
-  extern  logger oLog; 
-  oLog() << "se envia ActionDTO";
   out << YAML::BeginMap;
   out << YAML::Key << "worm_id";
   out << YAML::Value << a.worm_id;

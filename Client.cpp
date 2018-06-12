@@ -5,38 +5,23 @@ float Client::get_pixels(float meter_position){
     return  PIXEL_CONSTANT*meter_position;
 }
 
-void Client::debug_box2d_figure(SDL_Surface *screen, ElementDTO element_info){
-    //dibujo un rectangulo
-    SDL_Rect rectangle;
-    rectangle.x = get_pixels(element_info.pos_x);
-    rectangle.y = get_pixels(element_info.pos_y);
-    rectangle.h = get_pixels(element_info.h);
-    rectangle.w = get_pixels(element_info.w);
-    Uint32 colorkey = SDL_MapRGBA(screen->format, 0, 255, 0,0.5);
-    SDL_FillRect(screen, &rectangle, colorkey);
-
-}
-
 Client::Client(char * host_name, char * port)://
     socket(host_name, port),
-    actions_queue(1000){  
+    actions_queue(1000){
     this->socket.connect_to_server();
 }
 
 
 StageDTO Client::receive_stage(){
     string stage_str = (this->socket).receive_dto();
-    printf("%s\n", stage_str.c_str());
     YAML::Node yaml_received = YAML::Load(stage_str);
-    StageDTO stage_received = yaml_received ["stage"].as<StageDTO>();
+    //printf("%s\n", stage_str.c_str());
+    StageDTO stage_received = yaml_received["stage"].as<StageDTO>();
     return stage_received;
 }
 
 
-void Client::run(){  
-
-    extern  logger oLog; 
-
+void Client::run(){
 
     if(SDL_Init(SDL_INIT_VIDEO) < 0) {
         throw Error("No se pudo iniciar SDL: ",SDL_GetError());
@@ -57,10 +42,8 @@ void Client::run(){
        throw Error("Modo video no compatible: ",SDL_GetError());
     }
 
-    // Establecemos el modo de video
-    SDL_Surface *screen;
-    screen = SDL_SetVideoMode(screen_width, screen_height, 24, SDL_HWSURFACE|SDL_DOUBLEBUF);
-    if(screen == NULL) {
+    this->screen = SDL_SetVideoMode(screen_width, screen_height, 24, SDL_HWSURFACE|SDL_DOUBLEBUF);
+    if(this->screen == NULL) {
        throw Error("No se pudo establecer el modo de video: ",SDL_GetError());
     }
 
@@ -68,22 +51,28 @@ void Client::run(){
     SDL_WM_SetCaption(TITLE, TITLE);
 
     StageDTO s = receive_stage();
+    this->id = s.player_id;
 
     WaterAnimation water(screen_height, 3);
 
     GraphicDesigner graphic_designer(screen, screen_height,screen_width, s);
-    
-    //turno harcodeado
-    std::map<int,WormAnimation>::iterator turn_worm_iter = graphic_designer.get_turn_worm(0);
+
+    std::map<int,WormAnimation>::iterator turn_worm_iter = graphic_designer.get_turn_worm(s.worm_turn);
 
     SDL_Event event;
-    EventController event_controller(this->actions_queue,event, screen_height, screen_width, graphic_designer);
+    EventController event_controller(this->actions_queue,event, screen_height, screen_width, graphic_designer, this->id);
     Actioner actioner(this->socket,this->actions_queue);
     actioner.start();
 
     //para controlar el tiempo
     Uint32 t0 = SDL_GetTicks();
     Uint32 t1;
+    using delta = std::chrono::duration<double, std::nano>;
+    std::chrono::nanoseconds t_diff(0);
+    auto t_start = std::chrono::high_resolution_clock::now();
+    auto t_end = std::chrono::high_resolution_clock::now();
+    auto t_slend = std::chrono::high_resolution_clock::now();
+    std::chrono::nanoseconds t_tosleep(TIME_TO_SLEEP);
 
     bool running=true;
     while(running ){
@@ -97,28 +86,36 @@ void Client::run(){
 
         //update
         StageDTO s = receive_stage();
+        turn_worm_iter = graphic_designer.get_turn_worm(s.worm_turn);
 
-        if((t1 -t0) > 100) {
+        if((t1 -t0) > 17) {
+
             // Nueva referencia de tiempo
             t0 = SDL_GetTicks();
+            //t_start = std::chrono::high_resolution_clock::now();
 
             //borro todo lo que estaba
             //toda la pantalla en negro
             SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format,0,0,0));
             //dibujo las vigas y el agua
+
+            graphic_designer.show_background();
             water.show(screen);
-            graphic_designer.show_beams(s, screen);
+            graphic_designer.show_elements(s,screen);
 
-            //dibujo los gusanos
-            graphic_designer.show_worms(s, screen);
-            graphic_designer.show_weapon(s, screen);
-
+        //TODO: revisar con foto de martin!!
+        //t_end = std::chrono::high_resolution_clock::now();
+        //t_diff = t_tosleep + t_tosleep - std::chrono::duration_cast<std::chrono::nanoseconds>(t_slend - t_end) - std::chrono::duration_cast<std::chrono::nanoseconds>(t_end - t_start);
+        //t_diff = (t_diff.count() > 0) ? t_diff : std::chrono::nanoseconds(0);
+        //t_diff = 2 * t_tosleep - t_start - t_slend;
+        //std::this_thread::sleep_for(t_tosleep - t_diff);
+        //t_slend = std::chrono::high_resolution_clock::now();
         }
 
     }
 }
 
 Client::~Client(){
+    SDL_FreeSurface(this->screen);
     this->socket.shut();
 }
-

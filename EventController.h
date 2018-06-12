@@ -15,19 +15,21 @@
 
 class EventController {
 
-	GraphicDesigner graphic_designer;
+	GraphicDesigner & graphic_designer;
 	BlockingQueue<ActionDTO> & actions_queue;
 	SDL_Event &  event;
 	ActionDTO action;
 	int screen_height;
 	int screen_width;
+	int id;
+	int i;
 	
 	bool wait_for_destination_clicl;
 	bool wait_for_weapon_click;
 
 public:
 	EventController(BlockingQueue<ActionDTO> & actions_queue, SDL_Event & event, int screen_height, int screen_width, 
-		GraphicDesigner & graphic_designer);
+		GraphicDesigner & graphic_designer, int id);
 	bool continue_running(WormAnimation& turn_worm);
 	virtual ~EventController();
 
@@ -50,9 +52,11 @@ private:
 	void baseboll_bat(WormAnimation& turn_worm);
 
 	void click(WormAnimation& turn_worm);
+	bool keep_clicking(WormAnimation& turn_worm);
 
 	void movement(SDL_Event & event, WormAnimation& turn_worm);
 	void up(WormAnimation& turn_worm);
+	void up_back(WormAnimation& turn_worm);
 	void down(WormAnimation& turn_worm);
 	void right(WormAnimation& turn_worm);
 	void left(WormAnimation& turn_worm);

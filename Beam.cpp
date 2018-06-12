@@ -6,25 +6,27 @@
  */
 
 #include "Beam.h"
-#include <iostream>
-#include <vector>
-#include "Constants.h"
 
-Beam::Beam(b2World* world, float x, float y, float angle) : Entity(0) {
+
+Beam::Beam(b2World* world, float size, float x, float y, float angle, Direction direction) : Entity(0) {
   //set up static body, store in class variable
+  this->direction = direction;
+  if(direction == Left){
+    angle = 180 - angle;
+  }
   b2BodyDef bodyDef;
   bodyDef.type = b2_staticBody;
   bodyDef.position.Set(x, y);
-  bodyDef.angle = angle;
-  //myBodyDef.userData = (void*) this;
+  bodyDef.angle = angle* (M_PI / 180);
   this->body = world->CreateBody(&bodyDef);
+  
   //add box fixture
   b2PolygonShape shape;
-  shape.SetAsBox(Constants::beam_width /2, Constants::beam_height /2);//, b2Vec2(x, y), angle);
+  shape.SetAsBox((size+0.0)/2, (Constants::beam_height+0.0)/2,b2Vec2(0,0),angle* (M_PI / 180));
   b2FixtureDef fixture;
   fixture.shape = &shape;
   fixture.friction = Constants::beam_friction;
-  fixture.density = 1;
+  fixture.density = 100;
   this->body->CreateFixture(&fixture);
   this->body->SetUserData(this);
 }
@@ -51,5 +53,14 @@ std::vector<b2Vec2> Beam::get_points() {
 }
 
 float Beam::get_angle() {
-  return this->body->GetAngle();
+  return this->body->GetAngle()* (180/M_PI);
+}
+
+Direction Beam::get_direction() {
+  return this->direction;
+}
+
+b2Vec2 Beam::get_center(){
+  std::vector<b2Vec2> v=  this->get_points();
+  return this->body->GetPosition();
 }
