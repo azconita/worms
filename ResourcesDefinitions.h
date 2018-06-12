@@ -186,7 +186,7 @@
 #define DYNAMITE_G 128
 #define DYNAMITE_B 192
 #define DYNAMITE_COLUMNS 1
-#define DYNAMITE_ROWS 10
+#define DYNAMITE_ROWS 129
 
 #define MORTAR "resources/mortar.bmp"
 #define MORTAR_R 192
