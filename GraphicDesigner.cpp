@@ -128,7 +128,7 @@ void GraphicDesigner::show_beams(StageDTO s, SDL_Surface *screen){
         int center_y = get_pixels(beam_info.pos_y) - camera_position.y;
 
         float degrees = beam_info.angle;
-        if(beam_info.direction == Right){
+        if(beam_info.direction == Left){
             degrees = 180-degrees;
         }
 

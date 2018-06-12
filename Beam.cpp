@@ -11,21 +11,22 @@
 Beam::Beam(b2World* world, float size, float x, float y, float angle, Direction direction) : Entity(0) {
   //set up static body, store in class variable
   this->direction = direction;
-  if(direction == Right){
-    angle = 180 -angle;
+  if(direction == Left){
+    angle = 180 - angle;
   }
   b2BodyDef bodyDef;
   bodyDef.type = b2_staticBody;
   bodyDef.position.Set(x, y);
   bodyDef.angle = angle* (M_PI / 180);
   this->body = world->CreateBody(&bodyDef);
+  
   //add box fixture
   b2PolygonShape shape;
-  shape.SetAsBox((size+0.0)/2, (Constants::beam_height+0.0)/2,b2Vec2(0, 0),angle* (M_PI / 180));
+  shape.SetAsBox((size+0.0)/2, (Constants::beam_height+0.0)/2,b2Vec2(0,0),angle* (M_PI / 180));
   b2FixtureDef fixture;
   fixture.shape = &shape;
   fixture.friction = Constants::beam_friction;
-  fixture.density = 1;
+  fixture.density = 100;
   this->body->CreateFixture(&fixture);
   this->body->SetUserData(this);
 }

@@ -19,6 +19,7 @@ Weapon::Weapon(b2World *world, Weapon_Name name, float x, float y, float wind) :
   b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     bodyDef.bullet = true;
+    //fix position of shooting: explota contra el gusano que dispara
     bodyDef.position.Set(x, y);
     bodyDef.userData = (void*) this;
     this->body = world->CreateBody(&bodyDef);
@@ -89,7 +90,6 @@ Weapon::Weapon(b2World *world, Weapon_Name name, float x, float y, float wind) :
         break;
       }
     }
-std::cout << "explosionDir: " << this << '\n';
 }
 
 Weapon::Weapon(const Weapon &other) : Entity(3), world(other.world), wind(other.wind), body(other.body), name(name) {
@@ -130,32 +130,30 @@ std::vector<b2Vec2> Weapon::get_points() {
   return points;
 }
 
-void Weapon::apply_explosion_impulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint,
-                        float blastPower) {
-  b2Vec2 blast_dir = applyPoint - blastCenter;
+void Weapon::apply_explosion_impulse(b2Body* other_body, b2Vec2 blast_center, b2Vec2 apply_point,
+                        float blast_power) {
+  b2Vec2 blast_dir = other_body->GetPosition() - blast_center;//apply_point - blast_center;
   float distance = blast_dir.Normalize();
   //ignore bodies exactly at the blast point - blast direction is undefined
   if ( distance == 0 )
      return;
-  float invDistance = 1 / distance;
-  float impulse_mag = blastPower * invDistance * invDistance;
-  //std::cout << "imp mag: " << impulseMag << ", blastdir: " << blastDir.x << ":" << blastDir.y << "\n";
+  float inv_distance = (distance < 1) ? 1 : 1 / distance;
+  float impulse_mag = blast_power ;//* inv_distance ;
+  std::cout << "imp mag: " << impulse_mag << ", blastdir: " << blast_dir.x << ":" << blast_dir.y << "\n";
 
-  Entity* entity = (Entity*) (body->GetUserData());
+  Entity* entity = (Entity*) (other_body->GetUserData());
   std::cout<<"body found: " << entity->en_type << '\n';
   if (entity->en_type == 1) {
     std::cout << "apply explosion: "<<impulse_mag <<"\n";
-    //((Worm*) entity)->apply_explosion_impulse(blast_dir * impulse_mag, float distance);
-
-    body->ApplyLinearImpulse( impulse_mag * blast_dir, body->GetPosition() , true);
-    ((Worm*) entity)->apply_damage(int(this->damage * invDistance));
+    other_body->ApplyLinearImpulse( impulse_mag * blast_dir, other_body->GetPosition() , true);
+    ((Worm*) entity)->apply_damage(int(this->damage * inv_distance));
   }
 
 }
 
 
 //find all bodies with fixtures in blast radius AABB
-void Weapon::proximity_explosion(float radius, float power) {
+void Weapon::proximity_explosion(float power) {
   if (this->name == Explosion)
     return this->explosion();
   if (!this->alive)
@@ -175,7 +173,7 @@ void Weapon::proximity_explosion(float radius, float power) {
     return;
   }
   //if (this->name == Green_Grenade) &&
-  this->radius = radius;
+  //this->radius = radius;
   this->power = power;
   this->explode();
 }
@@ -198,14 +196,14 @@ void Weapon::explode() {
   this->world->QueryAABB(&query_callback, aabb);
 
   for (int i = 0; i < query_callback.foundBodies.size(); i++) {
-      b2Body* body = query_callback.foundBodies[i];
-      b2Vec2 bodyCom = body->GetWorldCenter();
+      b2Body* other_body = query_callback.foundBodies[i];
+      b2Vec2 bodyCom = other_body->GetWorldCenter();
 
       //ignore bodies outside the blast range
       if ( (bodyCom - center).Length() >= radius )
           continue;
 
-      this->apply_explosion_impulse(body, center, bodyCom, power );
+      this->apply_explosion_impulse(other_body, center, bodyCom, power );
   }
   //this->alive = false;
 
@@ -220,7 +218,7 @@ b2Vec2 rad2vec(float r) {
 }
 
 void Weapon::shoot(int power, float degrees, Direction dir, int time_to_explode) {
-  printf("[Projectile] shooting %d", this->name);
+  printf("[Weapon] shooting %d", this->name);
   int s = (dir == Right) ? 1 : -1;
   switch (this->name) {
     case W_Bazooka: {
@@ -233,10 +231,6 @@ void Weapon::shoot(int power, float degrees, Direction dir, int time_to_explode)
     }
     case Dynamite: {
       this->dynamite(time_to_explode, s);
-      break;
-    }
-    case W_Air_Attack: {
-      //this->airattack();
       break;
     }
   }
@@ -267,10 +261,6 @@ void Weapon::dynamite(int time_to_explode, int s) {
   this->timer = timer;
 
 }
-
-//void Projectile::airattack() {
-  //this->body->SetTransform(b2Vec2(this->x, this->y));
-//}
 
 void Weapon::explosion() {
   this->timer--;

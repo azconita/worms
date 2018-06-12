@@ -9,7 +9,7 @@ stage:
   worms:
     - id: 0
       pos_x: 50
-      pos_y: 30
+      pos_y: 28
       direction: 0
       life: 100
       inclination: 0

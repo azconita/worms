@@ -23,12 +23,14 @@ namespace Constants {
   extern const float worm_jump_velocity = config["worm_jump_velocity"].as<float>();
   extern const float worm_density = config["worm_density"].as<float>();
   extern const float worm_size = config["worm_size"].as<float>();
+  extern const float worm_friction = config["worm_friction"].as<float>();
 
   //beam constants
   extern const float beam_height = 0.8;
   extern const float beam_friction = config["beam_friction"].as<float>();
   extern const float beam_width = config["beam_width"].as<float>();
   //weapons constants
+  extern const float explosion_power = config["explosion_power"].as<float>();
   extern const float weapon_size = config["weapon_size"].as<float>();
   extern const float weapon_density = config["weapon_density"].as<float>();
   //bazooka
