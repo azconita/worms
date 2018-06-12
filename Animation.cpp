@@ -15,8 +15,7 @@ Animation::Animation(const char * bmp_path, Colour color,int columns, int rows):
 }
 
 int Animation::get_height(){
-  //printf("%i\n",this->picture.get_height() );
-  return this->picture.get_height();
+    return this->picture.get_height();
 }
 
 int Animation::get_width(){

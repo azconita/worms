@@ -30,7 +30,10 @@ class Client{
 	Socket socket;
 	BlockingQueue<ActionDTO> actions_queue;
 	SDL_Surface * screen;
-	int id = -1;
+
+	//esto deberia ir en una clase jugador
+	int player_id = -1;
+	
 public:
 	Client(char * host_name, char * port);
 	void run();

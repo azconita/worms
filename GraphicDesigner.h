@@ -76,6 +76,8 @@ public:
 	bool is_inside_weapon_menu(int x, int y);
 	Weapon_Name choose_weapon(int x, int y);
 	void show_timer(int second);
+	void won(StageDTO s, SDL_Surface *screen);
+	void lost(StageDTO s, SDL_Surface *screen);
 	virtual ~GraphicDesigner();
 };
 

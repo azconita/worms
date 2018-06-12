@@ -51,7 +51,7 @@ void Client::run(){
     SDL_WM_SetCaption(TITLE, TITLE);
 
     StageDTO s = receive_stage();
-    this->id = s.player_id;
+    this->player_id = s.player_id;
 
     WaterAnimation water(screen_height, 3);
 
@@ -60,7 +60,7 @@ void Client::run(){
     std::map<int,WormAnimation>::iterator turn_worm_iter = graphic_designer.get_turn_worm(s.worm_turn);
 
     SDL_Event event;
-    EventController event_controller(this->actions_queue,event, screen_height, screen_width, graphic_designer, this->id);
+    EventController event_controller(this->actions_queue,event, screen_height, screen_width, graphic_designer, this->player_id);
     Actioner actioner(this->socket,this->actions_queue);
     actioner.start();
 
@@ -86,6 +86,10 @@ void Client::run(){
 
         //update
         StageDTO s = receive_stage();
+
+        if(s.winner > 0){
+            break;
+        }
         turn_worm_iter = graphic_designer.get_turn_worm(s.worm_turn);
 
         if((t1 -t0) > 17) {
@@ -111,6 +115,15 @@ void Client::run(){
         //std::this_thread::sleep_for(t_tosleep - t_diff);
         //t_slend = std::chrono::high_resolution_clock::now();
         }
+
+        if(s.winner == this->player_id){
+            graphic_designer.won(s, screen);
+        }else{
+            graphic_designer.lost(s, screen);
+        }
+
+        std::chrono::seconds sec(3);    
+        std::this_thread::sleep_for(sec);
 
     }
 }

@@ -106,6 +106,7 @@ void GraphicDesigner::scroll(int x, int y){
     }
 }
 
+
 void GraphicDesigner::show_background(){
     SDL_Rect camera_position = camera->get_focus();
     SDL_BlitSurface(this->background, &camera_position, this->screen, NULL);
@@ -411,6 +412,20 @@ void GraphicDesigner::show_timer(int second){
 
 
 }
+
+
+void GraphicDesigner::won(){
+    SDL_Surface *won = IMG_Load(WON);
+    Uint32 colorkey = SDL_MapRGB(power_bar->format, WON_R, WON_G, WON_B);
+    SDL_SetColorKey(won, SDL_SRCCOLORKEY, colorkey);
+}
+
+void GraphicDesigner::lost(){
+    SDL_Surface *lost = IMG_Load(LOST);
+    Uint32 colorkey = SDL_MapRGB(power_bar->format, LOST_R, LOST_G, LOST_B);
+    SDL_SetColorKey(lost, SDL_SRCCOLORKEY, colorkey);
+}
+    
 
 GraphicDesigner::~GraphicDesigner() {
 	delete(this->camera);

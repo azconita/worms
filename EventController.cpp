@@ -29,7 +29,7 @@ EventController::EventController(BlockingQueue<ActionDTO> & actions_queue, SDL_E
 
 bool EventController::continue_running(WormAnimation& turn_worm){
     //printf("event controller %i\n", this->i);
-    this->i++;
+    //this->i++;
     if(SDL_PollEvent(&this->event) != 1){
         return keep_clicking(turn_worm); // no hay nuevos eventos
     }
@@ -38,7 +38,6 @@ bool EventController::continue_running(WormAnimation& turn_worm){
             quit();
             return false;
         case SDL_MOUSEBUTTONUP:
-            printf("se hizo click\n");
             click(turn_worm);
             break;
         case SDL_MOUSEMOTION:
@@ -145,9 +144,7 @@ void EventController::click(WormAnimation& turn_worm){
     }
 
     else if(this->wait_for_weapon_click){
-        printf("estaba esperando que se elija un arma\n");
         if(graphic_designer.is_inside_weapon_menu(x,y)){
-            printf("esta dentro del menu\n");
             Weapon_Name  weapon = graphic_designer.choose_weapon(x,y);
             take_weapon(turn_worm, weapon);
             this->action.type = Take_weapon;
@@ -170,8 +167,6 @@ void EventController::mouse_motion(){
     int x, y;
     SDL_GetMouseState(&x, &y);
     if(x > screen_width - 5 && y < 5){
-        cout << "Se quiere elegir un arma:" << endl;
-        printf("%i %i\n",x,y);
         this->graphic_designer.make_appear_weapons_menu();
         this->wait_for_weapon_click = true;
         return;
@@ -205,7 +200,6 @@ void EventController::shot(WormAnimation& turn_worm,int x, int y){
 void EventController::up(WormAnimation& turn_worm){
     if(turn_worm.has_point_weapon()){
         float degrees = turn_worm.point_up_weapon();
-        printf("%f\n",degrees );
     }else{
         turn_worm.change_state(Jump_state);
         this->action.type = Make_move;
@@ -229,7 +223,7 @@ void EventController::up_back(WormAnimation& turn_worm){
 void EventController::down(WormAnimation& turn_worm){
     if(turn_worm.has_point_weapon()){
         float degrees = turn_worm.point_down_weapon();
-        printf("%f\n",degrees );
+
     }   
 
 }

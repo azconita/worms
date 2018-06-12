@@ -38,7 +38,6 @@ void push(const T& val) {
   }
 
   while (this->q.size() >= this->max_size) {
-    //queue full: push blocked
     is_not_full.wait(lck);
   }
   q.push(val);
@@ -48,7 +47,6 @@ void push(const T& val) {
 T pop() {
   std::unique_lock<std::mutex> lck(this->mtx);
   while (this->q.empty()) {
-    //std::cout << " cola vacia, el pull se bloquea\n";
     this->is_not_empty.wait(lck);
   }
   const T val = this->q.front();
