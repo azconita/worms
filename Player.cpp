@@ -37,12 +37,13 @@ void Player::start() {
 void Player::send() {
   extern logger oLog;
   while (this->on) {
+
     StageDTO s = this->send_queue->pop();
     s.player_id = this->id;
     if (s.worm_turn == -1) {
       this->stop();
     } else {
-      //printf("[Player] send stage\n");
+      printf("[Player] send stage\n");
       YAML::Emitter out;
       out << YAML::BeginMap;
       out << YAML::Key << "stage";

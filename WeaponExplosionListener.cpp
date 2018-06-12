@@ -13,12 +13,9 @@
 #include "Weapon.h"
 
 WeaponExplosionListener::WeaponExplosionListener() {
-  // TODO Auto-generated constructor stub
-
 }
 
 WeaponExplosionListener::~WeaponExplosionListener() {
-  // TODO Auto-generated destructor stub
 }
 
 void WeaponExplosionListener::BeginContact(b2Contact* contact) {
@@ -40,13 +37,4 @@ void WeaponExplosionListener::BeginContact(b2Contact* contact) {
 }
 
 void WeaponExplosionListener::EndContact(b2Contact* contact) {
-
-  //check if fixture A was a ball
-  Entity* bodyUserData = (Entity*)contact->GetFixtureA()->GetBody()->GetUserData();
-  if ( bodyUserData->en_type == 3 )
-    return;
-  //check if fixture B was a ball
-  bodyUserData = (Entity*)contact->GetFixtureB()->GetBody()->GetUserData();
-  if ( bodyUserData )
-    return;
 }

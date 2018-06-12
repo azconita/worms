@@ -48,7 +48,6 @@ void Stage::update() {
   int32 positionIterations = Constants::position_iterations;   //how strongly to correct position
 
   this->world->Step( timeStep, velocityIterations, positionIterations);
-
   //check for timers in explosion
   this->do_explosions();
   //delete weapons exploded and dead worms
@@ -58,6 +57,7 @@ void Stage::update() {
 
   //check falling worms
   this->current_player->update_state();
+
   //printf("curr state: %i\n", this->current_player->get_state());
 }
 
@@ -125,7 +125,7 @@ void Stage::change_player() {
     }
   }
   //después deberia chequear por todos menos el mismo jugador que ya jugo
-  this->finish = true;
+  //this->finish = true;
 }
 
 void Stage::make_action(ActionDTO & action) {
@@ -159,7 +159,6 @@ void Stage::make_action(ActionDTO & action) {
       // cuando sea el fin del turno, asignar NONE al arma del gusano
       this->worms[worm]->took_weapon(action.weapon);
       break;
-
     }
 
     case(Shot_weapon):{
@@ -285,12 +284,11 @@ void Stage::set_worms_to_players(int total_players) {
   }
   printf("total players: %d, worms for each: %d\n", total_players, wq);
   for (int i = 0; i < total_players; i++) {
-    //(i+1)*wq == ids.size()) ? ids.end() : ids[(i+1)*wq])
     std::vector<int> v;
     std::copy(ids.begin() + i*wq, ids.begin() + (i+1)*wq, std::back_inserter(v));
     this->players_turn.emplace(i, TurnHelper(v, i));
   }
-  //compensar jugador con menos gusanos!!
+  //TODO: compensar jugador con menos gusanos
   this->current_player = this->worms[0];
 }
 
