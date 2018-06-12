@@ -19,4 +19,16 @@ correr en una consola
  aumentar la potencia de un arma con espacio
  disparar soltando espacio o con w
  
+ shortcuts para armas
+ b bazzoka
+r red grenade
+g green grenada
+h holy grenade
+a air attack
+t teletransportation
+ 
+ 
+ 
+ logger extraido de :
+ http://www.drdobbs.com/cpp/logging-in-c/201804215?pgno=1
  
