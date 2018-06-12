@@ -263,7 +263,7 @@ void Weapon::grenade(int power, float degrees, int timer, int s) {
 }
 
 void Weapon::dynamite(int time_to_explode, int s) {
-  this->timer = timer;
+  this->timer = time_to_explode;
 
 }
 
@@ -275,7 +275,8 @@ void Weapon::explosion() {
 }
 
 bool Weapon::is_time_to_explode() {
-  if ((this->timer != 0) && (this->name == W_Timer)) {
+  if ((this->timer != 0) && (this->name == Green_Grenade || this->name == Red_Grenade
+                          || this->name == Dynamite || this->name == Holy_Grenade)) {
     //std::cout << "t: " << this->t << "\n";
     if (difftime(time(NULL), this->t) < this->timer)
       return false;
