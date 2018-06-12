@@ -22,8 +22,6 @@ extern logger oLog;
 
 class Stage {
 private:
-
-  std::mutex mutex;
   //std::vector<int> jugadores;
   b2World* world;
   std::vector<Beam*> beams;
@@ -35,8 +33,6 @@ private:
 
   float wind;
 
-  //std::map<int, std::vector<int>> players_worms;
-  //std::map<int, int> players_last_worm;
   std::map<int, TurnHelper> players_turn;
   int last_player_id = 0;
   bool change = false;
