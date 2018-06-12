@@ -19,6 +19,7 @@ namespace Constants {
   extern const float wind;
 
   //worm constants
+  extern const int worm_turn_time;
   extern const int worm_initial_life;
   extern const float worm_walk_velocity;
   extern const float worm_jump_velocity;

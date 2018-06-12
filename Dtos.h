@@ -14,19 +14,20 @@
 #include <vector>
 #include <string>
 
-
-
-
-enum Direction{
+enum Direction {
     Right,
     Left
 };
 
-enum State{
+enum State {
    Still,
    Walk,
    Fall,
+   Walk_up,
+   Walk_down,
    Jump_state,
+   Jump_up,
+   Jump_down,
    Jump_back_state,
    Worm_missile,
    Worm_banana,
@@ -62,6 +63,7 @@ enum Weapon_Name {
     Banana,//u
     Baseball_Bat,//v
     Explosion,
+    Big_Explosion,
     None,
     W_Timer
 };

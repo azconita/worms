@@ -8,6 +8,7 @@
 #include "Worm.h"
 #include "Constants.h"
 #include <string>
+#include <cmath>
 
 Worm::Worm(b2World* world, float x, float y, int id, Direction direction) :
           Entity(1), world(world), id(id) {
@@ -68,6 +69,30 @@ void Worm::change_state(State state){
   this->state = state;
 }
 
+void Worm::update_state() {
+  //caer es el estado "predominante"
+  b2Vec2 vel = this->body->GetLinearVelocity();
+  if (vel.y > 5 && this->state != Fall) {
+    this->state = Fall;
+    this->start_falling = this->body->GetPosition();
+    return;
+  }
+  if (std::abs(vel.y) < 1 && std::abs(vel.x) < 1 && this->state == Fall) {
+    //estaba cayendo: chequear si fueron mas de 2m para hacerle dano al worm
+    this->state = Still;
+    float d = this->start_falling.y - this->body->GetPosition().y;
+    if (d > 2)
+      this->apply_damage((d < 25) ? d : 25);
+    return;
+  }
+  if (this->state != Still && (this->state == Walk || this->state == Jump_state
+                || this->state == Jump_back_state || this->state == Fall)
+                && std::abs(vel.y) < 0.1 && std::abs(vel.x) < 0.1) {
+    this->state = Still;
+  }
+
+}
+
 Direction Worm::get_direction(){
   return this-> direction;
 }
@@ -78,7 +103,7 @@ void Worm::move_right() {
       change_state(Still);
       return;
   }
-  change_state(Walk);
+  this->change_state(Walk);
   float impulse = this->get_impulse();
   this->body->ApplyLinearImpulse(b2Vec2(Constants::worm_walk_velocity,0), this->body->GetWorldCenter(), true);
 }
@@ -89,7 +114,8 @@ void Worm::move_left() {
       change_state(Still);
       return;
   }
-  change_state(Walk);
+  this->change_state(Walk);
+
   float impulse = this->get_impulse();
   this->body->ApplyLinearImpulse(b2Vec2(-Constants::worm_walk_velocity,0), this->body->GetWorldCenter(), true);
 }
@@ -97,14 +123,15 @@ void Worm::move_left() {
 //TODO: fix me!!
 void Worm::jump(Direction dir) {
   std::cout << "dir: " << dir << "\n";
-  change_state(Jump_state);
+  printf("jump.....%p\n", this->body );
+  this->change_state(Jump_state);
   int d = (dir == Left) ? 1 : -1;
   float impulse = body->GetMass() * Constants::worm_jump_velocity;
   this->body->ApplyLinearImpulse(b2Vec2(d * impulse /2,impulse), this->body->GetWorldCenter(), true);
 }
 //TODO: fix me!!
 void Worm::jump_back() {
-  change_state(Jump_back_state);
+  this->change_state(Jump_back_state);
   float impulse = this->get_impulse();
   this->body->ApplyLinearImpulse(b2Vec2(-impulse,impulse), this->body->GetWorldCenter(), true);
 }
@@ -127,7 +154,7 @@ std::vector<b2Vec2> Worm::get_points() {
 void Worm::took_weapon(Weapon_Name weapon) {
   this->weapon = weapon;
   std::map<Weapon_Name,State>::iterator weapon_state = weapons_states.find(weapon);
-  change_state(weapon_state->second);
+  this->change_state(weapon_state->second);
 }
 
 void Worm::use_weapon(float x, float y, int power, float degrees) {
@@ -151,4 +178,8 @@ void Worm::apply_damage(int d) {
 
 b2Vec2 Worm::get_center(){
   return this->body->GetPosition();
+}
+
+b2Vec2 Worm::get_velocity(){
+  return this->body->GetLinearVelocity();
 }

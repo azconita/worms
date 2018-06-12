@@ -70,8 +70,8 @@ void Stage::update() {
   this->update_player();
 
   //check falling worms
-  //char t = (this->worms[0]->is_falling()) ? 'y' : 'n';
-  //printf("worm falling: %c\n", t);
+  this->current_player->update_state();
+  printf("curr state: %i\n", this->current_player->get_state());
 }
 
 bool Stage::finished() {
@@ -105,6 +105,7 @@ void Stage::clean_dead_bodies() {
       if (it->second == this->current_player)
         this->change = true;
       delete it->second;
+      this->players_turn.at(it->first).delete_id(it->first);
       it = this->worms.erase(it);
     } else {
       ++it;
@@ -115,7 +116,7 @@ void Stage::clean_dead_bodies() {
 
 void Stage::update_player() {
   //printf("player time: %d\n", time(NULL) - this->player_time);
-  if (this->change || (time(NULL) - this->player_time > 4)) {
+  if (this->change || (time(NULL) - this->player_time > Constants::worm_turn_time)) {
     printf("change player\n");
     this->change_player();
     this->change = false;
@@ -126,25 +127,20 @@ void Stage::update_player() {
 //TODO sirve así? gusanos mueren... de quien es el turno?
 //cuantos players puede haber????
 void Stage::change_player() {
-  /*int curr_id = this->current_player->get_id();
-  int curr_play_id = this->current_player->get_player_id();
-  std::map<int, Worm*>::iterator next = this->worms.find(curr_id);
-  if (++next == this->worms.end())
-    this->current_player = this->worms.begin()->second;
-  else
-    this->current_player = next->second;
-  time(&(this->player_time));*/
   int new_player_id = ((this->last_player_id + 1) == this->players_turn.size()) ? 0 : this->last_player_id + 1;
+  printf("next player id: %d,", new_player_id);
   this->current_player = this->worms[this->players_turn.at(new_player_id).get_next()];
-  printf("next player id: %d, worm id: %d\n", new_player_id, this->current_player->get_id());
+  printf(" worm id: %d\n", this->current_player->get_id());
+  this->last_player_id = new_player_id;
 }
 
 void Stage::make_action(ActionDTO & action) {
   printf("%i, %i \n", action.type, action.move );
   int worm = action.worm_id;
   //VALIDAR TURNO!!
-  if (worm != this->current_player->get_id()) { 
+  if (worm != this->current_player->get_id()) {
     //throw Error("not current player: current: %d, sent: %d\n", this->current_player->get_id(), worm);
+    return;
   }
   switch (action.type) {
     case (Make_move):{

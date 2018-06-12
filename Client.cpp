@@ -84,7 +84,7 @@ void Client::run(){
     auto t_start = std::chrono::high_resolution_clock::now();
     auto t_end = std::chrono::high_resolution_clock::now();
     auto t_slend = std::chrono::high_resolution_clock::now();
-    std::chrono::nanoseconds t_tosleep(100000000);
+    std::chrono::nanoseconds t_tosleep(TIME_TO_SLEEP);
 
     bool running=true;
     while(running ){
@@ -103,7 +103,7 @@ void Client::run(){
        // if((t1 -t0) > 17) {
 
             // Nueva referencia de tiempo
-            t0 = SDL_GetTicks();
+            //t0 = SDL_GetTicks();
             t_start = std::chrono::high_resolution_clock::now();
 
             //borro todo lo que estaba
