@@ -2,6 +2,7 @@
 #include <vector>
 #include <map>
 #include <tuple>
+#include <random>
 #include <Box2D/Box2D.h>
 #include "StageLoader.h"
 #include "Beam.h"

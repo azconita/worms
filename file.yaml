@@ -3,13 +3,17 @@ stage:
     - pos_x: 50
       pos_y: 30
       size: 6
-      inclination: 22
+      inclination: 0
       direction: 1
-
+    - pos_x: 40
+      pos_y: 5
+      size: 6
+      inclination: 0
+      direction: 1
   worms:
     - id: 0
-      pos_x: 50
-      pos_y: 28
+      pos_x: 40
+      pos_y: 4
       direction: 0
       life: 100
       inclination: 0

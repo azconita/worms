@@ -77,12 +77,14 @@ void Worm::update_state() {
   if (vel.y > 5 && this->state != Fall) {
     this->state = Fall;
     this->start_falling = this->body->GetPosition();
+    printf("start falling: %f, %f\n", this->start_falling.x, this->start_falling.y);
     return;
   }
   if (std::abs(vel.y) < 1 && std::abs(vel.x) < 1 && this->state == Fall) {
     //estaba cayendo: chequear si fueron mas de 2m para hacerle dano al worm
     this->state = Still;
-    float d = this->start_falling.y - this->body->GetPosition().y;
+    float d = std::abs(this->start_falling.y - this->body->GetPosition().y);
+    printf("worm stops falling: %f\n", d);
     if (d > 2)
       this->apply_damage((d < 25) ? d : 25);
     return;

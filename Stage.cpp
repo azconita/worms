@@ -139,7 +139,8 @@ void Stage::make_action(ActionDTO & action) {
           this->worms[worm]->move_left();
           break;
         case Jump:
-          this->worms[worm]->jump(action.direction);
+          if (this->worms[worm]->get_state()==Still)
+            this->worms[worm]->jump(action.direction);
           break;
         case Jump_back:
           this->worms[worm]->jump_back();
@@ -210,10 +211,7 @@ StageDTO Stage::get_stageDTO() {
     b2Vec2 center = b->get_center();
     set_position(beam_element, center);
     std::vector<b2Vec2> v = b->get_points();  
-    printf("vertices de la viga\n");
-    for(int i = 0; i < 4; i++){
-      printf("%f, %f\n", v[i].x, v[i].y);
-    }
+
     beam_element.h = round(sqrt(pow(v[2].x - v[1].x,2) + pow(v[2].y - v[1].y,2)));
     beam_element.w = round(sqrt(pow(v[1].x - v[0].x,2) + pow(v[1].y - v[0].y,2)));
     beam_element.angle = b->get_angle();
