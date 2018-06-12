@@ -29,6 +29,7 @@ namespace Constants {
   extern const float beam_friction = config["beam_friction"].as<float>();
   extern const float beam_width = config["beam_width"].as<float>();
   //weapons constants
+  extern const float explosion_power = config["explosion_power"].as<float>();
   extern const float weapon_size = config["weapon_size"].as<float>();
   extern const float weapon_density = config["weapon_density"].as<float>();
   //bazooka

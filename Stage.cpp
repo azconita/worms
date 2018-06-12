@@ -71,7 +71,7 @@ void Stage::update() {
 
   //check falling worms
   this->current_player->update_state();
-  printf("curr state: %i\n", this->current_player->get_state());
+  //printf("curr state: %i\n", this->current_player->get_state());
 }
 
 bool Stage::finished() {
@@ -104,8 +104,8 @@ void Stage::clean_dead_bodies() {
     if (!it->second->is_alive()) {
       if (it->second == this->current_player)
         this->change = true;
+      this->players_turn.at(it->second->get_player_id()).delete_id(it->first);
       delete it->second;
-      this->players_turn.at(it->first).delete_id(it->first);
       it = this->worms.erase(it);
     } else {
       ++it;
@@ -118,13 +118,13 @@ void Stage::update_player() {
   //printf("player time: %d\n", time(NULL) - this->player_time);
   if (this->change || (time(NULL) - this->player_time > Constants::worm_turn_time)) {
     printf("change player\n");
+    this->current_player->took_weapon(None);
     this->change_player();
     this->change = false;
     this->player_time = time(NULL);
   }
 }
 
-//TODO sirve así? gusanos mueren... de quien es el turno?
 //cuantos players puede haber????
 void Stage::change_player() {
   int new_player_id = ((this->last_player_id + 1) == this->players_turn.size()) ? 0 : this->last_player_id + 1;
@@ -178,12 +178,13 @@ void Stage::make_action(ActionDTO & action) {
       } else if (action.weapon == W_Air_Attack) {
         //TODO: fix : que no caigan todos juntos! (hace que exploten antes)
         for (int i = 0; i < 6; ++ i) {
-          Weapon* w = new Weapon(this->world, action.weapon, action.pos_x, 0, this->wind);
+          Weapon* w = new Weapon(this->world, action.weapon, action.pos_x, 0 - i, this->wind);
           this->explosions.push_back(w);
         }
       } else {
-        Weapon* w = new Weapon(this->world, action.weapon, action.pos_x, action.pos_y, this->wind);
-        w->shoot(action.power, action.weapon_degrees, action.direction, action.time_to_explode);
+        //Weapon* w = new Weapon(this->world, action.weapon, this->current_player->get_points()[0].x, this->current_player->get_points()[0].y, this->wind);
+        Weapon* w = new Weapon(this->world, action.weapon, action.pos_x, action.pos_y - 1, this->wind);
+        w->shoot(action.power*100, action.weapon_degrees, action.direction, action.time_to_explode);
         this->explosions.push_back(w);
       }
       //TODO: esperar 3 segundos antes de cambiar el player

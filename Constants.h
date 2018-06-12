@@ -31,6 +31,7 @@ namespace Constants {
   extern const float beam_width;
   extern const float beam_friction;
   //weapons constants
+  extern const float explosion_power;
   extern const float weapon_size;
   extern const float weapon_density;
   //bazooka

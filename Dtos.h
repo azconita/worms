@@ -120,7 +120,7 @@ struct ActionDTO {
   Action_Type type;
   Movement move;
   Weapon_Name weapon;
-  float weapon_degrees;
+  float weapon_degrees = 0;
   int power;
   int time_to_explode;
   Direction direction;

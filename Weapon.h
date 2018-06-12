@@ -44,7 +44,7 @@ public:
   bool is_time_to_explode();
   bool has_timer();
 
-  void proximity_explosion(float blastRadius, float blastPower);
+  void proximity_explosion(float blastPower);
   void explode();
   void apply_explosion_impulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint, float blastPower);
   void shoot(int power, float degrees, Direction dir, int time_to_explode);
