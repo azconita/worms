@@ -5,18 +5,6 @@ float Client::get_pixels(float meter_position){
     return  PIXEL_CONSTANT*meter_position;
 }
 
-void Client::debug_box2d_figure(SDL_Surface *screen, ElementDTO element_info){
-    //dibujo un rectangulo
-    SDL_Rect rectangle;
-    rectangle.x = get_pixels(element_info.pos_x);
-    rectangle.y = get_pixels(element_info.pos_y);
-    rectangle.h = get_pixels(element_info.h);
-    rectangle.w = get_pixels(element_info.w);
-    Uint32 colorkey = SDL_MapRGBA(screen->format, 0, 255, 0,0.5);
-    SDL_FillRect(screen, &rectangle, colorkey);
-
-}
-
 Client::Client(char * host_name, char * port)://
     socket(host_name, port),
     actions_queue(1000){

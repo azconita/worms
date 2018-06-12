@@ -17,13 +17,12 @@ Beam::Beam(b2World* world, float size, float x, float y, float angle) : Entity(0
   bodyDef.type = b2_staticBody;
   bodyDef.position.Set(x, y);
   bodyDef.angle = angle;
-  //myBodyDef.userData = (void*) this;
   this->body = world->CreateBody(&bodyDef);
   //add box fixture
   b2PolygonShape shape;
   extern  logger oLog; 
-  oLog() << "beam wight" << size;
-  shape.SetAsBox((size+0.0)/2, Constants::beam_height /2);//, b2Vec2(x, y), angle);
+  shape.SetAsBox((size+0.0)/2, (Constants::beam_height+0.0)/2,b2Vec2(x, y),angle);
+  printf("size %f\n",size );
   b2FixtureDef fixture;
   fixture.shape = &shape;
   fixture.friction = Constants::beam_friction;

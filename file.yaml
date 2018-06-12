@@ -11,24 +11,24 @@ stage:
     - pos_x: 0
       pos_y: 10
       size: 6
-      inclination: 0
+      inclination: 45
     - pos_x: 35
       pos_y: 18
-      size: 6
-      inclination: 90
+      size: 3
+      inclination: 45
     - pos_x: 45
       pos_y: 15
       size: 6
-      inclination: 0
+      inclination: 45
   worms:
     - id: 0
-      pos_x: 50
+      pos_x: 49
       pos_y: 10
       direction: 0
       life: 100
       inclination: 0
     - id: 1
-      pos_x: 55
+      pos_x: 54
       pos_y: 10
       direction: 0
       life: 100

@@ -6,13 +6,13 @@
 #include "StageLoader.h"
 #include "Beam.h"
 #include "Weapon.h"
+#include "Constants.h"
 #include "Worm.h"
 #include "WeaponExplosionListener.h"
 #include "Dtos.h"
 #include "Logger.h"
 #include "TurnHelper.h"
 #include "Error.h"
-
 #include "Weapon.h"
 
 #ifndef STAGE_H_

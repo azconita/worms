@@ -36,8 +36,6 @@ public:
 	void run();
 	StageDTO receive_stage();
 	void send_action();
-	~Client();
-	//para debuguear
 	float get_pixels(float meter_position);
-	void debug_box2d_figure(SDL_Surface *screen, ElementDTO element_info);
+	~Client();
 };
