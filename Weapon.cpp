@@ -158,7 +158,7 @@ void Weapon::proximity_explosion(float power) {
     return;
   //TODO: timer!!
   if (this->timer != 0) {
-    this->name = W_Timer;
+    //this->name = W_Timer;
     std::cout << "timer: " << this->timer << "\n";
       time(&(this->t));
     std::cout << "t: " << this->t << "\n";

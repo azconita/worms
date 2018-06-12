@@ -30,7 +30,7 @@ static  std::vector<Colour_name> possible_colors {
 static const std::vector<Weapon_Name> weapons_with_timer(
     {Holy_Grenade,
     Dynamite,
-    Baseball_Bat,
+    Green_Grenade,
     Red_Grenade,
     Banana}
 );

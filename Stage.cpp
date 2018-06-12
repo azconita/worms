@@ -236,6 +236,7 @@ StageDTO Stage::get_stageDTO() {
     set_position(weapon, center);
     weapon.weapon = w->get_name();
     weapon.timer = w->get_timer();
+    printf("timer sent: %i", weapon.timer);
     s.weapons.push_back(weapon);
   }
 
