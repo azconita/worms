@@ -54,6 +54,7 @@ public:
 
   //por ahora...
   StageDTO get_stageDTO();
+  int get_winner();
   void set_worms_to_players(int total_players);
 private:
   void do_explosions();

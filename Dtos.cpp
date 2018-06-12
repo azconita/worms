@@ -51,6 +51,8 @@ YAML::Emitter& operator << (YAML::Emitter& out, const StageDTO& s) {
   out << YAML::Value << s.player_id;
   out << YAML::Key << "worm_turn";
   out << YAML::Value << s.worm_turn;
+  out << YAML::Key << "winner";
+  out << YAML::Value << s.winner;
   out << YAML::Key << "beams";
   out << YAML::Value << s.beams;
   out << YAML::Key << "weapons";
