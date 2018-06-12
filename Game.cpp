@@ -73,7 +73,6 @@ void Game::run() {
     //printf("[Game] pop action: %d\n", action.type);
     StageDTO s;
     if (action.type == Quit) {
-      //end game: send block with endgame??
       this->stage.end();
       s.worm_turn = -1;
       this->timer.stop();
@@ -83,10 +82,17 @@ void Game::run() {
       else
         this->stage.make_action(action);
       s = stage.get_stageDTO();
+
     }
     for (auto &q : this->players_queues) {
       q->push(s);
     }
+  }
+  //printf("update\n");
+  int win = this->stage.get_winner();
+  if (win != -1) {
+    for (auto& p : this->players)
+      p->end_game(win);
   }
 }
 

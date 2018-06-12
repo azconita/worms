@@ -25,6 +25,10 @@ int TurnHelper::get_next() {
   return this->ids.at(this->last);
 }
 
+bool TurnHelper::has_worms() {
+  return (this->ids.size() != 0);
+}
+
 void TurnHelper::delete_id(int id) {
  if (this->ids.at(this->last) == id)
    this->get_next();

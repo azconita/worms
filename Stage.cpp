@@ -48,7 +48,6 @@ void Stage::update() {
   int32 positionIterations = Constants::position_iterations;   //how strongly to correct position
 
   this->world->Step( timeStep, velocityIterations, positionIterations);
-
   //check for timers in explosion
   this->do_explosions();
   //delete weapons exploded and dead worms
@@ -58,6 +57,7 @@ void Stage::update() {
 
   //check falling worms
   this->current_player->update_state();
+
   //printf("curr state: %i\n", this->current_player->get_state());
 }
 
@@ -114,11 +114,18 @@ void Stage::update_player() {
 
 //cuantos players puede haber????
 void Stage::change_player() {
-  int new_player_id = ((this->last_player_id + 1) == this->players_turn.size()) ? 0 : this->last_player_id + 1;
-  printf("next player id: %d,", new_player_id);
-  this->current_player = this->worms[this->players_turn.at(new_player_id).get_next()];
-  printf(" worm id: %d\n", this->current_player->get_id());
-  this->last_player_id = new_player_id;
+  for (int i = 0; i < this->players_turn.size(); ++i) {
+    int new_player_id = ((this->last_player_id + 1) >= this->players_turn.size()) ? 0 : this->last_player_id + 1;
+    this->last_player_id = new_player_id;
+    if (this->players_turn.at(new_player_id).has_worms()) {
+      printf("next player id: %d,", new_player_id);
+      this->current_player = this->worms[this->players_turn.at(new_player_id).get_next()];
+      printf(" worm id: %d\n", this->current_player->get_id());
+      return;
+    }
+  }
+  //después deberia chequear por todos menos el mismo jugador que ya jugo
+  //this->finish = true;
 }
 
 void Stage::make_action(ActionDTO & action) {
@@ -152,7 +159,6 @@ void Stage::make_action(ActionDTO & action) {
       // cuando sea el fin del turno, asignar NONE al arma del gusano
       this->worms[worm]->took_weapon(action.weapon);
       break;
-
     }
 
     case(Shot_weapon):{
@@ -278,11 +284,14 @@ void Stage::set_worms_to_players(int total_players) {
   }
   printf("total players: %d, worms for each: %d\n", total_players, wq);
   for (int i = 0; i < total_players; i++) {
-    //(i+1)*wq == ids.size()) ? ids.end() : ids[(i+1)*wq])
     std::vector<int> v;
     std::copy(ids.begin() + i*wq, ids.begin() + (i+1)*wq, std::back_inserter(v));
     this->players_turn.emplace(i, TurnHelper(v, i));
   }
-  //compensar jugador con menos gusanos!!
+  //TODO: compensar jugador con menos gusanos
   this->current_player = this->worms[0];
+}
+
+int Stage::get_winner() {
+  return this->players_turn.begin()->first;
 }

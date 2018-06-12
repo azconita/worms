@@ -37,12 +37,13 @@ void Player::start() {
 void Player::send() {
   extern logger oLog;
   while (this->on) {
+
     StageDTO s = this->send_queue->pop();
     s.player_id = this->id;
     if (s.worm_turn == -1) {
       this->stop();
     } else {
-      //printf("[Player] send stage\n");
+      printf("[Player] send stage\n");
       YAML::Emitter out;
       out << YAML::BeginMap;
       out << YAML::Key << "stage";
@@ -51,6 +52,10 @@ void Player::send() {
       try{
         //printf("se envia %s\n", out.c_str());
         this->client.send_dto(out.c_str());
+        if (s.winner != -1) {
+          printf("the winner: %i", s.winner);
+          this->stop();
+        }
       }catch(Error e){
         oLog() << "Player quit (peer socket closed).";
         this->stop();
@@ -92,3 +97,8 @@ void Player::stop(){
   this->on = false;
 }
 
+void Player::end_game(int winner) {
+  StageDTO s;
+  s.winner = winner;
+  this->send_queue->push(s);
+}

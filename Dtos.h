@@ -97,7 +97,7 @@ struct ElementDTO { //puede ser un gusano, un arma o una viga
 };
 
 struct StageDTO {
-  //bool finish = false;
+  int winner = -1;
   int worm_turn;
   int player_id;
   std::vector<ElementDTO> beams;
@@ -146,13 +146,14 @@ struct convert<StageDTO> {
     node["worms"] = s.worms;
     node["beams"] = s.beams;
     node["weapons"] = s.weapons;
-
+    node["winner"] = s.winner;
 
     return node;
   }
   static bool decode(const Node& node, StageDTO& s) {
     s.worm_turn = node["worm_turn"].as<int>();
     s.player_id = node["player_id"].as<int>();
+    s.winner = node["winner"].as<int>();
     s.beams = node["beams"].as<std::vector<ElementDTO>>();
     s.weapons = node["weapons"].as<std::vector<ElementDTO>>();
     s.worms = node["worms"].as<std::map<int, ElementDTO>>();
