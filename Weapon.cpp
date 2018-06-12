@@ -36,7 +36,8 @@ Weapon::Weapon(b2World *world, Weapon_Name name, float x, float y, float wind) :
     //set weapon variables: radius and damage
     switch (name) {
       case W_Bazooka: {
-        this->body->SetLinearVelocity(b2Vec2(0,wind));
+        //this->body->SetLinearVelocity(b2Vec2(0,wind));
+        this->body->SetLinearDamping(wind);
         this->radius = Constants::bazooka_radius;
         this->damage = Constants::bazooka_damage;
         break;
@@ -254,6 +255,8 @@ void Weapon::bazooka(int power, float degrees, int s) {
 
 void Weapon::grenade(int power, float degrees, int timer, int s) {
   this->timer = timer;
+  this->t = time(NULL);
+  printf("new timer: %i\n", timer);
   b2Vec2 vel = rad2vec(degrees);
   float velChange = power * vel.x;
   float impulsex = body->GetMass() * velChange;
@@ -277,7 +280,7 @@ void Weapon::explosion() {
 bool Weapon::is_time_to_explode() {
   if ((this->timer != 0) && (this->name == Green_Grenade || this->name == Red_Grenade
                           || this->name == Dynamite || this->name == Holy_Grenade)) {
-    //std::cout << "t: " << this->t << "\n";
+    std::cout << "t: " << difftime(time(NULL), this->t) << "\n";
     if (difftime(time(NULL), this->t) < this->timer)
       return false;
     return true;
