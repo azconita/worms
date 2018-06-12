@@ -132,13 +132,10 @@ std::vector<b2Vec2> Weapon::get_points() {
 
 void Weapon::apply_explosion_impulse(b2Body* other_body, b2Vec2 blast_center, b2Vec2 apply_point,
                         float blast_power) {
-  b2Vec2 blast_dir = other_body->GetPosition() - blast_center;//apply_point - blast_center;
+  b2Vec2 blast_dir = apply_point - blast_center;
   float distance = blast_dir.Normalize();
-  //ignore bodies exactly at the blast point - blast direction is undefined
-  if ( distance == 0 )
-     return;
-  float inv_distance = (distance < 1) ? 1 : 1 / distance;
-  float impulse_mag = blast_power ;//* inv_distance ;
+  float inv_distance = (distance < 1) ? 1 : (1 / distance);
+  float impulse_mag = blast_power * inv_distance ;
   std::cout << "imp mag: " << impulse_mag << ", blastdir: " << blast_dir.x << ":" << blast_dir.y << "\n";
 
   Entity* entity = (Entity*) (other_body->GetUserData());
@@ -197,7 +194,7 @@ void Weapon::explode() {
 
   for (int i = 0; i < query_callback.foundBodies.size(); i++) {
       b2Body* other_body = query_callback.foundBodies[i];
-      b2Vec2 bodyCom = other_body->GetWorldCenter();
+      b2Vec2 bodyCom = other_body->GetPosition();
 
       //ignore bodies outside the blast range
       if ( (bodyCom - center).Length() >= radius )

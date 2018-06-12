@@ -183,7 +183,8 @@ void Stage::make_action(ActionDTO & action) {
         }
       } else {
         //Weapon* w = new Weapon(this->world, action.weapon, this->current_player->get_points()[0].x, this->current_player->get_points()[0].y, this->wind);
-        Weapon* w = new Weapon(this->world, action.weapon, action.pos_x, action.pos_y - 1, this->wind);
+        int d = (action.direction == Right) ? 1 : -1;
+        Weapon* w = new Weapon(this->world, action.weapon, action.pos_x + d*3, action.pos_y , this->wind);
         w->shoot(action.power*100, action.weapon_degrees, action.direction, action.time_to_explode);
         this->explosions.push_back(w);
       }
