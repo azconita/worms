@@ -125,7 +125,7 @@ void Stage::change_player() {
     }
   }
   //después deberia chequear por todos menos el mismo jugador que ya jugo
-  //this->finish = true;
+  this->finish = true;
 }
 
 void Stage::make_action(ActionDTO & action) {

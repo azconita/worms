@@ -414,13 +414,13 @@ void GraphicDesigner::show_timer(int second){
 }
 
 
-void GraphicDesigner::won(){
+void GraphicDesigner::won(StageDTO s, SDL_Surface *screen){
     SDL_Surface *won = IMG_Load(WON);
     Uint32 colorkey = SDL_MapRGB(power_bar->format, WON_R, WON_G, WON_B);
     SDL_SetColorKey(won, SDL_SRCCOLORKEY, colorkey);
 }
 
-void GraphicDesigner::lost(){
+void GraphicDesigner::lost(StageDTO s, SDL_Surface *screen){
     SDL_Surface *lost = IMG_Load(LOST);
     Uint32 colorkey = SDL_MapRGB(power_bar->format, LOST_R, LOST_G, LOST_B);
     SDL_SetColorKey(lost, SDL_SRCCOLORKEY, colorkey);

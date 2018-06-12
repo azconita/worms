@@ -88,6 +88,7 @@ void Client::run(){
         StageDTO s = receive_stage();
 
         if(s.winner > 0){
+            printf("%i\n",s.winner );
             break;
         }
         turn_worm_iter = graphic_designer.get_turn_worm(s.worm_turn);
@@ -123,7 +124,7 @@ void Client::run(){
         }
 
         std::chrono::seconds sec(3);    
-        std::this_thread::sleep_for(sec);
+        //std::this_thread::sleep_for(sec);
 
     }
 }
