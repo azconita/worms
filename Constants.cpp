@@ -23,6 +23,7 @@ namespace Constants {
   extern const float worm_jump_velocity = config["worm_jump_velocity"].as<float>();
   extern const float worm_density = config["worm_density"].as<float>();
   extern const float worm_size = config["worm_size"].as<float>();
+  extern const float worm_friction = config["worm_friction"].as<float>();
 
   //beam constants
   extern const float beam_height = 0.8;

@@ -24,6 +24,7 @@ namespace Constants {
   extern const float worm_walk_velocity;
   extern const float worm_jump_velocity;
   extern const float worm_density;
+  extern const float worm_friction; 
   extern const float worm_size; //lado del cuadrado
 
   //beam constants

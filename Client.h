@@ -22,7 +22,7 @@ using std::pair;
 #define SCREEN_DEFAULT_HIGH 768
 #define TITLE "Worms game"
 #define PIXEL_CONSTANT 23.5
-#define TIME_TO_SLEEP 100000000
+#define TIME_TO_SLEEP 17000000
 
 extern  logger oLog;
 
@@ -36,8 +36,6 @@ public:
 	void run();
 	StageDTO receive_stage();
 	void send_action();
-	~Client();
-	//para debuguear
 	float get_pixels(float meter_position);
-	void debug_box2d_figure(SDL_Surface *screen, ElementDTO element_info);
+	~Client();
 };

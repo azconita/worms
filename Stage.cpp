@@ -1,18 +1,5 @@
-#include <algorithm>
-#include <string>
-#include <vector>
-#include <iostream>
-#include <map>
-#include <Box2D/Box2D.h>
-#include "Constants.h"
-#include "WeaponExplosionListener.h"
-#include "Dtos.h"
-#include "Worm.h"
-#include "Beam.h"
-#include "Stage.h"
-#include "Weapon.h"
-#include <random>
 
+#include "Stage.h"  
 
 //config: yaml: https://github.com/jbeder/yaml-cpp/
 Stage::Stage(std::string file_name) {
@@ -222,10 +209,15 @@ StageDTO Stage::get_stageDTO() {
     ElementDTO beam_element;
     b2Vec2 center = b->get_center();
     set_position(beam_element, center);
-    std::vector<b2Vec2> vertices = b->get_points();
-    beam_element.h = abs(vertices[0].y - vertices[2].y);
-    beam_element.w = abs(vertices[0].x - vertices[1].x);
+    std::vector<b2Vec2> v = b->get_points();  
+    printf("vertices de la viga\n");
+    for(int i = 0; i < 4; i++){
+      printf("%f, %f\n", v[i].x, v[i].y);
+    }
+    beam_element.h = round(sqrt(pow(v[2].x - v[1].x,2) + pow(v[2].y - v[1].y,2)));
+    beam_element.w = round(sqrt(pow(v[1].x - v[0].x,2) + pow(v[1].y - v[0].y,2)));
     beam_element.angle = b->get_angle();
+    beam_element.direction = b->get_direction();
     if ((beam_element.angle < 0.01) && (beam_element.angle > -0.01))
       beam_element.angle = 0;
     s.beams.push_back(beam_element);
@@ -258,8 +250,9 @@ void Stage::load_initial_stage(std::string file_name){
   Stage_y s = yaml_loader.load_stage();
   oLog() << "loading initial stage:\n";
   for(auto b: s.beams){
-    oLog() << "beam_y { x: " << b.pos_x << ", y: " << b.pos_y << ", size: " << b.size << ", inclination:" << b.inclination << "}" << endl;
-	this->beams.push_back(new Beam(this->world, b.size, b.pos_x, b.pos_y, b.inclination));
+    oLog() << "beam_y { x: " << b.pos_x << ", y: " << b.pos_y << ", size: " << b.size 
+    << ", inclination:" << b.inclination << ", direction: " << b.direction <<"}" << endl;
+	this->beams.push_back(new Beam(this->world, b.size, b.pos_x, b.pos_y, b.inclination,static_cast<Direction>(b.direction)));
 
   }
   for(auto & w: s.worms){

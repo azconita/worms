@@ -25,6 +25,7 @@ Worm::Worm(b2World* world, float x, float y, int id, Direction direction) :
   b2FixtureDef myFixtureDef;
   myFixtureDef.shape = &shape;
   myFixtureDef.density = Constants::worm_density;
+  myFixtureDef.friction = Constants::worm_friction;
   this->body->CreateFixture(&myFixtureDef);
   this->body->SetUserData(this);
   this->life = Constants::worm_initial_life;

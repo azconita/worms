@@ -112,6 +112,12 @@ void Picture::draw(SDL_Surface *screen, int x, int y){
     draw(screen, position, this->default_direction);
 }
 
+void Picture::draw(SDL_Surface *screen, int x, int y, Direction direction){
+    SDL_Rect position;
+    position.x = x - (this->w/2);
+    position.y = y - (this->h/2);
+    draw(screen, position, direction);
+}
 
 
 void Picture::draw(SDL_Surface *screen, SDL_Rect position, Direction direction){

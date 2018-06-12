@@ -1,10 +1,26 @@
 #ifndef SOCKET_H
 #define SOCKET_H
 
+
+
+
+#include <algorithm>
 #include <string>
-#include <iostream>
 #include <vector>
+#include <iostream>
+#include <map>
+#include <random>
+#include <Box2D/Box2D.h>
+#include "Constants.h"
+#include "WeaponExplosionListener.h"
+#include "Dtos.h"
+#include "Worm.h"
+#include "Beam.h"
+#include "Stage.h"
+#include "Weapon.h"
 #include "Logger.h"
+
+
 
 #define CHUNK_LEN 1400
 

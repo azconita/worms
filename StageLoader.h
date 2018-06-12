@@ -24,6 +24,7 @@ struct Beam_y{
 	double pos_x;
 	double pos_y;
 	int size;
+  int direction;
 	double inclination;
 };
 
@@ -56,6 +57,7 @@ struct convert<Beam_y> {
     node["pos_x"] = b.pos_x;
     node["pos_y"] = b.pos_y;
     node["size"] = b.size;
+    node["direction"] = b.direction;
     node["inclination"] = b.inclination;
  
     return node;
@@ -65,6 +67,7 @@ struct convert<Beam_y> {
     beam.pos_x = node["pos_x"].as<double>();
     beam.pos_y = node["pos_y"].as<double>();
     beam.size = node["size"].as<int>();
+    beam.direction = node["direction"].as<int>();
     beam.inclination = node["inclination"].as<double>();
     return true;
   }

@@ -22,6 +22,7 @@ class EventController {
 	int screen_height;
 	int screen_width;
 	int id;
+	int i;
 	
 	bool wait_for_destination_clicl;
 	bool wait_for_weapon_click;
