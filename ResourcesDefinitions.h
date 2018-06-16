@@ -250,6 +250,7 @@
 //el agua
 #define POWER_BAR "resources/power_bar.bmp"
 #define WEAPONS_MENU "resources/weapons_menu.bmp"
+#define ARROW "resources/arrow.bmp"
 #define FONT_FILE "resources/Amiko-Bold.ttf"
 #define FONT_SIZE 10
 #define TIMER_SIZE 35

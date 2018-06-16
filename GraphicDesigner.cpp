@@ -28,7 +28,6 @@ std::map<int,WormAnimation> GraphicDesigner::create_worms(StageDTO s){
         int position_worm_x = get_pixels(worm_info.pos_x);
         int position_worm_y = get_pixels(worm_info.pos_y);
 
-        //creo el gusano y lo gardo en el vector
         Direction dir = Left;
         if(worm_info.player_id %2 == 0){
             dir = Right;
@@ -65,8 +64,9 @@ GraphicDesigner::GraphicDesigner(SDL_Surface * screen, int screen_height, int sc
     SDL_SetColorKey(power_bar, SDL_SRCCOLORKEY, colorkey);
     SDL_Surface * weapons_menu = IMG_Load(WEAPONS_MENU);
     SDL_Surface * background = IMG_Load(BACKGROUND);
+    SDL_Surface * arrow = IMG_Load(ARROW);
   
-    if (!power_bar || !weapons_menu || !background) {
+    if (!power_bar || !weapons_menu || !background || !arrow) {
         throw Error("Couldn't create surface from image:",POWER_BAR,SDL_GetError());
     }
     ////////////////////////////////////////////////////////
@@ -82,6 +82,7 @@ GraphicDesigner::GraphicDesigner(SDL_Surface * screen, int screen_height, int sc
 
     this->power_bar = power_bar;
     this->weapons_menu = weapons_menu;
+    this->arrow = arrow;
     this->menu_size = 0;
 
 }
@@ -192,10 +193,13 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
             cout << "Error: juego no preparado para mas de 4 jugadores" << endl;
         }
 
-        //printf("player id: %i \n", worm_info.player_id );
+        
         Colour player_color = Colour::create(possible_colors.at(worm_info.player_id));
 
         show_life(worm_info.life,center_x,center_y, camera_position,player_color);
+        if(w.first == s.worm_turn){
+            show_arrow(center_x, center_y, camera_position);
+        }
         int weapon_power = worms_iter->second.get_weapon_power();
         show_powerbar(weapon_power);
 
@@ -244,7 +248,7 @@ void GraphicDesigner::show_life(int life, int worm_x, int worm_y, SDL_Rect camer
         throw Error("TTF_RenderText_Solid(): ",TTF_GetError());
     }
 
-    Sint16 x = worm_x - camera_position.x + 20;
+    Sint16 x = worm_x - camera_position.x + 30;
     Sint16 y = worm_y - camera_position.y - 5;
 
     SDL_Rect rectangle; 
@@ -268,6 +272,29 @@ void GraphicDesigner::show_life(int life, int worm_x, int worm_y, SDL_Rect camer
     position.w = text->w;
     SDL_BlitSurface(text, &dimention, this->screen, &position);
     SDL_FreeSurface(text);
+}
+
+void GraphicDesigner::show_arrow( int worm_x, int worm_y, SDL_Rect camera_position){
+
+    Sint16 x = worm_x - camera_position.x + 5;
+    Sint16 y = worm_y - camera_position.y - 10;
+
+    SDL_Rect dimention;
+    dimention.x = 0;
+    dimention.y = 0;
+    dimention.h = this->arrow->h;
+    dimention.w = this->arrow->w;
+
+    SDL_Rect position;
+    position.x = x;
+    position.y = y;
+    position.h = this->arrow->h;
+    position.w = this->arrow->w;
+    
+    Colour color = Colour::create(White);
+    Uint32 colorkey = SDL_MapRGB(this->arrow->format, color.r, color.g, color.b);
+    SDL_SetColorKey(this->arrow, SDL_SRCCOLORKEY, colorkey);
+    SDL_BlitSurface(this->arrow, &dimention, this->screen, &position);
 }
 
 void GraphicDesigner::show_powerbar(int power){
@@ -406,6 +433,7 @@ GraphicDesigner::~GraphicDesigner() {
     SDL_FreeSurface(this->background);
     SDL_FreeSurface(this->power_bar);
     SDL_FreeSurface(this->weapons_menu);
+    SDL_FreeSurface(this->arrow);
     TTF_Quit();
 }
 

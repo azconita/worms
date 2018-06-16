@@ -47,6 +47,7 @@ class GraphicDesigner {
 	TTF_Font *time_font;
 	SDL_Surface *power_bar;
 	SDL_Surface * weapons_menu;
+	SDL_Surface * arrow;
 	int menu_size;
 	std::map<int,WormAnimation> worms;
 	std::map<Weapon_Name,Animation> weapons;
@@ -63,6 +64,7 @@ class GraphicDesigner {
 	void show_worms(StageDTO s, SDL_Surface *screen);
 	void show_weapon(StageDTO s,SDL_Surface * screen);
 	void show_life(int life, int worm_x, int worm_y, SDL_Rect camera_position, Colour color);
+	void show_arrow(int worm_x, int worm_y, SDL_Rect camera_position);
 
 
 public:
