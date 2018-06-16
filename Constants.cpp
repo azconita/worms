@@ -10,6 +10,7 @@
 
 namespace Constants {
   YAML::Node config = YAML::LoadFile("server_config.yaml");
+  extern const int total_players = config["total_players"].as<int>();
 
   extern const float gravity = config["gravity"].as<float>();
   extern const float time_step = config["time_step"].as<float>();

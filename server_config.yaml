@@ -1,3 +1,4 @@
+total_players: 2
 gravity: 9.8
 time_step: 0.1 
 velocity_iterations: 8

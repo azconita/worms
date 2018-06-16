@@ -282,7 +282,11 @@ void Stage::set_worms_to_players(int total_players) {
     std::vector<int> v;
     std::copy(ids.begin() + i*wq, ids.begin() + (i+1)*wq, std::back_inserter(v));
     this->players_turn.emplace(i, TurnHelper(v, i));
+    for (int i: v) {
+      this->worms.at(i)->set_player_id(i);
+    }
   }
+
   //compensar jugador con menos gusanos!!
   this->current_player = this->worms[0];
 }

@@ -42,6 +42,7 @@ public:
   int get_id() { return this->id;}
   bool is_alive() { return ((this->life > 0) && (this->body->GetPosition().y < 100)); }
   int get_player_id();
+  void set_player_id(int i);
 
   //movements
   State get_state();

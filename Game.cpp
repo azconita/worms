@@ -40,8 +40,8 @@ void Game::add_player(Socket &client) {
   printf("[Game] add_player -> new Player\n");
   this->players.push_back(new Player(client));
   //TODO: init game? add worms to initiated game?
-  //if (this->players.size() == this->limit)
-   // this->start();
+  if (this->players.size() == this->limit)
+    this->start();
 }
 
 void Game::prepare() {

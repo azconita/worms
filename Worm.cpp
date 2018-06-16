@@ -33,7 +33,15 @@ Worm::Worm(b2World* world, float x, float y, int id, Direction direction) :
   this->direction = direction;
 }
 
-Worm::Worm(const Worm& other) : Entity(1), body(other.body), life(other.life), world(world) {
+Worm::Worm(const Worm& other) : Entity(1),
+                                body(other.body),
+                                life(other.life),
+                                world(world),
+                                player_id(other.player_id),
+                                direction(other.direction),
+                                state(other.state),
+                                id(other.id),
+                                weapon(other.weapon) {
   this->body->SetUserData(this);
   std::cout << "wormDir(&other): " << this << '\n';
 }
@@ -167,6 +175,10 @@ void Worm::use_weapon(float x, float y, int power, float degrees) {
 
 int Worm::get_player_id() {
   return this->player_id;
+}
+
+void Worm::set_player_id(int i) {
+  this->player_id = i;
 }
 
 void Worm::teleport(float x, float y, Direction dir) {

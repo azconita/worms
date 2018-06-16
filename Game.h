@@ -24,7 +24,7 @@ class Game : public Thread {
   //thread!!
   Stage stage;
   std::vector<Player*> players;
-  int limit = 1;//Constants::players_limit;
+  int limit = Constants::total_players;
   BlockingQueue<ActionDTO> stage_queue;
   std::vector<BlockingQueue<StageDTO>*> players_queues;
 

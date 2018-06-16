@@ -11,6 +11,7 @@
 #define CONSTANTS_H_
 
 namespace Constants {
+  extern const int total_players;
 
   extern const float gravity;
   extern const float time_step;
