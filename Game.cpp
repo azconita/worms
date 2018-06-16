@@ -18,7 +18,6 @@ Game::Game(std::string &stage_name, Socket &client) :
 }
 
 Game::~Game() {
-  // TODO Auto-generated destructor stub
   this->timer.join();
   //delete players!
   for (auto &q : this->players_queues) {
@@ -39,7 +38,6 @@ void Game::add_player(Socket &client) {
 
   printf("[Game] add_player -> new Player\n");
   this->players.push_back(new Player(client));
-  //TODO: init game? add worms to initiated game?
   if (this->players.size() == this->limit)
     this->start();
 }

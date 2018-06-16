@@ -199,3 +199,15 @@ b2Vec2 Worm::get_center(){
 b2Vec2 Worm::get_velocity(){
   return this->body->GetLinearVelocity();
 }
+
+void Worm::stop_moving() {
+  this->body->SetLinearVelocity(b2Vec2(0,0));
+}
+
+void Worm::set_static() {
+  this->body->SetType(b2_staticBody);
+}
+
+void Worm::set_dynamic() {
+  this->body->SetType(b2_dynamicBody);
+}
