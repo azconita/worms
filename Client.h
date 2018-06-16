@@ -18,7 +18,7 @@ using std::map;
 using std::pair;
 
 
-#define SCREEN_DEFAULT_WITH 1366
+#define SCREEN_DEFAULT_WIDTH 1366
 #define SCREEN_DEFAULT_HIGH 768
 #define TITLE "Worms game"
 #define PIXEL_CONSTANT 23.5
@@ -26,7 +26,7 @@ using std::pair;
 
 extern  logger oLog;
 
-class Client{
+class Client {
 	Socket socket;
 	BlockingQueue<ActionDTO> actions_queue;
 	SDL_Surface * screen;

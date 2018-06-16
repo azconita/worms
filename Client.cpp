@@ -28,7 +28,7 @@ void Client::run(){
     }
 
     atexit(SDL_Quit);
-    int screen_width = SCREEN_DEFAULT_WITH;
+    int screen_width = SCREEN_DEFAULT_WIDTH;
     int screen_height = SCREEN_DEFAULT_HIGH;
 
     const SDL_VideoInfo* info = SDL_GetVideoInfo();   //<-- calls SDL_GetVideoInfo();
@@ -38,11 +38,11 @@ void Client::run(){
     oLog() << "Se crea la ventana de juego, height: " << screen_height << ", with: " << screen_width;
 
 
-    if(SDL_VideoModeOK(screen_width, screen_height, 24, SDL_HWSURFACE|SDL_DOUBLEBUF) == 0) {
+    if(SDL_VideoModeOK(screen_width, screen_height, 24, SDL_HWSURFACE|SDL_DOUBLEBUF|SDL_RESIZABLE) == 0) {
        throw Error("Modo video no compatible: ",SDL_GetError());
     }
 
-    this->screen = SDL_SetVideoMode(screen_width, screen_height, 24, SDL_HWSURFACE|SDL_DOUBLEBUF);
+    this->screen = SDL_SetVideoMode(screen_width, screen_height, 24, SDL_HWSURFACE|SDL_DOUBLEBUF|SDL_RESIZABLE);
     if(this->screen == NULL) {
        throw Error("No se pudo establecer el modo de video: ",SDL_GetError());
     }
