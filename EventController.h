@@ -25,7 +25,6 @@ class EventController {
 	int i;
 	
 	bool wait_for_destination_clicl;
-	bool wait_for_weapon_click;
 
 public:
 	EventController(BlockingQueue<ActionDTO> & actions_queue, SDL_Event & event, int screen_height, int screen_width, 

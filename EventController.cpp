@@ -18,9 +18,8 @@ EventController::EventController(BlockingQueue<ActionDTO> & actions_queue, SDL_E
             this->screen_height = screen_height;
             this-> screen_width = screen_width;
             this->wait_for_destination_clicl = false;
-            this->wait_for_weapon_click = false;
             this->action.worm_id = 0;
-            this->i = 0;
+            this->i = 0; //para borrar
 }
 
 
@@ -41,7 +40,6 @@ bool EventController::continue_running(WormAnimation& turn_worm){
             resize(event.resize);
             break;   
         case SDL_MOUSEBUTTONUP:
-            printf("se hizo click\n");
             click(turn_worm);
             break;
         case SDL_MOUSEMOTION:
@@ -143,22 +141,16 @@ void EventController::weapon_action(SDL_Event & event, WormAnimation& turn_worm)
 void EventController::click(WormAnimation& turn_worm){
     int x, y;
     SDL_GetMouseState(&x, &y);
-    if(turn_worm.has_weapon_to_click()){
+    if(graphic_designer.is_inside_weapon_menu(x,y)){
+        printf("esta dentro del menu\n");
+        Weapon_Name  weapon = graphic_designer.choose_weapon(x,y);
+        turn_worm.take_weapon(weapon);
+        this->action.type = Take_weapon;
+        this->action.weapon = weapon;
+        send_action(this->action);
+    } else if(turn_worm.has_weapon_to_click()){
         shot(turn_worm,x,y);
     }
-
-    else if(this->wait_for_weapon_click){
-        printf("estaba esperando que se elija un arma\n");
-        if(graphic_designer.is_inside_weapon_menu(x,y)){
-            printf("esta dentro del menu\n");
-            Weapon_Name  weapon = graphic_designer.choose_weapon(x,y);
-            turn_worm.take_weapon(weapon);
-            this->action.type = Take_weapon;
-            this->action.weapon = weapon;
-            send_action(this->action);
-        }
-    }
-    this->wait_for_weapon_click = false;
 
 }
 
@@ -166,14 +158,6 @@ void EventController::click(WormAnimation& turn_worm){
 void EventController::mouse_motion(){
     int x, y;
     SDL_GetMouseState(&x, &y);
-    if(x > screen_width - 5 && y < 5){
-        cout << "Se quiere elegir un arma:" << endl;
-        printf("%i %i\n",x,y);
-        this->graphic_designer.make_appear_weapons_menu();
-        this->wait_for_weapon_click = true;
-        return;
-    }
-
    this->graphic_designer.scroll(x,y);
 }
 
@@ -265,7 +249,6 @@ void EventController::weapon_shot(WormAnimation& turn_worm){
 
 float EventController::meters_conversor(int pixel){
     return (pixel+0.0)/23.5;    
-
 }
 
 void EventController::send_action(ActionDTO action){

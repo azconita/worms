@@ -14,13 +14,12 @@ class WaterAnimation {
     Colour colorkey;
     Animation water_left;
     Animation water_right;
-    int screen_height;
     int show_counter;
     int speed;
 
 public:
-    WaterAnimation(int screen_height,int speed);
-    void show(SDL_Surface * screen);
+    WaterAnimation(int speed);
+    void show(SDL_Surface * screen,int height);
 	virtual ~WaterAnimation();
 };
 

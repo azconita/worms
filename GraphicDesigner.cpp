@@ -45,7 +45,8 @@ bool GraphicDesigner::is_timer_weapon(Weapon_Name weapon){
 
 
 
-GraphicDesigner::GraphicDesigner(SDL_Surface * screen, int screen_height, int screen_width,StageDTO initial_stage){
+GraphicDesigner::GraphicDesigner(SDL_Surface * screen, int screen_height, int screen_width,StageDTO initial_stage):
+water(3){
     this->screen = screen;
     this->screen_height = screen_height;
     this->screen_width = screen_width;
@@ -83,7 +84,6 @@ GraphicDesigner::GraphicDesigner(SDL_Surface * screen, int screen_height, int sc
     this->power_bar = power_bar;
     this->weapons_menu = weapons_menu;
     this->arrow = arrow;
-    this->menu_size = 0;
 
 }
 
@@ -112,21 +112,19 @@ void GraphicDesigner::scroll(int x, int y){
     }
 }
 
-void GraphicDesigner::show_background(){
-    SDL_Rect camera_position = camera->get_focus();
-    SDL_BlitSurface(this->background, &camera_position, this->screen, NULL);
-}
 
 void GraphicDesigner::show_elements(StageDTO s, SDL_Surface *screen){
-    show_beams(s,screen);
-    show_worms(s,screen);
-    show_weapon(s,screen);
-    this->show_weapons_menu(this->menu_size);
+    SDL_Rect camera_position = this->camera->get_focus();
+    SDL_BlitSurface(this->background, &camera_position, this->screen, NULL);
+    this->water.show(screen, this->background->h - camera_position.y);
+    this->show_beams(s,screen,camera_position);
+    this->show_worms(s,screen,camera_position);
+    this->show_weapon(s,screen,camera_position);
+    this->show_weapons_menu();
 }
 
 
-void GraphicDesigner::show_beams(StageDTO s, SDL_Surface *screen){
-    SDL_Rect camera_position = this->camera->get_focus();
+void GraphicDesigner::show_beams(StageDTO s, SDL_Surface *screen, SDL_Rect camera_position){
 
     for (auto beam_info: s.beams) {
 
@@ -179,7 +177,7 @@ Picture GraphicDesigner::inclinate_beam(std::vector<Picture> beams, float degree
 }
 
 
-void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
+void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen, SDL_Rect camera_position){
     for (auto w: s.worms) {
         std::map<int,WormAnimation>::iterator worms_iter = this->worms.find(w.first);
         
@@ -192,7 +190,6 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
         if(w.first == s.worm_turn && worms_iter->second.is_in_movement()){
             this->camera->follow(get_pixels(worm_info.pos_x),get_pixels(worm_info.pos_y)); 
         }
-        SDL_Rect camera_position = this->camera->get_focus();
         worms_iter->second.show(this->screen, camera_position);
 
 
@@ -218,8 +215,7 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
  }
 
 
- void GraphicDesigner::show_weapon( StageDTO s,SDL_Surface * screen){
-    SDL_Rect camera_position = this->camera->get_focus();
+ void GraphicDesigner::show_weapon( StageDTO s,SDL_Surface * screen, SDL_Rect camera_position){
     for (auto w: s.weapons) {
 
         int center_x = get_pixels(w.pos_x) - camera_position.x;
@@ -325,28 +321,21 @@ void GraphicDesigner::show_powerbar(int power){
 
 }
 
-void GraphicDesigner::show_weapons_menu(int size){
-    int width = this->weapons_menu->w*size/100;
+void GraphicDesigner::show_weapons_menu(){
     SDL_Rect position;
-    position.x = this->screen_width - width -2;
-    position.y = 5;
+    position.x = this->screen_width - this->weapons_menu->w;
+    position.y = this->screen_height/2- this->weapons_menu->h/2;
     position.h = this->weapons_menu->h;
     position.w = this->weapons_menu->w;
 
     SDL_Rect dimention;
-    dimention.x = 0;
+    dimention.x = 0;    
     dimention.y = 0;
     dimention.h = this->weapons_menu->h;
-    dimention.w = width;
+    dimention.w = this->weapons_menu->w;
     SDL_BlitSurface(this->weapons_menu, &dimention, this->screen, &position);  
 }
 
-void GraphicDesigner::make_appear_weapons_menu(){
-    while(this->menu_size < 100){
-        this->show_weapons_menu(this->menu_size);
-        this-> menu_size ++;
-    }  
-}
 
 bool GraphicDesigner::is_inside_weapon_menu(int x, int y){
     int x_relative = x -(this->screen_width - this->weapons_menu->w -5);
@@ -359,7 +348,6 @@ bool GraphicDesigner::is_inside_weapon_menu(int x, int y){
 
 
 Weapon_Name GraphicDesigner::choose_weapon(int x, int y){
-    this->menu_size = 0;
     int icon_y = this->weapons_menu->h/10;
     if(y < icon_y){
         return W_Air_Attack;

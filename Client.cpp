@@ -53,7 +53,7 @@ void Client::run(){
     StageDTO s = receive_stage();
     this->id = s.player_id;
 
-    WaterAnimation water(screen_height, 3);
+   ;
 
     GraphicDesigner graphic_designer(screen, screen_height,screen_width, s);
 
@@ -99,8 +99,6 @@ void Client::run(){
             SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format,0,0,0));
             //dibujo las vigas y el agua
 
-            graphic_designer.show_background();
-            water.show(screen);
             graphic_designer.show_elements(s,screen);
 
         //TODO: revisar con foto de martin!!
