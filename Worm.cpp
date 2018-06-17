@@ -224,6 +224,7 @@ void  Worm::handle_end_contact(){
 }
 
 void Worm::no_inclination() {
+  printf("se termino el contacto\n");
   this->inclination = 0;
 }
 

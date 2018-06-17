@@ -5,9 +5,10 @@ float Client::get_pixels(float meter_position){
     return  PIXEL_CONSTANT*meter_position;
 }
 
-Client::Client(char * host_name, char * port)://
+Client::Client(char * host_name, char * port, bool fullscreen)://
     socket(host_name, port),
-    actions_queue(1000){
+    actions_queue(QUEUE_SIZE),
+    fullscreen(fullscreen){
     this->socket.connect_to_server();
 }
 
@@ -31,9 +32,11 @@ void Client::run(){
     int screen_width = SCREEN_DEFAULT_WIDTH;
     int screen_height = SCREEN_DEFAULT_HIGH;
 
-    const SDL_VideoInfo* info = SDL_GetVideoInfo();   //<-- calls SDL_GetVideoInfo();
-    screen_width = info->current_w;
-    screen_height = info->current_h;
+    if(this->fullscreen){
+        const SDL_VideoInfo* info = SDL_GetVideoInfo();   //<-- calls SDL_GetVideoInfo();
+        screen_width = info->current_w;
+        screen_height = info->current_h;
+    }
 
     oLog() << "Se crea la ventana de juego, height: " << screen_height << ", with: " << screen_width;
 
