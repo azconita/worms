@@ -22,7 +22,7 @@ Beam::Beam(b2World* world, float size, float x, float y, float angle, Direction 
   
   //add box fixture
   b2PolygonShape shape;
-  shape.SetAsBox((6+0.0)/2, (Constants::beam_height+0.0)/2,b2Vec2(0,0),angle* (M_PI / 180));
+  shape.SetAsBox((size+0.0)/2 -0.5, (Constants::beam_height+0.0)/2,b2Vec2(0,0),angle* (M_PI / 180));
   b2FixtureDef fixture;
   fixture.shape = &shape;
   fixture.friction = Constants::beam_friction;

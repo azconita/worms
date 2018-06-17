@@ -173,7 +173,7 @@ int WormAnimation::get_id() {
 
 void WormAnimation::show(SDL_Surface * screen, SDL_Rect camera_position){
     std::map<State,Animation>::iterator animation_iter = animations.find(this->state);
-    animation_iter->second.draw(screen, this->x -camera_position.x, this->y -camera_position.y);
+    animation_iter->second.draw(screen, this->x -camera_position.x, this->y -camera_position.y - 10);
 }
 
 

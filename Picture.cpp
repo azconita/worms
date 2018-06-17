@@ -114,7 +114,7 @@ void Picture::draw(SDL_Surface *screen, int x, int y){
 
 void Picture::draw(SDL_Surface *screen, int x, int y, Direction direction){
     SDL_Rect position;
-    position.x = x - (this->w/2);
+    position.x = x - (this->w/4); //??????? correccion empirica
     position.y = y - (this->h/2);
     draw(screen, position, direction);
 }

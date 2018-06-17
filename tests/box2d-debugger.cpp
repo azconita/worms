@@ -54,31 +54,37 @@ public:
   b2Body* body;
 
   Worm(b2World* world){
-
     b2BodyDef body_def;
     body_def.type = b2_dynamicBody;
-    body_def.position.Set(10, 8);
+    body_def.position.Set(15, 7);
     body_def.bullet = false;
     body_def.userData = (void*) this;
     this->body = world->CreateBody(&body_def);
     b2PolygonShape shape;
-    shape.SetAsBox(0.5, 1.6);
+    shape.SetAsBox(0.5, 1.3);
     b2FixtureDef fixture;
     fixture.shape = &shape;
     fixture.density = 0;
-    fixture.friction = 1;
+    fixture.friction = 0;
     fixture.restitution = 0;
+    body->SetGravityScale(0);
     this->body->CreateFixture(&fixture);
     this->body->SetUserData(this);
 }
 
-void left(){
-  this->body->ApplyLinearImpulse(b2Vec2(-8,0), this->body->GetWorldCenter(), true);
+void left(){        
+  this->body->ApplyLinearImpulse(b2Vec2(-0.707*3,0.707*3), this->body->GetWorldCenter(), true); //seno y coseno del angulo
+}
 
+void update(){
+  b2Vec2 vel;
+  vel.x = 0;
+  vel.y = 0;
+  body->SetLinearVelocity(vel);
 }
 
 void right(){
-  this->body->ApplyLinearImpulse(b2Vec2(8,0), this->body->GetWorldCenter(), true);
+  this->body->ApplyLinearImpulse(b2Vec2(0.707*5,-0.707*5), this->body->GetWorldCenter(), true);
 
 }
 
@@ -95,13 +101,12 @@ void right(){
     }*/
     
 
-    Dot d0(23.5*10,23.5*10);
+  
     Dot d1(23.5*points[0].x,23.5*points[0].y );
     Dot d2(23.5*points[1].x,23.5*points[1].y );
     Dot d3(23.5*points[2].x,23.5*points[2].y );
     Dot d4(23.5*points[3].x,23.5*points[3].y );
 
-    d0.show(screen);
     d1.show(screen);
     d2.show(screen);
     d3.show(screen);
@@ -115,11 +120,11 @@ class Viga{
 public:
   b2Body* body ;
 
-  Viga(b2World* world, int angulo){
+  Viga(b2World* world,int x, int y, int angulo){
 
   b2BodyDef bodyDef;
   bodyDef.type = b2_staticBody;
-  bodyDef.position.Set(10, 10);
+  bodyDef.position.Set(x, y);
   bodyDef.angle = (M_PI / 180)*(180-angulo);
   this-> body = world->CreateBody(&bodyDef);
   b2PolygonShape shape;
@@ -127,8 +132,8 @@ public:
  
   b2FixtureDef fixture;
   fixture.shape = &shape;
-  fixture.friction = 3.0;
-  fixture.density = 1;
+  fixture.friction = 1;
+  fixture.density = 2;
   this->body->CreateFixture(&fixture);
 }
 
@@ -143,8 +148,8 @@ void show(SDL_Surface *screen){
       printf("%f,%f\n",points[i].x,points[i].y );
     }*/
     
-
-    Dot d0(23.5*10,23.5*10);
+    b2Vec2 center = this->body->GetPosition();
+    Dot d0(23.5*center.x,23.5*center.y );
     Dot d1(23.5*points[0].x,23.5*points[0].y );
     Dot d2(23.5*points[1].x,23.5*points[1].y );
     Dot d3(23.5*points[2].x,23.5*points[2].y );
@@ -194,7 +199,8 @@ int main(){
 
 	b2Vec2 gravity(0, 9.8); //normal earth gravity
   b2World* world = new b2World(gravity);
-  Viga viga(world, 0);
+  //Viga viga(world,10, 10, 0);
+  Viga inclinada(world,15, 10, 45);
   Worm gusano(world);
 
   //////////////////////////////////
@@ -229,6 +235,7 @@ int main(){
 
         if((t1 -t0) > 100) {
             world->Step(0.1, 8, 3);
+            gusano.update();
             // Nueva referencia de tiempo
             t0 = SDL_GetTicks();
 
@@ -236,8 +243,10 @@ int main(){
             //toda la pantalla en negro
             SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format,0,0,0));
         	  SDL_BlitSurface(background, NULL, screen, NULL);
-            viga.show(screen);
+            //viga.show(screen);
+            inclinada.show(screen);
             gusano.show(screen);
+
         
 
   

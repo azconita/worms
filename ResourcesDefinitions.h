@@ -253,8 +253,8 @@
 #define ARROW "resources/arrow.bmp"
 #define FONT_FILE "resources/Amiko-Bold.ttf"
 #define FONT_SIZE 10
-#define TIMER_SIZE 35
 #define TIMER_FONT "resources/DS-DIGI.ttf"
+#define TIMER_SIZE 35
 
 
 #define BACKGROUND "resources/background_forest.bmp"

@@ -116,7 +116,6 @@ void Worm::move_right() {
       return;
   }
   this->change_state(Walk);
-  float impulse = this->get_impulse();
   this->body->ApplyLinearImpulse(b2Vec2(Constants::worm_walk_velocity,0), this->body->GetWorldCenter(), true);
 }
 
@@ -127,8 +126,6 @@ void Worm::move_left() {
       return;
   }
   this->change_state(Walk);
-
-  float impulse = this->get_impulse();
   this->body->ApplyLinearImpulse(b2Vec2(-Constants::worm_walk_velocity,0), this->body->GetWorldCenter(), true);
 }
 
@@ -144,8 +141,9 @@ void Worm::jump(Direction dir) {
 //TODO: fix me!!
 void Worm::jump_back() {
   this->change_state(Jump_back_state);
-  float impulse = this->get_impulse();
-  this->body->ApplyLinearImpulse(b2Vec2(-impulse,impulse), this->body->GetWorldCenter(), true);
+  int d = (this->direction == Left) ? 1 : -1;
+  float impulse =  body->GetMass() * Constants::worm_jump_velocity;//this->get_impulse();
+  this->body->ApplyLinearImpulse(b2Vec2(-d*impulse/2,impulse), this->body->GetWorldCenter(), true);
 }
 
 int Worm::get_life() {
