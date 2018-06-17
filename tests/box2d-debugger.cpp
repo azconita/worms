@@ -74,10 +74,10 @@ public:
 
 void left(float angle ){     
 if(angle < 90){
-  this->body->ApplyLinearImpulse(b2Vec2(-3*cos(angle*M_PI/180),3*cos(angle*M_PI/180)), this->body->GetWorldCenter(), true); //seno y coseno del angulo
+  this->body->ApplyLinearImpulse(b2Vec2(-3*cos(angle*M_PI/180),3*sin(angle*M_PI/180)), this->body->GetWorldCenter(), true); //seno y coseno del angulo
 
 }else{  
-  this->body->ApplyLinearImpulse(b2Vec2(3*cos(angle*M_PI/180),3*cos(angle*M_PI/180)), this->body->GetWorldCenter(), true); //seno y coseno del angulo
+  this->body->ApplyLinearImpulse(b2Vec2(3*cos(angle*M_PI/180),-3*sin(angle*M_PI/180)), this->body->GetWorldCenter(), true); //seno y coseno del angulo
 }
 }
 
@@ -90,10 +90,10 @@ void update(){
 
 void right( float angle ){
   if(angle < 90){
-  this->body->ApplyLinearImpulse(b2Vec2(3*cos(angle*M_PI/180),-3*cos(angle*M_PI/180)), this->body->GetWorldCenter(), true);
+  this->body->ApplyLinearImpulse(b2Vec2(3*cos(angle*M_PI/180),-3*sin(angle*M_PI/180)), this->body->GetWorldCenter(), true);
  
 }else{  
-  this->body->ApplyLinearImpulse(b2Vec2(-3*cos(angle*M_PI/180),-3*cos(angle*M_PI/180)), this->body->GetWorldCenter(), true);
+  this->body->ApplyLinearImpulse(b2Vec2(-3*cos(angle*M_PI/180),3*sin(angle*M_PI/180)), this->body->GetWorldCenter(), true);
 }
 }
 
@@ -189,11 +189,11 @@ bool event_controller(SDL_Event &event, Worm & gusano){
                 return false;
             }
             case SDLK_LEFT:{
-                gusano.left(90);
+                gusano.left(135);
                 break;
             }
             case SDLK_RIGHT:{
-                gusano.right(90);
+                gusano.right(135);
                 break;
             }
           }
@@ -209,7 +209,7 @@ int main(){
 	b2Vec2 gravity(0, 9.8); //normal earth gravity
   b2World* world = new b2World(gravity);
   //Viga viga(world,10, 10, 0);
-  Viga inclinada(world,15, 10, 90);
+  Viga inclinada(world,15, 10, 135);
   Worm gusano(world);
 
   //////////////////////////////////

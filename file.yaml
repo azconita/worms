@@ -8,12 +8,12 @@ stage:
     - pos_x: 50
       pos_y: 30
       size: 6
-      inclination: 22
+      inclination: 45
       direction: 1
-    - pos_x: 28
+    - pos_x: 33
       pos_y: 20
       size: 6
-      inclination: 45
+      inclination: 22
       direction: 1
     - pos_x: 40
       pos_y: 5

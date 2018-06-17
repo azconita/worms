@@ -86,12 +86,18 @@ void Worm::change_state(State state){
 
 void Worm::update_state() {
   //caer es el estado "predominante"
+
   b2Vec2 vel = this->body->GetLinearVelocity();
-  if (vel.y > 5 && this->state != Fall) {
-    this->state = Fall;
-    this->start_falling = this->body->GetPosition();
-    printf("start falling: %f, %f\n", this->start_falling.x, this->start_falling.y);
+  if(vel.y > 0 && this->inclination != 0){
+    this->state = Walk_down;
     return;
+  }
+  if (vel.y > 5 && this->state != Fall && this->inclination == 0) {
+      this->state = Fall;
+      this->start_falling = this->body->GetPosition();
+      printf("start falling: %f, %f\n", this->start_falling.x, this->start_falling.y);
+      return;
+  
   }
   if (std::abs(vel.y) < 1 && std::abs(vel.x) < 1 && this->state == Fall) {
     //estaba cayendo: chequear si fueron mas de 2m para hacerle dano al worm
@@ -125,10 +131,10 @@ void Worm::move_right() {
     printf("camina horizontal\n");
     this->body->ApplyLinearImpulse(b2Vec2(Constants::worm_walk_velocity,0), this->body->GetWorldCenter(), true);
   }else if(this->inclination < 90){
-    this->body->ApplyLinearImpulse(b2Vec2(3*cos(this->inclination*M_PI/180),-3*cos(this->inclination*M_PI/180)),//
+    this->body->ApplyLinearImpulse(b2Vec2(cos(this->inclination*M_PI/180),-sin(this->inclination*M_PI/180)),//
      this->body->GetWorldCenter(), true);
   }else{  
-    this->body->ApplyLinearImpulse(b2Vec2(-3*cos(this->inclination*M_PI/180),-3*cos(this->inclination*M_PI/180)),//
+    this->body->ApplyLinearImpulse(b2Vec2(-cos(this->inclination*M_PI/180),sin(this->inclination*M_PI/180)),//
      this->body->GetWorldCenter(), true);
   }
 }
@@ -145,11 +151,11 @@ void Worm::move_left() {
     this->body->ApplyLinearImpulse(b2Vec2(-Constants::worm_walk_velocity,0),//
      this->body->GetWorldCenter(), true);
   }else if(this->inclination < 90){
-    this->body->ApplyLinearImpulse(b2Vec2(-cos(this->inclination*M_PI/180),//
-    cos(this->inclination*M_PI/180)), this->body->GetWorldCenter(), true); 
+    this->body->ApplyLinearImpulse(b2Vec2(-cos(this->inclination*M_PI/180),sin(this->inclination*M_PI/180)), //
+      this->body->GetWorldCenter(), true); 
   }else{  
-    this->body->ApplyLinearImpulse(b2Vec2(cos(this->inclination*M_PI/180),//
-    cos(this->inclination*M_PI/180)), this->body->GetWorldCenter(), true);
+    this->body->ApplyLinearImpulse(b2Vec2(cos(this->inclination*M_PI/180),-sin(this->inclination*M_PI/180)), //
+     this->body->GetWorldCenter(), true);
   }
 }
 
