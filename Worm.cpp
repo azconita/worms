@@ -86,10 +86,18 @@ void Worm::change_state(State state){
 
 void Worm::update_state() {
   //caer es el estado "predominante"
+ 
 
   b2Vec2 vel = this->body->GetLinearVelocity();
-  if(vel.y > 0 && this->inclination != 0){
-    this->state = Walk_down;
+  if(this->inclination != 0){
+    if(vel.y == 0){
+      return; // sigue con el estado en el que estaba
+    }
+    if(vel.y > 0){
+      this->state = Walk_down;
+    }else{
+      this->state = Walk_up;
+    }
     return;
   }
   if (vel.y > 5 && this->state != Fall && this->inclination == 0) {
@@ -127,10 +135,9 @@ void Worm::move_right() {
       return;
   }
   this->change_state(Walk);
-  if(this->inclination == 0 ){
-    printf("camina horizontal\n");
-    this->body->ApplyLinearImpulse(b2Vec2(Constants::worm_walk_velocity,0), this->body->GetWorldCenter(), true);
-  }else if(this->inclination < 90){
+  this->body->ApplyLinearImpulse(b2Vec2(Constants::worm_walk_velocity,0), this->body->GetWorldCenter(), true);
+  this->handle_end_contact();
+  /* if(this->inclination < 90){
     printf("derecha con angulo menor a noventa\n");
     this->body->ApplyLinearImpulse(b2Vec2(cos(this->inclination*M_PI/180),-sin(this->inclination*M_PI/180)),//
      this->body->GetWorldCenter(), true);
@@ -140,7 +147,7 @@ void Worm::move_right() {
     this->body->ApplyLinearImpulse(b2Vec2(-cos(this->inclination*M_PI/180),sin(this->inclination*M_PI/180)),//
      this->body->GetWorldCenter(), true);
       this->handle_end_contact();
-  }
+  }*/
 }
 
 void Worm::move_left() {
@@ -150,11 +157,9 @@ void Worm::move_left() {
       return;
   }
   this->change_state(Walk);
-  if(this->inclination == 0){
-    printf("camina horizontal\n");
-    this->body->ApplyLinearImpulse(b2Vec2(-Constants::worm_walk_velocity,0),//
-     this->body->GetWorldCenter(), true);
-  }else if(this->inclination < 90){
+  this->body->ApplyLinearImpulse(b2Vec2(-Constants::worm_walk_velocity,0),this->body->GetWorldCenter(), true);
+  this->handle_end_contact();
+  /*else if(this->inclination < 90){
      printf("izquierda con angulo menor a noventa\n");
     this->body->ApplyLinearImpulse(b2Vec2(-cos(this->inclination*M_PI/180),sin(this->inclination*M_PI/180)), //
       this->body->GetWorldCenter(), true); 
@@ -164,7 +169,7 @@ void Worm::move_left() {
     this->body->ApplyLinearImpulse(b2Vec2(cos(this->inclination*M_PI/180),-sin(this->inclination*M_PI/180)), //
      this->body->GetWorldCenter(), true);
       this->handle_end_contact();
-  }
+  }*/
 }
 
 //TODO: fix me!!
@@ -217,7 +222,7 @@ void  Worm::handle_end_contact(){
   float left_distane= round(sqrt(pow(center.x - this->beam_pos[0].x,2) + pow(center.y - this->beam_pos[0].y,2)));
   float right_distance = round(sqrt(pow(center.x - this->beam_pos[1].x,2) + pow(center.y - this->beam_pos[1].y,2)));
   float min_dist = left_distane < right_distance ? left_distane : right_distance;
-  if(min_dist > 1){
+  if(min_dist > 3){
     this->no_inclination();
   }
 

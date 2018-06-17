@@ -137,7 +137,7 @@ void WormAnimation::move(int position_x, int position_y, State state, Direction 
     if(this->x = position_x && this->y == position_y && this->state == Fall){ // se cayo sobre una viga
         this->state = Still;
     }
-    if(this->state != Jump_state && position_y > this->y){ //aumenta el y, se cae
+    if(this->state != Jump_state && this->state != Walk_down && position_y > this->y){ //aumenta el y, se cae
         this->state = Fall;
     }
     this->x = position_x;
@@ -173,7 +173,7 @@ int WormAnimation::get_id() {
 
 void WormAnimation::show(SDL_Surface * screen, SDL_Rect camera_position){
     std::map<State,Animation>::iterator animation_iter = animations.find(this->state);
-    animation_iter->second.draw(screen, this->x -camera_position.x, this->y -camera_position.y - 10);
+    animation_iter->second.draw(screen, this->x -camera_position.x, this->y -camera_position.y - WORM_OFFSET);
 }
 
 

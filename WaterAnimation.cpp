@@ -29,7 +29,6 @@ void WaterAnimation::show(SDL_Surface * screen, int height){
             this->show_counter +=1;
         }
         water_left.draw(screen,0,height-water_left.get_height());
-        printf("h: %i\n agua:%i \n",height, this->water_left.get_height() );
         water_right.draw(screen,this->water_left.get_width()-2,height - this->water_right.get_height());
 
     }

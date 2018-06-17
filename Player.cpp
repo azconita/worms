@@ -70,9 +70,6 @@ void Player::receive(){
       YAML::Node yaml_received = YAML::Load(action_str);
       ActionDTO action_received = yaml_received["action"].as<ActionDTO>();
       this->recv_queue->push(action_received);
-      if(action_received.type == Make_move){
-        printf("saltaar\n" );
-      }
     }catch(Error e){
       ActionDTO a;
       a.type = Quit;

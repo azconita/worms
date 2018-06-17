@@ -18,7 +18,7 @@ int main(int argc, char * argv[]){
 	}else{
 		Client cliente(argv[SERVER_NAME],argv[PORT], false);
     	cliente.run();
-	}
+	}	
     
     return 0;
 }
