@@ -56,6 +56,9 @@ void Stage::update() {
   //check if player change
   this->update_player();
 
+  //update worms: set vel 0 for "stopped" worms and static
+  this->update_worms();
+
   //check falling worms
   this->current_player->update_state();
   //printf("curr state: %i\n", this->current_player->get_state());
@@ -120,6 +123,24 @@ void Stage::change_player() {
   printf(" worm id: %d\n", this->current_player->get_id());
   this->last_player_id = new_player_id;
 }
+/**
+   Update the velocity of the worms
+   and set them as static if it's not their turn
+   (This is to avoid unstable behavior of box2d)
+*/
+void Stage::update_worms() {
+  for (auto &w : this->worms) {
+     if (w.second->get_velocity().Length() < 0.1)
+       w.second->stop_moving();
+     if (w.first != this->current_player->get_id())
+       //TODO: no deberia hacerlo siempre!!
+       //iterar por los cuerpos del world??
+       w.second->set_static();
+     else
+       w.second->set_dynamic();
+   }
+ }
+
 
 void Stage::make_action(ActionDTO & action) {
   printf("%i, %i \n", action.type, action.move );

@@ -21,7 +21,7 @@ Worm::Worm(b2World* world, float x, float y, int id, Direction direction) :
   std::cout << "wormDir: " << this << '\n';
   //add box fixture
   b2PolygonShape shape;
-  shape.SetAsBox(Constants::worm_size, Constants::worm_size);
+  shape.SetAsBox(Constants::worm_width, Constants::worm_height);
   b2FixtureDef myFixtureDef;
   myFixtureDef.shape = &shape;
   myFixtureDef.density = Constants::worm_density;
@@ -198,4 +198,16 @@ b2Vec2 Worm::get_center(){
 
 b2Vec2 Worm::get_velocity(){
   return this->body->GetLinearVelocity();
+}
+
+void Worm::stop_moving() {
+  this->body->SetLinearVelocity(b2Vec2(0,0));
+}
+
+void Worm::set_static() {
+  this->body->SetType(b2_staticBody);
+}
+
+void Worm::set_dynamic() {
+  this->body->SetType(b2_dynamicBody);
 }

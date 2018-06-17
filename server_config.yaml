@@ -11,10 +11,11 @@ beam_friction: 1
 
 worm_turn_time: 40
 worm_initial_life: 100
-worm_walk_velocity: 50
+worm_walk_velocity: 4
 worm_jump_velocity: -7
-worm_density: 1
-worm_size: 1.6
+worm_density: 0
+worm_height: 1.6
+worm_width: 0.5
 worm_friction: 1
 
 weapon_size: 0.1

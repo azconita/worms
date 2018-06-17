@@ -53,6 +53,9 @@ public:
   void move_right();
   void jump(Direction dir); // 1m adelante y 0.5m alto
   void jump_back(); // 0.2m atras y 1.2m alto
+  void stop_moving();
+  void set_static();
+  void set_dynamic();
 
   //use weapons
   void took_weapon(Weapon_Name weapon);

@@ -61,6 +61,8 @@ private:
   void update_player();
   void change_player();
 
+  void update_worms();
+
 
   void load_initial_stage(std::string file_name);
 
