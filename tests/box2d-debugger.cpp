@@ -56,7 +56,7 @@ public:
   Worm(b2World* world){
     b2BodyDef body_def;
     body_def.type = b2_dynamicBody;
-    body_def.position.Set(15, 7);
+    body_def.position.Set(16, 7);
     body_def.bullet = false;
     body_def.userData = (void*) this;
     this->body = world->CreateBody(&body_def);
@@ -72,8 +72,13 @@ public:
     this->body->SetUserData(this);
 }
 
-void left(){        
-  this->body->ApplyLinearImpulse(b2Vec2(-0.707*3,0.707*3), this->body->GetWorldCenter(), true); //seno y coseno del angulo
+void left(float angle ){     
+if(angle < 90){
+  this->body->ApplyLinearImpulse(b2Vec2(-3*cos(angle*M_PI/180),3*cos(angle*M_PI/180)), this->body->GetWorldCenter(), true); //seno y coseno del angulo
+
+}else{  
+  this->body->ApplyLinearImpulse(b2Vec2(3*cos(angle*M_PI/180),3*cos(angle*M_PI/180)), this->body->GetWorldCenter(), true); //seno y coseno del angulo
+}
 }
 
 void update(){
@@ -83,9 +88,13 @@ void update(){
   body->SetLinearVelocity(vel);
 }
 
-void right(){
-  this->body->ApplyLinearImpulse(b2Vec2(0.707*5,-0.707*5), this->body->GetWorldCenter(), true);
-
+void right( float angle ){
+  if(angle < 90){
+  this->body->ApplyLinearImpulse(b2Vec2(3*cos(angle*M_PI/180),-3*cos(angle*M_PI/180)), this->body->GetWorldCenter(), true);
+ 
+}else{  
+  this->body->ApplyLinearImpulse(b2Vec2(-3*cos(angle*M_PI/180),-3*cos(angle*M_PI/180)), this->body->GetWorldCenter(), true);
+}
 }
 
 
@@ -125,7 +134,7 @@ public:
   b2BodyDef bodyDef;
   bodyDef.type = b2_staticBody;
   bodyDef.position.Set(x, y);
-  bodyDef.angle = (M_PI / 180)*(180-angulo);
+  //bodyDef.angle = (M_PI / 180)*(angulo); NO PONER ESTO
   this-> body = world->CreateBody(&bodyDef);
   b2PolygonShape shape;
   shape.SetAsBox(3, 0.4,b2Vec2(0, 0),(180-angulo)* (M_PI / 180));
@@ -180,11 +189,11 @@ bool event_controller(SDL_Event &event, Worm & gusano){
                 return false;
             }
             case SDLK_LEFT:{
-                gusano.left();
+                gusano.left(90);
                 break;
             }
             case SDLK_RIGHT:{
-                gusano.right();
+                gusano.right(90);
                 break;
             }
           }
@@ -200,7 +209,7 @@ int main(){
 	b2Vec2 gravity(0, 9.8); //normal earth gravity
   b2World* world = new b2World(gravity);
   //Viga viga(world,10, 10, 0);
-  Viga inclinada(world,15, 10, 45);
+  Viga inclinada(world,15, 10, 90);
   Worm gusano(world);
 
   //////////////////////////////////

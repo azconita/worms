@@ -17,7 +17,8 @@ Beam::Beam(b2World* world, float size, float x, float y, float angle, Direction 
   b2BodyDef bodyDef;
   bodyDef.type = b2_staticBody;
   bodyDef.position.Set(x, y);
-  bodyDef.angle = angle* (M_PI / 180);
+  //bodyDef.angle = angle* (M_PI / 180); no poner esto porque funciona mal
+   this->angle = angle;
   this->body = world->CreateBody(&bodyDef);
   
   //add box fixture
@@ -29,6 +30,7 @@ Beam::Beam(b2World* world, float size, float x, float y, float angle, Direction 
   fixture.density = 100;
   this->body->CreateFixture(&fixture);
   this->body->SetUserData(this);
+
 }
 
 Beam::Beam(const Beam &other) : Entity(0), body(other.body) {
@@ -37,6 +39,7 @@ Beam::Beam(const Beam &other) : Entity(0), body(other.body) {
 
 Beam* Beam::operator=(const Beam &other) {
   this->body = other.body;
+  this->angle = other.angle;
   this->body->SetUserData(this);
   return this;
 }
@@ -53,7 +56,7 @@ std::vector<b2Vec2> Beam::get_points() {
 }
 
 float Beam::get_angle() {
-  return this->body->GetAngle()* (180/M_PI);
+  return this->angle;
 }
 
 Direction Beam::get_direction() {

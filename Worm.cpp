@@ -31,6 +31,7 @@ Worm::Worm(b2World* world, float x, float y, int id, Direction direction) :
   this->life = Constants::worm_initial_life;
   this->state = Still;
   this->direction = direction;
+  this->inclination = 0;
 }
 
 Worm::Worm(const Worm& other) : Entity(1),
@@ -41,15 +42,16 @@ Worm::Worm(const Worm& other) : Entity(1),
                                 direction(other.direction),
                                 state(other.state),
                                 id(other.id),
+                                inclination(inclination),
                                 weapon(other.weapon) {
   this->body->SetUserData(this);
   std::cout << "wormDir(&other): " << this << '\n';
 }
 
-Worm::Worm() : Entity(1), body(NULL), life(0), world(NULL) {
+/*Worm::Worm() : Entity(1), body(NULL), life(0), world(NULL) {
   std::cout << "wormDir(): " << this << '\n';
 
-}
+}*/
 
 Worm::~Worm() {
   // TODO Auto-generated destructor stub
@@ -61,6 +63,9 @@ Worm* Worm::operator=(const Worm &other) {
   std::cout << "wormDir=: " << this << '\n';
   this->body = other.body;
   this->life = other.life;
+  this->state = other.state;
+  this-> direction = other.direction;
+  this->inclination = other.inclination;
   this->body->SetUserData(this);
   return this;
 }
@@ -116,7 +121,16 @@ void Worm::move_right() {
       return;
   }
   this->change_state(Walk);
-  this->body->ApplyLinearImpulse(b2Vec2(Constants::worm_walk_velocity,0), this->body->GetWorldCenter(), true);
+  if(this->inclination == 0 ){
+    printf("camina horizontal\n");
+    this->body->ApplyLinearImpulse(b2Vec2(Constants::worm_walk_velocity,0), this->body->GetWorldCenter(), true);
+  }else if(this->inclination < 90){
+    this->body->ApplyLinearImpulse(b2Vec2(3*cos(this->inclination*M_PI/180),-3*cos(this->inclination*M_PI/180)),//
+     this->body->GetWorldCenter(), true);
+  }else{  
+    this->body->ApplyLinearImpulse(b2Vec2(-3*cos(this->inclination*M_PI/180),-3*cos(this->inclination*M_PI/180)),//
+     this->body->GetWorldCenter(), true);
+  }
 }
 
 void Worm::move_left() {
@@ -126,7 +140,17 @@ void Worm::move_left() {
       return;
   }
   this->change_state(Walk);
-  this->body->ApplyLinearImpulse(b2Vec2(-Constants::worm_walk_velocity,0), this->body->GetWorldCenter(), true);
+  if(this->inclination == 0){
+    printf("camina horizontal\n");
+    this->body->ApplyLinearImpulse(b2Vec2(-Constants::worm_walk_velocity,0),//
+     this->body->GetWorldCenter(), true);
+  }else if(this->inclination < 90){
+    this->body->ApplyLinearImpulse(b2Vec2(-cos(this->inclination*M_PI/180),//
+    cos(this->inclination*M_PI/180)), this->body->GetWorldCenter(), true); 
+  }else{  
+    this->body->ApplyLinearImpulse(b2Vec2(cos(this->inclination*M_PI/180),//
+    cos(this->inclination*M_PI/180)), this->body->GetWorldCenter(), true);
+  }
 }
 
 //TODO: fix me!!
@@ -165,6 +189,19 @@ void Worm::took_weapon(Weapon_Name weapon) {
   this->weapon = weapon;
   std::map<Weapon_Name,State>::iterator weapon_state = weapons_states.find(weapon);
   this->change_state(weapon_state->second);
+}
+
+void Worm::no_inclination() {
+  this->inclination = 0;
+  body->SetGravityScale(1);
+
+
+}
+
+void Worm::set_inclination(float angle) {
+  this->inclination = angle;
+  body->SetGravityScale(0);
+
 }
 
 void Worm::use_weapon(float x, float y, int power, float degrees) {

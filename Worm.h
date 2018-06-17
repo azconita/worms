@@ -22,6 +22,7 @@ class Worm : public Entity {
   int player_id = 0;
   State state;
   Direction direction;
+  float inclination;
   b2World* world;
   b2Body* body;
   Weapon_Name weapon = None;
@@ -56,6 +57,8 @@ public:
   void stop_moving();
   void set_static();
   void set_dynamic();
+  void set_inclination(float angle);
+  void no_inclination();
 
   //use weapons
   void took_weapon(Weapon_Name weapon);
