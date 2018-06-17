@@ -43,11 +43,11 @@ void Stage::do_explosions() {
 }
 
 void Stage::update() {
-  float32 timeStep = Constants::time_step; //segundos del step
-  int32 velocityIterations = Constants::velocity_iterations;   //how strongly to correct velocity
-  int32 positionIterations = Constants::position_iterations;   //how strongly to correct position
+  float32 time_step = Constants::time_step; //segundos del step
+  int32 velocity_iterations = Constants::velocity_iterations;   //how strongly to correct velocity
+  int32 position_iterations = Constants::position_iterations;   //how strongly to correct position
 
-  this->world->Step( timeStep, velocityIterations, positionIterations);
+  this->world->Step(time_step, velocity_iterations, position_iterations);
 
   //check for timers in explosion
   this->do_explosions();
@@ -129,8 +129,9 @@ void Stage::change_player() {
 */
 void Stage::update_worms() {
   for (auto &w : this->worms) {
-    if (w.second->get_velocity().Length() < 0.1)
-      w.second->stop_moving();
+
+    //if (w.second->get_velocity().Length() < 0.1)
+    w.second->update_moving();
     if (w.first != this->current_player->get_id())
       //TODO: no deberia hacerlo siempre!!
       //iterar por los cuerpos del world??

@@ -49,7 +49,7 @@ void Player::send() {
       out << YAML::Value << s;
       out << YAML::EndMap;
       try{
-        printf("se envia %s\n", out.c_str());
+        //printf("se envia %s\n", out.c_str());
         this->client.send_dto(out.c_str());
       }catch(Error e){
         oLog() << "Player quit (peer socket closed).";
@@ -62,7 +62,7 @@ void Player::send() {
 void Player::receive(){
   extern logger oLog;
   while (this->on) {
-    try{
+    try {
       std::string action_str = this->client.receive_dto();
       //printf("%s\n",action_str.c_str() );
       oLog() << "recibiendo";
@@ -73,7 +73,7 @@ void Player::receive(){
       if(action_received.type == Make_move){
         printf("saltaar\n" );
       }
-    }catch(Error e){
+    } catch(Error e) {
       ActionDTO a;
       a.type = Quit;
       this->recv_queue->push(a);

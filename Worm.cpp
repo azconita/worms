@@ -9,24 +9,28 @@
 #include "Constants.h"
 #include <string>
 #include <cmath>
+#include "Logger.h"
+
+extern logger oLog;
 
 Worm::Worm(b2World* world, float x, float y, int id, Direction direction) :
           Entity(1), world(world), id(id) {
-  b2BodyDef bodyDef;
-  bodyDef.type = b2_dynamicBody;
-  bodyDef.position.Set(x, y);
-  bodyDef.bullet = false;
-  bodyDef.userData = (void*) this;
-  this->body = world->CreateBody(&bodyDef);
+  b2BodyDef body_def;
+  body_def.type = b2_staticBody;
+  body_def.position.Set(x, y);
+  body_def.bullet = false;
+  body_def.userData = (void*) this;
+  this->body = world->CreateBody(&body_def);
   std::cout << "wormDir: " << this << '\n';
   //add box fixture
   b2PolygonShape shape;
   shape.SetAsBox(Constants::worm_size, Constants::worm_size);
-  b2FixtureDef myFixtureDef;
-  myFixtureDef.shape = &shape;
-  myFixtureDef.density = Constants::worm_density;
-  myFixtureDef.friction = Constants::worm_friction;
-  this->body->CreateFixture(&myFixtureDef);
+  b2FixtureDef fixture;
+  fixture.shape = &shape;
+  fixture.density = Constants::worm_density;
+  fixture.friction = Constants::worm_friction;
+  fixture.restitution = 0;
+  this->body->CreateFixture(&fixture);
   this->body->SetUserData(this);
   this->life = Constants::worm_initial_life;
   this->state = Still;
@@ -197,11 +201,26 @@ b2Vec2 Worm::get_center(){
 }
 
 b2Vec2 Worm::get_velocity(){
-  return this->body->GetLinearVelocity();
+  b2Vec2 vel = this->body->GetLinearVelocity();
+  //printf("worm %d, vel: %f,%f\n", this->id, vel.x, vel.y);
+  //oLog() << "worm " << this->id << ", vel: " << vel.x << "," << vel.y << "\n";
+  this->body->SetLinearVelocity(b2Vec2(vel.x, 0));
+  return vel;
 }
 
 void Worm::stop_moving() {
   this->body->SetLinearVelocity(b2Vec2(0,0));
+}
+
+void Worm::update_moving() {
+  b2Vec2 vel = this->body->GetLinearVelocity();
+  oLog() << "worm " << this->id << ", vel: " << vel.x << "," << vel.y << "\n";
+  if (vel.y < 0.1f)
+    vel.y = 0.0f;
+  if (vel.x < 0.1f)
+    vel.x = 0.0f;
+  oLog() << "worm new vel: " << this->id << ", vel: " << vel.x << "," << vel.y << "\n";  this->body->SetLinearVelocity(vel);
+  this->body->SetLinearVelocity(vel);
 }
 
 void Worm::set_static() {
