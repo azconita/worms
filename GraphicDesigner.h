@@ -76,6 +76,7 @@ public:
 	void show_powerbar(int power);
 	void make_appear_weapons_menu();
 	bool is_inside_weapon_menu(int x, int y);
+	void resize(int h, int w);
 	Weapon_Name choose_weapon(int x, int y);
 	void show_timer(int second);
 	virtual ~GraphicDesigner();

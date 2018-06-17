@@ -28,7 +28,7 @@ EventController::EventController(BlockingQueue<ActionDTO> & actions_queue, SDL_E
 
 
 bool EventController::continue_running(WormAnimation& turn_worm){
-    printf("event controller %i\n", this->i);
+    //printf("event controller %i\n", this->i);
     this->i++;
     if(SDL_PollEvent(&this->event) != 1){
         return keep_clicking(turn_worm); // no hay nuevos eventos
@@ -37,6 +37,9 @@ bool EventController::continue_running(WormAnimation& turn_worm){
         case SDL_QUIT:
             quit();
             return false;
+        case SDL_VIDEORESIZE:
+            resize(event.resize);
+            break;   
         case SDL_MOUSEBUTTONUP:
             printf("se hizo click\n");
             click(turn_worm);
@@ -267,6 +270,10 @@ float EventController::meters_conversor(int pixel){
 
 void EventController::send_action(ActionDTO action){
     (this->actions_queue).push(action);
+}
+
+void EventController::resize(SDL_ResizeEvent resize){
+    this->graphic_designer.resize(resize.h, resize.w);
 }
 
 

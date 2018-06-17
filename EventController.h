@@ -53,6 +53,7 @@ private:
 
 	void click(WormAnimation& turn_worm);
 	bool keep_clicking(WormAnimation& turn_worm);
+	void resize(SDL_ResizeEvent resize);
 
 	void movement(SDL_Event & event, WormAnimation& turn_worm);
 	void up(WormAnimation& turn_worm);

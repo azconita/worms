@@ -87,8 +87,13 @@ GraphicDesigner::GraphicDesigner(SDL_Surface * screen, int screen_height, int sc
 
 }
 
+void GraphicDesigner::resize(int h, int w){
+    this->screen_height = h;
+    this->screen_width = w;
+}
+
 void GraphicDesigner::scroll(int x, int y){
-    //printf("moviendooo en x=%i y = %i\n",x, y);
+    printf("moviendooo en x=%i y = %i\n",x, y);;
     if(x < 15){
         this->camera->move(-10,0);
         return;
@@ -97,11 +102,11 @@ void GraphicDesigner::scroll(int x, int y){
         this->camera->move(0,-10); // esto no estaria funcionando
         return;
     }
-    if(x > this->screen_width -15){
+    if(x >this->screen_width -15){
        this->camera->move(10,0);
         return;
     }
-    if(y > this->screen_height -15){
+    if(y >this->screen_height -15){
         this->camera->move(0,10);
        return;
     }
@@ -143,6 +148,8 @@ void GraphicDesigner::show_beams(StageDTO s, SDL_Surface *screen){
         } 
     }
 }
+
+
 
 Picture GraphicDesigner::inclinate_beam(std::vector<Picture> beams, float degrees){
 
