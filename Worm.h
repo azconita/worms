@@ -26,6 +26,7 @@ class Worm : public Entity {
   b2World* world;
   b2Body* body;
   Weapon_Name weapon = None;
+  std::vector<b2Vec2> beam_pos;
   b2Vec2 start_falling = b2Vec2(0,0);
   int life;
 public:
@@ -44,6 +45,7 @@ public:
   bool is_alive() { return ((this->life > 0) && (this->body->GetPosition().y < 100)); }
   int get_player_id();
   void set_player_id(int i);
+  void handle_end_contact();
 
   //movements
   State get_state();
@@ -57,7 +59,7 @@ public:
   void stop_moving();
   void set_static();
   void set_dynamic();
-  void set_inclination(float angle);
+  void set_inclination(float angle, std::vector<b2Vec2> & beam_pos);
   void no_inclination();
 
   //use weapons

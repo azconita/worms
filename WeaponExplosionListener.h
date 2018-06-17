@@ -11,6 +11,7 @@
 #define WEAPONEXPLOSIONLISTENER_H_
 
 #include <Box2D/Box2D.h>
+#include <vector>
 #include "Entity.h"
 #include "Constants.h"
 #include "Weapon.h"

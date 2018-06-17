@@ -75,15 +75,11 @@ void WeaponExplosionListener::beam_worm_begin_contact(Beam * beam, Worm * worm){
     return;
   }
   printf("se inicio el contacto con viga de angulo %f \n", angle);
-  worm->set_inclination(angle);
+  std::vector<b2Vec2> beam_pos = beam->get_points();
+  worm->set_inclination(angle, beam_pos);
 }
 
 
 void WeaponExplosionListener::beam_worm_end_contact(Beam * beam, Worm * worm){
-  float angle = beam->get_angle();
-  if(angle < 5 || (angle > 45 && angle < 135) || angle >175){
-    return;
-  }
-  printf("se termino el contacto con viga de angulo %f \n", beam->get_angle());
-  worm->no_inclination();
+  //el gusano se encargara solo de saber si se termino el contacto
 } 

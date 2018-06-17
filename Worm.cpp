@@ -131,11 +131,15 @@ void Worm::move_right() {
     printf("camina horizontal\n");
     this->body->ApplyLinearImpulse(b2Vec2(Constants::worm_walk_velocity,0), this->body->GetWorldCenter(), true);
   }else if(this->inclination < 90){
+    printf("derecha con angulo menor a noventa\n");
     this->body->ApplyLinearImpulse(b2Vec2(cos(this->inclination*M_PI/180),-sin(this->inclination*M_PI/180)),//
      this->body->GetWorldCenter(), true);
+    this->handle_end_contact();
   }else{  
+     printf("derecha con angulo mayor a noventa\n");
     this->body->ApplyLinearImpulse(b2Vec2(-cos(this->inclination*M_PI/180),sin(this->inclination*M_PI/180)),//
      this->body->GetWorldCenter(), true);
+      this->handle_end_contact();
   }
 }
 
@@ -151,11 +155,15 @@ void Worm::move_left() {
     this->body->ApplyLinearImpulse(b2Vec2(-Constants::worm_walk_velocity,0),//
      this->body->GetWorldCenter(), true);
   }else if(this->inclination < 90){
+     printf("izquierda con angulo menor a noventa\n");
     this->body->ApplyLinearImpulse(b2Vec2(-cos(this->inclination*M_PI/180),sin(this->inclination*M_PI/180)), //
       this->body->GetWorldCenter(), true); 
+      this->handle_end_contact();
   }else{  
+     printf("izquierda con angulo mayor a noventa\n");
     this->body->ApplyLinearImpulse(b2Vec2(cos(this->inclination*M_PI/180),-sin(this->inclination*M_PI/180)), //
      this->body->GetWorldCenter(), true);
+      this->handle_end_contact();
   }
 }
 
@@ -197,18 +205,28 @@ void Worm::took_weapon(Weapon_Name weapon) {
   this->change_state(weapon_state->second);
 }
 
+void Worm::set_inclination(float angle, std::vector<b2Vec2> & beam_pos) {
+  printf("nueva inclinacion %f\n",angle );
+  this->inclination = angle;
+  this->beam_pos = beam_pos;
+}
+
+
+void  Worm::handle_end_contact(){
+  b2Vec2 center = this->get_center();
+  float left_distane= round(sqrt(pow(center.x - this->beam_pos[0].x,2) + pow(center.y - this->beam_pos[0].y,2)));
+  float right_distance = round(sqrt(pow(center.x - this->beam_pos[1].x,2) + pow(center.y - this->beam_pos[1].y,2)));
+  float min_dist = left_distane < right_distance ? left_distane : right_distance;
+  if(min_dist > 1){
+    this->no_inclination();
+  }
+
+}
+
 void Worm::no_inclination() {
   this->inclination = 0;
-  body->SetGravityScale(1);
-
-
 }
 
-void Worm::set_inclination(float angle) {
-  this->inclination = angle;
-  body->SetGravityScale(0);
-
-}
 
 void Worm::use_weapon(float x, float y, int power, float degrees) {
 
