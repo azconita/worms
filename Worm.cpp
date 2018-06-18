@@ -91,25 +91,17 @@ void Worm::update_state() {
   }
   this->handle_end_contact();
   b2Vec2 vel = this->body->GetLinearVelocity();
-  std::cout << "[Worm] inclination:"<< this->inclination <<" , velocity:" << vel.y << endl;
-  //oLog() << "[Worm] inclination:"<< this->inclination <<" , velocity:" <<vel.y << endl;
+  //oLog()
+  std::cout << "[Worm] inclination:"<< this->inclination <<" , velocity:" <<vel.y << endl;
   if(this->inclination != 0 && this->inclination != 180){
     if(vel.y == 0){
-      if(this->inclination <= 45){
+      if(this->inclination < 90){
         this->state = (this->direction == Right)? Still_down : Still_up;
-      }else if(this->inclination >= 135){
+      }else if(this->inclination > 90){
         this->state = (this->direction == Right)? Still_up : Still_down;
       }
       return;
     }
-    if(vel.y > 0  && this->state != Jump_back_state && this->state != Jump_state){
-      this->state = Walk_down;
-      printf("WALK DOWN\n");
-    } else if(vel.y > 0  && this->state != Jump_back_state && this->state != Jump_state){
-      this->state = Walk_up;
-      printf("WALK UP\n");
-    }
-    return;
   }
   if (vel.y > 5 && this->state != Fall && this->inclination == 0) {
       this->state = Fall;
@@ -127,9 +119,9 @@ void Worm::update_state() {
       this->apply_damage((d < 25) ? d : 25);
     return;
   }
-  if (this->state != Still && (this->state == Walk || this->state == Jump_state
-                || this->state == Jump_back_state || this->state == Fall)
-                && std::abs(vel.y) < 0.1 && std::abs(vel.x) < 0.1) {
+  if (this->state != Still && (std::abs(vel.y) < 0.1 && std::abs(vel.x) < 0.1 )
+     && (this->state == Walk || this->state == Jump_state || this->state == Jump_back_state
+      || this->state == Fall) || this->state == Walk_down || this->state == Walk_up) {
     this->state = Still;
     printf("still");
   }
@@ -154,6 +146,12 @@ void Worm::calm(){
 
 }
 
+void Worm::move(float vel_x, float vel_y){
+  printf("velocidad: %f, %f\n",vel_x, vel_y);
+  this->body->ApplyLinearImpulse(b2Vec2(vel_x,vel_y), this->body->GetWorldCenter(), true);
+}
+
+
 void Worm::move_right() {
   if(this-> direction != Right){
       this->direction = Right;
@@ -161,18 +159,21 @@ void Worm::move_right() {
       return;
   }
   this->change_state(Walk);
-  this->body->ApplyLinearImpulse(b2Vec2(Constants::worm_walk_velocity,0), this->body->GetWorldCenter(), true);
-  /* if(this->inclination < 90){
-    printf("derecha con angulo menor a noventa\n");
-    this->body->ApplyLinearImpulse(b2Vec2(cos(this->inclination*M_PI/180),-sin(this->inclination*M_PI/180)),//
-     this->body->GetWorldCenter(), true);
+  float v = Constants::worm_walk_velocity;
+  if(this->inclination == 0 || this->inclination == 180){
+    this->move(v, 0);
+  }
+  if(this->inclination < 90){
+    std::cout <<"[Worm] derecha con angulo menor a noventa = baja" << endl;
+    this->state = Walk_down;
+    this->move(v*cos(this->inclination*M_PI/180),0);//-sin(this->inclination*M_PI/180));
     this->handle_end_contact();
   }else{  
-     printf("derecha con angulo mayor a noventa\n");
-    this->body->ApplyLinearImpulse(b2Vec2(-cos(this->inclination*M_PI/180),sin(this->inclination*M_PI/180)),//
-     this->body->GetWorldCenter(), true);
-      this->handle_end_contact();
-  }*/
+    std::cout <<"[Worm]derecha con angulo mayor a noventa = sube" << endl;
+    this->state = Walk_up;
+    this->move(-v*cos(this->inclination*M_PI/180),v*sin(this->inclination*M_PI/180));
+    this->handle_end_contact();
+  }
 }
 
 void Worm::move_left() {
@@ -182,18 +183,21 @@ void Worm::move_left() {
       return;
   }
   this->change_state(Walk);
-  this->body->ApplyLinearImpulse(b2Vec2(-Constants::worm_walk_velocity,0),this->body->GetWorldCenter(), true);
-  /*else if(this->inclination < 90){
-     printf("izquierda con angulo menor a noventa\n");
-    this->body->ApplyLinearImpulse(b2Vec2(-cos(this->inclination*M_PI/180),sin(this->inclination*M_PI/180)), //
-      this->body->GetWorldCenter(), true); 
-      this->handle_end_contact();
+  float v = Constants::worm_walk_velocity;
+  if(this->inclination == 0 || this->inclination == 180){
+    this->move(-v, 0);
+  }
+  else if(this->inclination < 90){
+    std::cout <<"[Worm]izquierda con angulo menor a noventa = sube" << endl;
+    this->state = Walk_up;
+    this->move(-v*cos(this->inclination*M_PI/180),-v*sin(this->inclination*M_PI/180));
+    this->handle_end_contact();
   }else{  
-     printf("izquierda con angulo mayor a noventa\n");
-    this->body->ApplyLinearImpulse(b2Vec2(cos(this->inclination*M_PI/180),-sin(this->inclination*M_PI/180)), //
-     this->body->GetWorldCenter(), true);
-      this->handle_end_contact();
-  }*/
+   std::cout << "[Worm]izquierda con angulo mayor a noventa = baja" << endl;
+    this->state = Walk_down;
+    this->move(cos(this->inclination*M_PI/180),0);
+    this->handle_end_contact();
+  }
 }
 
 //TODO: fix me!!
@@ -271,7 +275,7 @@ void Worm::set_player_id(int i) {
 bool Worm::disappear(){
   if(this->teleport_counter == 0){
     this->body->SetTransform(b2Vec2(this->teleport_x,this->teleport_y),0);
-    this->body->ApplyLinearImpulse(b2Vec2(9.8,0), this->body->GetWorldCenter(), true);
+    this->body->ApplyLinearImpulse(b2Vec2(0,9.8), this->body->GetWorldCenter(), true);
     this->teleport_counter = -1;
     this->state = Fall;
     return true;
