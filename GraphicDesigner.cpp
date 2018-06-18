@@ -215,8 +215,8 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen, SDL_Rect camer
 
 
  void GraphicDesigner::show_weapon( StageDTO s,SDL_Surface * screen, SDL_Rect camera_position){
-    for (auto w: s.weapons) {
 
+    for (auto w: s.weapons) {
         int center_x = get_pixels(w.pos_x) - camera_position.x;
         int center_y = get_pixels(w.pos_y) - camera_position.y;
 

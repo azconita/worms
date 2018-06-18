@@ -79,7 +79,7 @@
 #define WORM_AIR_ATTACK_ROWS 10
 
 //un gusano con granada verde
-#define WORM_GREEN_GRANADE "resources/worm_greengranade.bmp"
+#define WORM_GREEN_GRANADE "resources/worm_greengrenade.bmp"
 #define WORM_GREEN_GRANADE_R 128
 #define WORM_GREEN_GRANADE_G 128
 #define WORM_GREEN_GRANADE_B 192
@@ -87,7 +87,7 @@
 #define WORM_GREEN_GRANADE_ROWS 32
 
 //un gusano con granada roja 
-#define WORM_RED_GRANADE "resources/worm_redgranade.bmp"
+#define WORM_RED_GRANADE "resources/worm_redgrenade.bmp"
 #define WORM_RED_GRANADE_R 128
 #define WORM_RED_GRANADE_G 128
 #define WORM_RED_GRANADE_B 192
@@ -95,7 +95,7 @@
 #define WORM_RED_GRANADE_ROWS 32
 
 //un gusano con granada santa
-#define WORM_HOLY_GRANADE "resources/worm_holygranade.bmp"
+#define WORM_HOLY_GRANADE "resources/worm_holygrenade.bmp"
 #define WORM_HOLY_GRANADE_R 128
 #define WORM_HOLY_GRANADE_G 128
 #define WORM_HOLY_GRANADE_B 192
@@ -151,14 +151,14 @@
 #define AIR_ATTACK_COLUMNS 1
 #define AIR_ATTACK_ROWS 32
 
-#define GREEN_GRANADE "resources/green_granade.bmp"
+#define GREEN_GRANADE "resources/green_grenade.bmp"
 #define GREEN_GRANADE_R 128
 #define GREEN_GRANADE_G 128
 #define GREEN_GRANADE_B 192
 #define GREEN_GRANADE_COLUMNS 1
 #define GREEN_GRANADE_ROWS 32
 
-#define RED_GRANADE "resources/worm_red_granade.bmp"
+#define RED_GRANADE "resources/red_grenade.bmp"
 #define RED_GRANADE_R 128
 #define RED_GRANADE_G 128
 #define RED_GRANADE_B 192
@@ -166,7 +166,7 @@
 #define RED_GRANADE_ROWS 32
 
 
-#define HOLY_GRANADE "resources/worm_holy_granade.bmp"
+#define HOLY_GRANADE "resources/holy_grenade.bmp"
 #define HOLY_GRANADE_R 128
 #define HOLY_GRANADE_G 128
 #define HOLY_GRANADE_B 192

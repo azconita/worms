@@ -75,7 +75,7 @@ Picture::Picture(const char * bmp_path, Colour color, int columns, int rows){
         //SDL_Surface *tmp = IMG_Load(bmp_path);
         //tmp = rotozoomSurface(tmp,90.0, 10,0);     
         if (!tmp) {
-            throw Error("Couldn't create surface from image: ",bmp_path,SDL_GetError());
+            throw Error("Couldn't create surface from image: %s %s",bmp_path,SDL_GetError());
         }
 
         this->surface = SDL_DisplayFormat(tmp);

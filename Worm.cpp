@@ -91,8 +91,7 @@ void Worm::update_state() {
   }
   this->handle_end_contact();
   b2Vec2 vel = this->body->GetLinearVelocity();
-  //oLog()
-  std::cout << "[Worm] inclination:"<< this->inclination <<" , velocity:" <<vel.y << endl;
+  oLog() << "[Worm] inclination:"<< this->inclination <<" , velocity:" <<vel.y << endl;
   if(this->inclination != 0 && this->inclination != 180){
     if(vel.y == 0){
       if(this->inclination < 90){
@@ -125,8 +124,6 @@ void Worm::update_state() {
     this->state = Still;
     printf("still");
   }
-
-printf("no entro en ninguno\n");
 }
 
 Direction Worm::get_direction(){
@@ -162,6 +159,8 @@ void Worm::move_right() {
   float v = Constants::worm_walk_velocity;
   if(this->inclination == 0 || this->inclination == 180){
     this->move(v, 0);
+    printf("derechaaa\n");
+    return;
   }
   if(this->inclination < 90){
     std::cout <<"[Worm] derecha con angulo menor a noventa = baja" << endl;
@@ -186,6 +185,8 @@ void Worm::move_left() {
   float v = Constants::worm_walk_velocity;
   if(this->inclination == 0 || this->inclination == 180){
     this->move(-v, 0);
+    printf("izquierdaaa\n");
+    return;
   }
   else if(this->inclination < 90){
     std::cout <<"[Worm]izquierda con angulo menor a noventa = sube" << endl;
