@@ -82,7 +82,7 @@ void Stage::clean_dead_bodies() {
     if (!it->second->is_alive()) {
       if (it->second == this->current_player)
         this->change = true;
-      this->players_turn.at(it->second->get_player_id()).delete_id(it->first);
+      this->players_turn.at(it->second->get_player_id()).delete_id_worm_id(it->first);
       delete it->second;
       it = this->worms.erase(it);
     } else {
@@ -107,7 +107,7 @@ void Stage::update_player() {
 void Stage::change_player() {
   int new_player_id = ((this->last_player_id + 1) == this->players_turn.size()) ? 0 : this->last_player_id + 1;
   printf("[Stage] next player id: %d,", new_player_id);
-  this->current_player = this->worms[this->players_turn.at(new_player_id).get_next()];
+  this->current_player = this->worms[this->players_turn.at(new_player_id).get_next_worm_id()];
   printf("[Stag] worm id: %d\n", this->current_player->get_id());
   for (auto &w : this->worms) {
    if (w.first != this->current_player->get_id()){
@@ -278,6 +278,11 @@ void Stage::load_initial_stage(std::string file_name){
 }
 
 void Stage::set_worms_to_players(int total_players) {
+	TurnHandler turnHandler(total_players, this->worms);
+	this->turnHandler = &turnHandler;
+
+
+
   //get vector of worms ids
   std::vector<int> ids;
   std::transform(this->worms.begin(), this->worms.end(), std::back_inserter(ids),
@@ -296,7 +301,7 @@ void Stage::set_worms_to_players(int total_players) {
     //(i+1)*wq == ids.size()) ? ids.end() : ids[(i+1)*wq])
     std::vector<int> v;
     std::copy(ids.begin() + i*wq, ids.begin() + (i+1)*wq, std::back_inserter(v));
-    this->players_turn.emplace(i, TurnHelper(v, i));
+    this->players_turn.emplace(i, PlayerTurn(v, i));
     for (int i: v) {
       this->worms.at(i)->set_player_id(i);
     }

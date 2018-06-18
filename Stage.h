@@ -12,9 +12,10 @@
 #include "WeaponExplosionListener.h"
 #include "Dtos.h"
 #include "Logger.h"
-#include "TurnHelper.h"
 #include "Error.h"
+#include "PlayerTurn.h"
 #include "Weapon.h"
+#include "TurnHandler.h"
 
 #ifndef STAGE_H_
 #define STAGE_H_
@@ -34,13 +35,15 @@ private:
 
   float wind;
 
-  std::map<int, TurnHelper> players_turn;
+  std::map<int, PlayerTurn> players_turn;
   int last_player_id = 0;
   bool change = false;
   Worm* current_player = NULL;
   time_t player_time = time(NULL);
 
   bool finish = false;
+
+  TurnHandler * turnHandler;
 
 public:
   Stage(std::string config);
