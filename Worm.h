@@ -68,6 +68,7 @@ public:
   void set_dynamic();
   void set_inclination(float angle, std::vector<b2Vec2> & beam_pos);
   void no_inclination();
+  void calm();
 
   //use weapons
   void took_weapon(Weapon_Name weapon);

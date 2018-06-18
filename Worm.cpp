@@ -91,19 +91,23 @@ void Worm::update_state() {
   }
   this->handle_end_contact();
   b2Vec2 vel = this->body->GetLinearVelocity();
+  std::cout << "[Worm] inclination:"<< this->inclination <<" , velocity:" << vel.y << endl;
+  //oLog() << "[Worm] inclination:"<< this->inclination <<" , velocity:" <<vel.y << endl;
   if(this->inclination != 0 && this->inclination != 180){
     if(vel.y == 0){
-      if(this->state == Walk_down || this->state == Still_down){
-        this->state = Still_down;
-      }else if(this->state == Walk_up || this->state == Still_up){
-        this->state = Still_up;
+      if(this->inclination <= 45){
+        this->state = (this->direction == Right)? Still_down : Still_up;
+      }else if(this->inclination >= 135){
+        this->state = (this->direction == Right)? Still_up : Still_down;
       }
       return;
     }
-    if(vel.y > 0){
+    if(vel.y > 0  && this->state != Jump_back_state && this->state != Jump_state){
       this->state = Walk_down;
-    }else{
+      printf("WALK DOWN\n");
+    } else if(vel.y > 0  && this->state != Jump_back_state && this->state != Jump_state){
       this->state = Walk_up;
+      printf("WALK UP\n");
     }
     return;
   }
@@ -127,26 +131,33 @@ void Worm::update_state() {
                 || this->state == Jump_back_state || this->state == Fall)
                 && std::abs(vel.y) < 0.1 && std::abs(vel.x) < 0.1) {
     this->state = Still;
+    printf("still");
   }
 
+printf("no entro en ninguno\n");
 }
 
 Direction Worm::get_direction(){
   return this-> direction;
 }
 
+void Worm::calm(){
+  if(this->state == Still_up || this->state == Walk_up){
+            change_state(Still_down);
+            return;
+  }
+  if(this->state == Still_down || this->state == Walk_down){
+            change_state(Still_up);
+            return;
+  } 
+  change_state(Still);
+
+}
+
 void Worm::move_right() {
   if(this-> direction != Right){
       this->direction = Right;
-      if(this->state == Still_up || this->state == Walk_up){
-            change_state(Still_down);
-            return;
-      }
-      if(this->state == Still_down || this->state == Walk_down){
-            change_state(Still_up);
-            return;
-      } 
-      change_state(Still);
+      this->calm();
       return;
   }
   this->change_state(Walk);
@@ -167,15 +178,7 @@ void Worm::move_right() {
 void Worm::move_left() {
   if(this-> direction != Left){
       this->direction = Left;
-      if(this->state == Still_up || this->state == Walk_up){
-            change_state(Still_down);
-            return;
-      }
-      if(this->state == Still_down || this->state == Walk_down){
-            change_state(Still_up);
-            return;
-      } 
-      change_state(Still);
+      this->calm();
       return;
   }
   this->change_state(Walk);

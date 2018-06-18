@@ -1,10 +1,10 @@
 stage:
   beams:
     - pos_x: 40
-      pos_y: 15
+      pos_y: 14
       size: 6
-      inclination: 45
-      direction: 1
+      inclination: 22
+      direction: 0
     - pos_x: 45
       pos_y: 15
       size: 6

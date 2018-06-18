@@ -16,7 +16,7 @@ Client::Client(char * host_name, char * port, bool fullscreen)://
 StageDTO Client::receive_stage(){
     string stage_str = (this->socket).receive_dto();
     YAML::Node yaml_received = YAML::Load(stage_str);
-    printf("%s\n", stage_str.c_str());
+    //printf("%s\n", stage_str.c_str());
     StageDTO stage_received = yaml_received["stage"].as<StageDTO>();
     return stage_received;
 }
