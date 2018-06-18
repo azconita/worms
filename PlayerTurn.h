@@ -18,6 +18,7 @@ private:
 public:
   PlayerTurn(std::vector<int> worms_ids, int id);
   virtual ~PlayerTurn();
+  int get_worms_size();
 
   int get_next_worm_id();
   void delete_worm_id(int id);

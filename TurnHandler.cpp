@@ -34,14 +34,36 @@ TurnHandler::TurnHandler(int total_players, std::map<int, Worm*> &worms) {
 	      worms.at(i)->set_player_id(i);
 	    }
 	  }
+	  int less = this->get_player_with_less_worms();
+	  this->players_turn.at(less).get_next_worm_id();
 
-	  //compensar jugador con menos gusanos!!
-	  this->current_worm_turn = worms[0];
+}
 
+int TurnHandler::get_player_with_less_worms(){
+	int less = 0;
+	for(int i = 0;i < this->players_turn.size(); i++){
+		if(this->players_turn.at(i).get_worms_size() < this->players_turn.at(less).get_worms_size() ){
+			less = i;
+		}
+	}
+	return less;
 }
 
 void TurnHandler::delete_worm(int player_id, int worm_id){
 	this->players_turn.at(player_id).delete_worm_id(worm_id);
+}
+
+
+void TurnHandler::change_player(){
+  this->current_player_turn =  ((this->last_player_id + 1) == this->players_turn.size()) ? 0 : this->last_player_id + 1;
+  printf("[TurnHandler] next player id: %d,", this->current_player_turn);
+  this->current_worm_turn = this->players_turn.at(this->current_player_turn).get_next_worm_id();
+  printf("[TurnHandler] worm id: %d\n", this->current_worm_turn);
+
+}
+
+int TurnHandler::get_worm_turn_id(){
+	return this->current_worm_turn;
 }
 
 TurnHandler::~TurnHandler() {

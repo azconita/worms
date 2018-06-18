@@ -13,7 +13,12 @@
 PlayerTurn::PlayerTurn(std::vector<int> worms_ids, int id) :
             worms_ids(worms_ids),
             last(0), player_id(id) {
-  printf("[PlayerTurn]cantidad de gusanos en el turn helper: %d, id: %d\n", this->worms_ids.size(), this->player_id);
+  printf("[PlayerTurn]cantidad de gusanos en el turn helper: %lu, id: %d\n", this->worms_ids.size(), this->player_id);
+}
+
+int PlayerTurn::get_worms_size() {
+	
+	return this->worms_ids.size();
 }
 
 int PlayerTurn::get_next_worm_id() {
@@ -25,7 +30,7 @@ void PlayerTurn::delete_worm_id(int id) {
  if (this->worms_ids.at(this->last) == id)
    this->get_next_worm_id();
  this->worms_ids.erase(std::remove(this->worms_ids.begin(), this->worms_ids.end(), id), this->worms_ids.end());
- printf("[PlayerTurn]total worms: %i\n", this->worms_ids.size());
+ printf("[PlayerTurn]total worms: %lu\n", this->worms_ids.size());
 }
 
 

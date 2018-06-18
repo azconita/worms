@@ -15,11 +15,15 @@
 
 class TurnHandler {
 	int current_player_turn;
-	Worm * current_worm_turn;
+	int last_player_id;
+	int current_worm_turn;
 	std::map<int, PlayerTurn> players_turn;
 public:
 	TurnHandler(int total_players, std::map<int, Worm*> &worms);
+	int get_player_with_less_worms();
 	void delete_worm(int player_id, int worm_id);
+	void change_player();
+	int get_worm_turn_id();
 	virtual ~TurnHandler();
 };
 
