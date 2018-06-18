@@ -13,26 +13,6 @@ Stage::Stage(std::string file_name) {
   this->wind = Constants::wind;
 }
 
-Stage::~Stage() {
-  //delete vectors (shouldn't use this, iterate over world's bodys)
-  for (std::map<int, Worm*>::iterator it = this->worms.begin();
-              it != this->worms.end(); ++it) {
-    delete (it->second);
-  }
-  this->worms.clear();
-  for (std::vector<Beam*>::iterator it = this->beams.begin();
-            it != this->beams.end(); ++it) {
-    delete (*it);
-  }
-  this->beams.clear();
-  for (std::vector<Weapon*>::iterator it = this->explosions.begin();
-          it != this->explosions.end(); ++it) {
-    delete (*it);
-  }
-  this->explosions.clear();
-  delete this->world;
-}
-
 void Stage::do_explosions() {
   //check for timers in explosion
   for (auto& w : this->explosions) {
@@ -214,7 +194,8 @@ void Stage::make_action(ActionDTO & action) {
       } else {
         //Weapon* w = new Weapon(this->world, action.weapon, this->current_player->get_points()[0].x, this->current_player->get_points()[0].y, this->wind);
         int d = (action.direction == Right) ? 1 : -1;
-        Weapon* w = new Weapon(this->world, action.weapon, action.pos_x + d*3, action.pos_y , this->wind);
+        printf("[Stage] posicion del arma%i, %i\n",action.pos_x, action.pos_y );
+        Weapon* w = new Weapon(this->world, action.weapon, action.pos_x , action.pos_y , this->wind);
         w->shoot(action.power*100, action.weapon_degrees, action.direction, action.time_to_explode);
         this->explosions.push_back(w);
       }
@@ -323,4 +304,25 @@ void Stage::set_worms_to_players(int total_players) {
 
   //compensar jugador con menos gusanos!!
   this->current_player = this->worms[0];
+}
+
+
+Stage::~Stage() {
+  //delete vectors (shouldn't use this, iterate over world's bodys)
+  for (std::map<int, Worm*>::iterator it = this->worms.begin();
+              it != this->worms.end(); ++it) {
+    delete (it->second);
+  }
+  this->worms.clear();
+  for (std::vector<Beam*>::iterator it = this->beams.begin();
+            it != this->beams.end(); ++it) {
+    delete (*it);
+  }
+  this->beams.clear();
+  for (std::vector<Weapon*>::iterator it = this->explosions.begin();
+          it != this->explosions.end(); ++it) {
+    delete (*it);
+  }
+  this->explosions.clear();
+  delete this->world;
 }

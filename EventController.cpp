@@ -151,6 +151,9 @@ void EventController::click(WormAnimation& turn_worm){
         this->action.weapon = weapon;
         send_action(this->action);
     } else if(turn_worm.has_weapon_to_click()){
+        SDL_Rect camera_pos = this->graphic_designer.get_camera_position();
+        x = meters_conversor(x + camera_pos.x);
+        y = meters_conversor(y + camera_pos.y);
         shot(turn_worm,x,y);
     }
 
@@ -167,10 +170,9 @@ void EventController::mouse_motion(){
 
 void EventController::shot(WormAnimation& turn_worm,int x, int y){
     if(turn_worm.has_weapon()){
-        SDL_Rect camera_pos = this->graphic_designer.get_camera_position();
         this->action.type = Shot_weapon;
-        this->action.pos_x = meters_conversor(x + camera_pos.x);
-        this->action.pos_y = meters_conversor(y + camera_pos.y);
+        this->action.pos_x = meters_conversor(x);
+        this->action.pos_y = meters_conversor(y);
         this->action.weapon_degrees = turn_worm.get_degrees();
         this->action.direction = turn_worm.get_direction();
         this->action.power = turn_worm.get_weapon_power();

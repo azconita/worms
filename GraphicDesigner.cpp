@@ -186,8 +186,8 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen, SDL_Rect camer
 
         worms_iter->second.move(center_x, center_y,  worm_info.worm_state,worm_info.direction);
 
-        if(w.first == s.worm_turn && worms_iter->second.is_in_movement()){
-            this->camera->follow(get_pixels(worm_info.pos_x),get_pixels(worm_info.pos_y)); 
+        if(w.first == s.worm_turn && worms_iter->second.is_in_movement() && s.weapons.size() == 0){
+            this->camera->follow(center_x,center_y); 
         }
         worms_iter->second.show(this->screen, camera_position);
 
@@ -225,8 +225,8 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen, SDL_Rect camer
         weapon_iter->second.continue_internal_movement();
         weapon_iter->second.draw(this->screen,center_x, center_y);
 
-        /*this->camera->follow(center_x - ((float) weapon_iter->second.get_width()/2),//
-                             center_y - ((float) weapon_iter->second.get_height()/2));*/
+        this->camera->follow(get_pixels(w.pos_x) - ((float) weapon_iter->second.get_width()/2),//
+                             get_pixels(w.pos_y) - ((float) weapon_iter->second.get_height()/2));
 
         if(is_timer_weapon(w.weapon)){
             show_timer(w.timer);
@@ -251,7 +251,7 @@ void GraphicDesigner::show_life(int life, int worm_x, int worm_y, SDL_Rect camer
     }
 
     Sint16 x = worm_x - camera_position.x + 30;
-    Sint16 y = worm_y - camera_position.y - 5;
+    Sint16 y = worm_y - camera_position.y - 10;
 
     SDL_Rect rectangle; 
     rectangle.x = x-2;
@@ -279,7 +279,7 @@ void GraphicDesigner::show_life(int life, int worm_x, int worm_y, SDL_Rect camer
 void GraphicDesigner::show_arrow( int worm_x, int worm_y, SDL_Rect camera_position){
 
     Sint16 x = worm_x - camera_position.x + 5;
-    Sint16 y = worm_y - camera_position.y - 10;
+    Sint16 y = worm_y - camera_position.y - 18;
 
     SDL_Rect dimention;
     dimention.x = 0;
