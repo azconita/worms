@@ -24,7 +24,7 @@ void Stage::do_explosions() {
             ++it;
         }
       w->explode();
-      this->change = true;
+      this->turnHandler->ready_to_change_player();
     }
   }
 }
@@ -41,15 +41,17 @@ void Stage::update() {
   this->do_explosions();
   //delete weapons exploded and dead worms
   this->clean_dead_bodies();
-  //check if player change
+
   //update worms: set vel 0 for "stopped" worms and static
   this->update_worms();
 
-  this->update_player();
-
   //check falling worms
-  this->current_player->update_state();
-  //printf("curr state: %i\n", this->current_player->get_state());
+  this->worms.at(this->turnHandler->get_worm_turn_id())->update_state();
+
+  //check if player change
+  this->turnHandler->update_player(this->worms);
+
+  
 }
 
 bool Stage::finished() {
@@ -80,10 +82,7 @@ void Stage::clean_dead_bodies() {
   std::map<int, Worm*>::iterator it = this->worms.begin();
   while (it != this->worms.end()) {
     if (!it->second->is_alive()) {
-      if (it->second == this->current_player)
-        this->change = true;
-      this->turnHandler->delete_worm(it->second->get_player_id(), it->first);
-      this->players_turn.at(it->second->get_player_id()).delete_worm_id(it->first); //para borrar
+      this->turnHandler->delete_worm(it->second->get_player_id(), it->first,this->worms);
       delete it->second;
       it = this->worms.erase(it);
     } else {
@@ -93,47 +92,18 @@ void Stage::clean_dead_bodies() {
 
 }
 
-void Stage::update_player() {
-  //printf("player time: %d\n", time(NULL) - this->player_time);
-  if (this->change || (time(NULL) - this->player_time > Constants::worm_turn_time)) {
-    printf("[Stage] change player\n");
-    this->current_player->took_weapon(None);
-    this->change_player();
-    this->change = false;
-    this->player_time = time(NULL);
-  }
-}
 
-//cuantos players puede haber????
-void Stage::change_player() {
-  int new_player_id = ((this->last_player_id + 1) == this->players_turn.size()) ? 0 : this->last_player_id + 1;
-  printf("[Stage] next player id: %d,", new_player_id);
-  this->current_player = this->worms[this->players_turn.at(new_player_id).get_next_worm_id()];
-  printf("[Stag] worm id: %d\n", this->current_player->get_id());
-  for (auto &w : this->worms) {
-   if (w.first != this->current_player->get_id()){
-       //TODO: no deberia hacerlo siempre!!
-       //iterar por los cuerpos del world??
-       w.second->set_static();
 
-     }else{
-       w.second->set_dynamic();
-     }
-   }
-
-  this->last_player_id = new_player_id;
-}
 /**
    Update the velocity of the worms
    and made teleport effective
 */
 void Stage::update_worms() {
   for (auto &w : this->worms) {
-    w.second->disappear();
+    if(w.second->disappear()){
+      this->turnHandler->ready_to_change_player();
+    }
     if(w.second->get_velocity().Length() > 0.3){
-      this->change = false; 
-      // si los gusanos se estan moviendo quizas es por una explosion
-      //no hay que cambiar de turno porque se vuelven estaticos
     } else{
        w.second->stop_moving();
     }
@@ -147,9 +117,9 @@ void Stage::update_worms() {
 
 void Stage::make_action(ActionDTO & action) {
   int worm = action.worm_id;
-  //VALIDAR TURNO!!
-  if (worm != this->current_player->get_id()) {
-    //throw Error("not current player: current: %d, sent: %d\n", this->current_player->get_id(), worm);
+  printf("[Stage] accion de %i, turno de %i\n",worm, this->turnHandler->get_worm_turn_id() );
+  if (worm != this->turnHandler->get_worm_turn_id()) {
+    printf("no es tu turno\n");
     return;
   }
   switch (action.type) {
@@ -280,35 +250,6 @@ void Stage::load_initial_stage(std::string file_name){
 
 void Stage::set_worms_to_players(int total_players) {
 	this->turnHandler = new TurnHandler(total_players, this->worms);
-
-
-
-  //get vector of worms ids
-  std::vector<int> ids;
-  std::transform(this->worms.begin(), this->worms.end(), std::back_inserter(ids),
-            [](const std::pair<int,Worm*>& val){return val.first;});
-  //and shuffle it
-  auto rng = std::default_random_engine {};
-  std::shuffle(std::begin(ids), std::end(ids), rng);
-  //create turn helpers
-  int wq = this->worms.size() / total_players;
-  if(wq < 0){
-    throw Error("Error in worms quantity:\nplayers = %d"//
-      ", total worms = %i", total_players, this->worms.size());
-  }
-  printf("[Stage] total players: %d, worms for each: %d\n", total_players, wq);
-  for (int i = 0; i < total_players; i++) {
-    //(i+1)*wq == ids.size()) ? ids.end() : ids[(i+1)*wq])
-    std::vector<int> v;
-    std::copy(ids.begin() + i*wq, ids.begin() + (i+1)*wq, std::back_inserter(v));
-    this->players_turn.emplace(i, PlayerTurn(v, i));
-    for (int i: v) {
-      this->worms.at(i)->set_player_id(i);
-    }
-  }
-
-  //compensar jugador con menos gusanos!!
-  this->current_player = this->worms[0];
 }
 
 
