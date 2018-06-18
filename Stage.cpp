@@ -37,10 +37,18 @@ void Stage::do_explosions() {
   //check for timers in explosion
   for (auto& w : this->explosions) {
     if (w->has_timer() && w->is_time_to_explode()) {
+      //todos los gusanos dinamicos antes de la explosion
+       std::map<int, Worm*>::iterator it = this->worms.begin();
+        while (it != this->worms.end()) {
+            it->second->set_dynamic();
+            ++it;
+        }
       w->explode();
+      this->change = true;
     }
   }
 }
+
 
 void Stage::update() {
   float32 timeStep = Constants::time_step; //segundos del step
@@ -54,10 +62,10 @@ void Stage::update() {
   //delete weapons exploded and dead worms
   this->clean_dead_bodies();
   //check if player change
-  this->update_player();
-
   //update worms: set vel 0 for "stopped" worms and static
   this->update_worms();
+
+  this->update_player();
 
   //check falling worms
   this->current_player->update_state();
@@ -118,28 +126,42 @@ void Stage::update_player() {
 //cuantos players puede haber????
 void Stage::change_player() {
   int new_player_id = ((this->last_player_id + 1) == this->players_turn.size()) ? 0 : this->last_player_id + 1;
-  printf("next player id: %d,", new_player_id);
+  printf("[Stage] next player id: %d,", new_player_id);
   this->current_player = this->worms[this->players_turn.at(new_player_id).get_next()];
-  printf(" worm id: %d\n", this->current_player->get_id());
+  printf("[Stag] worm id: %d\n", this->current_player->get_id());
+  for (auto &w : this->worms) {
+   if (w.first != this->current_player->get_id()){
+       //TODO: no deberia hacerlo siempre!!
+       //iterar por los cuerpos del world??
+       w.second->set_static();
+
+     }else{
+       w.second->set_dynamic();
+     }
+   }
+
   this->last_player_id = new_player_id;
 }
 /**
    Update the velocity of the worms
-   and set them as static if it's not their turn
-   (This is to avoid unstable behavior of box2d)
+   and made teleport effective
 */
 void Stage::update_worms() {
   for (auto &w : this->worms) {
-     if (w.second->get_velocity().Length() < 0.1)
+    w.second->disappear();
+    if(w.second->get_velocity().Length() > 0.3){
+      this->change = false; 
+      // si los gusanos se estan moviendo quizas es por una explosion
+      //no hay que cambiar de turno porque se vuelven estaticos
+    } else{
        w.second->stop_moving();
-     if (w.first != this->current_player->get_id())
-       //TODO: no deberia hacerlo siempre!!
-       //iterar por los cuerpos del world??
-       w.second->set_static();
-     else
-       w.second->set_dynamic();
+    }
+    
    }
+
  }
+
+
 
 
 void Stage::make_action(ActionDTO & action) {
@@ -182,7 +204,7 @@ void Stage::make_action(ActionDTO & action) {
 
       //switch(action.weapon) {
       if (action.weapon == Teleport) {
-        this->worms[worm]->teleport(action.pos_x, action.pos_y, action.direction);
+        this->worms[worm]->teleport(action.pos_x, action.pos_y);
       } else if (action.weapon == W_Air_Attack) {
         //TODO: fix : que no caigan todos juntos! (hace que exploten antes)
         for (int i = 0; i < 6; ++ i) {
@@ -196,11 +218,6 @@ void Stage::make_action(ActionDTO & action) {
         w->shoot(action.power*100, action.weapon_degrees, action.direction, action.time_to_explode);
         this->explosions.push_back(w);
       }
-      //TODO: esperar 3 segundos antes de cambiar el player
-      this->change = true;
-      //this->change_player();
-
-      this->worms[worm]->change_state(Still);
       break;
     }
   }
@@ -249,14 +266,11 @@ StageDTO Stage::get_stageDTO() {
     if (w->get_name() == Explosion){
       w->explosion();
     }
-    //std::vector<b2Vec2> vertices = w->get_points();
-    //set_position(weapon, vertices);
-
     b2Vec2 center = w->get_center();
     set_position(weapon, center);
     weapon.weapon = w->get_name();
     weapon.timer = w->get_timer();
-    printf("timer sent: %i", weapon.timer);
+    printf("[Stage] timer sent: %i\n", weapon.timer);
     s.weapons.push_back(weapon);
   }
 

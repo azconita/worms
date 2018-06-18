@@ -86,10 +86,12 @@ void Worm::change_state(State state){
 
 void Worm::update_state() {
   //caer es el estado "predominante"
+  if(this->state == Worm_disappear){
+    return;
+  }
   this->handle_end_contact();
-
   b2Vec2 vel = this->body->GetLinearVelocity();
-  if(this->inclination != 0){
+  if(this->inclination != 0 && this->inclination != 180){
     if(vel.y == 0){
       if(this->state == Walk_down || this->state == Still_down){
         this->state = Still_down;
@@ -263,9 +265,27 @@ void Worm::set_player_id(int i) {
   this->player_id = i;
 }
 
-void Worm::teleport(float x, float y, Direction dir) {
-  this->body->SetTransform(b2Vec2(x,y),body->GetAngle());
+bool Worm::disappear(){
+  if(this->teleport_counter == 0){
+    this->body->SetTransform(b2Vec2(this->teleport_x,this->teleport_y),0);
+    this->body->ApplyLinearImpulse(b2Vec2(9.8,0), this->body->GetWorldCenter(), true);
+    this->teleport_counter = -1;
+    this->state = Fall;
+    return true;
+  }
+  this->teleport_counter--;
+  return false;
+
 }
+
+
+void Worm::teleport(float x, float y) {
+  this->teleport_counter = 49;
+  this->teleport_x = x;
+  this->teleport_y = y - Constants::worm_height/2;
+  this->state = Worm_disappear;
+}
+
 
 void Worm::apply_damage(int d) {
   oLog() <<"[Worm] worm damaged: " << d << endl;

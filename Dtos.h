@@ -37,7 +37,8 @@ enum State {
    Worm_green_granade,
    Worm_red_granade,
    Worm_holy_granade,
-   Worm_teletrans,
+   Worm_teleport,
+   Worm_disappear,
    Worm_air_attack,
    Worm_dynamite
 };
@@ -78,7 +79,7 @@ static std::map<Weapon_Name, State> weapons_states {
     {Green_Grenade,Worm_green_granade},
     {Holy_Grenade,Worm_holy_granade},
     {Red_Grenade,Worm_red_granade},
-    {Teleport,Worm_teletrans},
+    {Teleport,Worm_teleport},
     {Banana,Worm_banana},
     {Baseball_Bat,Worm_bat}
 };

@@ -13,13 +13,13 @@ worm_turn_time: 40
 worm_initial_life: 100
 worm_walk_velocity: 4
 worm_jump_velocity: -4
-worm_density: 0
+worm_density: 1
 worm_height: 1.3  
 worm_width: 0.5
 worm_friction: 1
 
 weapon_size: 0.1
-weapon_density: 1
+weapon_density: 0
 explosion_power: 50
 bazooka_damage: 50
 bazooka_radius: 2

@@ -29,6 +29,9 @@ class Worm : public Entity {
   float inclination;
   b2World* world;
   b2Body* body;
+  int teleport_counter = -1;
+  int teleport_x;
+  int teleport_y;
   Weapon_Name weapon = None;
   std::vector<b2Vec2> beam_pos;
   b2Vec2 start_falling = b2Vec2(0,0);
@@ -70,7 +73,9 @@ public:
   void took_weapon(Weapon_Name weapon);
   void use_weapon(float x, float y, int power, float degrees);
   void apply_damage(int d);
-  void teleport(float x, float y, Direction dir);
+  void teleport(float x, float y);
+  bool disappear();
+
 
   void printPos() {
     std::cout << "worm: " << this->body->GetPosition().x << ":" << this->body->GetPosition().y << "\n";

@@ -126,13 +126,13 @@
 #define WORM_DYNAMITE_COLUMNS 1
 #define WORM_DYNAMITE_ROWS 10
 
-//un gusano con teletransportacion
-#define WORM_TELETRANS "resources/worm_teletrans.bmp"
-#define WORM_TELETRANS_R 192
-#define WORM_TELETRANS_G 192
-#define WORM_TELETRANS_B 128
-#define WORM_TELETRANS_COLUMNS 1
-#define WORM_TELETRANS_ROWS 48
+//un gusano con TELEPORTportacion
+#define WORM_TELEPORT "resources/worm_teleport.bmp"
+#define WORM_TELEPORT_R 192
+#define WORM_TELEPORT_G 192
+#define WORM_TELEPORT_B 128
+#define WORM_TELEPORT_COLUMNS 1
+#define WORM_TELEPORT_ROWS 48
 
 
 //----------------------ARMAS----------------------

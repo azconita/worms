@@ -337,12 +337,12 @@ void GraphicDesigner::show_weapons_menu(){
 
 
 bool GraphicDesigner::is_inside_weapon_menu(int x, int y){
-    printf("[GraphicDesigner] se hizo click en el menu\n");
     int x_relative = x -(this->screen_width - this->weapons_menu->w);
     int y_relative = y - (this->screen_height/2- this->weapons_menu->h/2);
     if(x_relative < 0 || y_relative > this->weapons_menu->h){
         return false;
     }
+    printf("[GraphicDesigner] se hizo click en el menu\n");
     return true;
 }
 
@@ -420,9 +420,12 @@ void GraphicDesigner::show_timer(int second){
     position.w = text->w;
     SDL_BlitSurface(text, &dimention, this->screen, &position);
     //SDL_FreeSurface(text);
-
-
 }
+
+SDL_Rect GraphicDesigner::get_camera_position(){
+    return this->camera->get_focus(); 
+}
+
 
 GraphicDesigner::~GraphicDesigner() {
 	delete(this->camera);
@@ -432,4 +435,5 @@ GraphicDesigner::~GraphicDesigner() {
     SDL_FreeSurface(this->arrow);
     TTF_Quit();
 }
+
 

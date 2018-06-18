@@ -28,7 +28,7 @@ class AnimationFactory {
     static Animation get_worm_green_granade();
     static Animation get_worm_red_granade();
     static Animation get_worm_holy_granade();
-    static Animation get_worm_teletrans();
+    static Animation get_worm_teleport();
     static Animation get_worm_air_attack();
     static Animation get_worm_dynamite();
     //---------Armas ---------------

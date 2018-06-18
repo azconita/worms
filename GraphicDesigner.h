@@ -73,6 +73,7 @@ public:
 	GraphicDesigner(SDL_Surface * screen, int screen_height, int screen_width,StageDTO initial_stage);
 	std::map<int,WormAnimation>::iterator get_turn_worm(int i);
 	void scroll(int x, int y);
+	SDL_Rect get_camera_position();
 	void show_elements(StageDTO s, SDL_Surface *screen);
 	void show_powerbar(int power);
 	void show_weapons_menu();

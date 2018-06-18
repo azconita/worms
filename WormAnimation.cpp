@@ -30,7 +30,7 @@ bool WormAnimation::has_weapon(){
 }
 
 bool WormAnimation::has_weapon_to_click(){
-    return (this->state == Worm_teletrans || this->state == Worm_air_attack);
+    return (this->state == Worm_teleport || this->state == Worm_air_attack);
 }
 
 bool WormAnimation::has_point_weapon(){ //armas con las que no se puede apuntar
@@ -123,17 +123,6 @@ void WormAnimation::define_movement(int position_x, int position_y){
 
 
 void WormAnimation::move(int position_x, int position_y, State state, Direction direction){
-    std::map<State,Animation>::iterator animation_iter = animations.find(this->state);
-    if(this->state == Jump_state || this->state == Jump_back_state ||this->state == Walk //
-        || this->state == Fall || this->state == Walk_down || this->state == Walk_up){
-        while(!animation_iter->second.continue_internal_movement()){ 
-            // primero termino el movimiento que tenia
-        }
-    }
-    if(state == Still_up){
-        printf("essss still up\n");
-    }
-
     this->define_movement(position_x,position_y);
 
     if(this->direction != direction){
@@ -146,6 +135,13 @@ void WormAnimation::move(int position_x, int position_y, State state, Direction 
 
     this->x = position_x;
     this->y = position_y;
+    std::map<State,Animation>::iterator animation_iter = animations.find(this->state);
+    if(this->state == Jump_state || this->state == Jump_back_state ||this->state == Walk  || this->state == Fall//
+     || this->state == Walk_down || this->state == Walk_up || this->state == Worm_disappear){
+        while(!animation_iter->second.continue_internal_movement()){ 
+            // primero termino el movimiento que tenia
+        }
+    }
 }
 
 bool WormAnimation::is_in_movement(){
