@@ -82,7 +82,8 @@ void Stage::clean_dead_bodies() {
     if (!it->second->is_alive()) {
       if (it->second == this->current_player)
         this->change = true;
-      this->players_turn.at(it->second->get_player_id()).delete_id_worm_id(it->first);
+      this->turnHandler->delete_worm(it->second->get_player_id(), it->first);
+      this->players_turn.at(it->second->get_player_id()).delete_worm_id(it->first); //para borrar
       delete it->second;
       it = this->worms.erase(it);
     } else {
@@ -278,8 +279,7 @@ void Stage::load_initial_stage(std::string file_name){
 }
 
 void Stage::set_worms_to_players(int total_players) {
-	TurnHandler turnHandler(total_players, this->worms);
-	this->turnHandler = &turnHandler;
+	this->turnHandler = new TurnHandler(total_players, this->worms);
 
 
 
@@ -313,6 +313,7 @@ void Stage::set_worms_to_players(int total_players) {
 
 
 Stage::~Stage() {
+	delete(this->turnHandler);
   //delete vectors (shouldn't use this, iterate over world's bodys)
   for (std::map<int, Worm*>::iterator it = this->worms.begin();
               it != this->worms.end(); ++it) {

@@ -20,7 +20,7 @@ public:
   virtual ~PlayerTurn();
 
   int get_next_worm_id();
-  void delete_id_worm_id(int id);
+  void delete_worm_id(int id);
 };
 
 #endif /* PLAYERTURN_H_ */
