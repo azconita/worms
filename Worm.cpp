@@ -45,7 +45,7 @@ Worm::Worm(const Worm& other) : Entity(1),
                                 inclination(inclination),
                                 weapon(other.weapon) {
   this->body->SetUserData(this);
-  std::cout << "wormDir(&other): " << this << '\n';
+  std::cout << "worm(&other): " << this << '\n';
 }
 
 /*Worm::Worm() : Entity(1), body(NULL), life(0), world(NULL) {
@@ -313,6 +313,10 @@ void Worm::stop_moving() {
 }
 
 void Worm::set_static() {
+  if(this->body->GetType() ==b2_staticBody ){
+    return;
+  }
+  printf("[wORM] STATICO\n");
   b2Vec2 center = this->get_center();
   this->body->SetType(b2_staticBody);
   this->body->SetTransform(b2Vec2(center.x,center.y - Constants::worm_height/2),0); //esto es porque se mueve cuando lo convierto por un bug de box2d

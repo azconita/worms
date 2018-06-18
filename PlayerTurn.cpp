@@ -13,7 +13,10 @@
 PlayerTurn::PlayerTurn(std::vector<int> worms_ids, int id) :
             worms_ids(worms_ids),
             last(0), player_id(id) {
-  printf("[PlayerTurn]cantidad de gusanos en el turn helper: %lu, id: %d\n", this->worms_ids.size(), this->player_id);
+  printf("[PlayerTurn] player_id: %d cantidad de gusanos en el turn helper: %lu, \n",  this->player_id,this->worms_ids.size());
+  for(int i = 0; i< this->worms_ids.size(); i++){
+  	printf("%i\n", worms_ids[i]);
+  }
 }
 
 int PlayerTurn::get_worms_size() {
