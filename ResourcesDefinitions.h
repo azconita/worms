@@ -124,7 +124,7 @@
 #define WORM_DYNAMITE_G 128
 #define WORM_DYNAMITE_B 192
 #define WORM_DYNAMITE_COLUMNS 1
-#define WORM_DYNAMITE_ROWS 143
+#define WORM_DYNAMITE_ROWS 10
 
 //un gusano con teletransportacion
 #define WORM_TELETRANS "resources/worm_teletrans.bmp"
@@ -186,7 +186,7 @@
 #define DYNAMITE_G 128
 #define DYNAMITE_B 192
 #define DYNAMITE_COLUMNS 1
-#define DYNAMITE_ROWS 10
+#define DYNAMITE_ROWS 129
 
 #define MORTAR "resources/mortar.bmp"
 #define MORTAR_R 192

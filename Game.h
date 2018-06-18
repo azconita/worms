@@ -19,6 +19,7 @@
 #include "Player.h"
 #include "Stage.h"
 #include "TimerStage.h"
+#define QUEUE_SIZE 100
 
 class Game : public Thread {
   //thread!!

@@ -56,7 +56,6 @@ void Client::run(){
     StageDTO s = receive_stage();
     this->id = s.player_id;
 
-   ;
 
     GraphicDesigner graphic_designer(screen, screen_height,screen_width, s);
 

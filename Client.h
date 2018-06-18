@@ -21,8 +21,8 @@ using std::pair;
 #define SCREEN_DEFAULT_HIGH 700
 #define TITLE "Worms game"
 #define PIXEL_CONSTANT 23.5
-#define TIME_TO_SLEEP 17000000
-#define QUEUE_SIZE 1000
+#define TIME_TO_SLEEP 1700000000
+#define QUEUE_SIZE 100
 
 extern  logger oLog;
 

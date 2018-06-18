@@ -38,10 +38,10 @@ bool EventController::continue_running(WormAnimation& turn_worm){
             return false;
         case SDL_VIDEORESIZE:
             resize(event.resize);
-            break;   
+            //break;   
         case SDL_MOUSEBUTTONUP:
             click(turn_worm);
-            break;
+            //break;
         case SDL_MOUSEMOTION:
             mouse_motion();
         case SDL_KEYUP:
@@ -54,7 +54,7 @@ bool EventController::continue_running(WormAnimation& turn_worm){
               weapon_shortcuts(event, turn_worm);
               weapon_action(event, turn_worm);
             }
-            break;
+            //break;
     }
     return true;
 }
