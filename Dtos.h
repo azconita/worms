@@ -21,6 +21,8 @@ enum Direction {
 
 enum State {
    Still,
+   Still_up,
+   Still_down,
    Walk,
    Fall,
    Walk_up,

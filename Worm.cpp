@@ -86,12 +86,20 @@ void Worm::change_state(State state){
 
 void Worm::update_state() {
   //caer es el estado "predominante"
- 
+  this->handle_end_contact();
 
   b2Vec2 vel = this->body->GetLinearVelocity();
+   printf("[Worm] inclinacion %f velocidad %f\n",this->inclination, vel.y );
   if(this->inclination != 0){
     if(vel.y == 0){
-      return; // sigue con el estado en el que estaba
+      if(this->state == Walk_down){
+        Still_down;
+        printf("still down\n");
+      }else{
+        Still_up;
+       printf("still up\n");
+      }
+      return;
     }
     if(vel.y > 0){
       this->state = Walk_down;
@@ -131,12 +139,19 @@ Direction Worm::get_direction(){
 void Worm::move_right() {
   if(this-> direction != Right){
       this->direction = Right;
+      if(this->state == Still_up || this->state == Walk_up){
+            change_state(Still_down);
+            return;
+      }
+      if(this->state == Still_down || this->state == Walk_down){
+            change_state(Still_up);
+            return;
+      } 
       change_state(Still);
       return;
   }
   this->change_state(Walk);
   this->body->ApplyLinearImpulse(b2Vec2(Constants::worm_walk_velocity,0), this->body->GetWorldCenter(), true);
-  this->handle_end_contact();
   /* if(this->inclination < 90){
     printf("derecha con angulo menor a noventa\n");
     this->body->ApplyLinearImpulse(b2Vec2(cos(this->inclination*M_PI/180),-sin(this->inclination*M_PI/180)),//
@@ -153,12 +168,19 @@ void Worm::move_right() {
 void Worm::move_left() {
   if(this-> direction != Left){
       this->direction = Left;
+      if(this->state == Still_up || this->state == Walk_up){
+            change_state(Still_down);
+            return;
+      }
+      if(this->state == Still_down || this->state == Walk_down){
+            change_state(Still_up);
+            return;
+      } 
       change_state(Still);
       return;
   }
   this->change_state(Walk);
   this->body->ApplyLinearImpulse(b2Vec2(-Constants::worm_walk_velocity,0),this->body->GetWorldCenter(), true);
-  this->handle_end_contact();
   /*else if(this->inclination < 90){
      printf("izquierda con angulo menor a noventa\n");
     this->body->ApplyLinearImpulse(b2Vec2(-cos(this->inclination*M_PI/180),sin(this->inclination*M_PI/180)), //

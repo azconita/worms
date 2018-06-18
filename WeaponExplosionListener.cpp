@@ -71,7 +71,7 @@ void WeaponExplosionListener::handle_end_contact(Entity* entityA, Entity* entity
 
 void WeaponExplosionListener::beam_worm_begin_contact(Beam * beam, Worm * worm){
   float angle = beam->get_angle();
-  if(angle < 5 || (angle > 45 && angle < 135) || angle >175){
+  if(angle > 45 && angle < 135){
     return;
   }
   oLog() << "[WeaponExplosionListener] se inicio el contacto con viga de angulo %f \n", angle;
