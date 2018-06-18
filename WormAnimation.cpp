@@ -130,6 +130,9 @@ void WormAnimation::move(int position_x, int position_y, State state, Direction 
             // primero termino el movimiento que tenia
         }
     }
+    if(state == Still_up){
+        printf("essss still up\n");
+    }
 
     this->define_movement(position_x,position_y);
 
@@ -141,18 +144,8 @@ void WormAnimation::move(int position_x, int position_y, State state, Direction 
         change_state(state);
     }
 
-    /*if(this->x = position_x && this->y == position_y && this->state == Fall){ // se cayo sobre una viga
-        this->state = Still;
-    }
-    if(this->state != Jump_state && this->state != Walk_down && position_y > this->y){ //aumenta el y, se cae
-        this->state = Fall;
-    }*/
     this->x = position_x;
     this->y = position_y;
-    
-
-   
-
 }
 
 bool WormAnimation::is_in_movement(){

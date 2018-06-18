@@ -89,15 +89,12 @@ void Worm::update_state() {
   this->handle_end_contact();
 
   b2Vec2 vel = this->body->GetLinearVelocity();
-   printf("[Worm] inclinacion %f velocidad %f\n",this->inclination, vel.y );
   if(this->inclination != 0){
     if(vel.y == 0){
-      if(this->state == Walk_down){
-        Still_down;
-        printf("still down\n");
-      }else{
-        Still_up;
-       printf("still up\n");
+      if(this->state == Walk_down || this->state == Still_down){
+        this->state = Still_down;
+      }else if(this->state == Walk_up || this->state == Still_up){
+        this->state = Still_up;
       }
       return;
     }
