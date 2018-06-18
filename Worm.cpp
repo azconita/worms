@@ -171,7 +171,7 @@ void Worm::move_right() {
   }else{  
     std::cout <<"[Worm]derecha con angulo mayor a noventa = sube" << endl;
     this->state = Walk_up;
-    this->move(-v*cos(this->inclination*M_PI/180),v*sin(this->inclination*M_PI/180));
+    this->move(-v*cos(this->inclination*M_PI/180),-v*sin(this->inclination*M_PI/180));
     this->handle_end_contact();
   }
 }

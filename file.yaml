@@ -4,7 +4,7 @@ stage:
       pos_y: 14
       size: 6
       inclination: 45
-      direction: 0
+      direction: 1
     - pos_x: 45
       pos_y: 15
       size: 6
