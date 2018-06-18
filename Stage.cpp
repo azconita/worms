@@ -107,7 +107,7 @@ void Stage::clean_dead_bodies() {
 void Stage::update_player() {
   //printf("player time: %d\n", time(NULL) - this->player_time);
   if (this->change || (time(NULL) - this->player_time > Constants::worm_turn_time)) {
-    printf("change player\n");
+    printf("[Stage] change player\n");
     this->current_player->took_weapon(None);
     this->change_player();
     this->change = false;
@@ -143,7 +143,6 @@ void Stage::update_worms() {
 
 
 void Stage::make_action(ActionDTO & action) {
-  printf("%i, %i \n", action.type, action.move );
   int worm = action.worm_id;
   //VALIDAR TURNO!!
   if (worm != this->current_player->get_id()) {
@@ -297,7 +296,7 @@ void Stage::set_worms_to_players(int total_players) {
     throw Error("Error in worms quantity:\nplayers = %d"//
       ", total worms = %i", total_players, this->worms.size());
   }
-  printf("total players: %d, worms for each: %d\n", total_players, wq);
+  printf("[Stage] total players: %d, worms for each: %d\n", total_players, wq);
   for (int i = 0; i < total_players; i++) {
     //(i+1)*wq == ids.size()) ? ids.end() : ids[(i+1)*wq])
     std::vector<int> v;

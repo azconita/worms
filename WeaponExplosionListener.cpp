@@ -74,7 +74,7 @@ void WeaponExplosionListener::beam_worm_begin_contact(Beam * beam, Worm * worm){
   if(angle < 5 || (angle > 45 && angle < 135) || angle >175){
     return;
   }
-  printf("se inicio el contacto con viga de angulo %f \n", angle);
+  oLog() << "[WeaponExplosionListener] se inicio el contacto con viga de angulo %f \n", angle;
   std::vector<b2Vec2> beam_pos = beam->get_points();
   worm->set_inclination(angle, beam_pos);
 }

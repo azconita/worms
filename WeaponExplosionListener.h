@@ -13,6 +13,7 @@
 #include <Box2D/Box2D.h>
 #include <vector>
 #include "Entity.h"
+#include "Logger.h"
 #include "Constants.h"
 #include "Weapon.h"
 #include "Beam.h"
@@ -23,8 +24,14 @@
 #define WORM_TYPE 1
 #define WEAPON_TYPE 3
 
+extern logger oLog;
+
+
+
 class WeaponExplosionListener : public b2ContactListener {
+
 public:
+
   WeaponExplosionListener();
   virtual ~WeaponExplosionListener();
 

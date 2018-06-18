@@ -196,12 +196,12 @@
 #define MORTAR_ROWS 48
 
 
-#define EXPLOSION "resources/explosion.bmp"
-#define EXPLOSION_R 128
-#define EXPLOSION_G 128
-#define EXPLOSION_B 192
-#define EXPLOSION_COLUMNS 1
-#define EXPLOSION_ROWS 8
+#define EXPLOSION "resources/explosion2.bmp"
+#define EXPLOSION_R 255
+#define EXPLOSION_G 255
+#define EXPLOSION_B 255
+#define EXPLOSION_COLUMNS 4
+#define EXPLOSION_ROWS 4
 
 #define BIG_EXPLOSION "resources/explosion2.bmp"
 #define BIG_EXPLOSION_R 255

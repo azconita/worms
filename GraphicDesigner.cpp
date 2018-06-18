@@ -93,7 +93,6 @@ void GraphicDesigner::resize(int h, int w){
 }
 
 void GraphicDesigner::scroll(int x, int y){
-    printf("moviendooo en x=%i y = %i\n",x, y);;
     if(x < 15){
         this->camera->move(-10,0);
         return;
@@ -152,7 +151,7 @@ void GraphicDesigner::show_beams(StageDTO s, SDL_Surface *screen, SDL_Rect camer
 Picture GraphicDesigner::inclinate_beam(std::vector<Picture> beams, float degrees){
 
     if(beams.size() < 5){
-        throw Error("No se cargaron todas las imagenes de las vigas");
+        throw Error("[GraphicDesigner] No se cargaron todas las imagenes de las vigas");
     }
     if(degrees < 5){
         Picture beam = beams[0];
@@ -338,8 +337,9 @@ void GraphicDesigner::show_weapons_menu(){
 
 
 bool GraphicDesigner::is_inside_weapon_menu(int x, int y){
-    int x_relative = x -(this->screen_width - this->weapons_menu->w -5);
-    int y_relative = y - 5;
+    printf("[GraphicDesigner] se hizo click en el menu\n");
+    int x_relative = x -(this->screen_width - this->weapons_menu->w);
+    int y_relative = y - (this->screen_height/2- this->weapons_menu->h/2);
     if(x_relative < 0 || y_relative > this->weapons_menu->h){
         return false;
     }
@@ -348,32 +348,33 @@ bool GraphicDesigner::is_inside_weapon_menu(int x, int y){
 
 
 Weapon_Name GraphicDesigner::choose_weapon(int x, int y){
-    int icon_y = this->weapons_menu->h/10;
-    if(y < icon_y){
+    int icon_y = (this->weapons_menu->h/10); //longitud de un icono
+    int menu_init = (this->screen_height/2- this->weapons_menu->h/2); 
+    if(y < menu_init + icon_y){
         return W_Air_Attack;
     }
-    if(y < icon_y*2){
+    if(y < menu_init + icon_y*2){
         return Baseball_Bat;
     }
-    if(y < icon_y*3){
+    if(y < menu_init + icon_y*3 ){
         return W_Bazooka;
     }
-    if(y < icon_y*4){
+    if(y < menu_init + icon_y*4){
         return Red_Grenade;
     }
-    if(y < icon_y*5){
+    if(y < menu_init + icon_y*5){
         return Green_Grenade;
     }
-    if(y < icon_y*6){
+    if(y < menu_init + icon_y*6){
         return Holy_Grenade;
     }
-    if(y < icon_y*7){
+    if(y < menu_init + icon_y*7){
         return Mortar;
     }
-    if(y < icon_y*8){
+    if(y < menu_init + icon_y*8){
         return Teleport;
     }
-    if(y < icon_y*9){
+    if(y < menu_init + icon_y*9){
         return Dynamite;
     }
     return Banana;

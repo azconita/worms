@@ -17,6 +17,10 @@
 
 #define TYPE_WORM 1
 
+using std::endl;
+
+extern logger oLog;
+
 class Worm : public Entity {
   int id = -1;
   int player_id = 0;

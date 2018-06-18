@@ -103,7 +103,7 @@ void Worm::update_state() {
   if (vel.y > 5 && this->state != Fall && this->inclination == 0) {
       this->state = Fall;
       this->start_falling = this->body->GetPosition();
-      printf("start falling: %f, %f\n", this->start_falling.x, this->start_falling.y);
+      oLog() << "[Worm] start falling: "<< this->start_falling.x << " "<<this->start_falling.y << endl;
       return;
   
   }
@@ -111,7 +111,7 @@ void Worm::update_state() {
     //estaba cayendo: chequear si fueron mas de 2m para hacerle dano al worm
     this->state = Still;
     float d = std::abs(this->start_falling.y - this->body->GetPosition().y);
-    printf("worm stops falling: %f\n", d);
+    oLog() << "[Worm] worm stops falling: " << d << endl;
     if (d > 2)
       this->apply_damage((d < 25) ? d : 25);
     return;
@@ -174,8 +174,6 @@ void Worm::move_left() {
 
 //TODO: fix me!!
 void Worm::jump(Direction dir) {
-  std::cout << "dir: " << dir << "\n";
-  printf("jump.....%p\n", this->body );
   this->change_state(Jump_state);
   int d = (dir == Left) ? 1 : -1;
   float impulse = body->GetMass() * Constants::worm_jump_velocity;
@@ -211,7 +209,7 @@ void Worm::took_weapon(Weapon_Name weapon) {
 }
 
 void Worm::set_inclination(float angle, std::vector<b2Vec2> & beam_pos) {
-  printf("nueva inclinacion %f\n",angle );
+  oLog() <<"[Worm] nueva inclinacion " <<angle << endl;
   this->inclination = angle;
   this->beam_pos = beam_pos;
 }
@@ -229,7 +227,7 @@ void  Worm::handle_end_contact(){
 }
 
 void Worm::no_inclination() {
-  printf("se termino el contacto\n");
+  oLog() <<"[Worm] se termino el contacto con la viga de inclinacion"<< this->inclination << endl;
   this->inclination = 0;
 }
 
@@ -251,10 +249,8 @@ void Worm::teleport(float x, float y, Direction dir) {
 }
 
 void Worm::apply_damage(int d) {
-  std::cout << "worm damaged: " << d << "\n";
+  oLog() <<"[Worm] worm damaged: " << d << endl;
   this->life = this->life - d;
-  //if (this->life <= 0)
-    //this->alive = false;
 }
 
 b2Vec2 Worm::get_center(){
