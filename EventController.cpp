@@ -143,7 +143,6 @@ void EventController::click(WormAnimation& turn_worm){
     SDL_GetMouseState(&x, &y);
 
     if(graphic_designer.is_inside_weapon_menu(x,y)){
-
         printf("esta dentro del menu\n");
         Weapon_Name  weapon = graphic_designer.choose_weapon(x,y);
         turn_worm.take_weapon(weapon);
@@ -171,8 +170,8 @@ void EventController::mouse_motion(){
 void EventController::shot(WormAnimation& turn_worm,int x, int y){
     if(turn_worm.has_weapon()){
         this->action.type = Shot_weapon;
-        this->action.pos_x = meters_conversor(x);
-        this->action.pos_y = meters_conversor(y);
+        this->action.pos_x = x;
+        this->action.pos_y = y;
         this->action.weapon_degrees = turn_worm.get_degrees();
         this->action.direction = turn_worm.get_direction();
         this->action.power = turn_worm.get_weapon_power();
@@ -245,7 +244,9 @@ void EventController::space(WormAnimation& turn_worm){
 
 
 void EventController::weapon_shot(WormAnimation& turn_worm){
-    shot(turn_worm,turn_worm.get_x(),turn_worm.get_y());
+    float x = meters_conversor(turn_worm.get_x());
+    float y = meters_conversor(turn_worm.get_y());
+    shot(turn_worm,x,y);
 
 }
 
