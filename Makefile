@@ -10,7 +10,7 @@ extension = cpp
 
 # Archivos con el código fuente que componen el ejecutable de cleinte y servidor
 # No poner cabeceras (.h).
-fuentes_client = Camera.cpp client-main.cpp Client.cpp Actioner.cpp Animation.cpp AnimationFactory.cpp Colour.cpp EventController.cpp GraphicDesigner.cpp Picture.cpp WaterAnimation.cpp WormAnimation.cpps
+fuentes_client = Camera.cpp client-main.cpp Client.cpp Actioner.cpp Animation.cpp AnimationFactory.cpp Colour.cpp EventController.cpp GraphicDesigner.cpp Picture.cpp WaterAnimation.cpp WormAnimation.cpp
 fuentes_server = server-main.cpp Server.cpp Constants.cpp Beam.cpp Entity.cpp StageLoader.cpp Weapon.cpp WeaponExplosionListener.cpp Worm.cpp Stage.cpp Player.cpp TimerStage.cpp Game.cpp common_thread.cpp PlayerTurn.cpp TurnHandler.cpp
 fuentes_common = Lock.cpp Socket.cpp Error.cpp Logger.cpp Dtos.cpp
 
