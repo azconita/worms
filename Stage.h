@@ -60,6 +60,7 @@ private:
   void clean_dead_bodies();
   void update_player();
   void change_player();
+  void update_body_types();
 
   void update_worms();
 

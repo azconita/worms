@@ -109,7 +109,12 @@ void Stage::change_player() {
   printf("[Stage] next player id: %d,", new_player_id);
   this->current_player = this->worms[this->players_turn.at(new_player_id).get_next()];
   printf("[Stag] worm id: %d\n", this->current_player->get_id());
-  for (auto &w : this->worms) {
+  this->update_body_types();
+  this->last_player_id = new_player_id;
+}
+
+void Stage::update_body_types(){
+for (auto &w : this->worms) {
    if (w.first != this->current_player->get_id()){
        //TODO: no deberia hacerlo siempre!!
        //iterar por los cuerpos del world??
@@ -119,9 +124,9 @@ void Stage::change_player() {
        w.second->set_dynamic();
      }
    }
+ }
 
-  this->last_player_id = new_player_id;
-}
+
 /**
    Update the velocity of the worms
    and made teleport effective
@@ -299,13 +304,15 @@ void Stage::set_worms_to_players(int total_players) {
     std::vector<int> v;
     std::copy(ids.begin() + i*wq, ids.begin() + (i+1)*wq, std::back_inserter(v));
     this->players_turn.emplace(i, TurnHelper(v, i));
-    for (int i: v) {
-      this->worms.at(i)->set_player_id(i);
+    for (auto worm_id: v) {
+      this->worms.at(worm_id)->set_player_id(i);
     }
   }
 
   //compensar jugador con menos gusanos!!
   this->current_player = this->worms[0];
+  this->last_player_id = this->current_player->get_player_id();
+   this->update_body_types();
 }
 
 
