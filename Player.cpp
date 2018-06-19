@@ -48,10 +48,14 @@ void Player::send() {
       out << YAML::Key << "stage";
       out << YAML::Value << s;
       out << YAML::EndMap;
-      try{
+      try {
         //printf("se envia %s\n", out.c_str());
         this->client.send_dto(out.c_str());
-      }catch(Error e){
+        if (s.winner != -1) {
+          printf("the winner: %i", s.winner);
+          this->stop();
+        }
+      } catch(Error e) {
         oLog() << "Player quit (peer socket closed).";
         this->stop();
       }
@@ -62,7 +66,7 @@ void Player::send() {
 void Player::receive(){
   extern logger oLog;
   while (this->on) {
-    try{
+    try {
       std::string action_str = this->client.receive_dto();
       //printf("%s\n",action_str.c_str() );
       oLog() << "recibiendo";
@@ -70,7 +74,7 @@ void Player::receive(){
       YAML::Node yaml_received = YAML::Load(action_str);
       ActionDTO action_received = yaml_received["action"].as<ActionDTO>();
       this->recv_queue->push(action_received);
-    }catch(Error e){
+    } catch(Error e) {
       ActionDTO a;
       a.type = Quit;
       this->recv_queue->push(a);
