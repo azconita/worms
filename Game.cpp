@@ -8,9 +8,11 @@
 #include "Game.h"
 
 
-Game::Game(std::string &stage_name, Socket &client) :
+Game::Game(std::string &stage_name, int total_players, Socket &client) :
            stage(stage_name),
-           stage_queue(QUEUE_SIZE), timer(stage_queue) {
+           total_players(total_players),
+           stage_queue(QUEUE_SIZE),
+           timer(stage_queue) {
   this->players.push_back(new Player(client));
 }
 
@@ -30,6 +32,10 @@ bool Game::not_full() {
   return (this->players.size() < this->limit);
 }
 
+bool Game::ready() {
+  return (this->players.size() == this->limit);
+}
+
 void Game::add_player(Socket &client) {
   if (this->players.size() >= this->limit)
     return;
@@ -37,7 +43,7 @@ void Game::add_player(Socket &client) {
   printf("[Game] add_player -> new Player\n");
   this->players.push_back(new Player(client));
   //TODO: init game? add worms to initiated game?
-  if (this->players.size() == this->limit)
+  if (this->players.size() == this->total_players)
     this->start();
 }
 

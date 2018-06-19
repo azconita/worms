@@ -33,7 +33,7 @@ class Client {
 	bool fullscreen;
 	int id = -1;
 public:
-	Client(char * host_name, char * port, bool fullscreen);
+	Client(char * host_name, char * port, std::string &stage, bool fullscreen);
 	void run();
 	StageDTO receive_stage();
 	void send_action();

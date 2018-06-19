@@ -5,12 +5,14 @@
  *      Author: gabi
  */
 
+#include <map>
 #include <string>
 
 #ifndef CONSTANTS_H_
 #define CONSTANTS_H_
 
 namespace Constants {
+  extern const std::map<std::string, int> stages;
   extern const int total_players;
 
   extern const float gravity;

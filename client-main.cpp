@@ -4,20 +4,21 @@
 #define SERVER_NAME 1 
 #define PORT 2
 #define LITTLE_SCREEN 3
-
+#define STAGE_NAME 3
 
 logger oLog("client.log");
 
 int main(int argc, char * argv[]){
-    if (argc < 3){
+    if (argc < 4){
         throw Error("Parametros incorrectos");
     }
-    if(argc == 3){  
-    	Client cliente(argv[SERVER_NAME],argv[PORT], true);
-    	cliente.run();
+    std::string stage(argv[STAGE_NAME]);
+    if(argc == 4){
+    	Client client(argv[SERVER_NAME],argv[PORT], stage, true);
+    	client.run();
 	}else{
-		Client cliente(argv[SERVER_NAME],argv[PORT], false);
-    	cliente.run();
+		Client client(argv[SERVER_NAME],argv[PORT], stage, false);
+    	client.run();
 	}	
     
     return 0;

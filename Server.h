@@ -8,33 +8,31 @@
 #ifndef SERVER_H_
 #define SERVER_H_
 
-#include <thread>
+#include <map>
 #include <string>
-#include "Error.h"
-#include "ServerSocket.h"
+#include <thread>
+#include <vector>
 #include "Dtos.h"
-#include "Stage.h"
-
-
-
-
-
+#include "Game.h"
+#include "Socket.h"
 
 class Server {
 private:
-  std::thread sending_thread;
-  std::thread receiving_thread;
-  Socket client;
-  Stage stage;
+  std::thread thread;
+  Socket acc_socket;
+  bool on = true;
 
-  bool on;
+  std::map<std::string,std::vector<Game*>> games_by_stage;
+  // deberia existir para no perder referencias?
+  //std::vector<Socket> clients;
 public:
-  Server(Socket socket);
+  Server(char* port);
   virtual ~Server();
   void start();
-  void send();
-  void receive();
+  void run();
   void stop();
+private:
+  std::string get_yaml(StageDTO &s);
 };
 
 #endif /* SERVER_H_ */
