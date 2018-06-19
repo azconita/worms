@@ -32,11 +32,13 @@ class Client {
 	SDL_Surface * screen;
 	bool fullscreen;
 	int id = -1;
+	bool finish;
 public:
 	Client(char * host_name, char * port, bool fullscreen);
 	void run();
 	StageDTO receive_stage();
 	void send_action();
 	float get_pixels(float meter_position);
+	//void finish(int winner, GraphicDesigner & graphic_designer);
 	~Client();
 };

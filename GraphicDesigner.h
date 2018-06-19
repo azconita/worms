@@ -41,6 +41,8 @@ static const std::vector<Weapon_Name> weapons_with_timer(
 class GraphicDesigner {
 	SDL_Surface * screen;
 	SDL_Surface * background;
+	SDL_Surface * winner;
+	SDL_Surface * looser;
 	Camera * camera;
 	int screen_height;
 	int screen_width;

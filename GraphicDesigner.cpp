@@ -66,9 +66,11 @@ water(3){
     SDL_Surface * weapons_menu = IMG_Load(WEAPONS_MENU);
     SDL_Surface * background = IMG_Load(BACKGROUND);
     SDL_Surface * arrow = IMG_Load(ARROW);
+    SDL_Surface *winner = IMG_Load(WON);
+    SDL_Surface *looser = IMG_Load(LOST);
   
-    if (!power_bar || !weapons_menu || !background || !arrow) {
-        throw Error("Couldn't create surface from image:",POWER_BAR,SDL_GetError());
+    if (!power_bar || !weapons_menu || !background || !arrow  || !winner || !looser) {
+        throw Error("Couldn't create surface from image: %s %s",POWER_BAR,SDL_GetError());
     }
     ////////////////////////////////////////////////////////
 
@@ -84,6 +86,9 @@ water(3){
     this->power_bar = power_bar;
     this->weapons_menu = weapons_menu;
     this->arrow = arrow;
+
+    this->winner = winner;
+    this->looser = looser;
 
 }
 
@@ -431,43 +436,36 @@ SDL_Rect GraphicDesigner::get_camera_position(){
 void GraphicDesigner::won(){
     SDL_Rect camera_position = this->camera->get_focus();
     SDL_FillRect(this->background, NULL, SDL_MapRGB(this->screen->format,128,128,192));
-    SDL_Surface *won = IMG_Load(WON);
-    if (!won) {
-        throw Error("Couldn't create surface from image: %s %s",WON,SDL_GetError());
-    }
+
     SDL_Rect dimention;
     dimention.x = 0;
     dimention.y = 0;
-    dimention.h = won->h;
-    dimention.w = won->w;
+    dimention.h = this->winner->h;
+    dimention.w = this->winner->w;
 
     SDL_Rect position;
-    position.x =  camera_position.x/2 + won->w/2;
-    position.y =  camera_position.y/2 + won->h/2;
-    position.h = won->h;
-    position.w = won->w;
-    SDL_BlitSurface(won, &dimention, this->background, &position);
+    position.x =  camera_position.x/2 + this->winner->w/2;
+    position.y =  camera_position.y/2 + this->winner->h/2;
+    position.h = this->winner->h;
+    position.w = this->winner->w;
+    SDL_BlitSurface(this->winner, &dimention, this->background, &position);
 }
  
 void GraphicDesigner::lost(){
     SDL_Rect camera_position = this->camera->get_focus();
     SDL_FillRect(this->background, NULL, SDL_MapRGB(this->screen->format,128,128,192));
-     SDL_Surface *lost = IMG_Load(LOST);
-    if (!lost) {
-        throw Error("Couldn't create surface from image: %s %s",LOST,SDL_GetError());
-    }
     SDL_Rect dimention;
     dimention.x = 0;
     dimention.y = 0;
-    dimention.h = lost->h;
-    dimention.w = lost->w;
+    dimention.h = this->looser->h;
+    dimention.w = this->looser->w;
 
     SDL_Rect position;
-    position.x =  camera_position.x/2 + lost->w/2;
-    position.y =  camera_position.y/2 + lost->h/2;
-    position.h = lost->h;
-    position.w = lost->w;
-    SDL_BlitSurface(lost, &dimention, this->background, &position);
+    position.x =  camera_position.x/2 + this->looser->w/2;
+    position.y =  camera_position.y/2 + this->looser->h/2;
+    position.h = this->looser->h;
+    position.w = this->looser->w;
+    SDL_BlitSurface(this->looser, &dimention, this->background, &position);
 }
 
 

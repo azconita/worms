@@ -76,6 +76,7 @@ void Client::run(){
     auto t_slend = std::chrono::high_resolution_clock::now();
     std::chrono::nanoseconds t_tosleep(TIME_TO_SLEEP);
 
+    bool finish = false;
     bool running=true;
     while(running ){
 
@@ -87,28 +88,28 @@ void Client::run(){
         t1 = SDL_GetTicks();
 
         //update
-        StageDTO s = receive_stage();
-        turn_worm_iter = graphic_designer.get_turn_worm(s.worm_turn);
+        if(finish == false){
+            s = receive_stage();
+            turn_worm_iter = graphic_designer.get_turn_worm(s.worm_turn);
+        } 
+
+        if(s.winner != -1){
+            finish = true;
+                if(s.winner == this->id){
+                        printf("GANE\n");
+                        SDL_Flip(screen);
+                            graphic_designer.won();
+                        
+                }else{
+                        printf("PERDIII\n");
+                        SDL_Flip(screen);
+                        graphic_designer.lost();
+                }
+        }
 
         if((t1 -t0) > 17) {
             printf("turnoo %i\n", s.worm_turn);
             printf("ganooo %i\n", s.winner);
-
-            if(s.winner != -1){
-                if(s.winner == this->id){
-                    printf("GANE\n");
-                    SDL_Flip(screen);
-                        graphic_designer.won();
-                    
-                }else{
-                    printf("PERDIII\n");
-                    SDL_Flip(screen);
-                    graphic_designer.lost();
-                }
-
-                //std::chrono::seconds sec(3);    
-                //std::this_thread::sleep_for(sec);
-            }
 
             // Nueva referencia de tiempo
             t0 = SDL_GetTicks();
@@ -129,9 +130,11 @@ void Client::run(){
         //std::this_thread::sleep_for(t_tosleep - t_diff);
         //t_slend = std::chrono::high_resolution_clock::now();
         }
-
     }
 }
+       
+
+
 
 Client::~Client(){
     SDL_FreeSurface(this->screen);
