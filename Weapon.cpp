@@ -267,7 +267,7 @@ void Weapon::grenade(int power, float degrees, int timer, int s) {
 
 void Weapon::dynamite(int time_to_explode, int s) {
   this->timer = time_to_explode;
-
+  this->t = time(NULL);
 }
 
 void Weapon::explosion() {
