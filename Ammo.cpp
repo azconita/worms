@@ -15,6 +15,7 @@ Ammo::Ammo() {
   this->per_weapon[Dynamite] = Constants::dynamite_ammo;
   this->per_weapon[Mortar] = Constants::mortar_ammo;
   this->per_weapon[Green_Grenade] = Constants::greengrenade_ammo;
+  this->per_weapon[Red_Grenade] = Constants::redgrenade_ammo;
   this->per_weapon[Holy_Grenade] = Constants::holygrenade_ammo;
   this->per_weapon[Teleport] = Constants::teleport_ammo;
 
