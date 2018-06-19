@@ -34,13 +34,6 @@ private:
   std::vector<Weapon*> explosions;
 
   float wind;
-
-  std::map<int, PlayerTurn> players_turn;
-  int last_player_id = 0;
-  bool change = false;
-  Worm* current_player = NULL;
-  time_t player_time = time(NULL);
-
   bool finish = false;
 
   TurnHandler * turnHandler;
@@ -65,6 +58,9 @@ private:
   void change_player();
 
   void update_worms();
+
+  void change_body_types();
+  bool is_in_movement();
 
 
   void load_initial_stage(std::string file_name);

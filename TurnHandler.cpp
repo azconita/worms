@@ -7,19 +7,13 @@
 
 #include "TurnHandler.h"
 
-TurnHandler::TurnHandler(int total_players, std::map<int, Worm*> & worms) //:all_worms(worms)
-{
-	  this->ready_to_change = false;
-	  std::vector<int> worms_ids;
-	  std::transform(worms.begin(), worms.end(), std::back_inserter(worms_ids),
-	            [](const std::pair<int,Worm*>& val){return val.first;});
-
+TurnHandler::TurnHandler(int total_players, std::vector<int> worms_ids){
 	  //and shuffle it
 	  auto rng = std::default_random_engine {};
 	  std::shuffle(std::begin(worms_ids), std::end(worms_ids), rng);
 
 	  //create turn helpers
-	  int worms_per_player = worms.size() / total_players;
+	  int worms_per_player = worms_ids.size() / total_players;
 	  if(worms_per_player < 0){
 	    throw Error("Error in worms quantity:\nplayers = %d"//
 	      ", total worms = %i", total_players, worms.size());
@@ -39,7 +33,8 @@ TurnHandler::TurnHandler(int total_players, std::map<int, Worm*> & worms) //:all
 	  this->last_player_id = less;
 	  this->current_worm_turn = this->players_turn.at(less).get_next_worm_id();
 	  printf("[TurnHandler] empieza con turno del jugador %i, con su gusano %i", this->current_player_turn, this->current_player_turn);
-	  this->change_worms_states( worms);
+	  this->ready_to_change = false;
+	  this->player_time = time(NULL);
 
 }
 
@@ -53,19 +48,10 @@ int TurnHandler::get_player_with_less_worms(){
 	return less;
 }
 
-void TurnHandler::change_worms_states(std::map<int, Worm*> & worms){
-	for (auto &w : worms) {
-	   	if (w.first != this->current_worm_turn){
-	       	w.second->set_static();
-	    }else{
-	      	w.second->set_dynamic();
-	    }
-	}
-}
 
-void TurnHandler::delete_worm(int player_id, int worm_id,std::map<int, Worm*> & worms){
+void TurnHandler::delete_worm(int player_id, int worm_id){
 	if(this->current_worm_turn == worm_id){
-		this->change_player(worms);
+		this->change_player();
 	}
 	this->players_turn.at(player_id).delete_worm_id(worm_id);
 }
@@ -75,22 +61,11 @@ void TurnHandler::ready_to_change_player(){
 }
 
 
-bool TurnHandler::is_any_in_movement(std::map<int, Worm*> & worms){
-	for (auto &w : 	worms) {
-    	if(w.second->get_velocity().Length() > 0.3){
-    		return true;
-    	}
-   		return false;
-	}
-}
 
-
-bool TurnHandler::update_player(std::map<int, Worm*> & worms) {
-  if ((this->ready_to_change  ||  (time(NULL) - this->player_time > Constants::worm_turn_time)) 
-  	&& !this->is_any_in_movement(worms)) {
+bool TurnHandler::update_player(bool in_movement) {
+  if (this->ready_to_change  ||  (time(NULL) - this->player_time > Constants::worm_turn_time)  && !in_movement){
     printf("[TurnHandler] change player\n");
-	worms.at(this->current_worm_turn)->took_weapon(None);
-    this->change_player(worms);
+    this->change_player();
     this->ready_to_change = false;
     this->player_time = time(NULL);
     return true;
@@ -99,12 +74,11 @@ bool TurnHandler::update_player(std::map<int, Worm*> & worms) {
 }
 
 
-void TurnHandler::change_player(std::map<int, Worm*> & worms){
+void TurnHandler::change_player(){
   this->current_player_turn =  ((this->last_player_id + 1) == this->players_turn.size()) ? 0 : this->last_player_id + 1;
-  printf("[TurnHandler] next player id: %d\n,", this->current_player_turn);
+  printf("[TurnHandler] next player id: %d\n", this->current_player_turn);
   this->current_worm_turn = this->players_turn.at(this->current_player_turn).get_next_worm_id();
   printf("[TurnHandler] worm id: %d\n", this->current_worm_turn);
-  this->change_worms_states(worms);
   this->last_player_id = this->current_player_turn;
 }
 

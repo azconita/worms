@@ -19,21 +19,18 @@ class TurnHandler {
 	int last_player_id;
 	int current_worm_turn;
 	time_t player_time = time(NULL);
-	//std::map<int, Worm*> & all_worms;
 	std::map<int, PlayerTurn> players_turn;
 	bool ready_to_change;
 
 
 	int get_player_with_less_worms();
-	void change_worms_states(std::map<int, Worm*> & worms);
-	bool is_any_in_movement(std::map<int, Worm*> & worms);
-	void change_player(std::map<int, Worm*> & worms);
+	void change_player();
 public:
-	TurnHandler(int total_players, std::map<int, Worm*> & worms);
+	TurnHandler(int total_players, std::vector<int> worms_ids);
 	int get_worm_turn_id();
-	void delete_worm(int player_id, int worm_id,std::map<int, Worm*> & worms);
+	void delete_worm(int player_id, int worm_id);
 	void ready_to_change_player();
-	bool update_player(std::map<int, Worm*> & worms);
+	bool update_player(bool in_movement);
 	virtual ~TurnHandler();
 };
 

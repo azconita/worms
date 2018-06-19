@@ -13,6 +13,104 @@ Stage::Stage(std::string file_name) {
   this->wind = Constants::wind;
 }
 
+
+void Stage::load_initial_stage(std::string file_name){
+  StageLoader yaml_loader(file_name);
+  Stage_y s = yaml_loader.load_stage();
+  oLog() << "loading initial stage:\n";
+  for(auto b: s.beams){
+    oLog() << "beam_y { x: " << b.pos_x << ", y: " << b.pos_y << ", size: " << b.size 
+    << ", inclination:" << b.inclination << ", direction: " << b.direction <<"}" << endl;
+  this->beams.push_back(new Beam(this->world, b.size, b.pos_x, b.pos_y, b.inclination,static_cast<Direction>(b.direction)));
+
+  }
+  for(auto & w: s.worms){
+    oLog() << "worms: { id: "<< w.id << ", x: "<< w.pos_x << " , y: " << w.pos_y
+       << ", direction: "<< w.direction << ", inclination: "<<w.inclination << ", life: " << w.life <<" }"<< endl;
+    Worm* worm = new Worm(this->world, w.pos_x, w.pos_y, w.id, static_cast<Direction>( w.direction));
+    this->worms.emplace(w.id, worm);
+  }
+}
+
+
+void Stage::set_worms_to_players(int total_players) {
+  std::vector<int> worms_ids;
+    std::transform(worms.begin(), worms.end(), std::back_inserter(worms_ids),
+              [](const std::pair<int,Worm*>& val){return val.first;});
+
+  this->turnHandler = new TurnHandler(total_players, worms_ids);
+  this->change_body_types();
+}
+
+
+void Stage::change_body_types(){
+  for (auto &w : this->worms) {
+      w.second->took_weapon(None);
+      if (w.first != this->turnHandler->get_worm_turn_id()){
+          w.second->set_static();
+      }else{
+          w.second->set_dynamic();
+      }
+  }
+}
+
+
+
+void Stage::update() {
+  float32 timeStep = Constants::time_step; //segundos del step
+  int32 velocityIterations = Constants::velocity_iterations;   //how strongly to correct velocity
+  int32 positionIterations = Constants::position_iterations;   //how strongly to correct position
+
+  this->world->Step( timeStep, velocityIterations, positionIterations);
+
+  //check for timers in explosion
+  this->do_explosions();
+  //delete weapons exploded and dead worms
+  this->clean_dead_bodies();
+
+  //check falling worms
+  this->worms.at(this->turnHandler->get_worm_turn_id())->update_state();
+
+   //update worms: set vel 0 for "stopped" worms and static
+  this->update_worms();
+
+  //check if player change
+  if(this->turnHandler->update_player(this->is_in_movement())){
+    this->change_body_types();
+  }
+}
+
+
+void Stage::clean_dead_bodies() {
+  //delete "dead" explosions
+  for (std::vector<Weapon*>::iterator it = this->explosions.begin();
+      it != this->explosions.end();) {
+     if(! (*it)->is_alive()) {
+       delete *it;
+       it = this->explosions.erase(it);
+     } else {
+       if ((*it)->has_timer() && (*it)->is_time_to_explode()) {
+         (*it)->explode();
+       }
+       ++it;
+     }
+  }
+
+  //delete dead worms
+  std::map<int, Worm*>::iterator it = this->worms.begin();
+  while (it != this->worms.end()) {
+    if (!it->second->is_alive()) {
+      this->turnHandler->delete_worm(it->second->get_player_id(), it->first);
+      delete it->second;
+      it = this->worms.erase(it);
+    } else {
+      ++it;
+    }
+  }
+
+}
+
+
 void Stage::do_explosions() {
   //check for timers in explosion
   for (auto& w : this->explosions) {
@@ -30,69 +128,6 @@ void Stage::do_explosions() {
 }
 
 
-void Stage::update() {
-  float32 timeStep = Constants::time_step; //segundos del step
-  int32 velocityIterations = Constants::velocity_iterations;   //how strongly to correct velocity
-  int32 positionIterations = Constants::position_iterations;   //how strongly to correct position
-
-  this->world->Step( timeStep, velocityIterations, positionIterations);
-
-  //check for timers in explosion
-  this->do_explosions();
-  //delete weapons exploded and dead worms
-  this->clean_dead_bodies();
-
-  //update worms: set vel 0 for "stopped" worms and static
-  this->update_worms();
-
-  //check falling worms
-  this->worms.at(this->turnHandler->get_worm_turn_id())->update_state();
-
-  //check if player change
-  this->turnHandler->update_player(this->worms);
-
-  
-}
-
-bool Stage::finished() {
-  return this->finish;
-}
-
-void Stage::end() {
-  this->finish = true;
-}
-
-void Stage::clean_dead_bodies() {
-  //delete "dead" explosions
-  for (std::vector<Weapon*>::iterator it = this->explosions.begin();
-      it != this->explosions.end();) {
-     if(! (*it)->is_alive()) {
-       //printf("it: %x", *it);
-       delete *it;
-       it = this->explosions.erase(it);
-     } else {
-       if ((*it)->has_timer() && (*it)->is_time_to_explode()) {
-         (*it)->explode();
-       }
-       ++it;
-     }
-  }
-
-  //delete dead worms
-  std::map<int, Worm*>::iterator it = this->worms.begin();
-  while (it != this->worms.end()) {
-    if (!it->second->is_alive()) {
-      this->turnHandler->delete_worm(it->second->get_player_id(), it->first,this->worms);
-      delete it->second;
-      it = this->worms.erase(it);
-    } else {
-      ++it;
-    }
-  }
-
-}
-
-
 
 /**
    Update the velocity of the worms
@@ -107,10 +142,17 @@ void Stage::update_worms() {
     } else{
        w.second->stop_moving();
     }
-    
    }
+}
 
- }
+bool Stage::is_in_movement() {
+  for (auto &w : this->worms) {
+    if(w.second->get_velocity().Length() > 0.3){
+      return true;
+    }
+    return false;
+  }
+}
 
 
 
@@ -226,31 +268,20 @@ StageDTO Stage::get_stageDTO() {
     s.weapons.push_back(weapon);
   }
 
-  s.worm_turn = this->current_player->get_id();
+  s.worm_turn = this->turnHandler->get_worm_turn_id();
   return s;
 }
 
-void Stage::load_initial_stage(std::string file_name){
-  StageLoader yaml_loader(file_name);
-  Stage_y s = yaml_loader.load_stage();
-  oLog() << "loading initial stage:\n";
-  for(auto b: s.beams){
-    oLog() << "beam_y { x: " << b.pos_x << ", y: " << b.pos_y << ", size: " << b.size 
-    << ", inclination:" << b.inclination << ", direction: " << b.direction <<"}" << endl;
-	this->beams.push_back(new Beam(this->world, b.size, b.pos_x, b.pos_y, b.inclination,static_cast<Direction>(b.direction)));
 
-  }
-  for(auto & w: s.worms){
-    oLog() << "worms: { id: "<< w.id << ", x: "<< w.pos_x << " , y: " << w.pos_y
-       << ", direction: "<< w.direction << ", inclination: "<<w.inclination << ", life: " << w.life <<" }"<< endl;
-    Worm* worm = new Worm(this->world, w.pos_x, w.pos_y, w.id, static_cast<Direction>( w.direction));
-    this->worms.emplace(w.id, worm);
-  }
+
+bool Stage::finished() {
+  return this->finish;
 }
 
-void Stage::set_worms_to_players(int total_players) {
-	this->turnHandler = new TurnHandler(total_players, this->worms);
+void Stage::end() {
+  this->finish = true;
 }
+
 
 
 Stage::~Stage() {
