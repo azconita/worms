@@ -39,17 +39,23 @@ void Stage::update() {
 
   //check for timers in explosion
   this->do_explosions();
-  //delete weapons exploded and dead worms
-  this->clean_dead_bodies();
-  //check if player change
-  //update worms: set vel 0 for "stopped" worms and static
-  this->update_worms();
-
-  this->update_player();
 
   //check falling worms
   this->current_player->update_state();
+
+  //update worms: set vel 0 for "stopped" worms and static
+  this->update_worms();     //esto se hace antes del clean dead bpdies 
+                            //porque sino puede que el gusano de turno muera
+
+  //delete weapons exploded and dead worms
+  this->clean_dead_bodies();
+  
+  //check if player change
+  this->update_player();
+
+
   //printf("curr state: %i\n", this->current_player->get_state());
+  printf("termino el update\n");
 }
 
 bool Stage::finished() {
@@ -99,7 +105,7 @@ void Stage::update_player() {
     this->current_player->took_weapon(None);
     this->change_player();
     this->change = false;
-    this->player_time = time(NULL);
+    this->player_time = time(NULL);;
   }
 }
 
@@ -108,7 +114,7 @@ void Stage::change_player() {
   int new_player_id = ((this->last_player_id + 1) == this->players_turn.size()) ? 0 : this->last_player_id + 1;
   printf("[Stage] next player id: %d,", new_player_id);
   this->current_player = this->worms[this->players_turn.at(new_player_id).get_next()];
-  printf("[Stag] worm id: %d\n", this->current_player->get_id());
+  printf("worm id: %d\n", this->current_player->get_id());
   this->update_body_types();
   this->last_player_id = new_player_id;
 }
@@ -224,6 +230,19 @@ void Stage::set_position(ElementDTO & element , b2Vec2 & center){
 }
 
 StageDTO Stage::get_stageDTO() {
+printf("queremos un stage\n");
+
+  for (auto it = this->players_turn.cbegin(); it != this->players_turn.cend(); ) {
+    if (it->second.is_empty()){
+      printf("[Stage]  LOSER %i\n", it->first);
+      it = this->players_turn.erase(it++); 
+      if(this->players_turn.size() == 1){
+        printf("[Stage] WINNER %i\n", this->players_turn.begin()->first );
+      }
+    } else {
+      ++it;
+    }
+  }
   StageDTO s;
   for (auto w: this->worms) {
     ElementDTO worm_element;
@@ -314,13 +333,14 @@ void Stage::set_worms_to_players(int total_players) {
     this->players_turn.emplace(i, TurnHelper(v, i));
     for (auto worm_id: v) {
       this->worms.at(worm_id)->set_player_id(i);
+      printf("seteando jugador\n");
     }
   }
 
   //compensar jugador con menos gusanos!!
   this->current_player = this->worms[0];
   this->last_player_id = this->current_player->get_player_id();
-   this->update_body_types();
+  this->update_body_types();
 }
 
 
