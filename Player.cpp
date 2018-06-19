@@ -49,7 +49,7 @@ void Player::send() {
       out << YAML::Value << s;
       out << YAML::EndMap;
       try{
-        //printf("se envia %s\n", out.c_str());
+        printf("se envia %s\n", out.c_str());
         this->client.send_dto(out.c_str());
       }catch(Error e){
         oLog() << "Player quit (peer socket closed).";

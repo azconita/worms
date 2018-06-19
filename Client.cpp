@@ -91,6 +91,16 @@ void Client::run(){
         turn_worm_iter = graphic_designer.get_turn_worm(s.worm_turn);
 
         if((t1 -t0) > 17) {
+            printf("turnoo %i\n", s.worm_turn);
+            printf("ganooo %i\n", s.winner);
+
+            if(s.winner != -1){
+                if(s.winner == this->id){
+                    printf("GANE\n");
+                }else{
+                    printf("PERDIII\n");
+                }
+            }
 
             // Nueva referencia de tiempo
             t0 = SDL_GetTicks();

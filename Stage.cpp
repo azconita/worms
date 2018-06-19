@@ -52,10 +52,6 @@ void Stage::update() {
   
   //check if player change
   this->update_player();
-
-
-  //printf("curr state: %i\n", this->current_player->get_state());
-  printf("termino el update\n");
 }
 
 bool Stage::finished() {
@@ -229,21 +225,31 @@ void Stage::set_position(ElementDTO & element , b2Vec2 & center){
 
 }
 
-StageDTO Stage::get_stageDTO() {
-printf("queremos un stage\n");
-
+bool Stage::check_winners(StageDTO *s){
   for (auto it = this->players_turn.cbegin(); it != this->players_turn.cend(); ) {
     if (it->second.is_empty()){
       printf("[Stage]  LOSER %i\n", it->first);
       it = this->players_turn.erase(it++); 
       if(this->players_turn.size() == 1){
         printf("[Stage] WINNER %i\n", this->players_turn.begin()->first );
+        s->winner = it->first;
+        this->finish = true;
+        return true;
       }
     } else {
       ++it;
     }
   }
+  return false;
+}
+
+StageDTO Stage::get_stageDTO() {
   StageDTO s;
+  if(this->check_winners(&s)){
+    s.winner = 1;
+    return s;
+  }
+  
   for (auto w: this->worms) {
     ElementDTO worm_element;
     b2Vec2 center = w.second->get_center();

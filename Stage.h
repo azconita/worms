@@ -64,6 +64,7 @@ private:
   void change_player();
   void update_body_types();
   void update_worms();
+  bool check_winners(StageDTO *s);
 
   void load_initial_stage(std::string file_name);
   void set_position(ElementDTO & element ,b2Vec2 & center);
