@@ -95,7 +95,7 @@ void Client::run(){
 
         if(s.winner != -1){
             finish = true;
-                if(s.winner == this->id){
+                if(s.winner != this->id){
                         printf("GANE\n");
                         SDL_Flip(screen);
                             graphic_designer.won();
