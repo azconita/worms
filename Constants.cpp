@@ -38,6 +38,7 @@ namespace Constants {
   //bazooka
   extern const float bazooka_damage = config["bazooka_damage"].as<float>();
   extern const float bazooka_radius = config["bazooka_radius"].as<float>();
+  extern const float bazooka_ammo = 10000;
   //dynamite
   extern const float dynamite_damage = 50;
   extern const float dynamite_radius = 4;
@@ -59,6 +60,7 @@ namespace Constants {
   //green grenade
   extern const float greengrenade_damage = 30;
   extern const float greengrenade_radius = 2;
+  extern const float greengrenade_ammo = 10000;
   //holy grenade
   extern const float holygrenade_damage = 110;
   extern const float holygrenade_radius = 8;
@@ -77,6 +79,8 @@ namespace Constants {
   //baseball bat
   extern const float baseballbat_damage = 10;
   extern const float baseballbat_radius = 1;
-
+  extern const float baseballbat_ammo = 10000;
+  //teleport
+  extern const float teleport_ammo = 10000;
 
 } /* namespace Constants */

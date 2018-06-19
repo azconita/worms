@@ -119,7 +119,7 @@ void GraphicDesigner::show_elements(StageDTO s, SDL_Surface *screen){
     this->show_beams(s,screen,camera_position);
     this->show_worms(s,screen,camera_position);
     this->show_weapon(s,screen,camera_position);
-    this->show_weapons_menu();
+    this->show_weapons_menu(s);
 }
 
 
@@ -322,7 +322,7 @@ void GraphicDesigner::show_powerbar(int power){
 
 }
 
-void GraphicDesigner::show_weapons_menu(){
+void GraphicDesigner::show_weapons_menu(StageDTO& s){
     SDL_Rect position;
     position.x = this->screen_width - this->weapons_menu->w;
     position.y = this->screen_height/2- this->weapons_menu->h/2;

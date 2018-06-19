@@ -40,34 +40,44 @@ namespace Constants {
   //bazooka
   extern const float bazooka_damage;
   extern const float bazooka_radius;
+  extern const float bazooka_ammo;
   //dynamite
   extern const float dynamite_damage;
   extern const float dynamite_radius;
+  extern const float dynamite_ammo;
   //air attack
   extern const float airattack_damage;
   extern const float airattack_radius;
+  extern const float airattack_ammo;
   //mortar
   extern const float mortar_damage;
   extern const float mortar_radius;
+  extern const float mortar_ammo;
   //fragment
   extern const float fragment_damage;
   extern const float fragment_radius;
   //green grenade
   extern const float greengrenade_damage;
   extern const float greengrenade_radius;
+  extern const float greengrenade_ammo;
   //holy grenade
   extern const float holygrenade_damage;
   extern const float holygrenade_radius;
+  extern const float holygrenade_ammo;
   //red grenade
   extern const float redgrenade_damage;
   extern const float redgrenade_radius;
+  extern const float redgrenade_ammo;
   //banana
   extern const float banana_damage;
   extern const float banana_radius;
+  extern const float banana_ammo;
   //baseball bat
   extern const float baseballbat_damage;
   extern const float baseballbat_radius;
-
+  extern const float baseballbat_ammo;
+  //teleport
+  extern const float teleport_ammo;
 
 } /* namespace Constants */
 

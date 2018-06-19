@@ -2,7 +2,7 @@
 #include "Stage.h"  
 
 //config: yaml: https://github.com/jbeder/yaml-cpp/
-Stage::Stage(std::string file_name) {
+Stage::Stage(std::string file_name) : ammo() {
   std::cout << file_name << '\n';
   b2Vec2 gravity(0, Constants::gravity); //normal earth gravity
   this->world = new b2World(gravity);
@@ -138,16 +138,57 @@ void Stage::update_worms() {
       this->change = false; 
       // si los gusanos se estan moviendo quizas es por una explosion
       //no hay que cambiar de turno porque se vuelven estaticos
-    } else{
+    } else {
        w.second->stop_moving();
     }
-    
-   }
+  }
+}
 
- }
+void Stage::shoot_weapon(int worm, ActionDTO& action) {
 
+  oLog() << "Se disparo el arma al punto ("<< action.pos_x <<"," << action.pos_y <<") en metros,"//
+        <<" con una potencia de" << action.power <<  "apuntando a"  << action.weapon_degrees <<" grados" //
+        << "en la dire "<< action.direction <<" y con timer" << action.time_to_explode << "\n";
 
+  if (action.weapon == Teleport) {
+    this->worms[worm]->teleport(action.pos_x, action.pos_y);
 
+  } else if (action.weapon == W_Air_Attack) {
+    for (int i = 0; i < 6; ++i) {
+      Weapon* w = new Weapon(this->world, action.weapon, action.pos_x, 0 - i,
+          this->wind, &this->explosions);
+      this->explosions.push_back(w);
+    }
+
+  } else {
+    //Weapon* w = new Weapon(this->world, action.weapon, this->current_player->get_points()[0].x, this->current_player->get_points()[0].y, this->wind);
+    int d = (action.direction == Right) ? 1 : -1;
+    printf("[Stage] posicion del arma%i, %i\n", action.pos_x, action.pos_y);
+    Weapon* w = new Weapon(this->world, action.weapon, action.pos_x,
+        action.pos_y, this->wind, &this->explosions);
+    w->shoot(action.power * 100, action.weapon_degrees, action.direction,
+        action.time_to_explode);
+    this->explosions.push_back(w);
+  }
+}
+
+void Stage::worm_make_move(int worm, ActionDTO& action) {
+  switch (action.move) {
+    case Walk_right:
+      this->worms[worm]->move_right();
+      break;
+    case Walk_left:
+      this->worms[worm]->move_left();
+      break;
+    case Jump:
+      if (this->worms[worm]->get_state() == Still)
+        this->worms[worm]->jump(action.direction);
+      break;
+    case Jump_back:
+      this->worms[worm]->jump_back();
+      break;
+  }
+}
 
 void Stage::make_action(ActionDTO & action) {
   int worm = action.worm_id;
@@ -158,52 +199,19 @@ void Stage::make_action(ActionDTO & action) {
   }
   switch (action.type) {
     case (Make_move):{
-      switch(action.move){
-        case Walk_right:
-          this->worms[worm]->move_right();
-          break;
-        case Walk_left:
-          this->worms[worm]->move_left();
-          break;
-        case Jump:
-          if (this->worms[worm]->get_state()==Still)
-            this->worms[worm]->jump(action.direction);
-          break;
-        case Jump_back:
-          this->worms[worm]->jump_back();
-          break;
-      }
+      worm_make_move(worm, action);
       break;
     }
+
     case(Take_weapon):{
       // cuando sea el fin del turno, asignar NONE al arma del gusano
       this->worms[worm]->took_weapon(action.weapon);
       break;
-
     }
 
     case(Shot_weapon):{
-      oLog() << "Se disparo el arma al punto ("<< action.pos_x <<"," << action.pos_y <<") en metros,"//
-      <<" con una potencia de" << action.power <<  "apuntando a"  << action.weapon_degrees <<" grados" //
-      << "en la dire "<< action.direction <<" y con timer" << action.time_to_explode << "\n";
-
-      //switch(action.weapon) {
-      if (action.weapon == Teleport) {
-        this->worms[worm]->teleport(action.pos_x, action.pos_y);
-      } else if (action.weapon == W_Air_Attack) {
-        //TODO: fix : que no caigan todos juntos! (hace que exploten antes)
-        for (int i = 0; i < 6; ++ i) {
-          Weapon* w = new Weapon(this->world, action.weapon, action.pos_x, 0 - i, this->wind, &this->explosions);
-          this->explosions.push_back(w);
-        }
-      } else {
-        //Weapon* w = new Weapon(this->world, action.weapon, this->current_player->get_points()[0].x, this->current_player->get_points()[0].y, this->wind);
-        int d = (action.direction == Right) ? 1 : -1;
-        printf("[Stage] posicion del arma%i, %i\n",action.pos_x, action.pos_y );
-        Weapon* w = new Weapon(this->world, action.weapon, action.pos_x , action.pos_y , this->wind, &this->explosions);
-        w->shoot(action.power*100, action.weapon_degrees, action.direction, action.time_to_explode);
-        this->explosions.push_back(w);
-      }
+      if (this->ammo.use(action.weapon))
+        shoot_weapon(worm, action);
       break;
     }
   }
