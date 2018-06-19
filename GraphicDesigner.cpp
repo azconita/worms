@@ -231,6 +231,8 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen, SDL_Rect camer
         if(is_timer_weapon(w.weapon)){
             show_timer(w.timer);
         }
+        if (w.weapon == W_Fragment)
+          printf("fragment: pos: %f,%f\n", w.pos_x, w.pos_y);
     }
 
 }

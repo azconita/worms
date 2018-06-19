@@ -188,14 +188,14 @@ void Stage::make_action(ActionDTO & action) {
       } else if (action.weapon == W_Air_Attack) {
         //TODO: fix : que no caigan todos juntos! (hace que exploten antes)
         for (int i = 0; i < 6; ++ i) {
-          Weapon* w = new Weapon(this->world, action.weapon, action.pos_x, 0 - i, this->wind);
+          Weapon* w = new Weapon(this->world, action.weapon, action.pos_x, 0 - i, this->wind, &this->explosions);
           this->explosions.push_back(w);
         }
       } else {
         //Weapon* w = new Weapon(this->world, action.weapon, this->current_player->get_points()[0].x, this->current_player->get_points()[0].y, this->wind);
         int d = (action.direction == Right) ? 1 : -1;
         printf("[Stage] posicion del arma%i, %i\n",action.pos_x, action.pos_y );
-        Weapon* w = new Weapon(this->world, action.weapon, action.pos_x , action.pos_y , this->wind);
+        Weapon* w = new Weapon(this->world, action.weapon, action.pos_x , action.pos_y , this->wind, &this->explosions);
         w->shoot(action.power*100, action.weapon_degrees, action.direction, action.time_to_explode);
         this->explosions.push_back(w);
       }
@@ -251,7 +251,9 @@ StageDTO Stage::get_stageDTO() {
     set_position(weapon, center);
     weapon.weapon = w->get_name();
     weapon.timer = w->get_timer();
-    printf("[Stage] timer sent: %i\n", weapon.timer);
+    //printf("[Stage] timer sent: %i\n", weapon.timer);
+    if (weapon.weapon == W_Fragment)
+      printf("fragment: pos: %f, %f\n", weapon.pos_x, weapon.pos_y);
     s.weapons.push_back(weapon);
   }
 
