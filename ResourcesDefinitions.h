@@ -256,8 +256,22 @@
 #define TIMER_FONT "resources/DS-DIGI.ttf"
 #define TIMER_SIZE 35
 
-
 #define BACKGROUND "resources/background_forest.bmp"
 
+
+
+#define WON "resources/won.bmp"
+#define WON_R 128
+#define WON_G 128
+#define WON_B 192
+#define WON_COLUMNS 1
+#define WON_ROWS 129
+
+#define LOST "resources/lost.bmp"
+#define LOST_R 128
+#define LOST_G 128
+#define LOST_B 192
+#define LOST_COLUMNS 1
+#define LOST_ROWS 129
 
 #endif

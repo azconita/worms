@@ -97,9 +97,17 @@ void Client::run(){
             if(s.winner != -1){
                 if(s.winner == this->id){
                     printf("GANE\n");
+                    SDL_Flip(screen);
+                        graphic_designer.won();
+                    
                 }else{
                     printf("PERDIII\n");
+                    SDL_Flip(screen);
+                    graphic_designer.lost();
                 }
+
+                //std::chrono::seconds sec(3);    
+                //std::this_thread::sleep_for(sec);
             }
 
             // Nueva referencia de tiempo

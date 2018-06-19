@@ -81,6 +81,8 @@ public:
 	void resize(int h, int w);
 	Weapon_Name choose_weapon(int x, int y);
 	void show_timer(int second);
+	void won();
+ 	void lost();
 	virtual ~GraphicDesigner();
 };
 
