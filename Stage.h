@@ -63,7 +63,7 @@ private:
   void clean_dead_bodies();
   void update_player();
   void change_player();
-  void update_body_types();
+  void update_body_types(bool first_time);
   bool update_worms();
   bool is_in_movement();
   bool check_winners(StageDTO *s);

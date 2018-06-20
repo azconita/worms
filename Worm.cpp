@@ -321,16 +321,19 @@ void Worm::stop_moving() {
   this->body->SetLinearVelocity(b2Vec2(0,0));
 }
 
-void Worm::set_static() {
-  if(this->body->GetType() ==b2_staticBody ){
+void Worm::set_static(bool first_time){
+   if(this->body->GetType() ==b2_staticBody ){
     return;
   }
   b2Vec2 center = this->get_center();
   this->body->SetType(b2_staticBody);
-  this->body->SetTransform(b2Vec2(center.x,center.y - Constants::worm_height/2),0); 
+  if(first_time){
+    this->body->SetTransform(b2Vec2(center.x,center.y - Constants::worm_height/2),0); 
+  }
   printf("[wORM] STATICO\n");
-  //esto es porque se mueve cuando lo convierto por un bug de box2d
+
 }
+
 void Worm::set_dynamic() {
   this->body->SetType(b2_dynamicBody);
 }

@@ -10,9 +10,9 @@ stage:
       size: 6
       inclination: 0
       direction: 0
-    - pos_x: 55
+    - pos_x: 50
       pos_y: 15
-      size: 3
+      size: 6
       inclination: 0
       direction: 1
     - pos_x: 45
@@ -29,7 +29,7 @@ stage:
       life: 100
       inclination: 0
     - id: 1
-      pos_x: 55
+      pos_x: 50
       pos_y: 14
       direction: 1
       life: 100

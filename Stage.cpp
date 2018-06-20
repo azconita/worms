@@ -47,9 +47,7 @@ void Stage::update() {
 
   printf("[Stage] se fija los que se estan cayendo\n");       
 
-  if(this->current_player == NULL){
-    printf("no hay current player\n");
-  }
+
   //check falling worms
   this->current_player->update_state(); //esto se hace antes del clean dead bpdies 
                                         //porque sino puede que el gusano de turno muera
@@ -175,13 +173,13 @@ void Stage::change_player() {
 
   this->current_player = this->worms[this->players_turn.at(new_player_id).get_next()];
   printf("worm id: %d\n", this->current_player->get_id());
-  this->update_body_types();
+  this->update_body_types(false);
   this->last_player_id = new_player_id;
 }
 
 
 
-void Stage::update_body_types(){
+void Stage::update_body_types(bool first_time){
 if(this->current_player == NULL){
   throw Error("No se puede cambiar el body type si no es el turno de nadie");
     
@@ -191,7 +189,7 @@ for (auto &w : this->worms) {
    if (w.first != this->current_player->get_id()){
        //TODO: no deberia hacerlo siempre!!
        //iterar por los cuerpos del world??
-       w.second->set_static();
+       w.second->set_static(first_time);
 
      }else{
        w.second->set_dynamic();
@@ -406,7 +404,7 @@ void Stage::set_worms_to_players(int total_players) {
   printf("[Stage] empieza a jugar el gusano %i \n", this->current_player->get_id() );
   this->last_player_id = this->current_player->get_player_id();
   printf(" que es del jugador %i\n", this->last_player_id );
-  this->update_body_types();
+  this->update_body_types(true);
 }
 
 
