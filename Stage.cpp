@@ -24,7 +24,9 @@ void Stage::do_explosions() {
             ++it;
         }
       w->explode();
-      this->change = true;
+      printf("[Stage] se hizo una explosion, listo para cambiar de jugaro\n");
+      this->current_player->took_weapon(None);
+      this->current_player = NULL;
     }
   }
 }
@@ -35,20 +37,28 @@ void Stage::update() {
   int32 velocityIterations = Constants::velocity_iterations;   //how strongly to correct velocity
   int32 positionIterations = Constants::position_iterations;   //how strongly to correct position
 
+  printf("[Stage] hace un step\n");
+
   this->world->Step( timeStep, velocityIterations, positionIterations);
 
+  printf("[Stage] check for explosiones\n");
   //check for timers in explosion
   this->do_explosions();
 
+  printf("[Stage] se fija los que se estan cayendo\n");       
+
+  if(this->current_player == NULL){
+    printf("no hay current player\n");
+  }
   //check falling worms
-  this->current_player->update_state();
-
-  //update worms: set vel 0 for "stopped" worms and static
-  this->update_worms();     //esto se hace antes del clean dead bpdies 
-                            //porque sino puede que el gusano de turno muera
-
+  this->current_player->update_state(); //esto se hace antes del clean dead bpdies 
+                                        //porque sino puede que el gusano de turno muera
+   
+   printf("[Stage] borra gusanos muertos\n");
   //delete weapons exploded and dead worms
   this->clean_dead_bodies();
+
+  printf("[Stage] update del player\n");
   
   //check if player change
   this->update_player();
@@ -83,7 +93,8 @@ void Stage::clean_dead_bodies() {
   while (it != this->worms.end()) {
     if (!it->second->is_alive()) {
       if (it->second == this->current_player)
-        this->change = true;
+        this->current_player = NULL;
+        printf("[Stage] se murio un gusano, listo para cambiar de jugador\n");
       this->players_turn.at(it->second->get_player_id()).delete_id(it->first);
       delete it->second;
       it = this->worms.erase(it);
@@ -95,28 +106,88 @@ void Stage::clean_dead_bodies() {
 }
 
 void Stage::update_player() {
-  //printf("player time: %d\n", time(NULL) - this->player_time);
-  if (this->change || (time(NULL) - this->player_time > Constants::worm_turn_time)) {
+    //update worms: set vel 0 for "stopped" worms and static
+  bool any_worm_in_movement = this->is_in_movement(); 
+  if (this->current_player == NULL || (time(NULL) - this->player_time > Constants::worm_turn_time) ) {
+    if(any_worm_in_movement){
+      printf("[Stage] queria cambiar de jugador pero se estan moviendo entonces sigue sin turno\n");
+      return;
+    }
     printf("[Stage] change player\n");
-    this->current_player->took_weapon(None);
     this->change_player();
-    this->change = false;
-    this->player_time = time(NULL);;
+    this->player_time = time(NULL);
+  }
+}
+
+bool Stage::is_in_movement(){
+  if(this->update_worms() == true){
+    return true;
+  }
+  for(auto &w: this->weapons){
+    if(w->get_velocity().Length() > 0.5){
+      return true;
+    }
+  }
+  return false;
+}
+
+
+/**
+   Update the velocity of the worms
+  made teleport effective
+  devuelve true si hay algun gusano moviendose
+  sino false
+*/
+bool Stage::update_worms() {
+  bool any_worm_in_movement = false;
+  for (auto &w : this->worms) {
+    if(w.second->disappear()){
+      printf("[Stage] el gusano ya se teletransporto, esta listo para cambiar de jugador\n");
+      this->current_player = NULL;
+    }
+    if(w.second->get_velocity().Length() > 0.5){
+      // si los gusanos se estan moviendo quizas es por una explosion
+      //no hay que cambiar de turno porque se vuelven estaticos
+      any_worm_in_movement = true;
+    } else {
+       w.second->stop_moving();
+    }
+    return any_worm_in_movement;
   }
 }
 
 //cuantos players puede haber????
 void Stage::change_player() {
+  int step = 0;
+  
   int new_player_id = ((this->last_player_id + 1) == this->players_turn.size()) ? 0 : this->last_player_id + 1;
   printf("[Stage] next player id: %d,", new_player_id);
+  while(this->players_turn.at(new_player_id).is_empty()){
+   
+    int new_player_id = ((this->last_player_id + 1) == this->players_turn.size()) ? 0 : this->last_player_id + 1;
+    printf("[Stage] ese jugador estaba muerto, pasamos a : %d,", new_player_id);
+    step ++;
+    if(step >= this->players_turn.size()){
+      printf("[Stage] estan todos los gusanos muertos\n");
+      return;
+    }
+  };
+
   this->current_player = this->worms[this->players_turn.at(new_player_id).get_next()];
   printf("worm id: %d\n", this->current_player->get_id());
   this->update_body_types();
   this->last_player_id = new_player_id;
 }
 
+
+
 void Stage::update_body_types(){
+if(this->current_player == NULL){
+  throw Error("No se puede cambiar el body type si no es el turno de nadie");
+    
+}
 for (auto &w : this->worms) {
+
    if (w.first != this->current_player->get_id()){
        //TODO: no deberia hacerlo siempre!!
        //iterar por los cuerpos del world??
@@ -129,22 +200,7 @@ for (auto &w : this->worms) {
  }
 
 
-/**
-   Update the velocity of the worms
-   and made teleport effective
-*/
-void Stage::update_worms() {
-  for (auto &w : this->worms) {
-    w.second->disappear();
-    if(w.second->get_velocity().Length() > 0.3){
-      this->change = false; 
-      // si los gusanos se estan moviendo quizas es por una explosion
-      //no hay que cambiar de turno porque se vuelven estaticos
-    } else {
-       w.second->stop_moving();
-    }
-  }
-}
+
 
 void Stage::shoot_weapon(int worm, ActionDTO& action) {
 
@@ -277,6 +333,7 @@ StageDTO Stage::get_stageDTO() {
     s.beams.push_back(beam_element);
   }
 
+
   for (auto w: this->explosions) {
     ElementDTO weapon;
     if (w->get_name() == None){
@@ -294,8 +351,8 @@ StageDTO Stage::get_stageDTO() {
       printf("fragment: pos: %f, %f\n", weapon.pos_x, weapon.pos_y);
     s.weapons.push_back(weapon);
   }
-
-  s.worm_turn = this->current_player->get_id();
+  s.worm_turn = (this->current_player) ? this->current_player->get_id() : INTER_TURN;
+  printf("[Stage] envia el dto\n");
   return s;
 }
 
@@ -318,6 +375,7 @@ void Stage::load_initial_stage(std::string file_name){
 }
 
 void Stage::set_worms_to_players(int total_players) {
+  printf("[stage] cantidad de gusanos: %lu\n",this->worms.size() );
   //get vector of worms ids
   std::vector<int> ids;
   std::transform(this->worms.begin(), this->worms.end(), std::back_inserter(ids),
@@ -339,13 +397,15 @@ void Stage::set_worms_to_players(int total_players) {
     this->players_turn.emplace(i, TurnHelper(v, i));
     for (auto worm_id: v) {
       this->worms.at(worm_id)->set_player_id(i);
-      printf("seteando jugador\n");
+      printf("[Stage] al gusano %i le corresponde el jugador %i \n", worm_id, i);
     }
   }
-
+  
   //compensar jugador con menos gusanos!!
-  this->current_player = this->worms[0];
+  this->current_player = this->worms.begin()->second;
+  printf("[Stage] empieza a jugar el gusano %i \n", this->current_player->get_id() );
   this->last_player_id = this->current_player->get_player_id();
+  printf(" que es del jugador %i\n", this->last_player_id );
   this->update_body_types();
 }
 

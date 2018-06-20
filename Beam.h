@@ -28,6 +28,7 @@ private:
 public:
   Beam(b2World* world, float size, float x, float y, float angle, Direction direction);
   Beam(const Beam &other);
+  b2Vec2 get_velocity();
   virtual ~Beam();
   Beam* operator=(const Beam &other);
   std::vector<b2Vec2> get_points();

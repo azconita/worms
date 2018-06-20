@@ -59,6 +59,7 @@ Worm::~Worm() {
   this->world->DestroyBody(this->body);
 }
 
+
 Worm* Worm::operator=(const Worm &other) {
   std::cout << "wormDir=: " << this << '\n';
   this->body = other.body;
@@ -86,12 +87,14 @@ void Worm::change_state(State state){
 
 void Worm::update_state() {
   //caer es el estado "predominante"
+  printf("update state\n");
+  printf("%i\n",this->state );
   if(this->state == Worm_disappear){
     return;
   }
   this->handle_end_contact();
   b2Vec2 vel = this->body->GetLinearVelocity();
-  oLog() << "[Worm] inclination:"<< this->inclination <<" , velocity:" <<vel.y << endl;
+  std::cout << "[Worm] inclination:"<< this->inclination <<" , velocity:" <<vel.y << endl;
   if(this->inclination != 0 && this->inclination != 180){
     if(vel.y == 0){
       if(this->inclination < 90){
@@ -124,6 +127,7 @@ void Worm::update_state() {
     this->state = Still;
     printf("still");
   }
+  printf("termino el worm update state\n");
 }
 
 Direction Worm::get_direction(){
@@ -144,7 +148,7 @@ void Worm::calm(){
 }
 
 void Worm::move(float vel_x, float vel_y){
-  printf("velocidad: %f, %f\n",vel_x, vel_y);
+  //printf("velocidad: %f, %f\n",vel_x, vel_y);
   this->body->ApplyLinearImpulse(b2Vec2(vel_x,vel_y), this->body->GetWorldCenter(), true);
 }
 
@@ -245,6 +249,11 @@ void Worm::set_inclination(float angle, std::vector<b2Vec2> & beam_pos) {
 
 
 void  Worm::handle_end_contact(){
+  if(this->beam_pos.size() < 1){
+    return;
+  }
+  printf("hanfle end contact\n");
+  printf("%lu\n", this->beam_pos.size() );
   b2Vec2 center = this->get_center();
   float left_distane= round(sqrt(pow(center.x - this->beam_pos[0].x,2) + pow(center.y - this->beam_pos[0].y,2)));
   float right_distance = round(sqrt(pow(center.x - this->beam_pos[1].x,2) + pow(center.y - this->beam_pos[1].y,2)));
@@ -316,10 +325,10 @@ void Worm::set_static() {
   if(this->body->GetType() ==b2_staticBody ){
     return;
   }
-  printf("[wORM] STATICO\n");
   b2Vec2 center = this->get_center();
   this->body->SetType(b2_staticBody);
   this->body->SetTransform(b2Vec2(center.x,center.y - Constants::worm_height/2),0); 
+  printf("[wORM] STATICO\n");
   //esto es porque se mueve cuando lo convierto por un bug de box2d
 }
 void Worm::set_dynamic() {

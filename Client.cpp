@@ -93,6 +93,8 @@ void Client::run(){
             turn_worm_iter = graphic_designer.get_turn_worm(s.worm_turn);
         } 
 
+        printf("[Client] es el turno del gusano %i\n",s.worm_turn );
+
         if(s.winner != -1){
             finish = true;
                 if(s.winner != this->id){

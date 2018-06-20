@@ -64,24 +64,35 @@ void Game::run() {
   // inicializar players, colas, timer
   prepare();
   // start game!
+  StageDTO s;
+  ActionDTO action;
   while (!this->stage.finished()) {
     // sacar action de la cola: action de player o action del timer(update)
-    ActionDTO action = this->stage_queue.pop();
-    //printf("[Game] pop action: %d\n", action.type);
-    StageDTO s;
+    action = this->stage_queue.pop();
+    printf("[Game] pop action: %d\n", action.type);
+    
     if (action.type == Quit) {
+      printf("[Game] end game\n");
       //end game: send block with endgame??
       this->stage.end();
       s.worm_turn = -1;
       this->timer.stop();
     } else {
-      if (action.type == Timer_update)
+      if (action.type == Timer_update){
+        printf("[Game] update state\n");
         this->stage.update();
-      else
+      
+      }
+      else{
+        printf("[Game] le digo al stage que haga una accion\n");
         this->stage.make_action(action);
+        
+      }
       s = stage.get_stageDTO();
+      printf("[Game] pido un stage DTO\n");
     }
     for (auto &q : this->players_queues) {
+      printf("[Game] lo encolo en la cola de un player\n");
       q->push(s);
     }
   }

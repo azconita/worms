@@ -20,6 +20,8 @@
 #ifndef STAGE_H_
 #define STAGE_H_
 
+#define INTER_TURN -2
+
 extern logger oLog;
 
 class Stage {
@@ -38,7 +40,6 @@ private:
 
   std::map<int, TurnHelper> players_turn;
   int last_player_id = 0;
-  bool change = false;
   Worm* current_player = NULL;
   time_t player_time = time(NULL);
 
@@ -63,7 +64,8 @@ private:
   void update_player();
   void change_player();
   void update_body_types();
-  void update_worms();
+  bool update_worms();
+  bool is_in_movement();
   bool check_winners(StageDTO *s);
 
   void load_initial_stage(std::string file_name);

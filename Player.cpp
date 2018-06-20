@@ -41,8 +41,8 @@ void Player::send() {
     s.player_id = this->id;
     if (s.worm_turn == -1) {
       this->stop();
+      printf("[player] stop\n");
     } else {
-      //printf("[Player] send stage\n");
       YAML::Emitter out;
       out << YAML::BeginMap;
       out << YAML::Key << "stage";
@@ -60,12 +60,15 @@ void Player::send() {
         this->stop();
       }
     }
+    printf("termino un ciclo del Player::send\n");
   }
+  printf("[Player] se termino el ciclo send\n");
 }
 
 void Player::receive(){
   extern logger oLog;
   while (this->on) {
+    printf("[Player] recibiendo\n");
     try {
       std::string action_str = this->client.receive_dto();
       //printf("%s\n",action_str.c_str() );

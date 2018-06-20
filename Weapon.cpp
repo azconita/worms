@@ -303,6 +303,12 @@ bool Weapon::is_time_to_explode() {
   return false;
 }
 
+
+b2Vec2 Weapon::get_velocity(){
+  return this->body->GetLinearVelocity();
+}
+
+
 bool Weapon::has_timer() {
   return (this->timer != 0);
 }

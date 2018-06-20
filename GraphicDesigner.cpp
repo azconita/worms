@@ -191,6 +191,7 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen, SDL_Rect camer
 
         worms_iter->second.move(center_x, center_y,  worm_info.worm_state,worm_info.direction);
 
+        printf("[GraphicDesigner] turno del gusano %i\n", s.worm_turn );
         if(w.first == s.worm_turn && worms_iter->second.is_in_movement() && s.weapons.size() == 0){
             this->camera->follow(center_x,center_y); 
         }

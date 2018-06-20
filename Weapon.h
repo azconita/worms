@@ -58,6 +58,8 @@ public:
   void bazooka(int power, float degrees, int s);
   void grenade(int power, float degrees, int timer, int s);
   void dynamite(int time_to_explode, int s);
+  b2Vec2 get_velocity();
+
 
   void printPos() {
       std::cout << "explosion: " << this->body->GetPosition().x << ":" << this->body->GetPosition().y << "\n";
