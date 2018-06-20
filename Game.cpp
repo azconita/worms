@@ -7,13 +7,10 @@
 
 #include "Game.h"
 
-#include "BlockingQueue.h"
-#include "Constants.h"
-#include "Dtos.h"
 
 Game::Game(std::string &stage_name, Socket &client) :
            stage(stage_name),
-           stage_queue(100), timer(stage_queue) {
+           stage_queue(QUEUE_SIZE), timer(stage_queue) {
   this->players.push_back(new Player(client));
 }
 
@@ -40,8 +37,8 @@ void Game::add_player(Socket &client) {
   printf("[Game] add_player -> new Player\n");
   this->players.push_back(new Player(client));
   //TODO: init game? add worms to initiated game?
-  //if (this->players.size() == this->limit)
-   // this->start();
+  if (this->players.size() == this->limit)
+    this->start();
 }
 
 void Game::prepare() {
@@ -53,7 +50,7 @@ void Game::prepare() {
     p->set_id(i);
     i++;
     printf("[Game] prepare -> new BlockingQueue\n");
-    BlockingQueue<StageDTO>* q = new BlockingQueue<StageDTO>(100);
+    BlockingQueue<StageDTO>* q = new BlockingQueue<StageDTO>(QUEUE_SIZE);
     this->players_queues.push_back(q);
     p->add_stage_queues(q, &(this->stage_queue));
     printf("[Game]starting player\n");

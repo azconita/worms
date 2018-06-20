@@ -14,6 +14,7 @@
 
 
 
+
 YAML::Emitter& operator << (YAML::Emitter& out, const ElementDTO& e) {
   out << YAML::BeginMap;
   out << YAML::Key << "pos_x";
@@ -57,6 +58,8 @@ YAML::Emitter& operator << (YAML::Emitter& out, const StageDTO& s) {
   out << YAML::Value << s.weapons;
   out << YAML::Key << "worms";
   out << YAML::Value << s.worms;
+  out << YAML::Key << "winner";
+  out << YAML::Value << s.winner;
   out << YAML::EndMap;
   return out;
 }

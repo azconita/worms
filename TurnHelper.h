@@ -21,6 +21,7 @@ public:
 
   int get_next();
   void delete_id(int id);
+  bool is_empty() const;
 };
 
 #endif /* TURNHELPER_H_ */

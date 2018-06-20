@@ -5,9 +5,10 @@ float Client::get_pixels(float meter_position){
     return  PIXEL_CONSTANT*meter_position;
 }
 
-Client::Client(char * host_name, char * port)://
+Client::Client(char * host_name, char * port, bool fullscreen)://
     socket(host_name, port),
-    actions_queue(1000){
+    actions_queue(QUEUE_SIZE),
+    fullscreen(fullscreen){
     this->socket.connect_to_server();
 }
 
@@ -28,21 +29,23 @@ void Client::run(){
     }
 
     atexit(SDL_Quit);
-    int screen_width = SCREEN_DEFAULT_WITH;
+    int screen_width = SCREEN_DEFAULT_WIDTH;
     int screen_height = SCREEN_DEFAULT_HIGH;
 
-    const SDL_VideoInfo* info = SDL_GetVideoInfo();   //<-- calls SDL_GetVideoInfo();
-    screen_width = info->current_w;
-    screen_height = info->current_h;
+    if(this->fullscreen){
+        const SDL_VideoInfo* info = SDL_GetVideoInfo();   //<-- calls SDL_GetVideoInfo();
+        screen_width = info->current_w;
+        screen_height = info->current_h;
+    }
 
     oLog() << "Se crea la ventana de juego, height: " << screen_height << ", with: " << screen_width;
 
 
-    if(SDL_VideoModeOK(screen_width, screen_height, 24, SDL_HWSURFACE|SDL_DOUBLEBUF) == 0) {
+    if(SDL_VideoModeOK(screen_width, screen_height, 24, SDL_HWSURFACE|SDL_DOUBLEBUF|SDL_RESIZABLE) == 0) {
        throw Error("Modo video no compatible: ",SDL_GetError());
     }
 
-    this->screen = SDL_SetVideoMode(screen_width, screen_height, 24, SDL_HWSURFACE|SDL_DOUBLEBUF);
+    this->screen = SDL_SetVideoMode(screen_width, screen_height, 24, SDL_HWSURFACE|SDL_DOUBLEBUF|SDL_RESIZABLE);
     if(this->screen == NULL) {
        throw Error("No se pudo establecer el modo de video: ",SDL_GetError());
     }
@@ -53,7 +56,6 @@ void Client::run(){
     StageDTO s = receive_stage();
     this->id = s.player_id;
 
-    WaterAnimation water(screen_height, 3);
 
     GraphicDesigner graphic_designer(screen, screen_height,screen_width, s);
 
@@ -74,6 +76,7 @@ void Client::run(){
     auto t_slend = std::chrono::high_resolution_clock::now();
     std::chrono::nanoseconds t_tosleep(TIME_TO_SLEEP);
 
+    bool finish = false;
     bool running=true;
     while(running ){
 
@@ -85,10 +88,28 @@ void Client::run(){
         t1 = SDL_GetTicks();
 
         //update
-        StageDTO s = receive_stage();
-        turn_worm_iter = graphic_designer.get_turn_worm(s.worm_turn);
+        if(finish == false){
+            s = receive_stage();
+            turn_worm_iter = graphic_designer.get_turn_worm(s.worm_turn);
+        } 
+
+        if(s.winner != -1){
+            finish = true;
+                if(s.winner != this->id){
+                        printf("GANE\n");
+                        SDL_Flip(screen);
+                            graphic_designer.won();
+                        
+                }else{
+                        printf("PERDIII\n");
+                        SDL_Flip(screen);
+                        graphic_designer.lost();
+                }
+        }
 
         if((t1 -t0) > 17) {
+            printf("turnoo %i\n", s.worm_turn);
+            printf("ganooo %i\n", s.winner);
 
             // Nueva referencia de tiempo
             t0 = SDL_GetTicks();
@@ -99,8 +120,6 @@ void Client::run(){
             SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format,0,0,0));
             //dibujo las vigas y el agua
 
-            graphic_designer.show_background();
-            water.show(screen);
             graphic_designer.show_elements(s,screen);
 
         //TODO: revisar con foto de martin!!
@@ -111,9 +130,11 @@ void Client::run(){
         //std::this_thread::sleep_for(t_tosleep - t_diff);
         //t_slend = std::chrono::high_resolution_clock::now();
         }
-
     }
 }
+       
+
+
 
 Client::~Client(){
     SDL_FreeSurface(this->screen);

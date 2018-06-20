@@ -13,6 +13,7 @@
 
 
 #define GRADES_PER_STEP 5.8064516129 //180/31
+#define WORM_OFFSET 10
 
 
 

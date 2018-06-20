@@ -75,7 +75,7 @@ Picture::Picture(const char * bmp_path, Colour color, int columns, int rows){
         //SDL_Surface *tmp = IMG_Load(bmp_path);
         //tmp = rotozoomSurface(tmp,90.0, 10,0);     
         if (!tmp) {
-            throw Error("Couldn't create surface from image: ",bmp_path,SDL_GetError());
+            throw Error("Couldn't create surface from image: %s %s",bmp_path,SDL_GetError());
         }
 
         this->surface = SDL_DisplayFormat(tmp);
@@ -114,7 +114,7 @@ void Picture::draw(SDL_Surface *screen, int x, int y){
 
 void Picture::draw(SDL_Surface *screen, int x, int y, Direction direction){
     SDL_Rect position;
-    position.x = x - (this->w/2);
+    position.x = x - (this->w/4); //??????? correccion empirica
     position.y = y - (this->h/2);
     draw(screen, position, direction);
 }
@@ -126,9 +126,7 @@ void Picture::draw(SDL_Surface *screen, SDL_Rect position, Direction direction){
     position.h = dimention.h;
     position.w = dimention.w;
 
-    //printf("x = %i, y = %i, h = %i, w = %i \n",position.x, position.y, position.h, position.w );
-
-    if(this->default_direction != direction){
+     if(this->default_direction != direction){
         SDL_BlitSurface(this->flipped, &dimention, screen, &position);
         return;
     }

@@ -30,10 +30,12 @@ private:
   time_t t = 0;
   float radius = 0;
   float power = 0;
+  float shoot_power = 0;
   float damage = 50;
 
+  std::vector<Weapon*> *explosions;
 public:
-  Weapon(b2World *world, Weapon_Name name, float x, float y, float wind);
+  Weapon(b2World *world, Weapon_Name name, float x, float y, float wind, std::vector<Weapon*> *explosions);
   Weapon(const Weapon &other);
   virtual ~Weapon();
   Weapon* operator=(const Weapon &other);

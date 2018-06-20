@@ -21,7 +21,7 @@ Worm::Worm(b2World* world, float x, float y, int id, Direction direction) :
   std::cout << "wormDir: " << this << '\n';
   //add box fixture
   b2PolygonShape shape;
-  shape.SetAsBox(Constants::worm_size, Constants::worm_size);
+  shape.SetAsBox(Constants::worm_width, Constants::worm_height);
   b2FixtureDef myFixtureDef;
   myFixtureDef.shape = &shape;
   myFixtureDef.density = Constants::worm_density;
@@ -31,17 +31,27 @@ Worm::Worm(b2World* world, float x, float y, int id, Direction direction) :
   this->life = Constants::worm_initial_life;
   this->state = Still;
   this->direction = direction;
+  this->inclination = 0;
 }
 
-Worm::Worm(const Worm& other) : Entity(1), body(other.body), life(other.life), world(world) {
+Worm::Worm(const Worm& other) : Entity(1),
+                                body(other.body),
+                                life(other.life),
+                                world(world),
+                                player_id(other.player_id),
+                                direction(other.direction),
+                                state(other.state),
+                                id(other.id),
+                                inclination(inclination),
+                                weapon(other.weapon) {
   this->body->SetUserData(this);
   std::cout << "wormDir(&other): " << this << '\n';
 }
 
-Worm::Worm() : Entity(1), body(NULL), life(0), world(NULL) {
+/*Worm::Worm() : Entity(1), body(NULL), life(0), world(NULL) {
   std::cout << "wormDir(): " << this << '\n';
 
-}
+}*/
 
 Worm::~Worm() {
   // TODO Auto-generated destructor stub
@@ -53,6 +63,9 @@ Worm* Worm::operator=(const Worm &other) {
   std::cout << "wormDir=: " << this << '\n';
   this->body = other.body;
   this->life = other.life;
+  this->state = other.state;
+  this-> direction = other.direction;
+  this->inclination = other.inclination;
   this->body->SetUserData(this);
   return this;
 }
@@ -73,61 +86,123 @@ void Worm::change_state(State state){
 
 void Worm::update_state() {
   //caer es el estado "predominante"
-  b2Vec2 vel = this->body->GetLinearVelocity();
-  if (vel.y > 5 && this->state != Fall) {
-    this->state = Fall;
-    this->start_falling = this->body->GetPosition();
-    printf("start falling: %f, %f\n", this->start_falling.x, this->start_falling.y);
+  if(this->state == Worm_disappear){
     return;
+  }
+  this->handle_end_contact();
+  b2Vec2 vel = this->body->GetLinearVelocity();
+  oLog() << "[Worm] inclination:"<< this->inclination <<" , velocity:" <<vel.y << endl;
+  if(this->inclination != 0 && this->inclination != 180){
+    if(vel.y == 0){
+      if(this->inclination < 90){
+        this->state = (this->direction == Right)? Still_down : Still_up;
+      }else if(this->inclination > 90){
+        this->state = (this->direction == Right)? Still_up : Still_down;
+      }
+      return;
+    }
+  }
+  if (vel.y > 5 && this->state != Fall && this->inclination == 0) {
+      this->state = Fall;
+      this->start_falling = this->body->GetPosition();
+      oLog() << "[Worm] start falling: "<< this->start_falling.x << " "<<this->start_falling.y << endl;
+      return;
+  
   }
   if (std::abs(vel.y) < 1 && std::abs(vel.x) < 1 && this->state == Fall) {
     //estaba cayendo: chequear si fueron mas de 2m para hacerle dano al worm
     this->state = Still;
     float d = std::abs(this->start_falling.y - this->body->GetPosition().y);
-    printf("worm stops falling: %f\n", d);
+    oLog() << "[Worm] worm stops falling: " << d << endl;
     if (d > 2)
       this->apply_damage((d < 25) ? d : 25);
     return;
   }
-  if (this->state != Still && (this->state == Walk || this->state == Jump_state
-                || this->state == Jump_back_state || this->state == Fall)
-                && std::abs(vel.y) < 0.1 && std::abs(vel.x) < 0.1) {
+  if (this->state != Still && (std::abs(vel.y) < 0.1 && std::abs(vel.x) < 0.1 )
+     && (this->state == Walk || this->state == Jump_state || this->state == Jump_back_state
+      || this->state == Fall) || this->state == Walk_down || this->state == Walk_up) {
     this->state = Still;
+    printf("still");
   }
-
 }
 
 Direction Worm::get_direction(){
   return this-> direction;
 }
 
+void Worm::calm(){
+  if(this->state == Still_up || this->state == Walk_up){
+            change_state(Still_down);
+            return;
+  }
+  if(this->state == Still_down || this->state == Walk_down){
+            change_state(Still_up);
+            return;
+  } 
+  change_state(Still);
+
+}
+
+void Worm::move(float vel_x, float vel_y){
+  printf("velocidad: %f, %f\n",vel_x, vel_y);
+  this->body->ApplyLinearImpulse(b2Vec2(vel_x,vel_y), this->body->GetWorldCenter(), true);
+}
+
+
 void Worm::move_right() {
   if(this-> direction != Right){
       this->direction = Right;
-      change_state(Still);
+      this->calm();
       return;
   }
   this->change_state(Walk);
-  float impulse = this->get_impulse();
-  this->body->ApplyLinearImpulse(b2Vec2(Constants::worm_walk_velocity,0), this->body->GetWorldCenter(), true);
+  float v = Constants::worm_walk_velocity;
+  if(this->inclination == 0 || this->inclination == 180){
+    this->move(v, 0);
+    printf("derechaaa\n");
+    return;
+  }
+  if(this->inclination < 90){
+    std::cout <<"[Worm] derecha con angulo menor a noventa = baja" << endl;
+    this->state = Walk_down;
+    this->move(v*cos(this->inclination*M_PI/180),0);//-sin(this->inclination*M_PI/180));
+    this->handle_end_contact();
+  }else{  
+    std::cout <<"[Worm]derecha con angulo mayor a noventa = sube" << endl;
+    this->state = Walk_up;
+    this->move(-v*cos(this->inclination*M_PI/180),-v*sin(this->inclination*M_PI/180));
+    this->handle_end_contact();
+  }
 }
 
 void Worm::move_left() {
   if(this-> direction != Left){
       this->direction = Left;
-      change_state(Still);
+      this->calm();
       return;
   }
   this->change_state(Walk);
-
-  float impulse = this->get_impulse();
-  this->body->ApplyLinearImpulse(b2Vec2(-Constants::worm_walk_velocity,0), this->body->GetWorldCenter(), true);
+  float v = Constants::worm_walk_velocity;
+  if(this->inclination == 0 || this->inclination == 180){
+    this->move(-v, 0);
+    printf("izquierdaaa\n");
+    return;
+  }
+  else if(this->inclination < 90){
+    std::cout <<"[Worm]izquierda con angulo menor a noventa = sube" << endl;
+    this->state = Walk_up;
+    this->move(-v*cos(this->inclination*M_PI/180),-v*sin(this->inclination*M_PI/180));
+    this->handle_end_contact();
+  }else{  
+   std::cout << "[Worm]izquierda con angulo mayor a noventa = baja" << endl;
+    this->state = Walk_down;
+    this->move(cos(this->inclination*M_PI/180),0);
+    this->handle_end_contact();
+  }
 }
 
 //TODO: fix me!!
 void Worm::jump(Direction dir) {
-  std::cout << "dir: " << dir << "\n";
-  printf("jump.....%p\n", this->body );
   this->change_state(Jump_state);
   int d = (dir == Left) ? 1 : -1;
   float impulse = body->GetMass() * Constants::worm_jump_velocity;
@@ -136,8 +211,9 @@ void Worm::jump(Direction dir) {
 //TODO: fix me!!
 void Worm::jump_back() {
   this->change_state(Jump_back_state);
-  float impulse = this->get_impulse();
-  this->body->ApplyLinearImpulse(b2Vec2(-impulse,impulse), this->body->GetWorldCenter(), true);
+  int d = (this->direction == Left) ? 1 : -1;
+  float impulse =  body->GetMass() * Constants::worm_jump_velocity;//this->get_impulse();
+  this->body->ApplyLinearImpulse(b2Vec2(-d*impulse/2,impulse), this->body->GetWorldCenter(), true);
 }
 
 int Worm::get_life() {
@@ -161,6 +237,30 @@ void Worm::took_weapon(Weapon_Name weapon) {
   this->change_state(weapon_state->second);
 }
 
+void Worm::set_inclination(float angle, std::vector<b2Vec2> & beam_pos) {
+  oLog() <<"[Worm] nueva inclinacion " <<angle << endl;
+  this->inclination = angle;
+  this->beam_pos = beam_pos;
+}
+
+
+void  Worm::handle_end_contact(){
+  b2Vec2 center = this->get_center();
+  float left_distane= round(sqrt(pow(center.x - this->beam_pos[0].x,2) + pow(center.y - this->beam_pos[0].y,2)));
+  float right_distance = round(sqrt(pow(center.x - this->beam_pos[1].x,2) + pow(center.y - this->beam_pos[1].y,2)));
+  float min_dist = left_distane < right_distance ? left_distane : right_distance;
+  if(min_dist > 3){
+    this->no_inclination();
+  }
+
+}
+
+void Worm::no_inclination() {
+  oLog() <<"[Worm] se termino el contacto con la viga de inclinacion"<< this->inclination << endl;
+  this->inclination = 0;
+}
+
+
 void Worm::use_weapon(float x, float y, int power, float degrees) {
 
 }
@@ -169,15 +269,35 @@ int Worm::get_player_id() {
   return this->player_id;
 }
 
-void Worm::teleport(float x, float y, Direction dir) {
-  this->body->SetTransform(b2Vec2(x,y),body->GetAngle());
+void Worm::set_player_id(int i) {
+  this->player_id = i;
 }
 
+bool Worm::disappear(){
+  if(this->teleport_counter == 0){
+    this->body->SetTransform(b2Vec2(this->teleport_x,this->teleport_y),0);
+    this->body->ApplyLinearImpulse(b2Vec2(0,9.8), this->body->GetWorldCenter(), true);
+    this->teleport_counter = -1;
+    this->state = Fall;
+    return true;
+  }
+  this->teleport_counter--;
+  return false;
+
+}
+
+
+void Worm::teleport(float x, float y) {
+  this->teleport_counter = 49;
+  this->teleport_x = x;
+  this->teleport_y = y - Constants::worm_height/2;
+  this->state = Worm_disappear;
+}
+
+
 void Worm::apply_damage(int d) {
-  std::cout << "worm damaged: " << d << "\n";
+  oLog() <<"[Worm] worm damaged: " << d << endl;
   this->life = this->life - d;
-  //if (this->life <= 0)
-    //this->alive = false;
 }
 
 b2Vec2 Worm::get_center(){
@@ -186,4 +306,22 @@ b2Vec2 Worm::get_center(){
 
 b2Vec2 Worm::get_velocity(){
   return this->body->GetLinearVelocity();
+}
+
+void Worm::stop_moving() {
+  this->body->SetLinearVelocity(b2Vec2(0,0));
+}
+
+void Worm::set_static() {
+  if(this->body->GetType() ==b2_staticBody ){
+    return;
+  }
+  printf("[wORM] STATICO\n");
+  b2Vec2 center = this->get_center();
+  this->body->SetType(b2_staticBody);
+  this->body->SetTransform(b2Vec2(center.x,center.y - Constants::worm_height/2),0); 
+  //esto es porque se mueve cuando lo convierto por un bug de box2d
+}
+void Worm::set_dynamic() {
+  this->body->SetType(b2_dynamicBody);
 }

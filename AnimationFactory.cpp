@@ -63,9 +63,11 @@ std::map<State,Animation> AnimationFactory::get_wormsAnimations(){
     animations.insert(std::pair<State,Animation>(Walk,worm_walk));
 
     Animation worm_walk_up = AnimationFactory::get_worm_walk_up();
+    animations.insert(std::pair<State,Animation>(Still_up,worm_walk_up));
     animations.insert(std::pair<State,Animation>(Walk_up,worm_walk_up));
 
      Animation worm_walk_down = AnimationFactory::get_worm_walk_down();
+     animations.insert(std::pair<State,Animation>(Still_down,worm_walk_down));
     animations.insert(std::pair<State,Animation>(Walk_down,worm_walk_down));
 
     Animation worm_fall = AnimationFactory::get_worm_fall();
@@ -101,8 +103,9 @@ std::map<State,Animation> AnimationFactory::get_wormsAnimations(){
     Animation worm_holy_granade = AnimationFactory::get_worm_holy_granade();
     animations.insert(std::pair<State,Animation>(Worm_holy_granade,worm_holy_granade));
 
-    Animation worm_teletrans = AnimationFactory::get_worm_teletrans();
-    animations.insert(std::pair<State,Animation>(Worm_teletrans,worm_teletrans));
+    Animation worm_teleport = AnimationFactory::get_worm_teleport();
+    animations.insert(std::pair<State,Animation>(Worm_teleport,worm_teleport));
+    animations.insert(std::pair<State,Animation>(Worm_disappear,worm_teleport));
 
     Animation worm_air_attack = AnimationFactory::get_worm_air_attack();
     animations.insert(std::pair<State,Animation>(Worm_air_attack,worm_air_attack));
@@ -202,9 +205,9 @@ std::map<State,Animation> AnimationFactory::get_wormsAnimations(){
         return worm;
     }
 
-     Animation AnimationFactory::get_worm_teletrans(){
-        Colour colorkey(WORM_TELETRANS_R,WORM_TELETRANS_G,WORM_TELETRANS_B);
-        Animation worm(WORM_TELETRANS,colorkey,WORM_TELETRANS_COLUMNS,WORM_TELETRANS_ROWS);
+     Animation AnimationFactory::get_worm_teleport(){
+        Colour colorkey(WORM_TELEPORT_R,WORM_TELEPORT_G,WORM_TELEPORT_B);
+        Animation worm(WORM_TELEPORT,colorkey,WORM_TELEPORT_COLUMNS,WORM_TELEPORT_ROWS);
         return worm;
     }
 

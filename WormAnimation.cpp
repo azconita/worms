@@ -30,7 +30,7 @@ bool WormAnimation::has_weapon(){
 }
 
 bool WormAnimation::has_weapon_to_click(){
-    return (this->state == Worm_teletrans || this->state == Worm_air_attack);
+    return (this->state == Worm_teleport || this->state == Worm_air_attack);
 }
 
 bool WormAnimation::has_point_weapon(){ //armas con las que no se puede apuntar
@@ -122,29 +122,21 @@ void WormAnimation::move(int position_x, int position_y, State state, Direction 
 
     if(this->direction != direction){
         this->change_direction(direction);
-        return;
     }
 
-    if(this->state != state && this->state != Fall){
+    if(this->state != state){
         change_state(state);
     }
 
-    if(this->x = position_x && this->y == position_y && this->state == Fall){ // se cayo sobre una viga
-        this->state = Still;
-    }
-    if(this->state != Jump_state && position_y > this->y){ //aumenta el y, se cae
-        this->state = Fall;
-    }
     this->x = position_x;
     this->y = position_y;
     std::map<State,Animation>::iterator animation_iter = animations.find(this->state);
-
-    if(this->state == Jump_state || this->state == Jump_back_state ||this->state == Walk || this->state == Fall){
-        if(!animation_iter->second.continue_internal_movement()){
-            this->state = Still;
+    if(this->state == Jump_state || this->state == Jump_back_state ||this->state == Walk  || this->state == Fall//
+     || this->state == Walk_down || this->state == Walk_up || this->state == Worm_disappear){
+        while(!animation_iter->second.continue_internal_movement()){ 
+            // primero termino el movimiento que tenia
         }
     }
-
 }
 
 bool WormAnimation::is_in_movement(){
@@ -168,7 +160,7 @@ int WormAnimation::get_id() {
 
 void WormAnimation::show(SDL_Surface * screen, SDL_Rect camera_position){
     std::map<State,Animation>::iterator animation_iter = animations.find(this->state);
-    animation_iter->second.draw(screen, this->x -camera_position.x, this->y -camera_position.y);
+    animation_iter->second.draw(screen, this->x -camera_position.x, this->y -camera_position.y - WORM_OFFSET);
 }
 
 

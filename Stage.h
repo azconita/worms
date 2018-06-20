@@ -5,6 +5,7 @@
 #include <random>
 #include <Box2D/Box2D.h>
 #include "StageLoader.h"
+#include "Ammo.h"
 #include "Beam.h"
 #include "Weapon.h"
 #include "Constants.h"
@@ -31,6 +32,7 @@ private:
 
   WeaponExplosionListener explosion_listener;
   std::vector<Weapon*> explosions;
+  Ammo ammo;
 
   float wind;
 
@@ -60,11 +62,15 @@ private:
   void clean_dead_bodies();
   void update_player();
   void change_player();
-
+  void update_body_types();
+  void update_worms();
+  bool check_winners(StageDTO *s);
 
   void load_initial_stage(std::string file_name);
-
   void set_position(ElementDTO & element ,b2Vec2 & center);
+
+  void shoot_weapon(int worm, ActionDTO& action);
+  void worm_make_move(int worm, ActionDTO& action);
 };
 
 #endif

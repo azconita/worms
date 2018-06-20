@@ -79,7 +79,7 @@
 #define WORM_AIR_ATTACK_ROWS 10
 
 //un gusano con granada verde
-#define WORM_GREEN_GRANADE "resources/worm_greengranade.bmp"
+#define WORM_GREEN_GRANADE "resources/worm_greengrenade.bmp"
 #define WORM_GREEN_GRANADE_R 128
 #define WORM_GREEN_GRANADE_G 128
 #define WORM_GREEN_GRANADE_B 192
@@ -87,7 +87,7 @@
 #define WORM_GREEN_GRANADE_ROWS 32
 
 //un gusano con granada roja 
-#define WORM_RED_GRANADE "resources/worm_redgranade.bmp"
+#define WORM_RED_GRANADE "resources/worm_redgrenade.bmp"
 #define WORM_RED_GRANADE_R 128
 #define WORM_RED_GRANADE_G 128
 #define WORM_RED_GRANADE_B 192
@@ -95,7 +95,7 @@
 #define WORM_RED_GRANADE_ROWS 32
 
 //un gusano con granada santa
-#define WORM_HOLY_GRANADE "resources/worm_holygranade.bmp"
+#define WORM_HOLY_GRANADE "resources/worm_holygrenade.bmp"
 #define WORM_HOLY_GRANADE_R 128
 #define WORM_HOLY_GRANADE_G 128
 #define WORM_HOLY_GRANADE_B 192
@@ -126,13 +126,13 @@
 #define WORM_DYNAMITE_COLUMNS 1
 #define WORM_DYNAMITE_ROWS 10
 
-//un gusano con teletransportacion
-#define WORM_TELETRANS "resources/worm_teletrans.bmp"
-#define WORM_TELETRANS_R 192
-#define WORM_TELETRANS_G 192
-#define WORM_TELETRANS_B 128
-#define WORM_TELETRANS_COLUMNS 1
-#define WORM_TELETRANS_ROWS 48
+//un gusano con TELEPORTportacion
+#define WORM_TELEPORT "resources/worm_teleport.bmp"
+#define WORM_TELEPORT_R 192
+#define WORM_TELEPORT_G 192
+#define WORM_TELEPORT_B 128
+#define WORM_TELEPORT_COLUMNS 1
+#define WORM_TELEPORT_ROWS 48
 
 
 //----------------------ARMAS----------------------
@@ -151,14 +151,14 @@
 #define AIR_ATTACK_COLUMNS 1
 #define AIR_ATTACK_ROWS 32
 
-#define GREEN_GRANADE "resources/green_granade.bmp"
+#define GREEN_GRANADE "resources/green_grenade.bmp"
 #define GREEN_GRANADE_R 128
 #define GREEN_GRANADE_G 128
 #define GREEN_GRANADE_B 192
 #define GREEN_GRANADE_COLUMNS 1
 #define GREEN_GRANADE_ROWS 32
 
-#define RED_GRANADE "resources/worm_red_granade.bmp"
+#define RED_GRANADE "resources/red_grenade.bmp"
 #define RED_GRANADE_R 128
 #define RED_GRANADE_G 128
 #define RED_GRANADE_B 192
@@ -166,7 +166,7 @@
 #define RED_GRANADE_ROWS 32
 
 
-#define HOLY_GRANADE "resources/worm_holy_granade.bmp"
+#define HOLY_GRANADE "resources/holy_grenade.bmp"
 #define HOLY_GRANADE_R 128
 #define HOLY_GRANADE_G 128
 #define HOLY_GRANADE_B 192
@@ -196,12 +196,12 @@
 #define MORTAR_ROWS 48
 
 
-#define EXPLOSION "resources/explosion.bmp"
-#define EXPLOSION_R 128
-#define EXPLOSION_G 128
-#define EXPLOSION_B 192
-#define EXPLOSION_COLUMNS 1
-#define EXPLOSION_ROWS 8
+#define EXPLOSION "resources/explosion2.bmp"
+#define EXPLOSION_R 255
+#define EXPLOSION_G 255
+#define EXPLOSION_B 255
+#define EXPLOSION_COLUMNS 4
+#define EXPLOSION_ROWS 4
 
 #define BIG_EXPLOSION "resources/explosion2.bmp"
 #define BIG_EXPLOSION_R 255
@@ -250,13 +250,28 @@
 //el agua
 #define POWER_BAR "resources/power_bar.bmp"
 #define WEAPONS_MENU "resources/weapons_menu.bmp"
+#define ARROW "resources/arrow.bmp"
 #define FONT_FILE "resources/Amiko-Bold.ttf"
 #define FONT_SIZE 10
-#define TIMER_SIZE 35
 #define TIMER_FONT "resources/DS-DIGI.ttf"
-
+#define TIMER_SIZE 35
 
 #define BACKGROUND "resources/background_forest.bmp"
 
+
+
+#define WON "resources/won.bmp"
+#define WON_R 128
+#define WON_G 128
+#define WON_B 192
+#define WON_COLUMNS 1
+#define WON_ROWS 129
+
+#define LOST "resources/lost.bmp"
+#define LOST_R 128
+#define LOST_G 128
+#define LOST_B 192
+#define LOST_COLUMNS 1
+#define LOST_ROWS 129
 
 #endif

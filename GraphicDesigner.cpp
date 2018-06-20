@@ -28,7 +28,6 @@ std::map<int,WormAnimation> GraphicDesigner::create_worms(StageDTO s){
         int position_worm_x = get_pixels(worm_info.pos_x);
         int position_worm_y = get_pixels(worm_info.pos_y);
 
-        //creo el gusano y lo gardo en el vector
         Direction dir = Left;
         if(worm_info.player_id %2 == 0){
             dir = Right;
@@ -46,7 +45,8 @@ bool GraphicDesigner::is_timer_weapon(Weapon_Name weapon){
 
 
 
-GraphicDesigner::GraphicDesigner(SDL_Surface * screen, int screen_height, int screen_width,StageDTO initial_stage){
+GraphicDesigner::GraphicDesigner(SDL_Surface * screen, int screen_height, int screen_width,StageDTO initial_stage):
+water(3){
     this->screen = screen;
     this->screen_height = screen_height;
     this->screen_width = screen_width;
@@ -65,9 +65,12 @@ GraphicDesigner::GraphicDesigner(SDL_Surface * screen, int screen_height, int sc
     SDL_SetColorKey(power_bar, SDL_SRCCOLORKEY, colorkey);
     SDL_Surface * weapons_menu = IMG_Load(WEAPONS_MENU);
     SDL_Surface * background = IMG_Load(BACKGROUND);
+    SDL_Surface * arrow = IMG_Load(ARROW);
+    SDL_Surface *winner = IMG_Load(WON);
+    SDL_Surface *looser = IMG_Load(LOST);
   
-    if (!power_bar || !weapons_menu || !background) {
-        throw Error("Couldn't create surface from image:",POWER_BAR,SDL_GetError());
+    if (!power_bar || !weapons_menu || !background || !arrow  || !winner || !looser) {
+        throw Error("Couldn't create surface from image: %s %s",POWER_BAR,SDL_GetError());
     }
     ////////////////////////////////////////////////////////
 
@@ -82,12 +85,19 @@ GraphicDesigner::GraphicDesigner(SDL_Surface * screen, int screen_height, int sc
 
     this->power_bar = power_bar;
     this->weapons_menu = weapons_menu;
-    this->menu_size = 0;
+    this->arrow = arrow;
+
+    this->winner = winner;
+    this->looser = looser;
 
 }
 
+void GraphicDesigner::resize(int h, int w){
+    this->screen_height = h;
+    this->screen_width = w;
+}
+
 void GraphicDesigner::scroll(int x, int y){
-    //printf("moviendooo en x=%i y = %i\n",x, y);
     if(x < 15){
         this->camera->move(-10,0);
         return;
@@ -96,31 +106,29 @@ void GraphicDesigner::scroll(int x, int y){
         this->camera->move(0,-10); // esto no estaria funcionando
         return;
     }
-    if(x > this->screen_width -15){
+    if(x >this->screen_width -15){
        this->camera->move(10,0);
         return;
     }
-    if(y > this->screen_height -15){
+    if(y >this->screen_height -15){
         this->camera->move(0,10);
        return;
     }
 }
 
-void GraphicDesigner::show_background(){
-    SDL_Rect camera_position = camera->get_focus();
-    SDL_BlitSurface(this->background, &camera_position, this->screen, NULL);
-}
 
 void GraphicDesigner::show_elements(StageDTO s, SDL_Surface *screen){
-    show_beams(s,screen);
-    show_worms(s,screen);
-    show_weapon(s,screen);
-    this->show_weapons_menu(this->menu_size);
+    SDL_Rect camera_position = this->camera->get_focus();
+    SDL_BlitSurface(this->background, &camera_position, this->screen, NULL);
+    this->water.show(screen, this->background->h - camera_position.y);
+    this->show_beams(s,screen,camera_position);
+    this->show_worms(s,screen,camera_position);
+    this->show_weapon(s,screen,camera_position);
+    this->show_weapons_menu(s);
 }
 
 
-void GraphicDesigner::show_beams(StageDTO s, SDL_Surface *screen){
-    SDL_Rect camera_position = this->camera->get_focus();
+void GraphicDesigner::show_beams(StageDTO s, SDL_Surface *screen, SDL_Rect camera_position){
 
     for (auto beam_info: s.beams) {
 
@@ -133,20 +141,22 @@ void GraphicDesigner::show_beams(StageDTO s, SDL_Surface *screen){
         }
 
 
-        if(beam_info.w == 3){
+        if(beam_info.w < 4){
             Picture beam = inclinate_beam(this->little_beams, degrees);
             beam.draw(this->screen,center_x, center_y,beam_info.direction);
         }else{
             Picture beam = inclinate_beam(this->big_beams, degrees);
-             beam.draw(this->screen,center_x, center_y, beam_info.direction);
+             beam.draw(this->screen,center_x , center_y, beam_info.direction);
         } 
     }
 }
 
+
+
 Picture GraphicDesigner::inclinate_beam(std::vector<Picture> beams, float degrees){
 
     if(beams.size() < 5){
-        throw Error("No se cargaron todas las imagenes de las vigas");
+        throw Error("[GraphicDesigner] No se cargaron todas las imagenes de las vigas");
     }
     if(degrees < 5){
         Picture beam = beams[0];
@@ -171,7 +181,7 @@ Picture GraphicDesigner::inclinate_beam(std::vector<Picture> beams, float degree
 }
 
 
-void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
+void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen, SDL_Rect camera_position){
     for (auto w: s.worms) {
         std::map<int,WormAnimation>::iterator worms_iter = this->worms.find(w.first);
         
@@ -181,10 +191,9 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
 
         worms_iter->second.move(center_x, center_y,  worm_info.worm_state,worm_info.direction);
 
-        if(w.first == s.worm_turn && worms_iter->second.is_in_movement()){
-            this->camera->follow(get_pixels(worm_info.pos_x),get_pixels(worm_info.pos_y)); 
+        if(w.first == s.worm_turn && worms_iter->second.is_in_movement() && s.weapons.size() == 0){
+            this->camera->follow(center_x,center_y); 
         }
-        SDL_Rect camera_position = this->camera->get_focus();
         worms_iter->second.show(this->screen, camera_position);
 
 
@@ -192,10 +201,13 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
             cout << "Error: juego no preparado para mas de 4 jugadores" << endl;
         }
 
-        //printf("player id: %i \n", worm_info.player_id );
+        
         Colour player_color = Colour::create(possible_colors.at(worm_info.player_id));
 
         show_life(worm_info.life,center_x,center_y, camera_position,player_color);
+        if(w.first == s.worm_turn){
+            show_arrow(center_x, center_y, camera_position);
+        }
         int weapon_power = worms_iter->second.get_weapon_power();
         show_powerbar(weapon_power);
 
@@ -207,12 +219,9 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
  }
 
 
- void GraphicDesigner::show_weapon( StageDTO s,SDL_Surface * screen){
-    
-    SDL_Rect camera_position = this->camera->get_focus();
-    for (auto w: s.weapons) {
-        printf("arma a graficar\n");
+ void GraphicDesigner::show_weapon( StageDTO s,SDL_Surface * screen, SDL_Rect camera_position){
 
+    for (auto w: s.weapons) {
         int center_x = get_pixels(w.pos_x) - camera_position.x;
         int center_y = get_pixels(w.pos_y) - camera_position.y;
 
@@ -222,14 +231,15 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen){
         weapon_iter->second.continue_internal_movement();
         weapon_iter->second.draw(this->screen,center_x, center_y);
 
-        /*this->camera->follow(center_x - ((float) weapon_iter->second.get_width()/2),//
-                             center_y - ((float) weapon_iter->second.get_height()/2));*/
+        this->camera->follow(get_pixels(w.pos_x) - ((float) weapon_iter->second.get_width()/2),//
+                             get_pixels(w.pos_y) - ((float) weapon_iter->second.get_height()/2));
 
         if(is_timer_weapon(w.weapon)){
             printf("tiene timer\n");
             show_timer(w.timer);
         }
-        printf("termino de graficar el arma\n");
+        if (w.weapon == W_Fragment)
+          printf("fragment: pos: %f,%f\n", w.pos_x, w.pos_y);
     }
 
 }
@@ -249,8 +259,8 @@ void GraphicDesigner::show_life(int life, int worm_x, int worm_y, SDL_Rect camer
         throw Error("TTF_RenderText_Solid(): ",TTF_GetError());
     }
 
-    Sint16 x = worm_x - camera_position.x + 20;
-    Sint16 y = worm_y - camera_position.y - 5;
+    Sint16 x = worm_x - camera_position.x + 30;
+    Sint16 y = worm_y - camera_position.y - 10;
 
     SDL_Rect rectangle; 
     rectangle.x = x-2;
@@ -275,6 +285,29 @@ void GraphicDesigner::show_life(int life, int worm_x, int worm_y, SDL_Rect camer
     SDL_FreeSurface(text);
 }
 
+void GraphicDesigner::show_arrow( int worm_x, int worm_y, SDL_Rect camera_position){
+
+    Sint16 x = worm_x - camera_position.x + 5;
+    Sint16 y = worm_y - camera_position.y - 18;
+
+    SDL_Rect dimention;
+    dimention.x = 0;
+    dimention.y = 0;
+    dimention.h = this->arrow->h;
+    dimention.w = this->arrow->w;
+
+    SDL_Rect position;
+    position.x = x;
+    position.y = y;
+    position.h = this->arrow->h;
+    position.w = this->arrow->w;
+    
+    Colour color = Colour::create(White);
+    Uint32 colorkey = SDL_MapRGB(this->arrow->format, color.r, color.g, color.b);
+    SDL_SetColorKey(this->arrow, SDL_SRCCOLORKEY, colorkey);
+    SDL_BlitSurface(this->arrow, &dimention, this->screen, &position);
+}
+
 void GraphicDesigner::show_powerbar(int power){
     SDL_Rect dimention;
     dimention.x = 0;
@@ -296,67 +329,61 @@ void GraphicDesigner::show_powerbar(int power){
 
 }
 
-void GraphicDesigner::show_weapons_menu(int size){
-    int width = this->weapons_menu->w*size/100;
+void GraphicDesigner::show_weapons_menu(StageDTO& s){
     SDL_Rect position;
-    position.x = this->screen_width - width -2;
-    position.y = 5;
+    position.x = this->screen_width - this->weapons_menu->w;
+    position.y = this->screen_height/2- this->weapons_menu->h/2;
     position.h = this->weapons_menu->h;
     position.w = this->weapons_menu->w;
 
     SDL_Rect dimention;
-    dimention.x = 0;
+    dimention.x = 0;    
     dimention.y = 0;
     dimention.h = this->weapons_menu->h;
-    dimention.w = width;
+    dimention.w = this->weapons_menu->w;
     SDL_BlitSurface(this->weapons_menu, &dimention, this->screen, &position);  
 }
 
-void GraphicDesigner::make_appear_weapons_menu(){
-    while(this->menu_size < 100){
-        this->show_weapons_menu(this->menu_size);
-        this-> menu_size ++;
-    }  
-}
 
 bool GraphicDesigner::is_inside_weapon_menu(int x, int y){
-    int x_relative = x -(this->screen_width - this->weapons_menu->w -5);
-    int y_relative = y - 5;
+    int x_relative = x -(this->screen_width - this->weapons_menu->w);
+    int y_relative = y - (this->screen_height/2- this->weapons_menu->h/2);
     if(x_relative < 0 || y_relative > this->weapons_menu->h){
         return false;
     }
+    printf("[GraphicDesigner] se hizo click en el menu\n");
     return true;
 }
 
 
 Weapon_Name GraphicDesigner::choose_weapon(int x, int y){
-    this->menu_size = 0;
-    int icon_y = this->weapons_menu->h/10;
-    if(y < icon_y){
+    int icon_y = (this->weapons_menu->h/10); //longitud de un icono
+    int menu_init = (this->screen_height/2- this->weapons_menu->h/2); 
+    if(y < menu_init + icon_y){
         return W_Air_Attack;
     }
-    if(y < icon_y*2){
+    if(y < menu_init + icon_y*2){
         return Baseball_Bat;
     }
-    if(y < icon_y*3){
+    if(y < menu_init + icon_y*3 ){
         return W_Bazooka;
     }
-    if(y < icon_y*4){
+    if(y < menu_init + icon_y*4){
         return Red_Grenade;
     }
-    if(y < icon_y*5){
+    if(y < menu_init + icon_y*5){
         return Green_Grenade;
     }
-    if(y < icon_y*6){
+    if(y < menu_init + icon_y*6){
         return Holy_Grenade;
     }
-    if(y < icon_y*7){
+    if(y < menu_init + icon_y*7){
         return Mortar;
     }
-    if(y < icon_y*8){
+    if(y < menu_init + icon_y*8){
         return Teleport;
     }
-    if(y < icon_y*9){
+    if(y < menu_init + icon_y*9){
         return Dynamite;
     }
     return Banana;
@@ -407,16 +434,55 @@ void GraphicDesigner::show_timer(int second){
     position.w = text->w;
     SDL_BlitSurface(text, &dimention, this->screen, &position);
     //SDL_FreeSurface(text);
-    printf("termino de dibujar el timer\n");
-
-
 }
+
+SDL_Rect GraphicDesigner::get_camera_position(){
+    return this->camera->get_focus(); 
+}
+
+void GraphicDesigner::won(){
+    SDL_Rect camera_position = this->camera->get_focus();
+    SDL_FillRect(this->background, NULL, SDL_MapRGB(this->screen->format,128,128,192));
+
+    SDL_Rect dimention;
+    dimention.x = 0;
+    dimention.y = 0;
+    dimention.h = this->winner->h;
+    dimention.w = this->winner->w;
+
+    SDL_Rect position;
+    position.x =  camera_position.x/2 + this->winner->w/2;
+    position.y =  camera_position.y/2 + this->winner->h/2;
+    position.h = this->winner->h;
+    position.w = this->winner->w;
+    SDL_BlitSurface(this->winner, &dimention, this->background, &position);
+}
+ 
+void GraphicDesigner::lost(){
+    SDL_Rect camera_position = this->camera->get_focus();
+    SDL_FillRect(this->background, NULL, SDL_MapRGB(this->screen->format,128,128,192));
+    SDL_Rect dimention;
+    dimention.x = 0;
+    dimention.y = 0;
+    dimention.h = this->looser->h;
+    dimention.w = this->looser->w;
+
+    SDL_Rect position;
+    position.x =  camera_position.x/2 + this->looser->w/2;
+    position.y =  camera_position.y/2 + this->looser->h/2;
+    position.h = this->looser->h;
+    position.w = this->looser->w;
+    SDL_BlitSurface(this->looser, &dimention, this->background, &position);
+}
+
 
 GraphicDesigner::~GraphicDesigner() {
 	delete(this->camera);
     SDL_FreeSurface(this->background);
     SDL_FreeSurface(this->power_bar);
     SDL_FreeSurface(this->weapons_menu);
+    SDL_FreeSurface(this->arrow);
     TTF_Quit();
 }
+
 

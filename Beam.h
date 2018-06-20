@@ -24,6 +24,7 @@ class Beam : public Entity {
 private:
   b2Body* body;
   Direction direction;
+  float angle;
 public:
   Beam(b2World* world, float size, float x, float y, float angle, Direction direction);
   Beam(const Beam &other);

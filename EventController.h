@@ -25,7 +25,6 @@ class EventController {
 	int i;
 	
 	bool wait_for_destination_clicl;
-	bool wait_for_weapon_click;
 
 public:
 	EventController(BlockingQueue<ActionDTO> & actions_queue, SDL_Event & event, int screen_height, int screen_width, 
@@ -54,6 +53,7 @@ private:
 
 	void click(WormAnimation& turn_worm);
 	bool keep_clicking(WormAnimation& turn_worm);
+	void resize(SDL_ResizeEvent resize);
 
 	void movement(SDL_Event & event, WormAnimation& turn_worm);
 	void up(WormAnimation& turn_worm);

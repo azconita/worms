@@ -15,7 +15,8 @@
 #include "Worm.h"
 #include "Dtos.h"
 
-Weapon::Weapon(b2World *world, Weapon_Name name, float x, float y, float wind) : Entity(3), world(world), wind(wind), name(name) {
+Weapon::Weapon(b2World *world, Weapon_Name name, float x, float y, float wind, std::vector<Weapon*> *explosions) :
+                Entity(3), world(world), wind(wind), name(name), explosions(explosions) {
   b2BodyDef bodyDef;
     bodyDef.type = b2_dynamicBody;
     bodyDef.bullet = true;
@@ -93,9 +94,12 @@ Weapon::Weapon(b2World *world, Weapon_Name name, float x, float y, float wind) :
     }
 }
 
-Weapon::Weapon(const Weapon &other) : Entity(3), world(other.world), wind(other.wind), body(other.body), name(name) {
-  //std::cout << "explosionDir(&other): " << this << '\n';
-  //this->body->SetUserData(this);
+Weapon::Weapon(const Weapon &other) : Entity(3),
+                                      world(other.world),
+                                      wind(other.wind),
+                                      body(other.body),
+                                      name(other.name),
+                                      explosions(other.explosions) {
 }
 
 Weapon::~Weapon() {
@@ -137,12 +141,12 @@ void Weapon::apply_explosion_impulse(b2Body* other_body, b2Vec2 blast_center, b2
   float distance = blast_dir.Normalize();
   float inv_distance = (distance < 1) ? 1 : (1 / distance);
   float impulse_mag = blast_power * inv_distance ;
-  std::cout << "imp mag: " << impulse_mag << ", blastdir: " << blast_dir.x << ":" << blast_dir.y << "\n";
+  //std::cout << "imp mag: " << impulse_mag << ", blastdir: " << blast_dir.x << ":" << blast_dir.y << "\n";
 
   Entity* entity = (Entity*) (other_body->GetUserData());
-  std::cout<<"body found: " << entity->en_type << '\n';
+  //std::cout<<"body found: " << entity->en_type << '\n';
   if (entity->en_type == 1) {
-    std::cout << "apply explosion: "<<impulse_mag <<"\n";
+    //std::cout << "apply explosion: "<<impulse_mag <<"\n";
     other_body->ApplyLinearImpulse( impulse_mag * blast_dir, other_body->GetPosition() , true);
     ((Worm*) entity)->apply_damage(int(this->damage * inv_distance));
   }
@@ -156,33 +160,35 @@ void Weapon::proximity_explosion(float power) {
     return this->explosion();
   if (!this->alive)
     return;
+  this->power = power;
   //TODO: timer!!
   if (this->timer != 0) {
     //this->name = W_Timer;
-    std::cout << "timer: " << this->timer << "\n";
-      time(&(this->t));
-    std::cout << "t: " << this->t << "\n";
+    //std::cout << "timer: " << this->timer << "\n";
+    //time(&(this->t));
+    //std::cout << "t: " << this->t << "\n";
     return;
-    if (this->t == 0) {
+    /*if (this->t == 0) {
       return;
     }
     if (difftime(this->t,time(NULL)) < this->timer)
       return;
-    return;
+    return;*/
   }
   //if (this->name == Green_Grenade) &&
   //this->radius = radius;
-  this->power = power;
   this->explode();
 }
 
 void Weapon::explode() {
   std::cout << "explosion!\n" ;
-  if (this->name == Red_Grenade) {
+  if (this->name == Red_Grenade || this->name == Mortar) {
+    std::cout << "more explosions!!\n";
     int d = 15;
     for (int i = 0; i < 6; ++i) {
-      Weapon* w = new Weapon(this->world, W_Fragment, this->body->GetPosition().x, this->body->GetPosition().y, this->wind);
-      w->shoot(this->power, d, Right, 0);
+      Weapon* w = new Weapon(this->world, W_Fragment, this->body->GetPosition().x, this->body->GetPosition().y, this->wind, this->explosions);
+      this->explosions->push_back(w);
+      w->shoot(this->shoot_power, d, Right, i * 30);
       d = d + 30;
     }
   }
@@ -217,6 +223,7 @@ b2Vec2 rad2vec(float r) {
 
 void Weapon::shoot(int power, float degrees, Direction dir, int time_to_explode) {
   printf("[Weapon] shooting %d", this->name);
+  this->shoot_power = power;
   int s = (dir == Right) ? 1 : -1;
   switch (this->name) {
     case W_Bazooka: {
@@ -239,16 +246,24 @@ void Weapon::shoot(int power, float degrees, Direction dir, int time_to_explode)
       this->dynamite(time_to_explode, s);
       break;
     }
+    case Mortar: {
+      this->bazooka(power, degrees, s);
+      break;
+    }
+    case W_Fragment: {
+      this->bazooka(power, degrees, s);
+      break;
+    }
   }
 }
 
 void Weapon::bazooka(int power, float degrees, int s) {
   //TODO:afectar por el viento
   b2Vec2 vel = rad2vec(degrees);
-  float velChange = power * vel.x;
-  float impulsex = body->GetMass() * velChange;
-  velChange = power * vel.y;
-  float impulsey = body->GetMass() * velChange;
+  float vel_change = power * vel.x;
+  float impulsex = body->GetMass() * vel_change;
+  vel_change = power * vel.y;
+  float impulsey = body->GetMass() * vel_change;
   this->body->ApplyLinearImpulse(b2Vec2(impulsex*s,impulsey), this->body->GetWorldCenter(), true);
 
 }
@@ -268,7 +283,7 @@ void Weapon::grenade(int power, float degrees, int timer, int s) {
 void Weapon::dynamite(int time_to_explode, int s) {
   this->t = time(NULL);
   this->timer = time_to_explode;
-
+  this->t = time(NULL);
 }
 
 void Weapon::explosion() {

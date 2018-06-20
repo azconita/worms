@@ -17,14 +17,23 @@
 
 #define TYPE_WORM 1
 
+using std::endl;
+
+extern logger oLog;
+
 class Worm : public Entity {
   int id = -1;
   int player_id = 0;
   State state;
   Direction direction;
+  float inclination;
   b2World* world;
   b2Body* body;
+  int teleport_counter = -1;
+  int teleport_x;
+  int teleport_y;
   Weapon_Name weapon = None;
+  std::vector<b2Vec2> beam_pos;
   b2Vec2 start_falling = b2Vec2(0,0);
   int life;
 public:
@@ -42,6 +51,8 @@ public:
   int get_id() { return this->id;}
   bool is_alive() { return ((this->life > 0) && (this->body->GetPosition().y < 100)); }
   int get_player_id();
+  void set_player_id(int i);
+  void handle_end_contact();
 
   //movements
   State get_state();
@@ -50,14 +61,23 @@ public:
   void update_state();
   void move_left(); //vel: 0.2 m/s
   void move_right();
+  void move(float vel_x, float vel_y);
   void jump(Direction dir); // 1m adelante y 0.5m alto
   void jump_back(); // 0.2m atras y 1.2m alto
+  void stop_moving();
+  void set_static();
+  void set_dynamic();
+  void set_inclination(float angle, std::vector<b2Vec2> & beam_pos);
+  void no_inclination();
+  void calm();
 
   //use weapons
   void took_weapon(Weapon_Name weapon);
   void use_weapon(float x, float y, int power, float degrees);
   void apply_damage(int d);
-  void teleport(float x, float y, Direction dir);
+  void teleport(float x, float y);
+  bool disappear();
+
 
   void printPos() {
     std::cout << "worm: " << this->body->GetPosition().x << ":" << this->body->GetPosition().y << "\n";

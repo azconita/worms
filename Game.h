@@ -19,12 +19,13 @@
 #include "Player.h"
 #include "Stage.h"
 #include "TimerStage.h"
+#define QUEUE_SIZE 100
 
 class Game : public Thread {
   //thread!!
   Stage stage;
   std::vector<Player*> players;
-  int limit = 1;//Constants::players_limit;
+  int limit = Constants::total_players;
   BlockingQueue<ActionDTO> stage_queue;
   std::vector<BlockingQueue<StageDTO>*> players_queues;
 
