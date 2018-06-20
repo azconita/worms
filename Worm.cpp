@@ -88,15 +88,12 @@ void Worm::change_state(State state){
 
 void Worm::update_state() {
   //caer es el estado "predominante"
-  printf("[worm] update state\n");
-  printf("acaaaaaaaa rompeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\n");
-  printf("[Worm] %i\n",this->state );
   if(this->state == Worm_disappear){
     return;
   }
   this->handle_end_contact();
   b2Vec2 vel = this->body->GetLinearVelocity();
-  std::cout << "[Worm] inclination:"<< this->inclination <<" , velocity:" <<vel.y << endl;
+  //std::cout << "[Worm] inclination:"<< this->inclination <<" , velocity:" <<vel.y << endl;
   if(this->inclination != 0 && this->inclination != 180){
     if(vel.y == 0){
       if(this->inclination < 90){
@@ -127,9 +124,9 @@ void Worm::update_state() {
      && (this->state == Walk || this->state == Jump_state || this->state == Jump_back_state
       || this->state == Fall) || this->state == Walk_down || this->state == Walk_up) {
     this->state = Still;
-    printf("still");
+    //printf("still");
   }
-  printf("termino el worm update state\n");
+
 }
 
 Direction Worm::get_direction(){
@@ -150,7 +147,7 @@ void Worm::calm(){
 }
 
 void Worm::move(float vel_x, float vel_y){
-  //printf("velocidad: %f, %f\n",vel_x, vel_y);
+  ////printf("velocidad: %f, %f\n",vel_x, vel_y);
   this->body->ApplyLinearImpulse(b2Vec2(vel_x,vel_y), this->body->GetWorldCenter(), true);
 }
 
@@ -165,7 +162,6 @@ void Worm::move_right() {
   float v = Constants::worm_walk_velocity;
   if(this->inclination == 0 || this->inclination == 180){
     this->move(v, 0);
-    printf("derechaaa\n");
     return;
   }
   if(this->inclination < 90){
@@ -191,7 +187,7 @@ void Worm::move_left() {
   float v = Constants::worm_walk_velocity;
   if(this->inclination == 0 || this->inclination == 180){
     this->move(-v, 0);
-    printf("izquierdaaa\n");
+    //printf("izquierdaaa\n");
     return;
   }
   else if(this->inclination < 90){
@@ -254,8 +250,6 @@ void  Worm::handle_end_contact(){
   if(this->beam_pos.size() < 1){
     return;
   }
-  printf("hanfle end contact\n");
-  printf("%lu\n", this->beam_pos.size() );
   b2Vec2 center = this->get_center();
   float left_distane= round(sqrt(pow(center.x - this->beam_pos[0].x,2) + pow(center.y - this->beam_pos[0].y,2)));
   float right_distance = round(sqrt(pow(center.x - this->beam_pos[1].x,2) + pow(center.y - this->beam_pos[1].y,2)));
@@ -285,7 +279,7 @@ void Worm::set_player_id(int i) {
 }
 
 bool Worm::disappear(){
-  printf("[Worm] disappear\n");
+  //printf("[Worm] disappear\n");
   if(this->teleport_counter == 0){
     this->body->SetTransform(b2Vec2(this->teleport_x,this->teleport_y),0);
     this->body->ApplyLinearImpulse(b2Vec2(0,9.8), this->body->GetWorldCenter(), true);
@@ -333,7 +327,7 @@ void Worm::set_static(bool first_time){
   if(first_time){
     this->body->SetTransform(b2Vec2(center.x,center.y - Constants::worm_height/2),0); 
   }
-  printf("[wORM] STATICO\n");
+  //printf("[wORM] STATICO\n");
 
 }
 

@@ -89,6 +89,7 @@ water(3){
 
     this->winner = winner;
     this->looser = looser;
+    this->last_worm_turn = INTER_TURN;
 
 }
 
@@ -192,7 +193,9 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen, SDL_Rect camer
         worms_iter->second.move(center_x, center_y,  worm_info.worm_state,worm_info.direction);
 
         printf("[GraphicDesigner] turno del gusano %i\n", s.worm_turn );
-        if(w.first == s.worm_turn && worms_iter->second.is_in_movement() && s.weapons.size() == 0){
+        printf("[GraphicDesigner] turno anterior %i\n",this->last_worm_turn );
+        if(w.first == s.worm_turn && ((this->last_worm_turn != s.worm_turn) || (worms_iter->second.is_in_movement() && s.weapons.size() == 0 ) ) ) {
+            printf("[GraphicDesigner] cambiooooooo el turno\n"); 
             this->camera->follow(center_x,center_y); 
         }
         worms_iter->second.show(this->screen, camera_position);
@@ -231,9 +234,13 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen, SDL_Rect camer
         weapon_iter->second.continue_internal_movement();
         weapon_iter->second.draw(this->screen,center_x, center_y);
 
-        this->camera->follow(get_pixels(w.pos_x) - ((float) weapon_iter->second.get_width()/2),//
+        if(this->last_worm_turn == s.worm_turn){
+             this->camera->follow(get_pixels(w.pos_x) - ((float) weapon_iter->second.get_width()/2),//
                              get_pixels(w.pos_y) - ((float) weapon_iter->second.get_height()/2));
-
+        } else {
+            this->last_worm_turn = s.worm_turn;
+        }
+       
         if(is_timer_weapon(w.weapon)){
             show_timer(w.timer);
         }

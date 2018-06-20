@@ -24,7 +24,7 @@ void Stage::do_explosions() {
             ++it;
         }
       w->explode();
-      printf("[Stage] se hizo una explosion, listo para cambiar de jugaro\n");
+      //printf("[Stage] se hizo una explosion, listo para cambiar de jugaro\n");
       this->current_player->took_weapon(None);
       this->current_player = NULL;
     }
@@ -37,19 +37,19 @@ void Stage::update() {
   int32 velocityIterations = Constants::velocity_iterations;   //how strongly to correct velocity
   int32 positionIterations = Constants::position_iterations;   //how strongly to correct position
 
-  printf("[Stage] hace un step\n");
+  //printf("[Stage] hace un step\n");
 
   this->world->Step( timeStep, velocityIterations, positionIterations);
 
-  printf("[Stage] check for explosiones\n");
+  //printf("[Stage] check for explosiones\n");
   //check for timers in explosion
   this->do_explosions();
       
-  printf("[Stage] borra gusanos muertos\n");
+  //printf("[Stage] borra gusanos muertos\n");
   //delete weapons exploded and dead worms
   this->clean_dead_bodies();
 
-  printf("[Stage] update del player\n");
+  //printf("[Stage] update del player\n");
   
   //check if player change
   this->update_player();
@@ -71,6 +71,7 @@ void Stage::clean_dead_bodies() {
        //printf("it: %x", *it);
        delete *it;
        it = this->explosions.erase(it);
+       printf("[Stage]borrando armaaaaaaaaaaa\n");
      } else {
        if ((*it)->has_timer() && (*it)->is_time_to_explode()) {
          (*it)->explode();
@@ -85,7 +86,7 @@ void Stage::clean_dead_bodies() {
     if (!it->second->is_alive()) {
       if (it->second == this->current_player)
         this->current_player = NULL;
-        printf("[Stage] se murio un gusano, listo para cambiar de jugador\n");
+        //printf("[Stage] se murio un gusano, listo para cambiar de jugador\n");
       this->players_turn.at(it->second->get_player_id()).delete_id(it->first);
       delete it->second;
       it = this->worms.erase(it);
@@ -101,10 +102,10 @@ void Stage::update_player() {
   bool any_worm_in_movement = this->is_in_movement(); 
   if (this->current_player == NULL || (time(NULL) - this->player_time > Constants::worm_turn_time) ) {
     if(any_worm_in_movement){
-      printf("[Stage] queria cambiar de jugador pero se estan moviendo entonces sigue sin turno\n");
+      //printf("[Stage] queria cambiar de jugador pero se estan moviendo entonces sigue sin turno\n");
       return;
     }
-    printf("[Stage] change player\n");
+    //printf("[Stage] change player\n");
     this->change_player();
     this->player_time = time(NULL);
   }
@@ -133,7 +134,7 @@ bool Stage::update_worms() {
   bool any_worm_in_movement = false;
   for (auto &w : this->worms) {
     if(w.second->disappear()){
-      printf("[Stage] el gusano ya se teletransporto, esta listo para cambiar de jugador\n");
+      //printf("[Stage] el gusano ya se teletransporto, esta listo para cambiar de jugador\n");
       this->current_player = NULL;
     }
     w.second->update_state();
@@ -153,14 +154,14 @@ void Stage::change_player() {
   int step = 0;
   
   int new_player_id = ((this->last_player_id + 1) == this->players_turn.size()) ? 0 : this->last_player_id + 1;
-  printf("[Stage] next player id: %d,", new_player_id);
+  //printf("[Stage] next player id: %d,", new_player_id);
   while(this->players_turn.at(new_player_id).is_empty()){
    
     int new_player_id = ((this->last_player_id + 1) == this->players_turn.size()) ? 0 : this->last_player_id + 1;
-    printf("[Stage] ese jugador estaba muerto, pasamos a : %d,", new_player_id);
+    //printf("[Stage] ese jugador estaba muerto, pasamos a : %d,", new_player_id);
     step ++;
     if(step >= this->players_turn.size()){
-      printf("[Stage] estan todos los gusanos muertos\n");
+      //printf("[Stage] estan todos los gusanos muertos\n");
       return;
     }
   };
@@ -213,7 +214,7 @@ void Stage::shoot_weapon(int worm, ActionDTO& action) {
   } else {
     //Weapon* w = new Weapon(this->world, action.weapon, this->current_player->get_points()[0].x, this->current_player->get_points()[0].y, this->wind);
     int d = (action.direction == Right) ? 1 : -1;
-    printf("[Stage] posicion del arma%i, %i\n", action.pos_x, action.pos_y);
+    //printf("[Stage] posicion del arma%i, %i\n", action.pos_x, action.pos_y);
     Weapon* w = new Weapon(this->world, action.weapon, action.pos_x,
         action.pos_y, this->wind, &this->explosions);
     w->shoot(action.power * 100, action.weapon_degrees, action.direction,
@@ -276,10 +277,10 @@ void Stage::set_position(ElementDTO & element , b2Vec2 & center){
 bool Stage::check_winners(StageDTO *s){
   for (auto it = this->players_turn.cbegin(); it != this->players_turn.cend(); ) {
     if (it->second.is_empty()){
-      printf("[Stage]  LOSER %i\n", it->first);
+      //printf("[Stage]  LOSER %i\n", it->first);
       it = this->players_turn.erase(it++); 
       if(this->players_turn.size() == 1){
-        printf("[Stage] WINNER %i\n", this->players_turn.begin()->first );
+        //printf("[Stage] WINNER %i\n", this->players_turn.begin()->first );
         s->winner = it->first;
         this->finish = true;
         return true;
@@ -338,13 +339,13 @@ StageDTO Stage::get_stageDTO() {
     set_position(weapon, center);
     weapon.weapon = w->get_name();
     weapon.timer = w->get_timer();
-    //printf("[Stage] timer sent: %i\n", weapon.timer);
+    ////printf("[Stage] timer sent: %i\n", weapon.timer);
     if (weapon.weapon == W_Fragment)
       printf("fragment: pos: %f, %f\n", weapon.pos_x, weapon.pos_y);
     s.weapons.push_back(weapon);
   }
   s.worm_turn = (this->current_player) ? this->current_player->get_id() : INTER_TURN;
-  printf("[Stage] envia el dto\n");
+  //printf("[Stage] envia el dto\n");
   return s;
 }
 
@@ -367,7 +368,7 @@ void Stage::load_initial_stage(std::string file_name){
 }
 
 void Stage::set_worms_to_players(int total_players) {
-  printf("[stage] cantidad de gusanos: %lu\n",this->worms.size() );
+  //printf("[Stage] cantidad de gusanos: %lu\n",this->worms.size() );
   //get vector of worms ids
   std::vector<int> ids;
   std::transform(this->worms.begin(), this->worms.end(), std::back_inserter(ids),
@@ -381,7 +382,7 @@ void Stage::set_worms_to_players(int total_players) {
     throw Error("Error in worms quantity:\nplayers = %d"//
       ", total worms = %i", total_players, this->worms.size());
   }
-  printf("[Stage] total players: %d, worms for each: %d\n", total_players, wq);
+  //printf("[Stage] total players: %d, worms for each: %d\n", total_players, wq);
   for (int i = 0; i < total_players; i++) {
     //(i+1)*wq == ids.size()) ? ids.end() : ids[(i+1)*wq])
     std::vector<int> v;
@@ -389,15 +390,15 @@ void Stage::set_worms_to_players(int total_players) {
     this->players_turn.emplace(i, TurnHelper(v, i));
     for (auto worm_id: v) {
       this->worms.at(worm_id)->set_player_id(i);
-      printf("[Stage] al gusano %i le corresponde el jugador %i \n", worm_id, i);
+      //printf("[Stage] al gusano %i le corresponde el jugador %i \n", worm_id, i);
     }
   }
   
   //compensar jugador con menos gusanos!!
   this->current_player = this->worms.begin()->second;
-  printf("[Stage] empieza a jugar el gusano %i \n", this->current_player->get_id() );
+  //printf("[Stage] empieza a jugar el gusano %i \n", this->current_player->get_id() );
   this->last_player_id = this->current_player->get_player_id();
-  printf(" que es del jugador %i\n", this->last_player_id );
+  //printf(" que es del jugador %i\n", this->last_player_id );
   this->update_body_types(true);
 }
 

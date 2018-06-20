@@ -51,7 +51,7 @@ public:
   void apply_explosion_impulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint, float blastPower);
   void shoot(int power, float degrees, Direction dir, int time_to_explode);
 
-  bool is_alive() { return (this->alive && (this->body->GetPosition().y < 100));}
+  bool is_alive();
   b2Vec2 get_center();
   std::vector<b2Vec2> get_points();
 

@@ -16,6 +16,7 @@
 #include "ResourcesDefinitions.h" 
 #include "Camera.h"
 #include "WaterAnimation.h"
+#define INTER_TURN -2
 
 
 static  std::vector<Colour_name> possible_colors {
@@ -46,6 +47,7 @@ class GraphicDesigner {
 	Camera * camera;
 	int screen_height;
 	int screen_width;
+	int last_worm_turn;
 	TTF_Font *font;
 	TTF_Font *time_font;
 	SDL_Surface *power_bar;
@@ -56,6 +58,7 @@ class GraphicDesigner {
 	std::vector<Picture> little_beams;
     std::vector<Picture> big_beams;
     WaterAnimation water;
+
 
 	float get_pixels(float meter_position);
 	std::map<int,WormAnimation> create_worms(StageDTO s);

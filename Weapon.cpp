@@ -180,6 +180,10 @@ void Weapon::proximity_explosion(float power) {
   this->explode();
 }
 
+bool Weapon::is_alive(){
+   return (this->alive && (this->body->GetPosition().y < 100)); 
+}
+
 void Weapon::explode() {
   std::cout << "explosion!\n" ;
   if (this->name == Red_Grenade || this->name == Mortar) {
@@ -288,15 +292,16 @@ void Weapon::dynamite(int time_to_explode, int s) {
 void Weapon::explosion() {
   this->timer--;
   if (this-> timer == 0)
-    this->alive = false;
+    this->alive = false; 
+    printf("[Weapon] exploto, ya se podria borrar\n");
   return;
 }
 
 bool Weapon::is_time_to_explode() {
   if ((this->timer != 0) && (this->name == Green_Grenade || this->name == Red_Grenade
                           || this->name == Dynamite || this->name == Holy_Grenade)) {
-    std::cout << "t: " << difftime(time(NULL), this->t) << "\n";
-    if (difftime(time(NULL), this->t) < this->timer)
+    //std::cout << "t: " << difftime(time(NULL), this->t) << "\n";
+    if (difftime(time(NULL), this->t) <= this->timer)
       return false;
     return true;
   }

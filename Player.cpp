@@ -41,7 +41,7 @@ void Player::send() {
     s.player_id = this->id;
     if (s.worm_turn == -1) {
       this->stop();
-      printf("[player] stop\n");
+      //printf("[player] stop\n");
     } else {
       YAML::Emitter out;
       out << YAML::BeginMap;
@@ -49,10 +49,10 @@ void Player::send() {
       out << YAML::Value << s;
       out << YAML::EndMap;
       try {
-        //printf("se envia %s\n", out.c_str());
+        ////printf("se envia %s\n", out.c_str());
         this->client.send_dto(out.c_str());
         if (s.winner != -1) {
-          printf("the winner: %i", s.winner);
+          //printf("the winner: %i", s.winner);
           this->stop();
         }
       } catch(Error e) {
@@ -60,18 +60,18 @@ void Player::send() {
         this->stop();
       }
     }
-    printf("termino un ciclo del Player::send\n");
+    //printf("termino un ciclo del Player::send\n");
   }
-  printf("[Player] se termino el ciclo send\n");
+  //printf("[Player] se termino el ciclo send\n");
 }
 
 void Player::receive(){
   extern logger oLog;
   while (this->on) {
-    printf("[Player] recibiendo\n");
+    //printf("[Player] recibiendo\n");
     try {
       std::string action_str = this->client.receive_dto();
-      //printf("%s\n",action_str.c_str() );
+      ////printf("%s\n",action_str.c_str() );
       oLog() << "recibiendo";
       oLog() << action_str.c_str();
       YAML::Node yaml_received = YAML::Load(action_str);
