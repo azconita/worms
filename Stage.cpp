@@ -181,6 +181,8 @@ if(this->current_player == NULL){
 }
 for (auto &w : this->worms) {
 
+    w.second->took_weapon(None);
+
    if (w.first != this->current_player->get_id()){
        //TODO: no deberia hacerlo siempre!!
        //iterar por los cuerpos del world??
