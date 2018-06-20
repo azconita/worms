@@ -44,15 +44,8 @@ void Stage::update() {
   printf("[Stage] check for explosiones\n");
   //check for timers in explosion
   this->do_explosions();
-
-  printf("[Stage] se fija los que se estan cayendo\n");       
-
-
-  //check falling worms
-  this->current_player->update_state(); //esto se hace antes del clean dead bpdies 
-                                        //porque sino puede que el gusano de turno muera
-   
-   printf("[Stage] borra gusanos muertos\n");
+      
+  printf("[Stage] borra gusanos muertos\n");
   //delete weapons exploded and dead worms
   this->clean_dead_bodies();
 
@@ -143,6 +136,7 @@ bool Stage::update_worms() {
       printf("[Stage] el gusano ya se teletransporto, esta listo para cambiar de jugador\n");
       this->current_player = NULL;
     }
+    w.second->update_state();
     if(w.second->get_velocity().Length() > 0.5){
       // si los gusanos se estan moviendo quizas es por una explosion
       //no hay que cambiar de turno porque se vuelven estaticos
@@ -150,8 +144,8 @@ bool Stage::update_worms() {
     } else {
        w.second->stop_moving();
     }
-    return any_worm_in_movement;
   }
+  return any_worm_in_movement;
 }
 
 //cuantos players puede haber????

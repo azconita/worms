@@ -95,6 +95,7 @@ void Client::run(){
 
         printf("[Client] es el turno del gusano %i\n",s.worm_turn );
 
+        //FIX ME
         if(s.winner != -1){
             finish = true;
                 if(s.winner == this->id){

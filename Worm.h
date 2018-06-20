@@ -24,7 +24,7 @@ extern logger oLog;
 class Worm : public Entity {
   int id = -1;
   int player_id = 0;
-  State state;
+  State state = Still;
   Direction direction;
   float inclination;
   b2World* world;

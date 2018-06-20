@@ -65,8 +65,9 @@ Worm* Worm::operator=(const Worm &other) {
   this->body = other.body;
   this->life = other.life;
   this->state = other.state;
-  this-> direction = other.direction;
+  this->direction = other.direction;
   this->inclination = other.inclination;
+  this->state = state;
   this->body->SetUserData(this);
   return this;
 }
@@ -87,8 +88,9 @@ void Worm::change_state(State state){
 
 void Worm::update_state() {
   //caer es el estado "predominante"
-  printf("update state\n");
-  printf("%i\n",this->state );
+  printf("[worm] update state\n");
+  printf("acaaaaaaaa rompeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee\n");
+  printf("[Worm] %i\n",this->state );
   if(this->state == Worm_disappear){
     return;
   }
@@ -283,6 +285,7 @@ void Worm::set_player_id(int i) {
 }
 
 bool Worm::disappear(){
+  printf("[Worm] disappear\n");
   if(this->teleport_counter == 0){
     this->body->SetTransform(b2Vec2(this->teleport_x,this->teleport_y),0);
     this->body->ApplyLinearImpulse(b2Vec2(0,9.8), this->body->GetWorldCenter(), true);
