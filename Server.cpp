@@ -6,68 +6,72 @@
  */
 #include "Server.h"
 
-Server::Server(Socket peer) : 
-  stage("file.yaml"),
-  client(std::move(peer)){
-  this->on = true;
-}
+#include "Constants.h"
+#include "Stage.h"
+#include "Dtos.h"
+#include "Socket.h"
 
-void Server::start() { 
-  this->sending_thread = std::thread(&Server::send, this);
-  this->receiving_thread = std::thread(&Server::receive, this);
-}
-
-
-void Server::send() {
-
-  extern logger oLog;
-  
-  while (this->on) {
-    this->stage.update();
-    StageDTO s = this->stage.get_stageDTO();
-
-    
-    YAML::Emitter out;
-    out << YAML::BeginMap;
-    out << YAML::Key << "stage";
-    out << YAML::Value << s;
-    out << YAML::EndMap;
-    try{
-      //printf("se envia %s\n", out.c_str());
-      this->client.send_dto(out.c_str());
-    }catch(Error e){
-        oLog() << "Player quit (peer socket closed).";
-        stop();
-        break;
-    }
+Server::Server(char* port) :
+                     acc_socket(NULL, port) {
+  // inicializar vector de escenarios posibles
+  printf("inicializing Server\n");
+  acc_socket.bind_and_listen();
+  for (auto &s : Constants::stages) {
+    this->games_by_stage[s.first] = std::vector<Game*>();
   }
 }
 
-void Server::receive(){
-  extern logger oLog;
-  while(this->on){
-    try{
+Server::~Server() {
+  for (auto &i : this->games_by_stage) {
+    for (auto &g : i.second) {
+      delete g;
+    }
+    i.second.clear();
+  }
+}
 
-       
 
-      std::string action_str = this->client.receive_dto();
-      printf("%s\n",action_str.c_str() );
-      YAML::Node yaml_received = YAML::Load(action_str);
-      ActionDTO action_received = yaml_received["action"].as<ActionDTO>();
-      this->stage.make_action(action_received);
-    }catch(Error e){
-        stop();
-        break;
-    } 
+void Server::run() {
+  printf("running Server\n");
+  while (this->on) {
+    Socket client = this->acc_socket.accept_socket();
+    std::string stage = client.receive_dto();
+    printf("new client, stage: %s\n", stage.c_str());
+    std::map<std::string,std::vector<Game*>>::iterator it = this->games_by_stage.find(stage);
+    if (it == this->games_by_stage.end()) {
+      // no se encontro el stage: responder al cliente
+    } else {
+      if (it->second.empty()) {
+        printf("[Server] create stage\n");
+        // no existen partidas de este escenario: crear una
+        it->second.push_back(new Game(stage, Constants::stages.at(stage), std::move(client)));
+      } else {
+        // buscar si hay partida con lugar
+        bool found = false;
+        for (auto &game : it->second) {
+          if (game->not_full() && !found) {
+            // partida no llena: agregar jugador
+            game->add_player(std::move(client));
+            if (game->ready()) {
+              printf("[Server] starting game\n");
+              game->start();
+            }
+            found = true;
+            //break;
+          }
+        }
+        if (! found) {
+          // crear nueva partida
+          it->second.push_back(new Game(stage, Constants::stages.at(stage), std::move(client)));
+        }
+      }
+    }
+
+
   }
 }
 
 
 void Server::stop() {
   this->on = false;
-}
-
-Server::~Server() {
-  this->sending_thread.join();
-  this->receiving_thread.join();
 }

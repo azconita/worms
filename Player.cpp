@@ -12,9 +12,8 @@
 #include "Error.h"
 #include <yaml-cpp/yaml.h>
 
-Player::Player(Socket &client) : client(client) {
-  this->on = true;
-
+Player::Player(Socket client) : client(std::move(client)) {
+  this->on = false;
 }
 
 Player::~Player() {
@@ -30,6 +29,7 @@ void Player::set_id(int id) {
 }
 
 void Player::start() {
+  this->on = true;
   this->sender = std::thread(&Player::send, this);
   this->receiver = std::thread(&Player::receive, this);
 }
