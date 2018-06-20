@@ -10,6 +10,7 @@ Client::Client(char * host_name, char * port, std::string &stage, bool fullscree
     actions_queue(QUEUE_SIZE),
     fullscreen(fullscreen){
     this->socket.connect_to_server();
+    printf("connected, send: %s\n", stage.c_str());
     this->socket.send_dto(stage);
 }
 

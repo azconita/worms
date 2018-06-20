@@ -33,12 +33,12 @@ class Game : public Thread {
   TimerStage timer;
 
 public:
-  Game(std::string &stage_name, int total_players, Socket &client);
+  Game(std::string &stage_name, int total_players, Socket client);
   ~Game();
 
   bool not_full();
   bool ready();
-  void add_player(Socket &client);
+  void add_player(Socket client);
 
   virtual void run() override ;
   void stop();

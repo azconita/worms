@@ -318,6 +318,7 @@ void Stage::load_initial_stage(std::string file_name){
 }
 
 void Stage::set_worms_to_players(int total_players) {
+  printf("[Stage] set_worms_to_players\n");
   //get vector of worms ids
   std::vector<int> ids;
   std::transform(this->worms.begin(), this->worms.end(), std::back_inserter(ids),
@@ -333,6 +334,7 @@ void Stage::set_worms_to_players(int total_players) {
   }
   printf("[Stage] total players: %d, worms for each: %d\n", total_players, wq);
   for (int i = 0; i < total_players; i++) {
+    printf("[Stage] set for player %i\n", i);
     //(i+1)*wq == ids.size()) ? ids.end() : ids[(i+1)*wq])
     std::vector<int> v;
     std::copy(ids.begin() + i*wq, ids.begin() + (i+1)*wq, std::back_inserter(v));

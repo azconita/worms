@@ -12,13 +12,13 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include "common_thread.h"
 #include "Dtos.h"
 #include "Game.h"
 #include "Socket.h"
 
-class Server {
+class Server : public Thread {
 private:
-  std::thread thread;
   Socket acc_socket;
   bool on = true;
 
@@ -28,11 +28,9 @@ private:
 public:
   Server(char* port);
   virtual ~Server();
-  void start();
+  //void start();
   void run();
   void stop();
-private:
-  std::string get_yaml(StageDTO &s);
 };
 
 #endif /* SERVER_H_ */

@@ -3,8 +3,8 @@
 #include "Client.h"
 #define SERVER_NAME 1 
 #define PORT 2
-#define LITTLE_SCREEN 3
 #define STAGE_NAME 3
+#define LITTLE_SCREEN 4
 
 logger oLog("client.log");
 
@@ -17,7 +17,7 @@ int main(int argc, char * argv[]){
     	Client client(argv[SERVER_NAME],argv[PORT], stage, true);
     	client.run();
 	}else{
-		Client client(argv[SERVER_NAME],argv[PORT], stage, false);
+		Client client(argv[SERVER_NAME],argv[PORT], stage, true);
     	client.run();
 	}	
     
