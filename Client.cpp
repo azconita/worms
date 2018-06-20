@@ -5,11 +5,13 @@ float Client::get_pixels(float meter_position){
     return  PIXEL_CONSTANT*meter_position;
 }
 
-Client::Client(char * host_name, char * port, bool fullscreen)://
+Client::Client(char * host_name, char * port, std::string &stage, bool fullscreen)://
     socket(host_name, port),
     actions_queue(QUEUE_SIZE),
     fullscreen(fullscreen){
     this->socket.connect_to_server();
+    printf("connected, send: %s\n", stage.c_str());
+    this->socket.send_dto(stage);
 }
 
 

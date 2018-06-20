@@ -14,7 +14,7 @@
 #include "Dtos.h"
 
 class Player {
-  Socket &client;
+  Socket client;
   int id = -1;
   BlockingQueue<StageDTO> *send_queue;
   BlockingQueue<ActionDTO> *recv_queue;
@@ -22,7 +22,7 @@ class Player {
   std::thread receiver;
   bool on;
 public:
-  Player(Socket &client);
+  Player(Socket client);
   virtual ~Player();
   void set_id(int id);
   void add_stage_queues(BlockingQueue<StageDTO> *send_queue,
