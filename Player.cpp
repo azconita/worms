@@ -40,26 +40,27 @@ void Player::send() {
     StageDTO s = this->send_queue->pop();
     s.player_id = this->id;
     if (s.worm_turn == -1) {
+      //si worm_turn es -1 y winner tambien, en player_id esta el jugador que abandono
       this->stop();
       //printf("[player] stop\n");
-    } else {
-      YAML::Emitter out;
-      out << YAML::BeginMap;
-      out << YAML::Key << "stage";
-      out << YAML::Value << s;
-      out << YAML::EndMap;
-      try {
-        ////printf("se envia %s\n", out.c_str());
-        this->client.send_dto(out.c_str());
-        if (s.winner != -1) {
-          //printf("the winner: %i", s.winner);
-          this->stop();
-        }
-      } catch(Error e) {
-        oLog() << "Player quit (peer socket closed).";
+    }
+    YAML::Emitter out;
+    out << YAML::BeginMap;
+    out << YAML::Key << "stage";
+    out << YAML::Value << s;
+    out << YAML::EndMap;
+    try {
+      ////printf("se envia %s\n", out.c_str());
+      this->client.send_dto(out.c_str());
+      if (s.winner != -1) {
+        //printf("the winner: %i", s.winner);
         this->stop();
       }
+    } catch(Error e) {
+      oLog() << "Player quit (peer socket closed).";
+      this->stop();
     }
+
     //printf("termino un ciclo del Player::send\n");
   }
   //printf("[Player] se termino el ciclo send\n");
@@ -81,6 +82,7 @@ void Player::receive(){
     } catch(Error e) {
       ActionDTO a;
       a.type = Quit;
+      a.player_id = this->id;
       printf("[Player] receive: \n", e.what());
       printf("[Player] receive: pushing quit action\n");
       this->recv_queue->push(a);

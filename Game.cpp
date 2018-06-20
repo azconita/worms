@@ -79,9 +79,10 @@ void Game::run() {
     if (action.type == Quit) {
       //printf("[Game] end game\n");
       //end game: send block with endgame??
-      this->stage.end();
-      s.winner = -1;
+      //this->stage.end();
+      s.winner = action.player_id;
       s.worm_turn = -1;
+      s.player_id = action.player_id;
       this->timer.stop();
     } else {
       if (action.type == Timer_update){
