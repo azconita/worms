@@ -24,18 +24,20 @@
 class Game : public Thread {
   //thread!!
   Stage stage;
+  TimerStage timer;
   std::vector<Player*> players;
   int total_players;
   int limit = Constants::total_players;
   BlockingQueue<ActionDTO> stage_queue;
   std::vector<BlockingQueue<StageDTO>*> players_queues;
 
-  TimerStage timer;
+  bool stopped = false;
 
 public:
   Game(std::string &stage_name, int total_players, Socket client);
   ~Game();
 
+  bool not_stopped();
   bool not_full();
   bool ready();
   void add_player(Socket client);

@@ -17,14 +17,28 @@ Game::Game(std::string &stage_name, int total_players, Socket client) :
 }
 
 Game::~Game() {
+  //this->join();
+  printf("[Game] deleted\n");
+}
+
+void Game::stop() {
+  this->stopped = true;
+  this->stage.end();
   this->timer.join();
+  printf("[Game] stop: timer joined\n");
   //delete players!
   for (auto &q : this->players_queues) {
     delete q;
   }
+  printf("[Game] stop: queues deleted\n");
   for (auto &p : this->players) {
     delete p;
   }
+  printf("[Game] stop: players deleted\n");
+}
+
+bool Game::not_stopped() {
+  return (!this->stopped);
 }
 
 bool Game::not_full() {
@@ -41,9 +55,6 @@ void Game::add_player(Socket client) {
 
   printf("[Game] add_player -> new Player\n");
   this->players.push_back(new Player(std::move(client)));
-  //TODO: init game? add worms to initiated game?
-  //if (this->players.size() == this->total_players)
-    //this->start();
 }
 
 void Game::prepare() {
@@ -79,7 +90,7 @@ void Game::run() {
     if (action.type == Quit) {
       //printf("[Game] end game\n");
       //end game: send block with endgame??
-      //this->stage.end();
+      this->stage.end();
       s.winner = action.player_id;
       s.worm_turn = -1;
       s.player_id = action.player_id;
@@ -103,8 +114,6 @@ void Game::run() {
       q->push(s);
     }
   }
+  this->stop();
 }
 
-void Game::stop() {
-  this->stage.end();
-}

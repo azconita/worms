@@ -13,5 +13,6 @@ int main(int argc, char *argv[]) {
     continue;
   }
   server.stop();
+  server.join();
   return 0;
 }

@@ -17,11 +17,12 @@ Player::Player(Socket client) : client(std::move(client)) {
 }
 
 Player::~Player() {
+  printf("[Player] deleted: %i\n", this->id);
   // TODO Auto-generated destructor stub
   this->sender.join();
   this->receiver.join();
   //quien deberia borrar el socket??
-  this->client.shut();
+  //this->client.shut();
 }
 
 void Player::set_id(int id) {
@@ -40,7 +41,6 @@ void Player::send() {
     StageDTO s = this->send_queue->pop();
     s.player_id = this->id;
     if (s.worm_turn == -1) {
-      //si worm_turn es -1 y winner tambien, en player_id esta el jugador que abandono
       this->stop();
       //printf("[player] stop\n");
     }
@@ -55,6 +55,7 @@ void Player::send() {
       if (s.winner != -1) {
         //printf("the winner: %i", s.winner);
         this->stop();
+        this->client.shut();
       }
     } catch(Error e) {
       oLog() << "Player quit (peer socket closed).";
@@ -63,7 +64,7 @@ void Player::send() {
 
     //printf("termino un ciclo del Player::send\n");
   }
-  //printf("[Player] se termino el ciclo send\n");
+  printf("[Player] se termino el ciclo send: %i\n", this->id);
 }
 
 void Player::receive(){
@@ -89,6 +90,7 @@ void Player::receive(){
       stop();
     }
   }
+  printf("[Player] se termino el ciclo receive: %i\n", this->id);
 }
 
 void Player::add_stage_queues(BlockingQueue<StageDTO> *send_queue,
