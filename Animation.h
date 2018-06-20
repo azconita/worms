@@ -25,6 +25,7 @@ public:
 	Direction get_current_direction();
 	void draw(SDL_Surface *screen, int x, int y);
 	bool continue_internal_movement();
+	void first_step();
 	bool point_up();
 	bool point_down();
 };

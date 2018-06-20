@@ -22,12 +22,17 @@ int Animation::get_width(){
         return this->picture.get_width();
     }
 
+void Animation::first_step(){
+    while(!this->picture.is_in_first_figure(this->direction)){
+        this->picture.previous_sprite_figure(this->direction);
+    }
+}
+
 
     void Animation::set_current_direction(Direction direction){
         this->direction = direction;
-        while(!this->picture.is_in_first_figure(this->direction)){
-            this->picture.previous_sprite_figure(this->direction);
-        }
+        this->first_step();
+        
     }
 
     Direction Animation::get_current_direction(){

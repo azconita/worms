@@ -58,9 +58,12 @@ void WormAnimation::change_state(State state){
 }
 
 void WormAnimation::take_weapon(Weapon_Name weapon){
+    std::map<Weapon_Name,State>::iterator weapon_state = weapons_states.find(weapon);
+    if(weapon_state->second == this->state){
+        return;
+    }
     this->timer = 5;
     this->degrees = -90;
-    std::map<Weapon_Name,State>::iterator weapon_state = weapons_states.find(weapon);
     change_state(weapon_state->second);
 }
 
