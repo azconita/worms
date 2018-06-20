@@ -76,10 +76,13 @@ void Player::receive(){
       oLog() << action_str.c_str();
       YAML::Node yaml_received = YAML::Load(action_str);
       ActionDTO action_received = yaml_received["action"].as<ActionDTO>();
+      action_received.player_id = this->id;
       this->recv_queue->push(action_received);
     } catch(Error e) {
       ActionDTO a;
       a.type = Quit;
+      printf("[Player] receive: \n", e.what());
+      printf("[Player] receive: pushing quit action\n");
       this->recv_queue->push(a);
       stop();
     }

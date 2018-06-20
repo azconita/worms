@@ -127,6 +127,7 @@ enum Action_Type {
 };
 
 struct ActionDTO {
+  int player_id = -2;
   int worm_id = -2;
   Action_Type type = Not_action;
   Movement move = Not_move;
@@ -213,6 +214,7 @@ struct convert<ActionDTO> {
   static Node encode(const ActionDTO& action) {
     Node node;
     node["worm_id"] = action.worm_id;
+    node["player_id"] = action.player_id;
     node["type"] = (int) action.type;
     node["move"] = (int) action.move;
     node["weapon"] = (int) action.weapon;
@@ -228,6 +230,7 @@ struct convert<ActionDTO> {
   static bool decode(const Node& node, ActionDTO& action) {
 
     action.worm_id = node["worm_id"].as<int>();
+    action.player_id = node["player_id"].as<int>();
     action.type = static_cast<Action_Type>(node["type"].as<int>());
     action.move = static_cast<Movement>(node["move"].as<int>());
     action.weapon = static_cast<Weapon_Name>(node["weapon"].as<int>());

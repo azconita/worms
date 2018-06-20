@@ -67,6 +67,8 @@ YAML::Emitter& operator << (YAML::Emitter& out, const StageDTO& s) {
 
 YAML::Emitter& operator << (YAML::Emitter& out, const ActionDTO& a) {
   out << YAML::BeginMap;
+  out << YAML::Key << "player_id";
+  out << YAML::Value << a.player_id;
   out << YAML::Key << "worm_id";
   out << YAML::Value << a.worm_id;
   out << YAML::Key << "type";

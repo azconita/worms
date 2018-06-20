@@ -80,6 +80,7 @@ void Game::run() {
       //printf("[Game] end game\n");
       //end game: send block with endgame??
       this->stage.end();
+      s.winner = -1;
       s.worm_turn = -1;
       this->timer.stop();
     } else {
