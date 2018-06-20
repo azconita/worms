@@ -126,9 +126,7 @@ void Picture::draw(SDL_Surface *screen, SDL_Rect position, Direction direction){
     position.h = dimention.h;
     position.w = dimention.w;
 
-    //printf("x = %i, y = %i, h = %i, w = %i \n",position.x, position.y, position.h, position.w );
-
-    if(this->default_direction != direction){
+     if(this->default_direction != direction){
         SDL_BlitSurface(this->flipped, &dimention, screen, &position);
         return;
     }
