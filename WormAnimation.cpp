@@ -108,8 +108,7 @@ int WormAnimation::get_timer(){
 
 
 Direction WormAnimation::get_direction(){
-    std::map<State,Animation>::iterator animation_iter = animations.find(this->state);
-    return animation_iter->second.get_current_direction();
+    return this->direction;
 }
 
 void WormAnimation::define_movement(int position_x, int position_y){

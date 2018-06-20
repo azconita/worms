@@ -16,8 +16,6 @@ float GraphicDesigner::get_pixels(float meter_position){
 
 std::map<int,WormAnimation> GraphicDesigner::create_worms(StageDTO s){
 
-    printf("creador de gusanos\n");
-
     std::map<int,WormAnimation> worms;
 
     for (auto w: s.worms) {
@@ -192,10 +190,9 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen, SDL_Rect camer
 
         worms_iter->second.move(center_x, center_y,  worm_info.worm_state,worm_info.direction);
 
-        printf("[GraphicDesigner] turno del gusano %i\n", s.worm_turn );
-        printf("[GraphicDesigner] turno anterior %i\n",this->last_worm_turn );
-        if(w.first == s.worm_turn && ((this->last_worm_turn != s.worm_turn) || (worms_iter->second.is_in_movement() && s.weapons.size() == 0 ) ) ) {
-            printf("[GraphicDesigner] cambiooooooo el turno\n"); 
+
+        if(w.first == s.worm_turn && ((this->last_worm_turn != s.worm_turn) || //
+            (worms_iter->second.is_in_movement() && s.weapons.size() == 0 ) ) ) { 
             this->camera->follow(center_x,center_y); 
         }
         worms_iter->second.show(this->screen, camera_position);
@@ -205,17 +202,42 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen, SDL_Rect camer
             cout << "Error: juego no preparado para mas de 4 jugadores" << endl;
         }
 
+        center_x = center_x - camera_position.x;
+        center_y = center_y - camera_position.y;
+
         
         Colour player_color = Colour::create(possible_colors.at(worm_info.player_id));
 
-        show_life(worm_info.life,center_x,center_y, camera_position,player_color);
+        show_life(worm_info.life,center_x,center_y,player_color);
         if(w.first == s.worm_turn){
-            show_arrow(center_x, center_y, camera_position);
+            show_arrow(center_x, center_y);
         }
         int weapon_power = worms_iter->second.get_weapon_power();
         show_powerbar(weapon_power);
 
+        if(worms_iter->second.has_point_weapon()){
+            show_weapon_point_direction(center_x, center_y,worms_iter->second.get_degrees(), worms_iter->second.get_direction());
+        }
+
     }
+}
+
+void GraphicDesigner::show_weapon_point_direction(int x, int y,float degrees, Direction dir){
+    int val = 1;
+    if(dir == Left){
+        printf("[GraphicDesigner]Left\n");   
+        val = -1 ;
+    }
+    Colour color = Colour::create(White);
+    Uint32 colorkey = SDL_MapRGB(screen->format,color.r,color.g,color.b);
+    SDL_Rect dot;
+    for(int hipo = 50; hipo < 300; hipo += 35){
+        dot.x = x  + 25 + val*( cos(degrees* (M_PI / 180))*hipo);
+        dot.y = y  + 20 -       sin(degrees* (M_PI / 180))*hipo;
+        dot.h = 3;
+        dot.w = 3;
+        SDL_FillRect(screen, &dot, colorkey);
+    }  
 }
 
  std::map<int,WormAnimation>::iterator GraphicDesigner::get_turn_worm(int id){
@@ -251,7 +273,7 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen, SDL_Rect camer
 }
 
 
-void GraphicDesigner::show_life(int life, int worm_x, int worm_y, SDL_Rect camera_position, Colour color){
+void GraphicDesigner::show_life(int life, int worm_x, int worm_y, Colour color){
     char str_life[10];
     if(life < 100){
         sprintf(str_life, " %d ", life);
@@ -265,8 +287,8 @@ void GraphicDesigner::show_life(int life, int worm_x, int worm_y, SDL_Rect camer
         throw Error("TTF_RenderText_Solid(): ",TTF_GetError());
     }
 
-    Sint16 x = worm_x - camera_position.x + 30;
-    Sint16 y = worm_y - camera_position.y - 10;
+    Sint16 x = worm_x  + 30;
+    Sint16 y = worm_y  - 10;
 
     SDL_Rect rectangle; 
     rectangle.x = x-2;
@@ -291,10 +313,10 @@ void GraphicDesigner::show_life(int life, int worm_x, int worm_y, SDL_Rect camer
     SDL_FreeSurface(text);
 }
 
-void GraphicDesigner::show_arrow( int worm_x, int worm_y, SDL_Rect camera_position){
+void GraphicDesigner::show_arrow( int worm_x, int worm_y){
 
-    Sint16 x = worm_x - camera_position.x + 5;
-    Sint16 y = worm_y - camera_position.y - 18;
+    Sint16 x = worm_x + 5;
+    Sint16 y = worm_y  - 18;
 
     SDL_Rect dimention;
     dimention.x = 0;
