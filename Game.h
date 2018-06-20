@@ -25,7 +25,6 @@ class Game : public Thread {
   //thread!!
   Stage stage;
   std::vector<Player*> players;
-  int total_players;
   int limit = Constants::total_players;
   BlockingQueue<ActionDTO> stage_queue;
   std::vector<BlockingQueue<StageDTO>*> players_queues;
@@ -33,12 +32,11 @@ class Game : public Thread {
   TimerStage timer;
 
 public:
-  Game(std::string &stage_name, int total_players, Socket client);
+  Game(std::string &stage_name, Socket &client);
   ~Game();
 
   bool not_full();
-  bool ready();
-  void add_player(Socket client);
+  void add_player(Socket &client);
 
   virtual void run() override ;
   void stop();

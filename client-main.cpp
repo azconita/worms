@@ -3,22 +3,21 @@
 #include "Client.h"
 #define SERVER_NAME 1 
 #define PORT 2
-#define STAGE_NAME 3
-#define LITTLE_SCREEN 4
+#define LITTLE_SCREEN 3
+
 
 logger oLog("client.log");
 
 int main(int argc, char * argv[]){
-    if (argc < 4){
+    if (argc < 3){
         throw Error("Parametros incorrectos");
     }
-    std::string stage(argv[STAGE_NAME]);
-    if(argc == 4){
-    	Client client(argv[SERVER_NAME],argv[PORT], stage, true);
-    	client.run();
+    if(argc == 3){  
+    	Client cliente(argv[SERVER_NAME],argv[PORT], true);
+    	cliente.run();
 	}else{
-		Client client(argv[SERVER_NAME],argv[PORT], stage, true);
-    	client.run();
+		Client cliente(argv[SERVER_NAME],argv[PORT], false);
+    	cliente.run();
 	}	
     
     return 0;

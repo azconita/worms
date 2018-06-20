@@ -10,8 +10,6 @@
 #include <string>
 #include <cmath>
 
-
-
 Worm::Worm(b2World* world, float x, float y, int id, Direction direction) :
           Entity(1), world(world), id(id) {
   b2BodyDef bodyDef;

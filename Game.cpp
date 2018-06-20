@@ -8,15 +8,14 @@
 #include "Game.h"
 
 
-Game::Game(std::string &stage_name, int total_players, Socket client) :
+Game::Game(std::string &stage_name, Socket &client) :
            stage(stage_name),
-           total_players(total_players),
-           stage_queue(QUEUE_SIZE),
-           timer(stage_queue) {
-  this->players.push_back(new Player(std::move(client)));
+           stage_queue(QUEUE_SIZE), timer(stage_queue) {
+  this->players.push_back(new Player(client));
 }
 
 Game::~Game() {
+  // TODO Auto-generated destructor stub
   this->timer.join();
   //delete players!
   for (auto &q : this->players_queues) {
@@ -28,22 +27,18 @@ Game::~Game() {
 }
 
 bool Game::not_full() {
-  return (this->players.size() < this->total_players);
+  return (this->players.size() < this->limit);
 }
 
-bool Game::ready() {
-  return (this->players.size() == this->total_players);
-}
-
-void Game::add_player(Socket client) {
-  if (this->players.size() >= this->total_players)
+void Game::add_player(Socket &client) {
+  if (this->players.size() >= this->limit)
     return;
 
-  printf("[Game] add_player -> new Player\n");
-  this->players.push_back(new Player(std::move(client)));
+  //printf("[Game] add_player -> new Player\n");
+  this->players.push_back(new Player(client));
   //TODO: init game? add worms to initiated game?
-  //if (this->players.size() == this->total_players)
-    //this->start();
+  if (this->players.size() == this->limit)
+    this->start();
 }
 
 void Game::prepare() {
@@ -75,7 +70,7 @@ void Game::run() {
     // sacar action de la cola: action de player o action del timer(update)
     action = this->stage_queue.pop();
     //printf("[Game] pop action: %d\n", action.type);
-
+    
     if (action.type == Quit) {
       //printf("[Game] end game\n");
       //end game: send block with endgame??
@@ -86,12 +81,12 @@ void Game::run() {
       if (action.type == Timer_update){
         //printf("[Game] update state\n");
         this->stage.update();
-
+      
       }
       else{
         //printf("[Game] le digo al stage que haga una accion\n");
         this->stage.make_action(action);
-
+        
       }
       s = stage.get_stageDTO();
       //printf("[Game] pido un stage DTO\n");

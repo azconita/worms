@@ -10,7 +10,6 @@
 
 namespace Constants {
   YAML::Node config = YAML::LoadFile("server_config.yaml");
-  extern const std::map<std::string, int> stages = config["stages"].as<std::map<std::string,int>>();
   extern const int total_players = config["total_players"].as<int>();
 
   extern const float gravity = config["gravity"].as<float>();
