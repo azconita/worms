@@ -26,6 +26,7 @@ Server::~Server() {
     for (auto &g : i.second) {
       delete g;
     }
+    i.second.clear();
   }
 }
 

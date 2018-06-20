@@ -370,4 +370,5 @@ Stage::~Stage() {
   }
   this->explosions.clear();
   delete this->world;
+  printf("[Stage] deleted\n");
 }
