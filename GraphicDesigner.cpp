@@ -254,7 +254,7 @@ void GraphicDesigner::show_weapon_point_direction(int x, int y,float degrees, Di
 
     for (auto w: s.weapons) {
         int center_x = get_pixels(w.pos_x) - camera_position.x;
-        int center_y = get_pixels(w.pos_y) - camera_position.y;
+        int center_y = get_pixels(w.pos_y) - camera_position.y - 30;
 
 
         std::map<Weapon_Name,Animation>::iterator weapon_iter = this->weapons.find(w.weapon);

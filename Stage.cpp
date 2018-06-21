@@ -403,9 +403,9 @@ void Stage::set_worms_to_players(int total_players) {
   
   //compensar jugador con menos gusanos!!
   this->current_player = this->worms.begin()->second;
-  //printf("[Stage] empieza a jugar el gusano %i \n", this->current_player->get_id() );
+  printf("[Stage] empieza a jugar el gusano %i \n", this->current_player->get_id() );
   this->last_player_id = this->current_player->get_player_id();
-  //printf(" que es del jugador %i\n", this->last_player_id );
+  printf(" que es del jugador %i\n", this->last_player_id );
   this->update_body_types(true);
 }
 
