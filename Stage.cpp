@@ -24,7 +24,7 @@ void Stage::do_explosions() {
             ++it;
         }
       w->explode();
-      //printf("[Stage] se hizo una explosion, listo para cambiar de jugaro\n");
+      printf("[Stage] se hizo una explosion, listo para cambiar de jugaro\n");
       this->current_player->took_weapon(None);
       this->current_player = NULL;
     }
@@ -72,6 +72,10 @@ void Stage::clean_dead_bodies() {
        delete *it;
        it = this->explosions.erase(it);
        printf("[Stage]borrando armaaaaaaaaaaa\n");
+       if(this->explosions.size() == 0){
+          printf("[Stage] listo para cambiar de jugador\n");
+          this->current_player = NULL;
+       }
      } else {
        if ((*it)->has_timer() && (*it)->is_time_to_explode()) {
          (*it)->explode();
@@ -105,7 +109,7 @@ void Stage::update_player() {
       //printf("[Stage] queria cambiar de jugador pero se estan moviendo entonces sigue sin turno\n");
       return;
     }
-    //printf("[Stage] change player\n");
+    printf("[Stage] change player\n");
     this->change_player();
     this->player_time = time(NULL);
   }
@@ -154,14 +158,14 @@ void Stage::change_player() {
   int step = 0;
   
   int new_player_id = ((this->last_player_id + 1) == this->players_turn.size()) ? 0 : this->last_player_id + 1;
-  //printf("[Stage] next player id: %d,", new_player_id);
+  printf("[Stage] next player id: %d,", new_player_id);
   while(this->players_turn.at(new_player_id).is_empty()){
    
     int new_player_id = ((this->last_player_id + 1) == this->players_turn.size()) ? 0 : this->last_player_id + 1;
-    //printf("[Stage] ese jugador estaba muerto, pasamos a : %d,", new_player_id);
+    printf("[Stage] ese jugador estaba muerto, pasamos a : %d,", new_player_id);
     step ++;
     if(step >= this->players_turn.size()){
-      //printf("[Stage] estan todos los gusanos muertos\n");
+      printf("[Stage] estan todos los gusanos muertos\n");
       return;
     }
   };

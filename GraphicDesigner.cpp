@@ -142,7 +142,7 @@ void GraphicDesigner::show_beams(StageDTO s, SDL_Surface *screen, SDL_Rect camer
 
         if(beam_info.w < 4){
             Picture beam = inclinate_beam(this->little_beams, degrees);
-            beam.draw(this->screen,center_x, center_y,beam_info.direction);
+            beam.draw(this->screen,center_x - 1, center_y,beam_info.direction);
         }else{
             Picture beam = inclinate_beam(this->big_beams, degrees);
              beam.draw(this->screen,center_x , center_y, beam_info.direction);
