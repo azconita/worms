@@ -51,6 +51,7 @@ class GraphicDesigner {
 	TTF_Font *font;
 	TTF_Font *time_font;
 	SDL_Surface *power_bar;
+	SDL_Surface *power_back;
 	SDL_Surface * weapons_menu;
 	SDL_Surface * arrow;
 	std::map<int,WormAnimation> worms;

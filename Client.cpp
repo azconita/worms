@@ -57,8 +57,9 @@ void Client::run(){
     this->id = s.player_id;
 
 
+    printf("[Client] 1\n");
     GraphicDesigner graphic_designer(screen, screen_height,screen_width, s);
-
+    printf("[Client] 2\n");
     std::map<int,WormAnimation>::iterator turn_worm_iter = graphic_designer.get_turn_worm(s.worm_turn);
 
     SDL_Event event;

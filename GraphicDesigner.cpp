@@ -58,17 +58,19 @@ water(3){
         throw Error("TTF_OpenFont() Fail: ",TTF_GetError());
     }
 
+ 
     SDL_Surface *power_bar = IMG_Load(POWER_BAR);
-    Uint32 colorkey = SDL_MapRGB(power_bar->format, 0, 0, 0);
-    SDL_SetColorKey(power_bar, SDL_SRCCOLORKEY, colorkey);
+    SDL_Surface *power_back = IMG_Load(POWER_BACK);;
     SDL_Surface * weapons_menu = IMG_Load(WEAPONS_MENU);
     SDL_Surface * background = IMG_Load(BACKGROUND);
     SDL_Surface * arrow = IMG_Load(ARROW);
     SDL_Surface *winner = IMG_Load(WON);
     SDL_Surface *looser = IMG_Load(LOST);
+
+      printf("[GraphicDesigner] 3\n");
   
-    if (!power_bar || !weapons_menu || !background || !arrow  || !winner || !looser) {
-        throw Error("Couldn't create surface from image: %s %s",POWER_BAR,SDL_GetError());
+    if (!power_bar || !power_back|| !weapons_menu || !background || !arrow  || !winner || !looser) {
+        throw Error("Couldn't create surface from image:  %s",SDL_GetError());
     }
     ////////////////////////////////////////////////////////
 
@@ -82,6 +84,7 @@ water(3){
     this->big_beams = AnimationFactory::get_big_beams();
 
     this->power_bar = power_bar;
+    this->power_back = power_back;
     this->weapons_menu = weapons_menu;
     this->arrow = arrow;
 
@@ -213,8 +216,10 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen, SDL_Rect camer
             show_arrow(center_x, center_y);
         }
         int weapon_power = worms_iter->second.get_weapon_power();
-        show_powerbar(weapon_power);
-
+        if(weapon_power > 0){
+            show_powerbar(weapon_power);
+        }
+        
         if(worms_iter->second.has_point_weapon()){
             show_weapon_point_direction(center_x, center_y,worms_iter->second.get_degrees(), worms_iter->second.get_direction());
         }
@@ -341,7 +346,7 @@ void GraphicDesigner::show_powerbar(int power){
     dimention.x = 0;
     dimention.y = 0;
     dimention.h = this->power_bar->h;
-    dimention.w = this->power_bar->w*power/100;
+    dimention.w = this->power_bar->w;
 
     SDL_Rect position;
     position.x = this->screen_width - this->power_bar->w -5;
@@ -349,9 +354,17 @@ void GraphicDesigner::show_powerbar(int power){
     position.h = this->power_bar->h;
     position.w = this->power_bar->w;
 
-    Colour color = Colour::create(Black);
-    Uint32 colorkey = SDL_MapRGB(this->power_bar->format, color.r, color.g, color.b);
+    Colour color = Colour::create(White);
+    Uint32 colorkey = SDL_MapRGB(this->power_back->format, color.r, color.g, color.b);
+    SDL_SetColorKey(this->power_back, SDL_SRCCOLORKEY, colorkey);
     SDL_SetColorKey(this->power_bar, SDL_SRCCOLORKEY, colorkey);
+    SDL_BlitSurface(this->power_back, &dimention, this->screen, &position);
+
+
+    dimention.x = 0;
+    dimention.y = 0;
+    dimention.h = this->power_bar->h;
+    dimention.w = this->power_bar->w*power/100;
     SDL_BlitSurface(this->power_bar, &dimention, this->screen, &position);
 
 
