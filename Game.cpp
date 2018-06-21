@@ -80,9 +80,10 @@ void Game::run() {
   // inicializar players, colas, timer
   prepare();
   // start game!
-  StageDTO s;
   ActionDTO action;
   while (!this->stage.finished()) {
+
+    StageDTO s;
     // sacar action de la cola: action de player o action del timer(update)
     action = this->stage_queue.pop();
     //printf("[Game] pop action: %d\n", action.type);

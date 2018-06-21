@@ -1,0 +1,39 @@
+inicializing Server
+running Server
+new client, stage: file.yaml
+[Server] create stage
+file.yaml
+wormDir: 0x7ecbea0
+wormDir: 0x7ecc2a0
+new client, stage: file.yaml
+[Game] add_player -> new Player
+[Server] starting game
+[Stage] set for player 0
+jugador 0 cantidad de gusanos en el turn helper: 1.
+1
+[Stage] set for player 1
+jugador 1 cantidad de gusanos en el turn helper: 1.
+0
+[Player] receive: 
+[Player] receive: pushing quit action
+[Player] se termino el ciclo receive: 1
+[Player] se termino el ciclo send: 1
+[Player] se termino el ciclo send: 0
+[Player] receive: 
+[Player] receive: pushing quit action
+[Player] se termino el ciclo receive: 0
+[Game] stop: timer joined
+[BlockingQueue] deleted
+[BlockingQueue] deleted
+[Game] stop: queues deleted
+[Player] deleted: 0
+[Player] deleted: 1
+[Game] stop: players deleted
+Error: Error in accept
+[Server] game joined
+[Game] deleted
+[BlockingQueue] deleted
+[TimerStage] deleted
+worm destroyed 
+worm destroyed 
+[Stage] deleted
