@@ -225,6 +225,7 @@ void Stage::shoot_weapon(int worm, ActionDTO& action) {
         action.pos_y, this->wind, &this->explosions);
     w->shoot(action.power * 100, action.weapon_degrees, action.direction,
         action.time_to_explode);
+    this->worms[action.worm_id]->took_weapon(None);
     this->explosions.push_back(w);
   }
 }
