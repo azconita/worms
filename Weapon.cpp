@@ -25,10 +25,10 @@ Weapon::Weapon(b2World *world, Weapon_Name name, float x, float y, float wind, s
     bodyDef.userData = (void*) this;
     this->body = world->CreateBody(&bodyDef);
     //add box fixture
-    b2CircleShape shape;
-    shape.m_radius = Constants::weapon_size;
-    //b2PolygonShape shape;
-    //shape.SetAsBox(0.5, 0.5);
+    //b2CircleShape shape;
+    //shape.m_radius = Constants::weapon_size;
+    b2PolygonShape shape;
+    shape.SetAsBox(1, 1);
     b2FixtureDef myFixtureDef;
     myFixtureDef.shape = &shape;
     myFixtureDef.density = Constants::weapon_density;
@@ -226,7 +226,6 @@ b2Vec2 rad2vec(float r) {
 }
 
 void Weapon::shoot(int power, float degrees, Direction dir, int time_to_explode) {
-  printf("[Weapon] shooting %d", this->name);
   this->shoot_power = power;
   int s = (dir == Right) ? 1 : -1;
   switch (this->name) {
@@ -263,12 +262,12 @@ void Weapon::shoot(int power, float degrees, Direction dir, int time_to_explode)
 
 void Weapon::bazooka(int power, float degrees, int s) {
   //TODO:afectar por el viento
-  b2Vec2 vel = rad2vec(degrees);
-  float vel_change = power * vel.x;
+  float vel_change = power * cos(degrees* (M_PI / 180));
   float impulsex = body->GetMass() * vel_change;
-  vel_change = power * vel.y;
-  float impulsey = body->GetMass() * vel_change;
-  this->body->ApplyLinearImpulse(b2Vec2(impulsex*s,impulsey), this->body->GetWorldCenter(), true);
+  vel_change =  power * sin(degrees*(M_PI / 180));
+  float impulsey = -1*body->GetMass() * vel_change;
+  printf("[Weapon] vector de velocidad = %f, %f\n",impulsex*s,impulsey );
+  this->body->ApplyForce(b2Vec2(impulsex*s,impulsey), this->body->GetWorldCenter(), true);
 
 }
 

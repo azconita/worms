@@ -49,6 +49,11 @@ void WormAnimation::change_direction(Direction direction){
 
 void WormAnimation::change_state(State state){
     this->state = state; //sigue en la misma dire que antes
+     for(std::map<State,Animation>::iterator animation_iter = this->animations.begin();
+        animation_iter != this->animations.end();
+        animation_iter ++){
+        animation_iter->second.first_step();
+    }
     if( std::find(weapons_states_with_power.begin(), weapons_states_with_power.end(), this->state) //
     != weapons_states_with_power.end() && this->weapon_power == 0){
         this->weapon_power = 10;

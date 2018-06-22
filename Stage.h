@@ -66,7 +66,7 @@ private:
   void update_body_types(bool first_time);
   bool update_worms();
   bool is_in_movement();
-  bool check_winners(StageDTO *s);
+  int check_winners();
 
   void load_initial_stage(std::string file_name);
   void set_position(ElementDTO & element ,b2Vec2 & center);

@@ -96,22 +96,11 @@ void Client::run(){
 
         printf("[Client] es el turno del gusano %i\n",s.worm_turn );
 
-        //FIX ME
-        if(s.winner != -1){
-            finish = true;
-                if(s.winner == this->id){
-                        printf("GANE\n");
-                        SDL_Flip(screen);
-                            graphic_designer.won();
-                        
-                }else{
-                        printf("PERDIII\n");
-                        SDL_Flip(screen);
-                        graphic_designer.lost();
-                }
-        }
+      
 
         if((t1 -t0) > 17) {
+
+
             printf("turnoo %i\n", s.worm_turn);
             printf("ganooo %i\n", s.winner);
 
@@ -119,12 +108,30 @@ void Client::run(){
             t0 = SDL_GetTicks();
             //t_start = std::chrono::high_resolution_clock::now();
 
-            //borro todo lo que estaba
-            //toda la pantalla en negro
-            SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format,0,0,0));
-            //dibujo las vigas y el agua
 
-            graphic_designer.show_elements(s,screen);
+            //FIX ME
+            if(s.winner != -1){
+                finish = true;
+                    if(s.winner == this->id){
+                            printf("GANE\n");
+                            SDL_Flip(screen);
+                                graphic_designer.won();
+                            
+                    }else{
+                            printf("PERDIII\n");
+                            SDL_Flip(screen);
+                            graphic_designer.lost();
+                    }
+            } else {
+                  //borro todo lo que estaba
+                //toda la pantalla en negro
+                SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format,0,0,0));
+                //dibujo las vigas y el agua
+                graphic_designer.show_elements(s,screen);
+
+            }
+
+            
 
         //TODO: revisar con foto de martin!!
         //t_end = std::chrono::high_resolution_clock::now();

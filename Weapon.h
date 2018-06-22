@@ -25,6 +25,7 @@ private:
   Weapon_Name name;
   bool alive = true;
 
+
   int counter = 0;
   int timer = 0;
   time_t t = 0;

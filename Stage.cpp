@@ -79,6 +79,9 @@ void Stage::clean_dead_bodies() {
      } else {
        if ((*it)->has_timer() && (*it)->is_time_to_explode()) {
          (*it)->explode();
+         for (auto &w : this->worms) {
+               w.second->set_dynamic();
+          }
        }
        ++it;
      }
@@ -104,7 +107,7 @@ void Stage::clean_dead_bodies() {
 void Stage::update_player() {
     //update worms: set vel 0 for "stopped" worms and static
   bool any_worm_in_movement = this->is_in_movement(); 
-  if (this->current_player == NULL || (time(NULL) - this->player_time > Constants::worm_turn_time) ) {
+  if (this->current_player == NULL || ( (time(NULL) - this->player_time > Constants::worm_turn_time) && this->explosions.size() == 0) ) {
     if(any_worm_in_movement){
       //printf("[Stage] queria cambiar de jugador pero se estan moviendo entonces sigue sin turno\n");
       return;
@@ -183,13 +186,11 @@ if(this->current_player == NULL){
   throw Error("No se puede cambiar el body type si no es el turno de nadie");
     
 }
-for (auto &w : this->worms) {
+  for (auto &w : this->worms) {
 
     w.second->took_weapon(None);
 
    if (w.first != this->current_player->get_id()){
-       //TODO: no deberia hacerlo siempre!!
-       //iterar por los cuerpos del world??
        w.second->set_static(first_time);
 
      }else{
@@ -221,8 +222,7 @@ void Stage::shoot_weapon(int worm, ActionDTO& action) {
     //Weapon* w = new Weapon(this->world, action.weapon, this->current_player->get_points()[0].x, this->current_player->get_points()[0].y, this->wind);
     int d = (action.direction == Right) ? 1 : -1;
     //printf("[Stage] posicion del arma%i, %i\n", action.pos_x, action.pos_y);
-    Weapon* w = new Weapon(this->world, action.weapon, action.pos_x,
-        action.pos_y, this->wind, &this->explosions);
+    Weapon* w = new Weapon(this->world, action.weapon, action.pos_x +3*d, action.pos_y, this->wind, &this->explosions);
     w->shoot(action.power * 100, action.weapon_degrees, action.direction,
         action.time_to_explode);
     this->worms[action.worm_id]->took_weapon(None);
@@ -281,30 +281,28 @@ void Stage::set_position(ElementDTO & element , b2Vec2 & center){
 
 }
 
-bool Stage::check_winners(StageDTO *s){
+int Stage::check_winners(){
   for (auto it = this->players_turn.cbegin(); it != this->players_turn.cend(); ) {
     if (it->second.is_empty()){
-      //printf("[Stage]  LOSER %i\n", it->first);
+      printf("[Stage]  LOSER %i\n", it->first);
       it = this->players_turn.erase(it++); 
       if(this->players_turn.size() == 1){
-        //printf("[Stage] WINNER %i\n", this->players_turn.begin()->first );
-        s->winner = it->first;
+        printf("[Stage] WINNER %i\n", this->players_turn.begin()->first );
         this->finish = true;
-        return true;
+        return this->players_turn.begin()->first;
       }
     } else {
       ++it;
     }
   }
-  return false;
+  return -1;
 }
 
 StageDTO Stage::get_stageDTO() {
   StageDTO s;
-  if(this->check_winners(&s)){
-    s.winner = 1;
-    return s;
-  }
+
+  s.winner = this->check_winners();
+  
   
   for (auto w: this->worms) {
     ElementDTO worm_element;

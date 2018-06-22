@@ -487,15 +487,14 @@ void GraphicDesigner::won(){
     dimention.w = this->winner->w;
 
     SDL_Rect position;
-    position.x =  camera_position.x/2 + this->winner->w/2;
-    position.y =  camera_position.y/2 + this->winner->h/2;
+    position.x =  screen_width/2  - this->winner->w/2;
+    position.y =  screen_height/2 - this->winner->h/2;
     position.h = this->winner->h;
     position.w = this->winner->w;
-    SDL_BlitSurface(this->winner, &dimention, this->background, &position);
+    SDL_BlitSurface(this->winner, &dimention, this->screen, &position);
 }
  
 void GraphicDesigner::lost(){
-    SDL_Rect camera_position = this->camera->get_focus();
     SDL_FillRect(this->background, NULL, SDL_MapRGB(this->screen->format,128,128,192));
     SDL_Rect dimention;
     dimention.x = 0;
@@ -504,11 +503,11 @@ void GraphicDesigner::lost(){
     dimention.w = this->looser->w;
 
     SDL_Rect position;
-    position.x =  camera_position.x/2 + this->looser->w/2;
-    position.y =  camera_position.y/2 + this->looser->h/2;
+    position.x =  screen_width/2 - this->looser->w/2;
+    position.y =  screen_height/2 - this->looser->h/2;
     position.h = this->looser->h;
     position.w = this->looser->w;
-    SDL_BlitSurface(this->looser, &dimention, this->background, &position);
+    SDL_BlitSurface(this->looser, &dimention, this->screen, &position);
 }
 
 
