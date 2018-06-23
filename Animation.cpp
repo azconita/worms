@@ -74,9 +74,12 @@ void Animation::draw(SDL_Surface *screen, int x, int y){
     }
 
     void Animation::add_degres(float degrees){
+        this->first_step();
+        int i = 0;
         while(degrees > 0){
             this->picture.next_sprite_figure(this->direction);
-            degrees -= GRADES_PER_STEP;
+            degrees -= GRADES_PER_WEAPON_STEP;
+            i++;
         }
 
     }
