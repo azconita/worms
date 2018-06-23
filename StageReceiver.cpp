@@ -15,12 +15,27 @@ void StageReceiver::start(){
 void StageReceiver::receive_stage(){
 	 
 	while(this->on){
-	    string stage_str = (this->socket).receive_dto();
-	    YAML::Node yaml_received = YAML::Load(stage_str);
-	    //printf("%s\n", stage_str.c_str());
-	    StageDTO stage_received = yaml_received["stage"].as<StageDTO>();
-	    (this->stages_queue).push(stage_received);
+		try{
+		    string stage_str = (this->socket).receive_dto();
+		    YAML::Node yaml_received = YAML::Load(stage_str);
+		    //printf("%s\n", stage_str.c_str());
+		    StageDTO stage_received = yaml_received["stage"].as<StageDTO>();
+		    (this->stages_queue).push(stage_received);
+		    if(stage_received.winner != -1){
+		    	
+		    	printf("[StageReceiver] alguien gano\n");
+		    	this->on = false; // alguien gano -> se termino el juego
+		    	break;
+		    }
+		} catch( Error e){
+			
+			printf("[StageReceiver] alguien abandono\n");
+			this->on = false; //  alguien abandono
+			break;
+		}
+
     }
+
     
 }
 
