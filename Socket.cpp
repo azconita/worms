@@ -252,7 +252,7 @@ void Socket::send_dto(const std::string & dto_to_send){
    
     int bytes_sent = 0;
     int total_sent = 0;
-    char request[CHUNK_LEN+1];
+    char request[CHUNK_LEN];
 
     while (total_sent < dto_size ){
 
@@ -276,11 +276,11 @@ std::string Socket::receive_dto(){
   //  printf("numero del socket ->-----> %i\n",this->socket_num );
    std::string dto_received;
   int dto_size = receive_size_first();
-  char chunk[CHUNK_LEN+1];
+  char chunk[CHUNK_LEN];
   int total_received = 0;
   int bytes_received = 0;
   while (total_received < dto_size){
-        memset(chunk, 0, CHUNK_LEN+1);
+        memset(chunk, 0, CHUNK_LEN);
 
         int request_len = CHUNK_LEN;
         if (dto_size - total_received < CHUNK_LEN){
