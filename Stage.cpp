@@ -1,5 +1,5 @@
 
-#include "Stage.h"  
+#include "Stage.h"
 
 //config: yaml: https://github.com/jbeder/yaml-cpp/
 Stage::Stage(std::string file_name) : ammo() {
@@ -44,13 +44,13 @@ void Stage::update() {
   //printf("[Stage] check for explosiones\n");
   //check for timers in explosion
   this->do_explosions();
-      
+
   //printf("[Stage] borra gusanos muertos\n");
   //delete weapons exploded and dead worms
   this->clean_dead_bodies();
 
   //printf("[Stage] update del player\n");
-  
+
   //check if player change
   this->update_player();
 }
@@ -159,11 +159,11 @@ bool Stage::update_worms() {
 //cuantos players puede haber????
 void Stage::change_player() {
   int step = 0;
-  
+
   int new_player_id = ((this->last_player_id + 1) == this->players_turn.size()) ? 0 : this->last_player_id + 1;
   printf("[Stage] next player id: %d,", new_player_id);
   while(this->players_turn.at(new_player_id).is_empty()){
-   
+
     int new_player_id = ((this->last_player_id + 1) == this->players_turn.size()) ? 0 : this->last_player_id + 1;
     printf("[Stage] ese jugador estaba muerto, pasamos a : %d,", new_player_id);
     step ++;
@@ -184,7 +184,7 @@ void Stage::change_player() {
 void Stage::update_body_types(bool first_time){
 if(this->current_player == NULL){
   throw Error("No se puede cambiar el body type si no es el turno de nadie");
-    
+
 }
   for (auto &w : this->worms) {
 
@@ -213,6 +213,7 @@ void Stage::shoot_weapon(int worm, ActionDTO& action) {
 
   } else if (action.weapon == W_Air_Attack) {
     for (int i = 0; i < 6; ++i) {
+      printf("new air bomb\n");
       Weapon* w = new Weapon(this->world, action.weapon, action.pos_x, 0 - i,
           this->wind, &this->explosions);
       this->explosions.push_back(w);
@@ -300,10 +301,7 @@ int Stage::check_winners(){
 
 StageDTO Stage::get_stageDTO() {
   StageDTO s;
-
   s.winner = this->check_winners();
-  
-  
   for (auto w: this->worms) {
     ElementDTO worm_element;
     b2Vec2 center = w.second->get_center();
@@ -320,7 +318,7 @@ StageDTO Stage::get_stageDTO() {
     ElementDTO beam_element;
     b2Vec2 center = b->get_center();
     set_position(beam_element, center);
-    std::vector<b2Vec2> v = b->get_points();  
+    std::vector<b2Vec2> v = b->get_points();
 
     beam_element.h = round(sqrt(pow(v[2].x - v[1].x,2) + pow(v[2].y - v[1].y,2)));
     beam_element.w = round(sqrt(pow(v[1].x - v[0].x,2) + pow(v[1].y - v[0].y,2)));
@@ -359,7 +357,7 @@ void Stage::load_initial_stage(std::string file_name){
   Stage_y s = yaml_loader.load_stage();
   oLog() << "loading initial stage:\n";
   for(auto b: s.beams){
-    oLog() << "beam_y { x: " << b.pos_x << ", y: " << b.pos_y << ", size: " << b.size 
+    oLog() << "beam_y { x: " << b.pos_x << ", y: " << b.pos_y << ", size: " << b.size
     << ", inclination:" << b.inclination << ", direction: " << b.direction <<"}" << endl;
 	this->beams.push_back(new Beam(this->world, b.size, b.pos_x, b.pos_y, b.inclination,static_cast<Direction>(b.direction)));
 
@@ -389,6 +387,7 @@ void Stage::set_worms_to_players(int total_players) {
   }
   //printf("[Stage] total players: %d, worms for each: %d\n", total_players, wq);
   for (int i = 0; i < total_players; i++) {
+    printf("[Stage] set for player %i\n", i);
     //(i+1)*wq == ids.size()) ? ids.end() : ids[(i+1)*wq])
     std::vector<int> v;
     std::copy(ids.begin() + i*wq, ids.begin() + (i+1)*wq, std::back_inserter(v));
@@ -398,7 +397,7 @@ void Stage::set_worms_to_players(int total_players) {
       //printf("[Stage] al gusano %i le corresponde el jugador %i \n", worm_id, i);
     }
   }
-  
+
   //compensar jugador con menos gusanos!!
   this->current_player = this->worms.begin()->second;
   printf("[Stage] empieza a jugar el gusano %i \n", this->current_player->get_id() );
@@ -426,4 +425,5 @@ Stage::~Stage() {
   }
   this->explosions.clear();
   delete this->world;
+  printf("[Stage] deleted\n");
 }

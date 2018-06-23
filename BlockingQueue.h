@@ -29,33 +29,36 @@ public:
   BlockingQueue(const unsigned int max_size) :
                                           max_size(max_size) {
   }
-  //virtual ~BlockingQueue();
-
-void push(const T& val) {
-  std::unique_lock<std::mutex> lck(this->mtx);
-  if (this->q.empty()) {
-    this->is_not_empty.notify_all();
+  ~BlockingQueue() {
+    //this->q.clear();
+    printf("[BlockingQueue] deleted\n");
   }
 
-  while (this->q.size() >= this->max_size) {
-    //queue full: push blocked
-    is_not_full.wait(lck);
+  void push(const T& val) {
+    std::unique_lock<std::mutex> lck(this->mtx);
+    if (this->q.empty()) {
+      this->is_not_empty.notify_all();
+    }
+
+    while (this->q.size() >= this->max_size) {
+      //queue full: push blocked
+      is_not_full.wait(lck);
+    }
+    q.push(val);
   }
-  q.push(val);
-}
 
 
-T pop() {
-  std::unique_lock<std::mutex> lck(this->mtx);
-  while (this->q.empty()) {
-    //std::cout << " cola vacia, el pull se bloquea\n";
-    this->is_not_empty.wait(lck);
+  T pop() {
+    std::unique_lock<std::mutex> lck(this->mtx);
+    while (this->q.empty()) {
+      //std::cout << " cola vacia, el pull se bloquea\n";
+      this->is_not_empty.wait(lck);
+    }
+    const T val = this->q.front();
+    this->q.pop();
+    this->is_not_full.notify_all();
+    return val;
   }
-  const T val = this->q.front();
-  this->q.pop();
-  this->is_not_full.notify_all();
-  return val;
-}
 
 private:
   BlockingQueue(const BlockingQueue&) = delete;

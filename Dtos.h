@@ -85,24 +85,24 @@ static std::map<Weapon_Name, State> weapons_states {
 };
 
 struct ElementDTO { //puede ser un gusano, un arma o una viga
-  float pos_x;
-  float pos_y; //vertice superior izquierdo en metros
-  float h;
-  float w;
-  State worm_state;
-  Direction direction;
-  float angle;
-  int life;
-  int player_id;
-  Weapon_Name weapon;
+  float pos_x = 0;
+  float pos_y = 0; //vertice superior izquierdo en metros
+  float h = 0;
+  float w = 0;
+  State worm_state = Still;
+  Direction direction = Right;
+  float angle = 0;
+  int life = 0;
+  int player_id = -2;
+  Weapon_Name weapon = None;
   int timer = 0;
-  bool explosion;
+  bool explosion = false;
 };
 
 struct StageDTO {
   //bool finish = false;
-  int worm_turn;
-  int player_id;
+  int worm_turn = -2;
+  int player_id = -2;
   int winner = -1;
   std::vector<ElementDTO> beams;
   std::map<int,ElementDTO> worms;
@@ -111,12 +111,14 @@ struct StageDTO {
 
 
 enum Movement {
+  Not_move,
   Walk_right,
   Walk_left,
   Jump,
   Jump_back
 };
 enum Action_Type {
+  Not_action,
   Make_move,
   Take_weapon,
   Shot_weapon,
@@ -125,16 +127,17 @@ enum Action_Type {
 };
 
 struct ActionDTO {
-  int worm_id;
-  Action_Type type;
-  Movement move;
-  Weapon_Name weapon;
+  int player_id = -2;
+  int worm_id = -2;
+  Action_Type type = Not_action;
+  Movement move = Not_move;
+  Weapon_Name weapon = None;
   float weapon_degrees = 0;
-  int power;
-  int time_to_explode;
-  Direction direction;
-  int pos_x;
-  int pos_y;
+  int power = 0;
+  int time_to_explode = 0;
+  Direction direction = Right;
+  int pos_x = 0;
+  int pos_y = 0;
 };
 
 
@@ -211,6 +214,7 @@ struct convert<ActionDTO> {
   static Node encode(const ActionDTO& action) {
     Node node;
     node["worm_id"] = action.worm_id;
+    node["player_id"] = action.player_id;
     node["type"] = (int) action.type;
     node["move"] = (int) action.move;
     node["weapon"] = (int) action.weapon;
@@ -226,6 +230,7 @@ struct convert<ActionDTO> {
   static bool decode(const Node& node, ActionDTO& action) {
 
     action.worm_id = node["worm_id"].as<int>();
+    action.player_id = node["player_id"].as<int>();
     action.type = static_cast<Action_Type>(node["type"].as<int>());
     action.move = static_cast<Movement>(node["move"].as<int>());
     action.weapon = static_cast<Weapon_Name>(node["weapon"].as<int>());

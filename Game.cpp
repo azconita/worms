@@ -8,37 +8,53 @@
 #include "Game.h"
 
 
-Game::Game(std::string &stage_name, Socket &client) :
+Game::Game(std::string &stage_name, int total_players, Socket client) :
            stage(stage_name),
-           stage_queue(QUEUE_SIZE), timer(stage_queue) {
-  this->players.push_back(new Player(client));
+           total_players(total_players),
+           stage_queue(QUEUE_SIZE),
+           timer(stage_queue) {
+  this->players.push_back(new Player(std::move(client)));
 }
 
 Game::~Game() {
-  // TODO Auto-generated destructor stub
+  //this->join();
+  printf("[Game] deleted\n");
+}
+
+void Game::stop() {
+  this->stopped = true;
+  this->stage.end();
   this->timer.join();
+  printf("[Game] stop: timer joined\n");
   //delete players!
   for (auto &q : this->players_queues) {
     delete q;
   }
+  printf("[Game] stop: queues deleted\n");
   for (auto &p : this->players) {
     delete p;
   }
+  printf("[Game] stop: players deleted\n");
+}
+
+bool Game::not_stopped() {
+  return (!this->stopped);
 }
 
 bool Game::not_full() {
-  return (this->players.size() < this->limit);
+  return (this->players.size() < this->total_players);
 }
 
-void Game::add_player(Socket &client) {
-  if (this->players.size() >= this->limit)
+bool Game::ready() {
+  return (this->players.size() == this->total_players);
+}
+
+void Game::add_player(Socket client) {
+  if (this->players.size() >= this->total_players)
     return;
 
-  //printf("[Game] add_player -> new Player\n");
-  this->players.push_back(new Player(client));
-  //TODO: init game? add worms to initiated game?
-  if (this->players.size() == this->limit)
-    this->start();
+  printf("[Game] add_player -> new Player\n");
+  this->players.push_back(new Player(std::move(client)));
 }
 
 void Game::prepare() {
@@ -64,29 +80,32 @@ void Game::run() {
   // inicializar players, colas, timer
   prepare();
   // start game!
-  StageDTO s;
   ActionDTO action;
   while (!this->stage.finished()) {
+
+    StageDTO s;
     // sacar action de la cola: action de player o action del timer(update)
     action = this->stage_queue.pop();
     //printf("[Game] pop action: %d\n", action.type);
-    
+
     if (action.type == Quit) {
       //printf("[Game] end game\n");
       //end game: send block with endgame??
       this->stage.end();
+      s.winner = action.player_id;
       s.worm_turn = -1;
+      s.player_id = action.player_id;
       this->timer.stop();
     } else {
       if (action.type == Timer_update){
         //printf("[Game] update state\n");
         this->stage.update();
-      
+
       }
       else{
         //printf("[Game] le digo al stage que haga una accion\n");
         this->stage.make_action(action);
-        
+
       }
       s = stage.get_stageDTO();
       //printf("[Game] pido un stage DTO\n");
@@ -96,8 +115,6 @@ void Game::run() {
       q->push(s);
     }
   }
+  this->stop();
 }
 
-void Game::stop() {
-  this->stage.end();
-}

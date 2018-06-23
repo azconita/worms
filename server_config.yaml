@@ -1,3 +1,9 @@
+stages:
+        file.yaml: 2
+        easy.yaml: 2
+        medium.yaml: 3
+        hard.yaml: 4
+
 total_players: 2
 gravity: 9.8
 time_step: 0.1 

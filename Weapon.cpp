@@ -161,22 +161,10 @@ void Weapon::proximity_explosion(float power) {
   if (!this->alive)
     return;
   this->power = power;
-  //TODO: timer!!
   if (this->timer != 0) {
-    //this->name = W_Timer;
-    //std::cout << "timer: " << this->timer << "\n";
-    //time(&(this->t));
-    //std::cout << "t: " << this->t << "\n";
     return;
-    /*if (this->t == 0) {
-      return;
-    }
-    if (difftime(this->t,time(NULL)) < this->timer)
-      return;
-    return;*/
   }
-  //if (this->name == Green_Grenade) &&
-  //this->radius = radius;
+                                                                         //this->radius = radius;
   this->explode();
 }
 

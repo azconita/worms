@@ -12,12 +12,11 @@
 #define SLEEPNANOSECONDS 100000000
 
 TimerStage::TimerStage(BlockingQueue<ActionDTO> &q) : stage_queue(q){
-  // TODO Auto-generated constructor stub
 
 }
 
 TimerStage::~TimerStage() {
-  // TODO Auto-generated destructor stub
+  printf("[TimerStage] deleted\n");
 }
 
 void TimerStage::run() {
