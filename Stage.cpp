@@ -233,7 +233,19 @@ void Stage::shoot_weapon(int worm, ActionDTO& action) {
     //Weapon* w = new Weapon(this->world, action.weapon, this->current_player->get_points()[0].x, this->current_player->get_points()[0].y, this->wind);
     int d = (action.direction == Right) ? 1 : -1;
     //printf("[Stage] posicion del arma%i, %i\n", action.pos_x, action.pos_y);
-    Weapon* w = new Weapon(this->world, action.weapon, action.pos_x +3*d, action.pos_y -3, this->wind, &this->explosions);
+    
+    float initial_x = action.pos_x;
+    float initial_y = action.pos_y;
+
+    if(action.weapon_degrees > -45){
+      initial_x +=  d*( cos(action.weapon_degrees* (M_PI / 180))*3);
+      initial_y -=     sin(action.weapon_degrees* (M_PI / 180))*3;
+    }
+
+    printf("[Stage]posicion del gusano que dispara: %i %i\n", action.pos_x , action.pos_y);
+    printf("[Stage]posicion inicial del arma: %f %f\n", initial_x, initial_y);
+
+    Weapon* w = new Weapon(this->world,action.weapon, initial_x,initial_y, this->wind, &this->explosions);
     w->shoot(action.power * 100, action.weapon_degrees, action.direction,
         action.time_to_explode);
     //this->worms[action.worm_id]->took_weapon(None);
@@ -250,13 +262,21 @@ void Stage::worm_make_move(int worm, ActionDTO& action) {
     case Walk_left:
       this->worms[worm]->move_left();
       break;
-    case Jump:
-      if (this->worms[worm]->get_state() == Still)
+    case Jump:{
+      State current_state = this->worms[worm]->get_state();
+      if ( current_state == Still || current_state == Still_up || current_state == Still_down){
         this->worms[worm]->jump(action.direction);
+      }
       break;
-    case Jump_back:
-      this->worms[worm]->jump_back();
+    }
+     
+    case Jump_back:{
+      State current_state = this->worms[worm]->get_state();
+      if ( current_state == Still || current_state == Still_up || current_state == Still_down){
+        this->worms[worm]->jump_back();
+      }
       break;
+    }
   }
 }
 
