@@ -11,6 +11,7 @@
 #include "WormAnimation.h"
 #include "EventController.h"
 #include "BlockingQueue.h"
+#include "StageReceiver.h"
 
 using std::string;
 using std::map;
@@ -29,6 +30,7 @@ extern  logger oLog;
 class Client {
 	Socket socket;
 	BlockingQueue<ActionDTO> actions_queue;
+	BlockingQueue<StageDTO> stages_queue;
 	SDL_Surface * screen;
 	bool fullscreen;
 	int id = -1;
@@ -36,7 +38,7 @@ class Client {
 public:
 	Client(char * host_name, char * port, std::string &stage, bool fullscreen);
 	void run();
-	StageDTO receive_stage();
+	StageDTO get_stage();
 	void send_action();
 	float get_pixels(float meter_position);
 	//void finish(int winner, GraphicDesigner & graphic_designer);

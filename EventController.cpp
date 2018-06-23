@@ -27,10 +27,12 @@ EventController::EventController(BlockingQueue<ActionDTO> & actions_queue, SDL_E
 
 
 bool EventController::continue_running(WormAnimation& turn_worm){
-    //printf("event controller %i\n", this->i);
+    printf("event controller %i\n", this->i);
     this->i++;
     if(SDL_PollEvent(&this->event) != 1){
+           printf("no hay nuevos eventos\n");
         return keep_clicking(turn_worm); // no hay nuevos eventos
+     
     }
     switch(event.type){
         case SDL_QUIT:
@@ -38,10 +40,10 @@ bool EventController::continue_running(WormAnimation& turn_worm){
             return false;
         case SDL_VIDEORESIZE:
             resize(event.resize);
-            //break;   
+            break;   
         case SDL_MOUSEBUTTONUP:
             click(turn_worm);
-            //break;
+            break;
         case SDL_MOUSEMOTION:
             mouse_motion();
         case SDL_KEYUP:
@@ -311,6 +313,7 @@ void EventController::weapon_shortcuts(SDL_Event & event, WormAnimation& turn_wo
     }
 }
 void EventController::air_attack(WormAnimation& turn_worm){
+    printf("[EventController]    click\n");
     turn_worm.take_weapon(W_Air_Attack);
     this->wait_for_destination_clicl = true;
     this->action.type = Take_weapon;
