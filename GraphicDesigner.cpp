@@ -43,8 +43,8 @@ bool GraphicDesigner::is_timer_weapon(Weapon_Name weapon){
 
 
 
-GraphicDesigner::GraphicDesigner(SDL_Surface * screen, int screen_height, int screen_width,StageDTO initial_stage):
-water(3){
+GraphicDesigner::GraphicDesigner(SDL_Surface * screen, int screen_height, int screen_width,StageDTO initial_stage, int player_id):
+water(3), player_id(player_id) {
     this->screen = screen;
     this->screen_height = screen_height;
     this->screen_width = screen_width;
@@ -127,6 +127,7 @@ void GraphicDesigner::show_elements(StageDTO s, SDL_Surface *screen){
     this->show_worms(s,screen,camera_position);
     this->show_weapon(s,screen,camera_position);
     this->show_weapons_menu(s);
+    this->show_player();
 }
 
 
@@ -319,6 +320,42 @@ void GraphicDesigner::show_life(int life, int worm_x, int worm_y, Colour color){
     position.y = y;
     position.h = text->h;
     position.w = text->w;
+    SDL_BlitSurface(text, &dimention, this->screen, &position);
+    SDL_FreeSurface(text);
+}
+
+void GraphicDesigner::show_player() {
+  Colour color = Colour::create(possible_colors.at(this->player_id));
+
+
+    std::string str_player("Player " );
+    char p[7] = "Player";
+    SDL_Color black_text_color = {0,0,0};
+    SDL_Surface * text = TTF_RenderText_Solid(font, p, black_text_color);
+    if (text == NULL){
+        throw Error("TTF_RenderText_Solid(): ",TTF_GetError());
+    }
+
+
+    SDL_Rect dimention;
+    dimention.x = 0;
+    dimention.y = 0;
+    dimention.h = text->h;
+    dimention.w = text->w;
+
+    SDL_Rect position;
+    position.x = 5;
+    position.y = 5;
+    position.h = text->h;
+    position.w = text->w;
+
+    SDL_Rect rectangle;
+    rectangle.x = 5;
+    rectangle.y = 5;
+    rectangle.h = text->h + 2;
+    rectangle.w = text->w + 4 ;
+    Uint32 colorkey = SDL_MapRGBA(this->screen->format, color.r, color.g, color.b,0.2);
+    SDL_FillRect(this->screen, &rectangle, colorkey);
     SDL_BlitSurface(text, &dimention, this->screen, &position);
     SDL_FreeSurface(text);
 }

@@ -56,7 +56,7 @@ void Client::run(){
     StageDTO s = this->stages_queue.pop();
     this->id = s.player_id;
 
-    GraphicDesigner graphic_designer(screen, screen_height,screen_width, s);
+    GraphicDesigner graphic_designer(screen, screen_height,screen_width, s, this->id);
 
     Renderer renderer(screen, this->stages_queue,graphic_designer, id);
     renderer.start();

@@ -224,7 +224,7 @@ void Stage::shoot_weapon(int worm, ActionDTO& action) {
   } else if (action.weapon == W_Air_Attack) {
     for (int i = 0; i < 6; ++i) {
       printf("new air bomb\n");
-      Weapon* w = new Weapon(this->world, action.weapon, action.pos_x, 0 - i,
+      Weapon* w = new Weapon(this->world, action.weapon, action.pos_x, 0 - 5 * i,
           this->wind, &this->explosions);
       this->explosions.push_back(w);
     }

@@ -62,7 +62,7 @@ class GraphicDesigner {
 	std::vector<Picture> little_beams;
     std::vector<Picture> big_beams;
     WaterAnimation water;
-
+    int player_id;
 
 	float get_pixels(float meter_position);
 	std::map<int,WormAnimation> create_worms(StageDTO s);
@@ -75,12 +75,13 @@ class GraphicDesigner {
 	void show_worms(StageDTO s, SDL_Surface *screen,SDL_Rect camera_position);
 	void show_weapon(StageDTO s,SDL_Surface *screen,SDL_Rect camera_position);
 	void show_life(int life, int worm_x, int worm_y, Colour color);
+	void show_player();
 	void show_arrow(int worm_x, int worm_y);
 	void show_weapon_point_direction(int x, int y, float degrees, Direction dir);
 
 
 public:
-	GraphicDesigner(SDL_Surface * screen, int screen_height, int screen_width,StageDTO initial_stage);
+	GraphicDesigner(SDL_Surface * screen, int screen_height, int screen_width,StageDTO initial_stage, int player_id);
 	std::map<int,WormAnimation>::iterator get_turn_worm(int i);
 	void scroll(int x, int y);
 	SDL_Rect get_camera_position();
