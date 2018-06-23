@@ -9,7 +9,7 @@
 #define ANIMATION_H_
 
 #include "Picture.h"
-#define GRADES_PER_STEP 5.8064516129 //180/31
+#define GRADES_PER_WEAPON_STEP 11.6129032258//360/31
 
 class Animation {
 	 Picture picture;

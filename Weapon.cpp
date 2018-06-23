@@ -309,10 +309,8 @@ float Weapon::get_angle_velocity(){
   float angle = atan2(det, dot)*( 180/ M_PI); // atan2(y, x) or atan2(sin, cos)
 
   if(angle < 0){
-    angle = 360 -angle;
+    angle = 360 -(-angle);
   }
-
-  printf("[Weapon] angle*pi %f\n",angle);
 
   return angle;
 
