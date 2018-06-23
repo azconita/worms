@@ -33,7 +33,9 @@ void Renderer::draw(){
         if(finish == false){
             s = stages_queue.pop(); 
             this->worm_turn = s.worm_turn;
-            
+            if(s.winner != -1){
+                finish = true;
+            }
         } 
 
         if((t1 -t0) > 17) {
@@ -41,8 +43,6 @@ void Renderer::draw(){
          	t0 = SDL_GetTicks();
             //FIX ME
             if(s.winner != -1){
-                	
-                	finish = true;
                     
                     if(s.winner == this->player_id){
                             printf("GANE\n");

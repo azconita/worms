@@ -22,14 +22,10 @@ void StageReceiver::receive_stage(){
 		    StageDTO stage_received = yaml_received["stage"].as<StageDTO>();
 		    (this->stages_queue).push(stage_received);
 		    if(stage_received.winner != -1){
-		    	
-		    	printf("[StageReceiver] alguien gano\n");
 		    	this->on = false; // alguien gano -> se termino el juego
 		    	break;
 		    }
 		} catch( Error e){
-			
-			printf("[StageReceiver] alguien abandono\n");
 			this->on = false; //  alguien abandono
 			break;
 		}
