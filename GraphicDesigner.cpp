@@ -127,7 +127,7 @@ void GraphicDesigner::show_elements(StageDTO s, SDL_Surface *screen){
     this->show_worms(s,screen,camera_position);
     this->show_weapon(s,screen,camera_position);
     this->show_weapons_menu(s);
-    this->show_player();
+    this->show_player(s);
 }
 
 
@@ -289,12 +289,12 @@ void GraphicDesigner::show_life(int life, int worm_x, int worm_y, Colour color){
     if(life < 100){
         sprintf(str_life, " %d ", life);
     }else{
-        sprintf(str_life, "%d", life);
+      sprintf(str_life, "%d", life);
     }
 
     SDL_Color black_text_color = {0,0,0};
     SDL_Surface * text = TTF_RenderText_Solid(font,str_life,black_text_color);
-    if (text == NULL){
+    if (text == NULL){sprintf(str_life, "%d", life);
         throw Error("TTF_RenderText_Solid(): ",TTF_GetError());
     }
 
@@ -324,14 +324,18 @@ void GraphicDesigner::show_life(int life, int worm_x, int worm_y, Colour color){
     SDL_FreeSurface(text);
 }
 
-void GraphicDesigner::show_player() {
+void GraphicDesigner::show_player(StageDTO s) {
+  int total_life = 0;
+  for (auto w: s.worms) {
+    if (w.second.player_id == this->player_id)
+      total_life += w.second.life;
+  }
   Colour color = Colour::create(possible_colors.at(this->player_id));
 
-
-    std::string str_player("Player " );
-    char p[7] = "Player";
+    char str_life[10];
+    sprintf(str_life, " %d ", total_life);
     SDL_Color black_text_color = {0,0,0};
-    SDL_Surface * text = TTF_RenderText_Solid(font, p, black_text_color);
+    SDL_Surface * text = TTF_RenderText_Solid(font, str_life, black_text_color);
     if (text == NULL){
         throw Error("TTF_RenderText_Solid(): ",TTF_GetError());
     }
