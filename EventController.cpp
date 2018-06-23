@@ -236,7 +236,7 @@ void EventController::left(WormAnimation& turn_worm){
 
 
 void EventController::space(WormAnimation& turn_worm){
-    int power = turn_worm.get_weapon_power();
+    float power = turn_worm.get_weapon_power();
     if(power >0 && power < 100){
         turn_worm.add_power();
     }

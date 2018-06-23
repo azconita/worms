@@ -45,7 +45,7 @@ class WormAnimation {
 	Direction direction;
 	State state;
 	float degrees;
-	int weapon_power;
+	float weapon_power;
 	int timer;
 	bool in_movement;
 	std::map<State,Animation> animations;
@@ -61,7 +61,7 @@ public:
 	float point_up_weapon();
 	float get_degrees();
 	bool add_power();
-	int get_weapon_power();
+	float get_weapon_power();
 	void set_timer(int timer);
 	int get_timer();
 	Direction get_direction();

@@ -85,7 +85,7 @@ public:
 	void scroll(int x, int y);
 	SDL_Rect get_camera_position();
 	void show_elements(StageDTO s, SDL_Surface *screen);
-	void show_powerbar(int power);
+	void show_powerbar(float power);
 	void show_weapons_menu(StageDTO& s);
 	bool is_inside_weapon_menu(int x, int y);
 	void resize(int h, int w);

@@ -96,12 +96,12 @@ float WormAnimation::get_degrees(){
 
 bool WormAnimation::add_power(){
     if(this->weapon_power < 100){
-        this->weapon_power +=1;
+        this->weapon_power +=0.001;
         return true;
     }
     return false;
 }
-int WormAnimation::get_weapon_power(){
+float WormAnimation::get_weapon_power(){
     return this->weapon_power;
 }
 

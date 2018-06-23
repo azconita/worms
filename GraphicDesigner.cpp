@@ -215,7 +215,7 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen, SDL_Rect camer
         if(w.first == s.worm_turn){
             show_arrow(center_x, center_y);
         }
-        int weapon_power = worms_iter->second.get_weapon_power();
+        float weapon_power = worms_iter->second.get_weapon_power();
         if(weapon_power > 0){
             show_powerbar(weapon_power);
         }
@@ -346,7 +346,7 @@ void GraphicDesigner::show_arrow( int worm_x, int worm_y){
     SDL_BlitSurface(this->arrow, &dimention, this->screen, &position);
 }
 
-void GraphicDesigner::show_powerbar(int power){
+void GraphicDesigner::show_powerbar(float power){
     SDL_Rect dimention;
     dimention.x = 0;
     dimention.y = 0;
