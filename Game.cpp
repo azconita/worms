@@ -20,14 +20,16 @@ Game::~Game() {
   //this->timer.stop();
   //this->timer.join();
   //this->stage.end();
-  if (!this->stopped) {
-    ActionDTO action;
-    action.type = Quit;
-    this->stage_queue.push(action);
-    printf("[Game] destroyer: pushed quit\n");
+  if (this->ran) {
+    if (!this->stopped) {
+      ActionDTO action;
+      action.type = Quit;
+      this->stage_queue.push(action);
+      printf("[Game] destroyer: pushed quit\n");
+    }
+    this->join();
   }
 
-  this->join();
   printf("[Game] deleted\n");
 }
 
@@ -91,6 +93,7 @@ void Game::run() {
   // inicializar players, colas, timer
   prepare();
   // start game!
+  this->ran = true;
   ActionDTO action;
   while (!this->stage.finished()) {
 
