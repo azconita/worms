@@ -15,8 +15,8 @@ stage:
       size: 6
       inclination: 0
       direction: 1
-    - pos_x: 45
-      pos_y: 15
+    - pos_x: 55
+      pos_y: 35
       size: 6
       inclination: 0
       direction: 0

@@ -146,7 +146,9 @@ bool Stage::update_worms() {
       //printf("[Stage] el gusano ya se teletransporto, esta listo para cambiar de jugador\n");
       this->current_player = NULL;
     }
-    w.second->update_state();
+    bool damaged = w.second->update_state();
+    if (damaged)
+      this->current_player = NULL;
     if(w.second->get_velocity().Length() > 0.5){
       // si los gusanos se estan moviendo quizas es por una explosion
       //no hay que cambiar de turno porque se vuelven estaticos

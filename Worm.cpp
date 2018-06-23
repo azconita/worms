@@ -88,10 +88,16 @@ void Worm::change_state(State state){
   this->state = state;
 }
 
-void Worm::update_state() {
+/*
+ * actualiza estado del gusano.
+ * @return:
+ * si el gusano estaba cayendo y recibio dano por la caida, devuelve true
+ * si no, devuelve false.
+ */
+bool Worm::update_state() {
   //caer es el estado "predominante"
   if(this->state == Worm_disappear){
-    return;
+    return false;
   }
   this->handle_end_contact();
   b2Vec2 vel = this->body->GetLinearVelocity();
@@ -103,14 +109,14 @@ void Worm::update_state() {
       }else if(this->inclination > 90){
         this->state = (this->direction == Right)? Still_up : Still_down;
       }
-      return;
+      return false;
     }
   }
   if (vel.y > 5 && this->state != Fall && this->inclination == 0) {
       this->state = Fall;
       this->start_falling = this->body->GetPosition();
       oLog() << "[Worm] start falling: "<< this->start_falling.x << " "<<this->start_falling.y << endl;
-      return;
+      return false;
   
   }
   if (std::abs(vel.y) < 1 && std::abs(vel.x) < 1 && this->state == Fall) {
@@ -120,15 +126,16 @@ void Worm::update_state() {
     oLog() << "[Worm] worm stops falling: " << d << endl;
     if (d > 2)
       this->apply_damage((d < 25) ? d : 25);
-    return;
+    return true;
   }
   if (this->state != Still && (std::abs(vel.y) < 0.1 && std::abs(vel.x) < 0.1 )
      && (this->state == Walk || this->state == Jump_state || this->state == Jump_back_state
       || this->state == Fall) || this->state == Walk_down || this->state == Walk_up) {
     this->state = Still;
     //printf("still");
+    return false;
   }
-
+  return false;
 }
 
 Direction Worm::get_direction(){
