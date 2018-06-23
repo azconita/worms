@@ -55,7 +55,7 @@ void WormAnimation::change_state(State state){
         animation_iter->second.first_step();
     }
     if( std::find(weapons_states_with_power.begin(), weapons_states_with_power.end(), this->state) //
-    != weapons_states_with_power.end() && this->weapon_power == 0){
+    != weapons_states_with_power.end()){
         this->weapon_power = 10;
     }else{
         this->weapon_power = 0;
