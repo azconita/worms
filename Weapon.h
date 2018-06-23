@@ -5,15 +5,15 @@
  *      Author: gabi
  */
 
+#ifndef WEAPON_H_
+#define WEAPON_H_
+
 #include "Entity.h"
 #include <vector>
 #include <iostream>
 #include <Box2D/Box2D.h>
 #include "Dtos.h"
 #include <time.h>
-
-#ifndef WEAPON_H_
-#define WEAPON_H_
 
 #define PROJECTILE 3
 

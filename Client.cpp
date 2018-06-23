@@ -96,15 +96,15 @@ void Client::run(){
             turn_worm_iter = graphic_designer.get_turn_worm(s.worm_turn);
         } 
 
-        printf("[Client] es el turno del gusano %i\n",s.worm_turn );
+        //printf("[Client] es el turno del gusano %i\n",s.worm_turn );
 
       
 
         if((t1 -t0) > 17) {
 
 
-            printf("turnoo %i\n", s.worm_turn);
-            printf("ganooo %i\n", s.winner);
+            //printf("turnoo %i\n", s.worm_turn);
+            //printf("ganooo %i\n", s.winner);
 
             // Nueva referencia de tiempo
             t0 = SDL_GetTicks();

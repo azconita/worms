@@ -10,6 +10,8 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_ttf.h>
 #include <vector>
+#define _USE_MATH_DEFINES
+#include <cmath>
 #include "Colour.h"
 #include "Dtos.h"
 #include "WormAnimation.h"
@@ -17,7 +19,6 @@
 #include "Camera.h"
 #include "WaterAnimation.h"
 #define INTER_TURN -2
-
 
 static  std::vector<Colour_name> possible_colors {
     Orange,

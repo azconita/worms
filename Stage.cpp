@@ -26,7 +26,7 @@ void Stage::do_explosions() {
       w->explode();
       printf("[Stage] se hizo una explosion, listo para cambiar de jugaro\n");
       this->current_player->took_weapon(None);
-      this->current_player = NULL;
+      //this->current_player = NULL;
     }
   }
 }
@@ -108,8 +108,10 @@ void Stage::update_player() {
     //update worms: set vel 0 for "stopped" worms and static
   bool any_worm_in_movement = this->is_in_movement(); 
   if (this->current_player == NULL || ( (time(NULL) - this->player_time > Constants::worm_turn_time) && this->explosions.size() == 0) ) {
+    if (this->current_player == NULL)
+      printf("NULL player\n");
     if(any_worm_in_movement){
-      //printf("[Stage] queria cambiar de jugador pero se estan moviendo entonces sigue sin turno\n");
+      printf("[Stage] queria cambiar de jugador pero se estan moviendo entonces sigue sin turno\n");
       return;
     }
     printf("[Stage] change player\n");
@@ -223,12 +225,13 @@ void Stage::shoot_weapon(int worm, ActionDTO& action) {
     //Weapon* w = new Weapon(this->world, action.weapon, this->current_player->get_points()[0].x, this->current_player->get_points()[0].y, this->wind);
     int d = (action.direction == Right) ? 1 : -1;
     //printf("[Stage] posicion del arma%i, %i\n", action.pos_x, action.pos_y);
-    Weapon* w = new Weapon(this->world, action.weapon, action.pos_x +3*d, action.pos_y, this->wind, &this->explosions);
+    Weapon* w = new Weapon(this->world, action.weapon, action.pos_x +3*d, action.pos_y -3, this->wind, &this->explosions);
     w->shoot(action.power * 100, action.weapon_degrees, action.direction,
         action.time_to_explode);
-    this->worms[action.worm_id]->took_weapon(None);
+    //this->worms[action.worm_id]->took_weapon(None);
     this->explosions.push_back(w);
   }
+  this->worms[worm]->took_weapon(None);
 }
 
 void Stage::worm_make_move(int worm, ActionDTO& action) {
@@ -263,13 +266,14 @@ void Stage::make_action(ActionDTO & action) {
     }
 
     case(Take_weapon):{
+      if (this->explosions.empty())
       // cuando sea el fin del turno, asignar NONE al arma del gusano
-      this->worms[worm]->took_weapon(action.weapon);
+        this->worms[worm]->took_weapon(action.weapon);
       break;
     }
 
     case(Shot_weapon):{
-      if (this->ammo.use(action.weapon))
+      if (this->explosions.empty())
         shoot_weapon(worm, action);
       break;
     }

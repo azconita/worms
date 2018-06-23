@@ -27,10 +27,11 @@ EventController::EventController(BlockingQueue<ActionDTO> & actions_queue, SDL_E
 
 
 bool EventController::continue_running(WormAnimation& turn_worm){
-    //printf("event controller %i\n", this->i);
+    printf("event controller %i\n", this->i);
     this->i++;
     if(SDL_PollEvent(&this->event) != 1){
-        return keep_clicking(turn_worm); // no hay nuevos eventos
+      printf("no hay eventos\n");
+      return keep_clicking(turn_worm); // no hay nuevos eventos
     }
     switch(event.type){
         case SDL_QUIT:
