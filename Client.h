@@ -12,6 +12,7 @@
 #include "EventController.h"
 #include "BlockingQueue.h"
 #include "StageReceiver.h"
+#include "Renderer.h"
 
 using std::string;
 using std::map;
@@ -33,12 +34,10 @@ class Client {
 	BlockingQueue<StageDTO> stages_queue;
 	SDL_Surface * screen;
 	bool fullscreen;
-	int id = -1;
-	bool finish;
+	int id;
 public:
 	Client(char * host_name, char * port, std::string &stage, bool fullscreen);
 	void run();
-	StageDTO get_stage();
 	void send_action();
 	float get_pixels(float meter_position);
 	//void finish(int winner, GraphicDesigner & graphic_designer);
