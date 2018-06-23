@@ -22,13 +22,11 @@ Server::Server(char* port) :
 }
 
 Server::~Server() {
+  printf("[Server] destroy\n");
   for (auto &i : this->games_by_stage) {
     for (auto &g : i.second) {
-      if (g->not_stopped())
-        g->stop();
-      //g->join();
-      //printf("[Server] game joined\n");
       delete g;
+      printf("[Server] game joined\n");
     }
     i.second.clear();
   }
@@ -72,7 +70,7 @@ void Server::run() {
         }
       }
     } catch (Error &e) {
-      printf("Error: %s\n", e.what());
+      printf("[Server] Error: %s\n", e.what());
     }
   }
 }
