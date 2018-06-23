@@ -416,6 +416,7 @@ void Stage::set_worms_to_players(int total_players) {
   printf("[Stage] empieza a jugar el gusano %i \n", this->current_player->get_id() );
   this->last_player_id = this->current_player->get_player_id();
   printf(" que es del jugador %i\n", this->last_player_id );
+  this->players_turn.at(this->current_player->get_player_id()).get_next();
   this->update_body_types(true);
 }
 
