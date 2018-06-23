@@ -60,6 +60,7 @@ public:
   void grenade(int power, float degrees, int timer, int s);
   void dynamite(int time_to_explode, int s);
   b2Vec2 get_velocity();
+  float get_angle_velocity();
 
 
   void printPos() {

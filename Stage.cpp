@@ -339,6 +339,7 @@ StageDTO Stage::get_stageDTO() {
       w->explosion();
     }
     b2Vec2 center = w->get_center();
+    weapon.angle = w->get_angle_velocity();
     set_position(weapon, center);
     weapon.weapon = w->get_name();
     weapon.timer = w->get_timer();

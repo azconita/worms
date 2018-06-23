@@ -26,11 +26,11 @@ EventController::EventController(BlockingQueue<ActionDTO> & actions_queue, SDL_E
 
 
 
-bool EventController::continue_running(WormAnimation& turn_worm){
-    printf("event controller %i\n", this->i);
+bool EventController::continue_running(WormAnimation & turn_worm){
+    //printf("event controller %i\n", this->i);
     this->i++;
     if(SDL_PollEvent(&this->event) != 1){
-           printf("no hay nuevos eventos\n");
+           //printf("no hay nuevos eventos\n");
         return keep_clicking(turn_worm); // no hay nuevos eventos
      
     }
@@ -145,7 +145,7 @@ void EventController::click(WormAnimation& turn_worm){
     SDL_GetMouseState(&x, &y);
 
     if(graphic_designer.is_inside_weapon_menu(x,y)){
-        printf("esta dentro del menu\n");
+        //printf("esta dentro del menu\n");
         Weapon_Name  weapon = graphic_designer.choose_weapon(x,y);
         turn_worm.take_weapon(weapon);
         this->action.type = Take_weapon;
@@ -191,7 +191,7 @@ void EventController::shot(WormAnimation& turn_worm,int x, int y){
 void EventController::up(WormAnimation& turn_worm){
     if(turn_worm.has_point_weapon()){
         float degrees = turn_worm.point_up_weapon();
-        printf("%f\n",degrees );
+        //printf("%f\n",degrees );
     }else{
         turn_worm.change_state(Jump_state);
         this->action.type = Make_move;
@@ -215,7 +215,7 @@ void EventController::up_back(WormAnimation& turn_worm){
 void EventController::down(WormAnimation& turn_worm){
     if(turn_worm.has_point_weapon()){
         float degrees = turn_worm.point_down_weapon();
-        printf("%f\n",degrees );
+        //printf("%f\n",degrees );
     }   
 
 }
@@ -313,7 +313,7 @@ void EventController::weapon_shortcuts(SDL_Event & event, WormAnimation& turn_wo
     }
 }
 void EventController::air_attack(WormAnimation& turn_worm){
-    printf("[EventController]    click\n");
+    //printf("[EventController]    click\n");
     turn_worm.take_weapon(W_Air_Attack);
     this->wait_for_destination_clicl = true;
     this->action.type = Take_weapon;

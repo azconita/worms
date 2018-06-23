@@ -73,6 +73,14 @@ void Animation::draw(SDL_Surface *screen, int x, int y){
         return false;
     }
 
+    void Animation::add_degres(float degrees){
+        while(degrees > 0){
+            this->picture.next_sprite_figure(this->direction);
+            degrees -= GRADES_PER_STEP;
+        }
+
+    }
+
 
 
 
