@@ -138,7 +138,7 @@
 //----------------------ARMAS----------------------
 
 #define BAZOOKA "resources/bazooka.bmp"
-#define BAZOOKA_R 1//128
+#define BAZOOKA_R 128
 #define BAZOOKA_G 128
 #define BAZOOKA_B 192
 #define BAZOOKA_COLUMNS 1

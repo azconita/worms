@@ -300,6 +300,24 @@ b2Vec2 Weapon::get_velocity(){
   return this->body->GetLinearVelocity();
 }
 
+float Weapon::get_angle_velocity(){
+  b2Vec2 up_vec = b2Vec2(0,-1);
+  b2Vec2 vel = this->body->GetLinearVelocity();
+
+  int dot = up_vec.x*vel.x + up_vec.y*vel.y;      // dot product between [x1, y1] and [x2, y2]
+  int det = up_vec.x*vel.y - up_vec.y*vel.x ;     // determinant
+  float angle = atan2(det, dot)*( 180/ M_PI); // atan2(y, x) or atan2(sin, cos)
+
+  if(angle < 0){
+    angle = 360 -angle;
+  }
+
+  printf("[Weapon] angle*pi %f\n",angle);
+
+  return angle;
+
+}
+
 
 bool Weapon::has_timer() {
   return (this->timer != 0);
