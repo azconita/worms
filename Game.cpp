@@ -17,7 +17,7 @@ Game::Game(std::string &stage_name, int total_players, Socket client) :
 }
 
 Game::~Game() {
-  //this->join();
+  this->join();
   printf("[Game] deleted\n");
 }
 
@@ -89,7 +89,7 @@ void Game::run() {
     //printf("[Game] pop action: %d\n", action.type);
 
     if (action.type == Quit) {
-      //printf("[Game] end game\n");
+      printf("[Game] end game\n");
       //end game: send block with endgame??
       this->stage.end();
       s.winner = action.player_id;

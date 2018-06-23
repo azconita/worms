@@ -26,8 +26,8 @@ Server::~Server() {
     for (auto &g : i.second) {
       if (g->not_stopped())
         g->stop();
-      g->join();
-      printf("[Server] game joined\n");
+      //g->join();
+      //printf("[Server] game joined\n");
       delete g;
     }
     i.second.clear();
@@ -71,7 +71,7 @@ void Server::run() {
           }
         }
       }
-    } catch (Error e) {
+    } catch (Error &e) {
       printf("Error: %s\n", e.what());
     }
   }
