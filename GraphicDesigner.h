@@ -12,10 +12,12 @@
 #include <vector>
 #include "Colour.h"
 #include "Dtos.h"
+#include <cmath>
 #include "WormAnimation.h"
 #include "ResourcesDefinitions.h" 
 #include "Camera.h"
 #include "WaterAnimation.h"
+#define _USE_MATH_DEFINES
 #define INTER_TURN -2
 
 

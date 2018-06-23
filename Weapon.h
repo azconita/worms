@@ -11,7 +11,7 @@
 #include <Box2D/Box2D.h>
 #include "Dtos.h"
 #include <time.h>
-
+#define _USE_MATH_DEFINES
 #ifndef WEAPON_H_
 #define WEAPON_H_
 
