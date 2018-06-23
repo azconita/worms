@@ -160,25 +160,31 @@ bool Stage::update_worms() {
 
 //cuantos players puede haber????
 void Stage::change_player() {
+  int new_player_id;
+
   int step = 0;
+  while(step < this->players_turn.size()){
+      step++;
+      new_player_id = ((this->last_player_id +1) == this->players_turn.size() ) ? 0 : (this->last_player_id +1);
+      this->last_player_id = new_player_id;
+      printf("new player %i\n", new_player_id);
 
-  int new_player_id = ((this->last_player_id + 1) == this->players_turn.size()) ? 0 : this->last_player_id + 1;
-  printf("[Stage] next player id: %d,", new_player_id);
-  while(this->players_turn.at(new_player_id).is_empty()){
-
-    int new_player_id = ((this->last_player_id + 1) == this->players_turn.size()) ? 0 : this->last_player_id + 1;
-    printf("[Stage] ese jugador estaba muerto, pasamos a : %d,", new_player_id);
-    step ++;
-    if(step >= this->players_turn.size()){
-      printf("[Stage] estan todos los gusanos muertos\n");
+      if(this->players_turn.find(new_player_id) == this->players_turn.end() || this->players_turn.at(new_player_id).is_empty()){
+          printf("[Stage] jugador %d  estaba muerto, pasamos al siguiente\n", new_player_id);
+          continue; //el jugador no tiene gusanos o fue eliminado de la partida
+      } 
+      break;  
+  }
+  
+  if(this->players_turn.find(new_player_id) == this->players_turn.end() || this->players_turn.at(new_player_id).is_empty()){   
+      printf("[Stage] todos los jugadores estab muertos\n,");
+      new_player_id = -2;
       return;
-    }
-  };
+  }
 
   this->current_player = this->worms[this->players_turn.at(new_player_id).get_next()];
   printf("worm id: %d\n", this->current_player->get_id());
   this->update_body_types(false);
-  this->last_player_id = new_player_id;
 }
 
 

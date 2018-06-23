@@ -36,5 +36,6 @@ void TurnHelper::delete_id(int id) {
 }
 
 bool TurnHelper::is_empty() const {
+  printf("cantidad de gusanos %lu\n",this->ids.size() );
 	return (this->ids.size() < 1);
 }
