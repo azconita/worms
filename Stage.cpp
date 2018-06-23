@@ -249,11 +249,16 @@ void Stage::worm_make_move(int worm, ActionDTO& action) {
       this->worms[worm]->move_left();
       break;
     case Jump:
-      if (this->worms[worm]->get_state() == Still)
+      State current_state = this->worms[worm]->get_state();
+      if ( current_state == Still || current_state == Still_up || current_state == Still_down){
         this->worms[worm]->jump(action.direction);
+      }
       break;
     case Jump_back:
-      this->worms[worm]->jump_back();
+      State current_state = this->worms[worm]->get_state();
+      if ( current_state == Still || current_state == Still_up || current_state == Still_down){
+        this->worms[worm]->jump_back();
+      }
       break;
   }
 }
