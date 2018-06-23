@@ -293,7 +293,7 @@ int Stage::check_winners(){
       it = this->players_turn.erase(it++); 
       if(this->players_turn.size() == 1){
         printf("[Stage] WINNER %i\n", this->players_turn.begin()->first );
-        this->finish = true;
+        //this->finish = true;
         return this->players_turn.begin()->first;
       }
     } else {
@@ -343,6 +343,7 @@ StageDTO Stage::get_stageDTO() {
       w->explosion();
     }
     b2Vec2 center = w->get_center();
+    weapon.angle = w->get_angle_velocity();
     set_position(weapon, center);
     weapon.weapon = w->get_name();
     weapon.timer = w->get_timer();

@@ -9,6 +9,7 @@
 #define ANIMATION_H_
 
 #include "Picture.h"
+#define GRADES_PER_WEAPON_STEP 11.6129032258//360/31
 
 class Animation {
 	 Picture picture;
@@ -28,6 +29,7 @@ public:
 	void first_step();
 	bool point_up();
 	bool point_down();
+	void add_degres(float degrees);
 };
 
 #endif /* ANIMATION_H_ */

@@ -253,12 +253,17 @@ void GraphicDesigner::show_weapon_point_direction(int x, int y,float degrees, Di
  void GraphicDesigner::show_weapon( StageDTO s,SDL_Surface * screen, SDL_Rect camera_position){
 
     for (auto w: s.weapons) {
+        int padding_y = 10;
+        if(w.weapon == Explosion){
+            padding_y = 35;
+
+        }
         int center_x = get_pixels(w.pos_x) - camera_position.x;
-        int center_y = get_pixels(w.pos_y) - camera_position.y - 30;
+        int center_y = get_pixels(w.pos_y) - camera_position.y - padding_y;
 
 
         std::map<Weapon_Name,Animation>::iterator weapon_iter = this->weapons.find(w.weapon);
-        weapon_iter->second.continue_internal_movement();
+        weapon_iter->second.add_degres(w.angle);
         weapon_iter->second.draw(this->screen,center_x, center_y);
 
         if(this->last_worm_turn == s.worm_turn){

@@ -9,7 +9,7 @@ gravity: 9.8
 time_step: 0.1 
 velocity_iterations: 8
 position_iterations: 3
-wind: 2
+wind: 0.02
 
 beam_width: 6
 beam_height: 0.8
@@ -25,7 +25,7 @@ worm_width: 0.5
 worm_friction: 1
 
 weapon_size: 0.1
-weapon_density: 1
+weapon_density: 3
 explosion_power: 50
 bazooka_damage: 50
 bazooka_radius: 2

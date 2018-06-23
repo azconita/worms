@@ -14,6 +14,7 @@
 #include <Box2D/Box2D.h>
 #include "Dtos.h"
 #include <time.h>
+#define _USE_MATH_DEFINES
 
 #define PROJECTILE 3
 
@@ -60,6 +61,7 @@ public:
   void grenade(int power, float degrees, int timer, int s);
   void dynamite(int time_to_explode, int s);
   b2Vec2 get_velocity();
+  float get_angle_velocity();
 
 
   void printPos() {

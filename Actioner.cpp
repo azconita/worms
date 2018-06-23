@@ -18,6 +18,7 @@ void Actioner::make_action(){
 		ActionDTO action = this->actions_queue.pop();
 		if(action.type == Quit){
 			oLog() << "player quit. ";
+			this->on = false;
 			break;
 		}
     	YAML::Emitter out;

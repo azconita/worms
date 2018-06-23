@@ -17,7 +17,7 @@ int main(int argc, char * argv[]){
     	Client client(argv[SERVER_NAME],argv[PORT], stage, true);
     	client.run();
 	}else{
-		Client client(argv[SERVER_NAME],argv[PORT], stage, true);
+		Client client(argv[SERVER_NAME],argv[PORT], stage, false);
     	client.run();
 	}	
     
