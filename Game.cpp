@@ -17,13 +17,26 @@ Game::Game(std::string &stage_name, int total_players, Socket client) :
 }
 
 Game::~Game() {
-  //this->join();
+  //this->timer.stop();
+  //this->timer.join();
+  //this->stage.end();
+  if (this->ran) {
+    if (!this->stopped) {
+      ActionDTO action;
+      action.type = Quit;
+      this->stage_queue.push(action);
+      printf("[Game] destroyer: pushed quit\n");
+    }
+    this->join();
+  }
+
   printf("[Game] deleted\n");
 }
 
 void Game::stop() {
   this->stopped = true;
   this->stage.end();
+  this->timer.stop();
   this->timer.join();
   printf("[Game] stop: timer joined\n");
   //delete players!
@@ -80,16 +93,17 @@ void Game::run() {
   // inicializar players, colas, timer
   prepare();
   // start game!
+  this->ran = true;
   ActionDTO action;
   while (!this->stage.finished()) {
 
     StageDTO s;
     // sacar action de la cola: action de player o action del timer(update)
     action = this->stage_queue.pop();
-    //printf("[Game] pop action: %d\n", action.type);
+    printf("[Game] pop action: %d\n", action.type);
 
     if (action.type == Quit) {
-      //printf("[Game] end game\n");
+      printf("[Game] end game\n");
       //end game: send block with endgame??
       this->stage.end();
       s.winner = action.player_id;

@@ -32,6 +32,7 @@ class Game : public Thread {
   std::vector<BlockingQueue<StageDTO>*> players_queues;
 
   bool stopped = false;
+  bool ran = false;
 
 public:
   Game(std::string &stage_name, int total_players, Socket client);

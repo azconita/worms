@@ -26,7 +26,7 @@ void Stage::do_explosions() {
       w->explode();
       printf("[Stage] se hizo una explosion, listo para cambiar de jugaro\n");
       this->current_player->took_weapon(None);
-      this->current_player = NULL;
+      //this->current_player = NULL;
     }
   }
 }
@@ -295,7 +295,7 @@ int Stage::check_winners(){
       it = this->players_turn.erase(it++); 
       if(this->players_turn.size() == 1){
         printf("[Stage] WINNER %i\n", this->players_turn.begin()->first );
-        this->finish = true;
+        //this->finish = true;
         return this->players_turn.begin()->first;
       }
     } else {
