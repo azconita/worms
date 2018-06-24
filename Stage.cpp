@@ -231,6 +231,7 @@ void Stage::shoot_weapon(int worm_id, ActionDTO& action) {
           this->wind, &this->explosions);
       this->explosions.push_back(w);
     }
+    worm->took_weapon(None);
 
   } else {
     //Weapon* w = new Weapon(this->world, action.weapon, this->current_player->get_points()[0].x, this->current_player->get_points()[0].y, this->wind);
@@ -253,8 +254,9 @@ void Stage::shoot_weapon(int worm_id, ActionDTO& action) {
         action.time_to_explode);
     //this->worms[action.worm_id]->took_weapon(None);
     this->explosions.push_back(w);
+    worm->took_weapon(None);
   }
-  worm->took_weapon(None);
+  
 }
 
 void Stage::worm_make_move(int worm, ActionDTO& action) {
