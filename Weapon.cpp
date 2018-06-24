@@ -37,15 +37,16 @@ Weapon::Weapon(b2World *world, Weapon_Name name, float x, float y, float wind, s
     //set weapon variables: radius and damage
     switch (name) {
       case W_Bazooka: {
-        //this->body->SetLinearVelocity(b2Vec2(0,wind));
+        this->body->SetLinearVelocity(b2Vec2(wind, 0));
         this->body->SetLinearDamping(wind);
         this->radius = Constants::bazooka_radius;
         this->damage = Constants::bazooka_damage;
         break;
       }
       case W_Air_Attack: {
-        this->body->SetLinearVelocity(b2Vec2(0,wind));
-        this->radius = Constants::airattack_radius;
+        this->body->SetLinearVelocity(b2Vec2(wind, 0));
+        this->body->SetLinearDamping(wind);
+        this->radius = 6;//Constants::airattack_radius;
         this->damage = Constants::airattack_damage;
         break;
       }
@@ -55,7 +56,8 @@ Weapon::Weapon(b2World *world, Weapon_Name name, float x, float y, float wind, s
         break;
       }
       case Mortar: {
-        this->body->SetLinearVelocity(b2Vec2(0,wind));
+        this->body->SetLinearVelocity(b2Vec2(wind, 0));
+        this->body->SetLinearDamping(wind);
         this->radius = Constants::mortar_radius;
         this->damage = Constants::mortar_damage;
         break;
@@ -135,19 +137,18 @@ std::vector<b2Vec2> Weapon::get_points() {
   return points;
 }
 
-void Weapon::apply_explosion_impulse(b2Body* other_body, b2Vec2 blast_center, b2Vec2 apply_point,
-                        float blast_power) {
+void Weapon::apply_explosion_impulse(b2Body* other_body, b2Vec2 blast_center, b2Vec2 apply_point) {
   b2Vec2 blast_dir = apply_point - blast_center;
-  float distance = blast_dir.Normalize();
+  float distance = blast_dir.Length();
   float inv_distance = (distance < 1) ? 1 : (1 / distance);
-  float impulse_mag = blast_power * inv_distance ;
+  float impulse_mag = this->power * inv_distance ;
   //std::cout << "imp mag: " << impulse_mag << ", blastdir: " << blast_dir.x << ":" << blast_dir.y << "\n";
 
   Entity* entity = (Entity*) (other_body->GetUserData());
-  //std::cout<<"body found: " << entity->en_type << '\n';
+  std::cout<<"body found: " << entity->en_type << '\n';
   if (entity->en_type == 1) {
     //std::cout << "apply explosion: "<<impulse_mag <<"\n";
-    other_body->ApplyLinearImpulse( impulse_mag * blast_dir, other_body->GetPosition() , true);
+    other_body->ApplyLinearImpulse( (impulse_mag/ distance) * blast_dir, other_body->GetPosition() , true);
     ((Worm*) entity)->apply_damage(int(this->damage * inv_distance));
   }
 
@@ -191,26 +192,20 @@ void Weapon::explode() {
   aabb.upperBound = center + b2Vec2(radius, radius);
   this->world->QueryAABB(&query_callback, aabb);
 
-  for (int i = 0; i < query_callback.foundBodies.size(); i++) {
-      b2Body* other_body = query_callback.foundBodies[i];
-      b2Vec2 bodyCom = other_body->GetPosition();
+  for (int i = 0; i < query_callback.found_bodies.size(); i++) {
+      b2Body* other_body = query_callback.found_bodies[i];
+      b2Vec2 body_pos = other_body->GetPosition();
 
-      //ignore bodies outside the blast range
-      if ( (bodyCom - center).Length() >= radius )
+      //ignore bodies outside the radius
+      if ((body_pos - center).Length() >= radius)
           continue;
 
-      this->apply_explosion_impulse(other_body, center, bodyCom, power );
+      this->apply_explosion_impulse(other_body, center, body_pos);
   }
   //this->alive = false;
 
   this->timer = 8;
   this->name = Explosion;
-}
-
-//r in degrees
-b2Vec2 rad2vec(float r) {
-  r = r * (3.14159265359/180.0);
-  return b2Vec2(cos(r), -sin(r));
 }
 
 void Weapon::shoot(int power, float degrees, Direction dir, int time_to_explode) {
@@ -249,7 +244,6 @@ void Weapon::shoot(int power, float degrees, Direction dir, int time_to_explode)
 }
 
 void Weapon::bazooka(int power, float degrees, int s) {
-  //TODO:afectar por el viento
   float vel_change = power * cos(degrees* (M_PI / 180));
   float impulsex = body->GetMass() * vel_change;
   vel_change =  power * sin(degrees*(M_PI / 180));
@@ -263,11 +257,10 @@ void Weapon::grenade(int power, float degrees, int timer, int s) {
   this->timer = timer;
   this->t = time(NULL);
   printf("new timer: %i\n", timer);
-  b2Vec2 vel = rad2vec(degrees);
-  float velChange = power * vel.x;
-  float impulsex = body->GetMass() * velChange;
-  velChange = power * vel.y;
-  float impulsey = body->GetMass() * velChange;
+  float vel_change = power * cos(degrees* (M_PI / 180));
+  float impulsex = body->GetMass() * vel_change;
+  vel_change = power * sin(degrees*(M_PI / 180));
+  float impulsey = -1*body->GetMass() * vel_change;
   this->body->ApplyLinearImpulse(b2Vec2(impulsex*s,impulsey), this->body->GetWorldCenter(), true);
 }
 

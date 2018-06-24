@@ -48,9 +48,9 @@ public:
   bool is_time_to_explode();
   bool has_timer();
 
-  void proximity_explosion(float blastPower);
+  void proximity_explosion(float blast_power);
   void explode();
-  void apply_explosion_impulse(b2Body* body, b2Vec2 blastCenter, b2Vec2 applyPoint, float blastPower);
+  void apply_explosion_impulse(b2Body* body, b2Vec2 blast_center, b2Vec2 apply_point);
   void shoot(int power, float degrees, Direction dir, int time_to_explode);
 
   bool is_alive();
@@ -72,11 +72,11 @@ public:
 //subclass b2QueryCallback
 class ExplosionQueryCallback : public b2QueryCallback {
 public:
-  std::vector<b2Body*> foundBodies;
+  std::vector<b2Body*> found_bodies;
 
   bool ReportFixture(b2Fixture* fixture) {
-    foundBodies.push_back( fixture->GetBody() );
-    return true;//keep going to find all fixtures in the query area
+    found_bodies.push_back( fixture->GetBody() );
+    return true;
   }
 };
 
