@@ -24,7 +24,19 @@ static const std::vector<State> weapons_states_with_degrees(
     Worm_holy_granade,
     Worm_red_granade,
     Worm_banana,
-    Worm_bat}
+    Worm_bat,
+    Worm_missile,
+    Worm_green_granade,
+    Worm_holy_granade_up,
+    Worm_red_granade_up,
+    Worm_banana_up,
+    Worm_bat_up,
+    Worm_missile_down,
+    Worm_green_granade_down,
+    Worm_holy_granade_down,
+    Worm_red_granade_down,
+    Worm_banana_down,
+    Worm_bat_down}
 );
 
 //armas con intensidad
@@ -33,7 +45,18 @@ static const std::vector<State> weapons_states_with_power(
     Worm_green_granade,
     Worm_holy_granade,
     Worm_red_granade,
-    Worm_banana}
+    Worm_banana,
+    Worm_missile_up,
+    Worm_green_granade_up,
+    Worm_holy_granade_up,
+    Worm_red_granade_up,
+    Worm_banana_up,
+    Worm_missile_down,
+    Worm_green_granade_down,
+    Worm_holy_granade_down,
+    Worm_red_granade_down,
+    Worm_banana_down}
+
 );
 
 
