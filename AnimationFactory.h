@@ -23,14 +23,36 @@ class AnimationFactory {
     static Animation get_worm_jump_back();
     static Animation get_worm_fall();
     static Animation get_worm_missile();
+     static Animation get_worm_missile_up();
+      static Animation get_worm_missile_down();
     static Animation get_worm_bat();
+     static Animation get_worm_bat_up();
+      static Animation get_worm_bat_down();
     static Animation get_worm_banana();
+    static Animation get_worm_banana_up();
+    static Animation get_worm_banana_down();
     static Animation get_worm_green_granade();
+      static Animation get_worm_green_granade_up();
+        static Animation get_worm_green_granade_down();
     static Animation get_worm_red_granade();
+    static Animation get_worm_red_granade_up();
+    static Animation get_worm_red_granade_down();
+
     static Animation get_worm_holy_granade();
+        static Animation get_worm_holy_granade_up();
+            static Animation get_worm_holy_granade_down();
+
     static Animation get_worm_teleport();
+     static Animation get_worm_teleport_up();
+      static Animation get_worm_teleport_down();
+
     static Animation get_worm_air_attack();
+    static Animation get_worm_air_attack_up();
+    static Animation get_worm_air_attack_down();
+
     static Animation get_worm_dynamite();
+      static Animation get_worm_dynamite_up();
+        static Animation get_worm_dynamite_down();
     //---------Armas ---------------
      static Animation get_bazooka();
     static Animation get_mortar();

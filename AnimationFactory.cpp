@@ -70,8 +70,10 @@ std::map<State,Animation> AnimationFactory::get_wormsAnimations(){
      animations.insert(std::pair<State,Animation>(Still_down,worm_walk_down));
     animations.insert(std::pair<State,Animation>(Walk_down,worm_walk_down));
 
+
     Animation worm_fall = AnimationFactory::get_worm_fall();
     animations.insert(std::pair<State,Animation>(Fall,worm_fall));
+
 
     Animation worm_jump_up = AnimationFactory::get_worm_jump_up();
     animations.insert(std::pair<State,Animation>(Jump_up,worm_jump_up));
@@ -82,37 +84,100 @@ std::map<State,Animation> AnimationFactory::get_wormsAnimations(){
      Animation worm_jump = AnimationFactory::get_worm_jump();
     animations.insert(std::pair<State,Animation>(Jump_state,worm_jump));
 
+
     Animation worm_jump_back = AnimationFactory::get_worm_jump_back();
     animations.insert(std::pair<State,Animation>(Jump_back_state,worm_jump_back));
+
 
     Animation worm_missile = AnimationFactory::get_worm_missile();
     animations.insert(std::pair<State,Animation>(Worm_missile,worm_missile));
 
+    Animation worm_missile_up = AnimationFactory::get_worm_missile_up();
+    animations.insert(std::pair<State,Animation>(Worm_missile_up,worm_missile_up));
+
+    Animation worm_missile_down = AnimationFactory::get_worm_missile_down();
+    animations.insert(std::pair<State,Animation>(Worm_missile_down,worm_missile_down));
+
+
     Animation worm_banana = AnimationFactory::get_worm_banana();
     animations.insert(std::pair<State,Animation>(Worm_banana,worm_banana));
+
+     Animation worm_banana_up = AnimationFactory::get_worm_banana();
+    animations.insert(std::pair<State,Animation>(Worm_banana_up,worm_banana_up));
+
+     Animation worm_banana_down = AnimationFactory::get_worm_banana_down();
+    animations.insert(std::pair<State,Animation>(Worm_banana,worm_banana_down));
 
     Animation worm_bat = AnimationFactory::get_worm_bat();
     animations.insert(std::pair<State,Animation>(Worm_bat,worm_bat));
 
+     Animation worm_bat_up = AnimationFactory::get_worm_bat_up();
+    animations.insert(std::pair<State,Animation>(Worm_bat_up,worm_bat_up));
+
+     Animation worm_bat_down = AnimationFactory::get_worm_bat();
+    animations.insert(std::pair<State,Animation>(Worm_bat_down,worm_bat_down));
+
+
     Animation worm_green_granade = AnimationFactory::get_worm_green_granade();
     animations.insert(std::pair<State,Animation>(Worm_green_granade,worm_green_granade));
+
+      Animation worm_green_granade_up = AnimationFactory::get_worm_green_granade_up();
+    animations.insert(std::pair<State,Animation>(Worm_green_granade_up,worm_green_granade_up));
+
+      Animation worm_green_granade_down = AnimationFactory::get_worm_green_granade();
+    animations.insert(std::pair<State,Animation>(Worm_green_granade_down,worm_green_granade_down));
+
 
     Animation worm_red_granade = AnimationFactory::get_worm_red_granade();
     animations.insert(std::pair<State,Animation>(Worm_red_granade,worm_red_granade));
 
+      Animation worm_red_granade_up = AnimationFactory::get_worm_red_granade_up();
+    animations.insert(std::pair<State,Animation>(Worm_red_granade_up,worm_red_granade_up));
+
+      Animation worm_red_granade_down = AnimationFactory::get_worm_red_granade_down();
+    animations.insert(std::pair<State,Animation>(Worm_red_granade_down,worm_red_granade_down));
+
+
     Animation worm_holy_granade = AnimationFactory::get_worm_holy_granade();
     animations.insert(std::pair<State,Animation>(Worm_holy_granade,worm_holy_granade));
+
+     Animation worm_holy_granade_up = AnimationFactory::get_worm_holy_granade_up();
+    animations.insert(std::pair<State,Animation>(Worm_holy_granade_up,worm_holy_granade_up));
+
+     Animation worm_holy_granade_down = AnimationFactory::get_worm_holy_granade_down();
+    animations.insert(std::pair<State,Animation>(Worm_holy_granade_down,worm_holy_granade_down));
 
     Animation worm_teleport = AnimationFactory::get_worm_teleport();
     animations.insert(std::pair<State,Animation>(Worm_teleport,worm_teleport));
     animations.insert(std::pair<State,Animation>(Worm_disappear,worm_teleport));
 
+    Animation worm_teleport_up = AnimationFactory::get_worm_teleport_up();
+    animations.insert(std::pair<State,Animation>(Worm_teleport_up,worm_teleport_up));
+    animations.insert(std::pair<State,Animation>(Worm_disappear_up,worm_teleport_up));
+
+    Animation worm_teleport_down = AnimationFactory::get_worm_teleport_down();
+    animations.insert(std::pair<State,Animation>(Worm_teleport_down,worm_teleport_down));
+    animations.insert(std::pair<State,Animation>(Worm_disappear_down,worm_teleport_down));
+
     Animation worm_air_attack = AnimationFactory::get_worm_air_attack();
     animations.insert(std::pair<State,Animation>(Worm_air_attack,worm_air_attack));
+
+     Animation worm_air_attack_up = AnimationFactory::get_worm_air_attack_up();
+    animations.insert(std::pair<State,Animation>(Worm_air_attack_up,worm_air_attack_up));
+
+     Animation worm_air_attack_down = AnimationFactory::get_worm_air_attack_down();
+    animations.insert(std::pair<State,Animation>(Worm_air_attack_down,worm_air_attack_down));
 
     Animation worm_dynamite = AnimationFactory::get_worm_dynamite();
     animations.insert(std::pair<State,Animation>(Worm_dynamite,worm_dynamite));
 
+        Animation worm_dynamite_up = AnimationFactory::get_worm_dynamite_up();
+    animations.insert(std::pair<State,Animation>(Worm_dynamite_up,worm_dynamite_up));
+
+        Animation worm_dynamite_down = AnimationFactory::get_worm_dynamite_down();
+    animations.insert(std::pair<State,Animation>(Worm_dynamite_down,worm_dynamite_down));
+
+    printf("el gusano tiene un vector de  %lu animacione posibles\n",animations.size() );
     return animations;
 
 }
@@ -175,9 +240,33 @@ std::map<State,Animation> AnimationFactory::get_wormsAnimations(){
         return worm;
     }
 
+    Animation AnimationFactory::get_worm_missile_up(){
+        Colour colorkey(WORM_MISSILE_R,WORM_MISSILE_G,WORM_MISSILE_B);
+        Animation worm(WORM_MISSILE_UP,colorkey,WORM_MISSILE_COLUMNS,WORM_MISSILE_ROWS);
+        return worm;
+    }
+
+    Animation AnimationFactory::get_worm_missile_down(){
+        Colour colorkey(WORM_MISSILE_R,WORM_MISSILE_G,WORM_MISSILE_B);
+        Animation worm(WORM_MISSILE_DOWN,colorkey,WORM_MISSILE_COLUMNS,WORM_MISSILE_ROWS);
+        return worm;
+    }
+
      Animation AnimationFactory::get_worm_bat(){
         Colour colorkey(WORM_BAT_R,WORM_BAT_G,WORM_BAT_B);
         Animation worm(WORM_BAT,colorkey,WORM_BAT_COLUMNS,WORM_BAT_ROWS);
+        return worm;
+    }
+
+      Animation AnimationFactory::get_worm_bat_up(){
+        Colour colorkey(WORM_BAT_R,WORM_BAT_G,WORM_BAT_B);
+        Animation worm(WORM_BAT_UP,colorkey,WORM_BAT_COLUMNS,WORM_BAT_ROWS);
+        return worm;
+    }
+
+      Animation AnimationFactory::get_worm_bat_down(){
+        Colour colorkey(WORM_BAT_R,WORM_BAT_G,WORM_BAT_B);
+        Animation worm(WORM_BAT_DOWN,colorkey,WORM_BAT_COLUMNS,WORM_BAT_ROWS);
         return worm;
     }
 
@@ -187,21 +276,72 @@ std::map<State,Animation> AnimationFactory::get_wormsAnimations(){
         return worm;
     }
 
+        Animation AnimationFactory::get_worm_banana_up(){
+        Colour colorkey(WORM_BANANA_R,WORM_BANANA_G,WORM_BANANA_B);
+        Animation worm(WORM_BANANA_UP,colorkey,WORM_BANANA_COLUMNS,WORM_MISSILE_ROWS);
+        return worm;
+    }
+
+        Animation AnimationFactory::get_worm_banana_down(){
+        Colour colorkey(WORM_BANANA_R,WORM_BANANA_G,WORM_BANANA_B);
+        Animation worm(WORM_BANANA_DOWN,colorkey,WORM_BANANA_COLUMNS,WORM_MISSILE_ROWS);
+        return worm;
+    }
+
      Animation AnimationFactory::get_worm_green_granade(){
         Colour colorkey(WORM_GREEN_GRANADE_R,WORM_GREEN_GRANADE_G,WORM_GREEN_GRANADE_B);
         Animation worm(WORM_GREEN_GRANADE,colorkey,WORM_GREEN_GRANADE_COLUMNS,WORM_GREEN_GRANADE_ROWS);
         return worm;
     }
 
-     Animation AnimationFactory::get_worm_red_granade(){
+     Animation AnimationFactory::get_worm_green_granade_up(){
+        Colour colorkey(WORM_GREEN_GRANADE_R,WORM_GREEN_GRANADE_G,WORM_GREEN_GRANADE_B);
+        Animation worm(WORM_GREEN_GRANADE_UP,colorkey,WORM_GREEN_GRANADE_COLUMNS,WORM_GREEN_GRANADE_ROWS);
+        return worm;
+    }
+
+     Animation AnimationFactory::get_worm_green_granade_down(){
+        Colour colorkey(WORM_GREEN_GRANADE_R,WORM_GREEN_GRANADE_G,WORM_GREEN_GRANADE_B);
+        Animation worm(WORM_GREEN_GRANADE_DOWN,colorkey,WORM_GREEN_GRANADE_COLUMNS,WORM_GREEN_GRANADE_ROWS);
+        return worm;
+    }
+
+        Animation AnimationFactory::get_worm_red_granade(){
         Colour colorkey(WORM_RED_GRANADE_R,WORM_RED_GRANADE_G,WORM_RED_GRANADE_B);
         Animation worm(WORM_RED_GRANADE,colorkey,WORM_RED_GRANADE_COLUMNS,WORM_RED_GRANADE_ROWS);
         return worm;
     }
 
+
+     Animation AnimationFactory::get_worm_red_granade_up(){
+        Colour colorkey(WORM_RED_GRANADE_R,WORM_RED_GRANADE_G,WORM_RED_GRANADE_B);
+        Animation worm(WORM_RED_GRANADE_UP,colorkey,WORM_RED_GRANADE_COLUMNS,WORM_RED_GRANADE_ROWS);
+        return worm;
+    }
+
+
+    Animation AnimationFactory::get_worm_red_granade_down(){
+        Colour colorkey(WORM_RED_GRANADE_R,WORM_RED_GRANADE_G,WORM_RED_GRANADE_B);
+        Animation worm(WORM_RED_GRANADE_DOWN,colorkey,WORM_RED_GRANADE_COLUMNS,WORM_RED_GRANADE_ROWS);
+        return worm;
+    }
+
+
      Animation AnimationFactory::get_worm_holy_granade(){
         Colour colorkey(WORM_HOLY_GRANADE_R,WORM_HOLY_GRANADE_G,WORM_HOLY_GRANADE_B);
         Animation worm(WORM_HOLY_GRANADE,colorkey,WORM_HOLY_GRANADE_COLUMNS,WORM_HOLY_GRANADE_ROWS);
+        return worm;
+    }
+
+       Animation AnimationFactory::get_worm_holy_granade_up(){
+        Colour colorkey(WORM_HOLY_GRANADE_R,WORM_HOLY_GRANADE_G,WORM_HOLY_GRANADE_B);
+        Animation worm(WORM_HOLY_GRANADE_UP,colorkey,WORM_HOLY_GRANADE_COLUMNS,WORM_HOLY_GRANADE_ROWS);
+        return worm;
+    }
+
+       Animation AnimationFactory::get_worm_holy_granade_down(){
+        Colour colorkey(WORM_HOLY_GRANADE_R,WORM_HOLY_GRANADE_G,WORM_HOLY_GRANADE_B);
+        Animation worm(WORM_HOLY_GRANADE_DOWN,colorkey,WORM_HOLY_GRANADE_COLUMNS,WORM_HOLY_GRANADE_ROWS);
         return worm;
     }
 
@@ -211,15 +351,53 @@ std::map<State,Animation> AnimationFactory::get_wormsAnimations(){
         return worm;
     }
 
+    Animation AnimationFactory::get_worm_teleport_up(){
+        Colour colorkey(WORM_TELEPORT_R,WORM_TELEPORT_G,WORM_TELEPORT_B);
+        Animation worm(WORM_TELEPORT_UP,colorkey,WORM_TELEPORT_COLUMNS,WORM_TELEPORT_ROWS);
+        return worm;
+    }
+
+    Animation AnimationFactory::get_worm_teleport_down(){
+        Colour colorkey(WORM_TELEPORT_R,WORM_TELEPORT_G,WORM_TELEPORT_B);
+        Animation worm(WORM_TELEPORT_DOWN,colorkey,WORM_TELEPORT_COLUMNS,WORM_TELEPORT_ROWS);
+        return worm;
+    }
+
      Animation AnimationFactory::get_worm_air_attack(){
         Colour colorkey(WORM_AIR_ATTACK_R,WORM_AIR_ATTACK_G,WORM_AIR_ATTACK_B);
         Animation worm(WORM_AIR_ATTACK,colorkey,WORM_AIR_ATTACK_COLUMNS,WORM_AIR_ATTACK_ROWS);
         return worm;
     }
 
+       Animation AnimationFactory::get_worm_air_attack_up(){
+        Colour colorkey(WORM_AIR_ATTACK_R,WORM_AIR_ATTACK_G,WORM_AIR_ATTACK_B);
+        Animation worm(WORM_AIR_ATTACK_UP,colorkey,WORM_AIR_ATTACK_COLUMNS,WORM_AIR_ATTACK_ROWS);
+        return worm;
+    }
+
+       Animation AnimationFactory::get_worm_air_attack_down(){
+        Colour colorkey(WORM_AIR_ATTACK_R,WORM_AIR_ATTACK_G,WORM_AIR_ATTACK_B);
+        Animation worm(WORM_AIR_ATTACK_DOWN,colorkey,WORM_AIR_ATTACK_COLUMNS,WORM_AIR_ATTACK_ROWS);
+        return worm;
+    }
+
      Animation AnimationFactory::get_worm_dynamite(){
         Colour colorkey(WORM_DYNAMITE_R,WORM_DYNAMITE_G,WORM_DYNAMITE_B);
         Animation worm(WORM_DYNAMITE,colorkey,WORM_DYNAMITE_COLUMNS,WORM_DYNAMITE_ROWS);
+        return worm;
+    }
+
+
+     Animation AnimationFactory::get_worm_dynamite_up(){
+        Colour colorkey(WORM_DYNAMITE_R,WORM_DYNAMITE_G,WORM_DYNAMITE_B);
+        Animation worm(WORM_DYNAMITE_UP,colorkey,WORM_DYNAMITE_COLUMNS,WORM_DYNAMITE_ROWS);
+        return worm;
+    }
+
+
+     Animation AnimationFactory::get_worm_dynamite_down(){
+        Colour colorkey(WORM_DYNAMITE_R,WORM_DYNAMITE_G,WORM_DYNAMITE_B);
+        Animation worm(WORM_DYNAMITE_DOWN,colorkey,WORM_DYNAMITE_COLUMNS,WORM_DYNAMITE_ROWS);
         return worm;
     }
 
