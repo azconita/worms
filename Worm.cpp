@@ -13,7 +13,7 @@
 
 
 Worm::Worm(b2World* world, float x, float y, int id, Direction direction) :
-          Entity(1), world(world), id(id) {
+          Entity(1), world(world), id(id), ammo() {
   b2BodyDef bodyDef;
   bodyDef.type = b2_dynamicBody;
   bodyDef.position.Set(x, y);
@@ -246,6 +246,10 @@ void Worm::took_weapon(Weapon_Name weapon) {
   this->weapon = weapon;
   std::map<Weapon_Name,State>::iterator weapon_state = weapons_states.find(weapon);
   this->change_state(weapon_state->second);
+}
+
+bool Worm::can_use(Weapon_Name weapon) {
+  return this->ammo.use(weapon);
 }
 
 void Worm::set_inclination(float angle, std::vector<b2Vec2> & beam_pos) {

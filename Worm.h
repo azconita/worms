@@ -8,6 +8,7 @@
 #include <Box2D/Box2D.h>
 #include <vector>
 #include <iostream>
+#include "Ammo.h"
 #include "Weapon.h"
 #include "Entity.h"
 #include "Dtos.h"
@@ -36,6 +37,7 @@ class Worm : public Entity {
   std::vector<b2Vec2> beam_pos;
   b2Vec2 start_falling = b2Vec2(0,0);
   int life;
+  Ammo ammo;
 public:
   Worm(b2World* world, float x, float y, int id, Direction direction);
   Worm(const    Worm& other);
@@ -73,6 +75,7 @@ public:
 
   //use weapons
   void took_weapon(Weapon_Name weapon);
+  bool can_use(Weapon_Name weapon);
   void use_weapon(float x, float y, int power, float degrees);
   void apply_damage(int d);
   void teleport(float x, float y);

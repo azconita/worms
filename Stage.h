@@ -5,7 +5,6 @@
 #include <random>
 #include <Box2D/Box2D.h>
 #include "StageLoader.h"
-#include "Ammo.h"
 #include "Beam.h"
 #include "Weapon.h"
 #include "Constants.h"
@@ -34,7 +33,6 @@ private:
 
   WeaponExplosionListener explosion_listener;
   std::vector<Weapon*> explosions;
-  Ammo ammo;
 
   float wind;
 

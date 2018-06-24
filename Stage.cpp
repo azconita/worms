@@ -2,7 +2,7 @@
 #include "Stage.h"
 
 //config: yaml: https://github.com/jbeder/yaml-cpp/
-Stage::Stage(std::string file_name) : ammo() {
+Stage::Stage(std::string file_name) {
   std::cout << file_name << '\n';
   b2Vec2 gravity(0, Constants::gravity); //normal earth gravity
   this->world = new b2World(gravity);
@@ -212,14 +212,17 @@ if(this->current_player == NULL){
 
 
 
-void Stage::shoot_weapon(int worm, ActionDTO& action) {
+void Stage::shoot_weapon(int worm_id, ActionDTO& action) {
+  Worm* worm = this->worms[worm_id];
+  if (!worm->can_use(action.weapon))
+    return;
 
   oLog() << "Se disparo el arma al punto ("<< action.pos_x <<"," << action.pos_y <<") en metros,"//
         <<" con una potencia de" << action.power <<  "apuntando a"  << action.weapon_degrees <<" grados" //
         << "en la dire "<< action.direction <<" y con timer" << action.time_to_explode << "\n";
 
   if (action.weapon == Teleport) {
-    this->worms[worm]->teleport(action.pos_x, action.pos_y);
+    worm->teleport(action.pos_x, action.pos_y);
 
   } else if (action.weapon == W_Air_Attack) {
     for (int i = 0; i < 6; ++i) {
@@ -251,7 +254,7 @@ void Stage::shoot_weapon(int worm, ActionDTO& action) {
     //this->worms[action.worm_id]->took_weapon(None);
     this->explosions.push_back(w);
   }
-  this->worms[worm]->took_weapon(None);
+  worm->took_weapon(None);
 }
 
 void Stage::worm_make_move(int worm, ActionDTO& action) {
