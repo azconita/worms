@@ -52,7 +52,7 @@ public:
   void make_explosion(float power);
   void proximity_explosion();
   void explode();
-  void apply_explosion_impulse(b2Body* body, b2Vec2 blast_center, b2Vec2 apply_point);
+  void apply_explosion_impulse(b2Body* body, b2Vec2 blast_direction, float distance);
   void shoot(int power, float degrees, Direction dir, int time_to_explode);
 
   bool is_alive();

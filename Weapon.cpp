@@ -137,9 +137,9 @@ std::vector<b2Vec2> Weapon::get_points() {
   return points;
 }
 
-void Weapon::apply_explosion_impulse(b2Body* other_body, b2Vec2 blast_center, b2Vec2 apply_point) {
-  b2Vec2 blast_dir = apply_point - blast_center;
-  float distance = blast_dir.Length();
+void Weapon::apply_explosion_impulse(b2Body* other_body, b2Vec2 blast_direction, float distance) {
+  //b2Vec2 blast_dir = apply_point - blast_center;
+  //float distance = blast_dir.Length();
   float inv_distance = (distance < 1) ? 1 : (1 / distance);
   float impulse_mag = this->power * inv_distance ;
   //std::cout << "imp mag: " << impulse_mag << ", blastdir: " << blast_dir.x << ":" << blast_dir.y << "\n";
@@ -148,7 +148,7 @@ void Weapon::apply_explosion_impulse(b2Body* other_body, b2Vec2 blast_center, b2
   std::cout<<"body found: " << entity->en_type << '\n';
   if (entity->en_type == 1) {
     //std::cout << "apply explosion: "<<impulse_mag <<"\n";
-    other_body->ApplyLinearImpulse( (impulse_mag/ distance) * blast_dir, other_body->GetPosition() , true);
+    other_body->ApplyLinearImpulse( (impulse_mag/ distance) * blast_direction, other_body->GetPosition() , true);
     ((Worm*) entity)->apply_damage(int(this->damage * inv_distance));
   }
 
@@ -165,7 +165,7 @@ void Weapon::make_explosion(float power) {
   if (this->timer != 0) {
     return;
   }
-                                                                         //this->radius = radius;
+  //this->radius = radius;
   this->explode();
 }
 
@@ -207,10 +207,11 @@ void Weapon::proximity_explosion() {
       b2Vec2 body_pos = other_body->GetPosition();
 
       //ignore bodies outside the radius
-      if ((body_pos - center).Length() >= radius)
+      float distance = (body_pos - center).Length();
+      if (distance >= radius)
           continue;
 
-      this->apply_explosion_impulse(other_body, center, body_pos);
+      this->apply_explosion_impulse(other_body, body_pos - center, distance);
   }
 
 }
@@ -227,7 +228,7 @@ void Weapon::raycast_explosion() {
     RayCastCallback callback;//basic callback to record body and hit point
     this->world->RayCast(&callback, center, ray_end);
     if ( callback.body )
-      apply_explosion_impulse(callback.body, center, callback.point);
+      apply_explosion_impulse(callback.body, callback.point - center, (callback.point - center).Length() - radius);
   }
 }
 
