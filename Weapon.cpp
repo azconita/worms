@@ -46,7 +46,7 @@ Weapon::Weapon(b2World *world, Weapon_Name name, float x, float y, float wind, s
       case W_Air_Attack: {
         this->body->SetLinearVelocity(b2Vec2(wind, 0));
         this->body->SetLinearDamping(wind);
-        this->radius = 6;//Constants::airattack_radius;
+        this->radius = Constants::airattack_radius;
         this->damage = Constants::airattack_damage;
         break;
       }
