@@ -48,7 +48,9 @@ public:
   bool is_time_to_explode();
   bool has_timer();
 
-  void proximity_explosion(float blast_power);
+  void raycast_explosion();
+  void make_explosion(float power);
+  void proximity_explosion();
   void explode();
   void apply_explosion_impulse(b2Body* body, b2Vec2 blast_center, b2Vec2 apply_point);
   void shoot(int power, float degrees, Direction dir, int time_to_explode);
@@ -78,6 +80,25 @@ public:
     found_bodies.push_back( fixture->GetBody() );
     return true;
   }
+};
+
+class RayCastCallback : public b2RayCastCallback {
+public:
+  b2Body* body;
+  b2Vec2 point;
+
+  RayCastCallback() {body = NULL;}
+
+  float32 ReportFixture(b2Fixture* fixture, const b2Vec2& point, const b2Vec2& normal, float32 fraction) {
+    this->body = fixture->GetBody();
+    this->point = point;
+    Entity* entity = (Entity*) (this->body->GetUserData());
+    std::cout<<"[raycast] found: " << entity->en_type << '\n';
+    if (entity->en_type == 1)
+      return fraction;
+    return (float32) 1;
+  }
+
 };
 
 #endif /* WEAPON_H_ */

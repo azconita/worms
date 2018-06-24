@@ -36,9 +36,9 @@ void WeaponExplosionListener::EndContact(b2Contact* contact) {
 
 void WeaponExplosionListener::handle_begin_explotion(Entity* entityA, Entity* entityB){
   if (entityA->en_type == WEAPON_TYPE) {
-    static_cast<Weapon*>( entityA)->proximity_explosion(Constants::explosion_power);
+    static_cast<Weapon*>( entityA)->make_explosion(Constants::explosion_power);
   } else if ( entityB->en_type == WEAPON_TYPE ){
-    static_cast<Weapon*>( entityB )->proximity_explosion(Constants::explosion_power);
+    static_cast<Weapon*>( entityB )->make_explosion(Constants::explosion_power);
   }
 }
 

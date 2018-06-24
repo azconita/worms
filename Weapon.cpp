@@ -156,7 +156,7 @@ void Weapon::apply_explosion_impulse(b2Body* other_body, b2Vec2 blast_center, b2
 
 
 //find all bodies with fixtures in blast radius AABB
-void Weapon::proximity_explosion(float power) {
+void Weapon::make_explosion(float power) {
   if (this->name == Explosion)
     return this->explosion();
   if (!this->alive)
@@ -170,7 +170,7 @@ void Weapon::proximity_explosion(float power) {
 }
 
 bool Weapon::is_alive(){
-   return (this->alive && (this->body->GetPosition().y < 100)); 
+   return (this->alive && (this->body->GetPosition().y < 60));
 }
 
 void Weapon::explode() {
@@ -185,6 +185,16 @@ void Weapon::explode() {
       d = d + 30;
     }
   }
+
+  //this->proximity_explosion();
+  this->raycast_explosion();
+
+  //this->alive = false;
+  this->timer = 8;
+  this->name = Explosion;
+}
+
+void Weapon::proximity_explosion() {
   ExplosionQueryCallback query_callback;
   b2AABB aabb;
   b2Vec2 center = this->body->GetPosition();
@@ -202,11 +212,26 @@ void Weapon::explode() {
 
       this->apply_explosion_impulse(other_body, center, body_pos);
   }
-  //this->alive = false;
 
-  this->timer = 8;
-  this->name = Explosion;
 }
+
+void Weapon::raycast_explosion() {
+  int rays = 40;
+  b2Vec2 center = this->body->GetPosition();
+  float dtor = 0.0174532925199432957f;
+  for (int i = 0; i < rays; i++) {
+    float angle = (i / (float)rays) * 360 * dtor;
+    b2Vec2 ray_dir( sinf(angle), cosf(angle) );
+    b2Vec2 ray_end = center + this->radius * ray_dir;
+
+    RayCastCallback callback;//basic callback to record body and hit point
+    this->world->RayCast(&callback, center, ray_end);
+    if ( callback.body )
+      apply_explosion_impulse(callback.body, center, callback.point);
+  }
+}
+
+
 
 void Weapon::shoot(int power, float degrees, Direction dir, int time_to_explode) {
   this->shoot_power = power;
