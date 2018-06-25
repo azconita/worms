@@ -139,7 +139,7 @@ std::vector<b2Vec2> Weapon::get_points() {
 
 void Weapon::apply_explosion_impulse(b2Body* other_body, b2Vec2 blast_center, b2Vec2 apply_point) {
   b2Vec2 blast_dir = apply_point - blast_center;
-  float distance = blast_dir.Length() - Constants::worm_width;
+  float distance = blast_dir.Length() - Constants::worm_height;
   float inv_distance = (distance < 1) ? 1 : (1 / distance);
   float impulse_mag = this->power * inv_distance ;
   //std::cout << "imp mag: " << impulse_mag << ", blastdir: " << blast_dir.x << ":" << blast_dir.y << "\n";
