@@ -94,6 +94,7 @@ Weapon::Weapon(b2World *world, Weapon_Name name, float x, float y, float wind, s
         break;
       }
     }
+
 }
 
 Weapon::Weapon(const Weapon &other) : Entity(3),
@@ -138,16 +139,15 @@ std::vector<b2Vec2> Weapon::get_points() {
 }
 
 void Weapon::apply_explosion_impulse(b2Body* other_body, b2Vec2 blast_direction, float distance) {
-  //b2Vec2 blast_dir = apply_point - blast_center;
-  //float distance = blast_dir.Length();
-  float inv_distance = (distance < 1) ? 1 : (1 / distance);
+  float inv_distance = (abs(distance) < 1) ? 1 : (1 / abs(distance));
   float impulse_mag = this->power * inv_distance ;
-  //std::cout << "imp mag: " << impulse_mag << ", blastdir: " << blast_dir.x << ":" << blast_dir.y << "\n";
+  printf("distance: %f, %f, %f\n", distance, abs(distance), inv_distance);
 
   Entity* entity = (Entity*) (other_body->GetUserData());
   std::cout<<"body found: " << entity->en_type << '\n';
   if (entity->en_type == 1) {
     //std::cout << "apply explosion: "<<impulse_mag <<"\n";
+    printf("daño maximo del arma: %i, dano causado: %f\n", this->damage,(this->damage * inv_distance));
     other_body->ApplyLinearImpulse( (impulse_mag/ distance) * blast_direction, other_body->GetPosition() , true);
     ((Worm*) entity)->apply_damage(int(this->damage * inv_distance));
   }
@@ -165,12 +165,12 @@ void Weapon::make_explosion(float power) {
   if (this->timer != 0) {
     return;
   }
-  //this->radius = radius;
   this->explode();
 }
 
 bool Weapon::is_alive(){
-   return (this->alive && (this->body->GetPosition().y < 60));
+  b2Vec2 pos = this->body->GetPosition();
+   return (this->alive && (pos.y < 60) && (pos.y > -60) && (pos.x < 90) && (pos.x > 0));
 }
 
 void Weapon::explode() {
@@ -195,6 +195,8 @@ void Weapon::explode() {
 }
 
 void Weapon::proximity_explosion() {
+  //para compensar el uso del centro del body para aplicar daño
+  this->radius += Constants::worm_width;
   ExplosionQueryCallback query_callback;
   b2AABB aabb;
   b2Vec2 center = this->body->GetPosition();
@@ -208,7 +210,7 @@ void Weapon::proximity_explosion() {
 
       //ignore bodies outside the radius
       float distance = (body_pos - center).Length();
-      if (distance >= radius)
+      if (distance > radius)
           continue;
 
       this->apply_explosion_impulse(other_body, body_pos - center, distance);
