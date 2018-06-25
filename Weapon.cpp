@@ -139,7 +139,7 @@ std::vector<b2Vec2> Weapon::get_points() {
 
 void Weapon::apply_explosion_impulse(b2Body* other_body, b2Vec2 blast_center, b2Vec2 apply_point) {
   b2Vec2 blast_dir = apply_point - blast_center;
-  float distance = blast_dir.Length();
+  float distance = blast_dir.Length() - Constants::worm_width;
   float inv_distance = (distance < 1) ? 1 : (1 / distance);
   float impulse_mag = this->power * inv_distance ;
   //std::cout << "imp mag: " << impulse_mag << ", blastdir: " << blast_dir.x << ":" << blast_dir.y << "\n";
@@ -170,7 +170,8 @@ void Weapon::proximity_explosion(float power) {
 }
 
 bool Weapon::is_alive(){
-   return (this->alive && (this->body->GetPosition().y < 100)); 
+  b2Vec2 pos = this->body->GetPosition();
+  return (this->alive && (pos.y < 60) && (pos.y > -60) && (pos.x < 90) && (pos.x > 0));
 }
 
 void Weapon::explode() {
@@ -185,6 +186,8 @@ void Weapon::explode() {
       d = d + 30;
     }
   }
+  //para compensar el uso del centro del body para aplicar daño
+  //this->radius += Constants::worm_width;
   ExplosionQueryCallback query_callback;
   b2AABB aabb;
   b2Vec2 center = this->body->GetPosition();
@@ -197,7 +200,7 @@ void Weapon::explode() {
       b2Vec2 body_pos = other_body->GetPosition();
 
       //ignore bodies outside the radius
-      if ((body_pos - center).Length() >= radius)
+      if (((body_pos - center).Length() - Constants::worm_width) >= radius)
           continue;
 
       this->apply_explosion_impulse(other_body, center, body_pos);
