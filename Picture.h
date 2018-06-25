@@ -35,8 +35,9 @@ public:
 	int get_height();
 	int get_width();
 	void draw(SDL_Surface *screen, int x, int y);
-	void draw(SDL_Surface *screen, int x, int y, Direction direction);
+	void draw(SDL_Surface *screen, std::vector<Vertex> v, Direction direction);
 	void draw(SDL_Surface *screen, SDL_Rect position, Direction direction);
+	void debug(SDL_Surface *screen, std::vector<Vertex> v);
 	bool is_in_first_figure(Direction direction);
 	bool is_in_last_figure(Direction direction);
 	void next_sprite_figure(Direction direction);

@@ -10,7 +10,7 @@
 
 
 float GraphicDesigner::get_pixels(float meter_position){
-    return  23.5*meter_position;
+    return  (140.0/6)*meter_position;
 }
 
 
@@ -135,21 +135,23 @@ void GraphicDesigner::show_beams(StageDTO s, SDL_Surface *screen, SDL_Rect camer
 
     for (auto beam_info: s.beams) {
 
-        int center_x = get_pixels(beam_info.pos_x) - camera_position.x;
-        int center_y = get_pixels(beam_info.pos_y) - camera_position.y;
+        for(int i = 0; i< beam_info.vertices.size(); i ++){
+            beam_info.vertices.at(i).pos_x = get_pixels(beam_info.vertices.at(i).pos_x) - camera_position.x;
+            beam_info.vertices.at(i).pos_y = get_pixels(beam_info.vertices.at(i).pos_y) - camera_position.y;
+        }
+
 
         float degrees = beam_info.angle;
         if(beam_info.direction == Left){
             degrees = 180-degrees;
         }
 
-
         if(beam_info.w < 4){
             Picture beam = inclinate_beam(this->little_beams, degrees);
-            beam.draw(this->screen,center_x - 1, center_y,beam_info.direction);
+            beam.draw(this->screen,beam_info.vertices,beam_info.direction);
         }else{
             Picture beam = inclinate_beam(this->big_beams, degrees);
-             beam.draw(this->screen,center_x , center_y, beam_info.direction);
+             beam.draw(this->screen,beam_info.vertices, beam_info.direction);
         } 
     }
 }

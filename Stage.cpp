@@ -358,27 +358,14 @@ StageDTO Stage::get_stageDTO() {
     
 
     std::vector<b2Vec2> v = b->get_points();
-    Vertex v0;
-    v0.pos_x =v[0].x;
-    v0.pos_y =v[0].y;
-    beam_element.vertices[0] = v0;
+    
+    for(int i = 0; i < v.size(); i++){
+      Vertex vertex;
+      vertex.pos_x =v[i].x;
+      vertex.pos_y =v[i].y;
+      beam_element.vertices.push_back(vertex);
+    }
 
-    Vertex v1;
-    v1.pos_x =v[1].x;
-    v1.pos_y =v[1].y;
-    beam_element.vertices[1] = v1;
-
-    Vertex v2;
-    v2.pos_x =v[2].x;
-    v2.pos_y =v[2].y;
-    beam_element.vertices[2] = v2;
-
-    Vertex v3;
-    v3.pos_x =v[3].x;
-    v3.pos_y =v[3].y;
-    beam_element.vertices[3] = v3;
-
-   
     beam_element.h = round(sqrt(pow(v[2].x - v[1].x,2) + pow(v[2].y - v[1].y,2)));
     beam_element.w = round(sqrt(pow(v[1].x - v[0].x,2) + pow(v[1].y - v[0].y,2)));
 

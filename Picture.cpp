@@ -112,10 +112,47 @@ void Picture::draw(SDL_Surface *screen, int x, int y){
     draw(screen, position, this->default_direction);
 }
 
-void Picture::draw(SDL_Surface *screen, int x, int y, Direction direction){
+void Picture::debug(SDL_Surface *screen, std::vector<Vertex> v){
+     SDL_Rect rectangle;
+        rectangle.x = v[0].pos_x;
+        rectangle.y = v[0].pos_y;
+        rectangle.h = 5;
+        rectangle.w = 5; 
+        Uint32 colorkey = SDL_MapRGB(screen->format, 255,0,0);
+        SDL_FillRect(screen, &rectangle, colorkey);
+
+        rectangle.x = v[1].pos_x;
+        rectangle.y = v[1].pos_y;
+        rectangle.h = 5;
+        rectangle.w = 5; 
+        SDL_FillRect(screen, &rectangle, colorkey);
+
+        rectangle.x = v[2].pos_x;
+        rectangle.y = v[2].pos_y;
+        rectangle.h = 5;
+        rectangle.w = 5; 
+        SDL_FillRect(screen, &rectangle, colorkey);
+
+        rectangle.x = v[3].pos_x;
+        rectangle.y = v[3].pos_y;
+        rectangle.h = 5;
+        rectangle.w = 5; 
+        SDL_FillRect(screen, &rectangle, colorkey);
+
+}
+
+
+void Picture::draw(SDL_Surface *screen, std::vector<Vertex> v, Direction direction){
+    this->debug(screen, v);
+
+    float h = sqrt(pow(v[2].pos_x - v[1].pos_x,2) + pow(v[2].pos_y - v[1].pos_y,2));
+    float w = sqrt(pow(v[1].pos_x - v[0].pos_x,2) + pow(v[1].pos_y - v[0].pos_y,2));
+
     SDL_Rect position;
-    position.x = x - (this->w/4); //??????? correccion empirica
-    position.y = y - (this->h/2);
+    position.x = v[0].pos_x + 13; //correccion empirica de las vigas 
+    position.y = v[0].pos_y; 
+    position.h = h;
+    position.w = w;
     draw(screen, position, direction);
 }
 
@@ -123,7 +160,7 @@ void Picture::draw(SDL_Surface *screen, int x, int y, Direction direction){
 void Picture::draw(SDL_Surface *screen, SDL_Rect position, Direction direction){
     SDL_Rect dimention = get_dimention();
 
-    position.h = dimention.h;
+    position.h =  dimention.h;
     position.w = dimention.w;
 
      if(this->default_direction != direction){

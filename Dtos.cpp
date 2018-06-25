@@ -13,6 +13,15 @@
 #include <string>
 
 
+YAML::Emitter& operator << (YAML::Emitter& out, const Vertex& v) {
+  out << YAML::BeginMap;
+  out << YAML::Key << "pos_x";
+  out << YAML::Value << v.pos_x;
+  out << YAML::Key <<  "pos_y";
+  out << YAML::Value << v.pos_y;
+  out << YAML::EndMap;
+  return out;
+}
 
 
 YAML::Emitter& operator << (YAML::Emitter& out, const ElementDTO& e) {
@@ -25,6 +34,11 @@ YAML::Emitter& operator << (YAML::Emitter& out, const ElementDTO& e) {
   out << YAML::Value << e.h;
   out << YAML::Key <<  "w";
   out << YAML::Value << e.w;
+
+  out << YAML::Key <<  "vertices";
+  out << YAML::Value << e.vertices;
+
+
   out << YAML::Key << "worm_state";
   out << YAML::Value << e.worm_state;
   out << YAML::Key << "direction";
