@@ -159,8 +159,16 @@ void Worm::calm(){
 }
 
 void Worm::move(float vel_x, float vel_y){
-  ////printf("velocidad: %f, %f\n",vel_x, vel_y);
+  printf("velocidad: %f, %f\n",vel_x, vel_y);
   this->body->ApplyLinearImpulse(b2Vec2(vel_x,vel_y), this->body->GetWorldCenter(), true);
+}
+
+void Worm::bounce(){
+  float v = Constants::worm_walk_velocity;
+  if(this->direction == Right){
+    v = v*(-1);
+  }
+  this->move(3*v, 0);
 }
 
 

@@ -5,19 +5,19 @@ stage:
       size: 6
       inclination: 0
       direction: 0
-    - pos_x: 20
+    - pos_x: 23
       pos_y: 10
-      size: 3
+      size: 6
       inclination: 90
       direction: 0
-    - pos_x: 20
+    - pos_x: 18
       pos_y: 10
-      size: 3
+      size: 6
       inclination: 90
       direction: 1
     - pos_x: 13
       pos_y: 20
-      size: 3
+      size: 6
       inclination: 0
       direction: 0
 

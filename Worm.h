@@ -68,6 +68,7 @@ public:
   void jump(Direction dir); // 1m adelante y 0.5m alto
   void jump_back(); // 0.2m atras y 1.2m alto
   void stop_moving();
+  void bounce();
   void set_static(bool first_time);
   void set_dynamic();
   void set_inclination(float angle, std::vector<b2Vec2> & beam_pos);

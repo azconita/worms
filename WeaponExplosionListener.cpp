@@ -71,6 +71,10 @@ void WeaponExplosionListener::handle_end_contact(Entity* entityA, Entity* entity
 
 void WeaponExplosionListener::beam_worm_begin_contact(Beam * beam, Worm * worm){
   float angle = beam->get_angle();
+  if(angle == 90){
+    printf("[WeaponExplosionListener] rebote con viga de 90 grados\n");
+    worm->bounce();
+  }
   if(angle > 45 && angle < 135){
     return;
   }
