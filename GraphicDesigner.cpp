@@ -199,8 +199,9 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen, SDL_Rect camer
             (worms_iter->second.is_in_movement() && s.weapons.size() == 0 ) ) ) { 
             this->camera->follow(center_x,center_y); 
         }
-        worms_iter->second.show(this->screen, camera_position);
+        this->last_worm_turn =  s.worm_turn;
 
+        worms_iter->second.show(this->screen, camera_position);
 
         if(worm_info.player_id > 4){
             cout << "Error: juego no preparado para mas de 4 jugadores" << endl;
@@ -270,8 +271,6 @@ void GraphicDesigner::show_weapon_point_direction(int x, int y,float degrees, Di
         if(this->last_worm_turn == s.worm_turn){
              this->camera->follow(get_pixels(w.pos_x) - ((float) weapon_iter->second.get_width()/2),//
                              get_pixels(w.pos_y) - ((float) weapon_iter->second.get_height()/2));
-        } else {
-            this->last_worm_turn = s.worm_turn;
         }
        
         if(is_timer_weapon(w.weapon)){
