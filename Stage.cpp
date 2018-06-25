@@ -355,10 +355,33 @@ StageDTO Stage::get_stageDTO() {
     ElementDTO beam_element;
     b2Vec2 center = b->get_center();
     set_position(beam_element, center);
-    std::vector<b2Vec2> v = b->get_points();
+    
 
+    std::vector<b2Vec2> v = b->get_points();
+    Vertex v0;
+    v0.pos_x =v[0].x;
+    v0.pos_y =v[0].y;
+    beam_element.vertices[0] = v0;
+
+    Vertex v1;
+    v1.pos_x =v[1].x;
+    v1.pos_y =v[1].y;
+    beam_element.vertices[1] = v1;
+
+    Vertex v2;
+    v2.pos_x =v[2].x;
+    v2.pos_y =v[2].y;
+    beam_element.vertices[2] = v2;
+
+    Vertex v3;
+    v3.pos_x =v[3].x;
+    v3.pos_y =v[3].y;
+    beam_element.vertices[3] = v3;
+
+   
     beam_element.h = round(sqrt(pow(v[2].x - v[1].x,2) + pow(v[2].y - v[1].y,2)));
     beam_element.w = round(sqrt(pow(v[1].x - v[0].x,2) + pow(v[1].y - v[0].y,2)));
+
     beam_element.angle = b->get_angle();
     beam_element.direction = b->get_direction();
     if ((beam_element.angle < 0.01) && (beam_element.angle > -0.01))
