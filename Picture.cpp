@@ -143,8 +143,7 @@ void Picture::debug(SDL_Surface *screen, std::vector<Vertex> v){
 
 
 void Picture::draw(SDL_Surface *screen, std::vector<Vertex> v, Direction direction){
-    this->debug(screen, v);
-
+    //this->debug(screen, v);
     float h = sqrt(pow(v[2].pos_x - v[1].pos_x,2) + pow(v[2].pos_y - v[1].pos_y,2));
     float w = sqrt(pow(v[1].pos_x - v[0].pos_x,2) + pow(v[1].pos_y - v[0].pos_y,2));
 
