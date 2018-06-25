@@ -64,14 +64,21 @@
 
 //un gusano con disparador de bazooka o mortero
 #define WORM_MISSILE "resources/worm_bazooka.bmp"
+#define WORM_MISSILE_DOWN "resources/worm_missile_down.bmp"
+#define WORM_MISSILE_UP "resources/worm_missile_up.bmp"
 #define WORM_MISSILE_R 128
 #define WORM_MISSILE_G 128
 #define WORM_MISSILE_B 192
 #define WORM_MISSILE_COLUMNS 1
 #define WORM_MISSILE_ROWS 32
 
+//un gusano con disparador de bazooka o mortero
+
+
 //un gusano con wokietokie para air attack
 #define WORM_AIR_ATTACK "resources/worm_air_attack.bmp"
+#define WORM_AIR_ATTACK_DOWN "resources/worm_air_attack_up.bmp"
+#define WORM_AIR_ATTACK_UP "resources/worm_air_attack_down.bmp"
 #define WORM_AIR_ATTACK_R 128
 #define WORM_AIR_ATTACK_G 128
 #define WORM_AIR_ATTACK_B 192
@@ -80,6 +87,8 @@
 
 //un gusano con granada verde
 #define WORM_GREEN_GRANADE "resources/worm_greengrenade.bmp"
+#define WORM_GREEN_GRANADE_UP "resources/worm_green_grenade_up.bmp"
+#define WORM_GREEN_GRANADE_DOWN "resources/worm_green_grenade_down.bmp"
 #define WORM_GREEN_GRANADE_R 128
 #define WORM_GREEN_GRANADE_G 128
 #define WORM_GREEN_GRANADE_B 192
@@ -88,6 +97,8 @@
 
 //un gusano con granada roja 
 #define WORM_RED_GRANADE "resources/worm_redgrenade.bmp"
+#define WORM_RED_GRANADE_UP "resources/worm_red_grenade_up.bmp"
+#define WORM_RED_GRANADE_DOWN "resources/worm_red_grenade_down.bmp"
 #define WORM_RED_GRANADE_R 128
 #define WORM_RED_GRANADE_G 128
 #define WORM_RED_GRANADE_B 192
@@ -96,6 +107,8 @@
 
 //un gusano con granada santa
 #define WORM_HOLY_GRANADE "resources/worm_holygrenade.bmp"
+#define WORM_HOLY_GRANADE_UP "resources/worm_holy_grenade_up.bmp"
+#define WORM_HOLY_GRANADE_DOWN "resources/worm_holy_grenade_down.bmp"
 #define WORM_HOLY_GRANADE_R 128
 #define WORM_HOLY_GRANADE_G 128
 #define WORM_HOLY_GRANADE_B 192
@@ -104,6 +117,8 @@
 
 //un gusano con una banana
 #define WORM_BANANA "resources/worm_banane.bmp"
+#define WORM_BANANA_UP "resources/worm_banane_up.bmp"
+#define WORM_BANANA_DOWN "resources/worm_banane_down.bmp"
 #define WORM_BANANA_R 128
 #define WORM_BANANA_G 128
 #define WORM_BANANA_B 192
@@ -112,6 +127,8 @@
 
 //un gusano con un bate de bsseball
 #define WORM_BAT "resources/worm_bat.bmp"
+#define WORM_BAT_UP "resources/worm_bat_up.bmp"
+#define WORM_BAT_DOWN "resources/worm_bat_down.bmp"
 #define WORM_BAT_R 192
 #define WORM_BAT_G 192
 #define WORM_BAT_B 128
@@ -119,7 +136,9 @@
 #define WORM_BAT_ROWS 32
 
 //un gusano con un bate de dinamita
-#define WORM_DYNAMITE "resources/worm_dynamite.bmp"
+#define WORM_DYNAMITE "resources/worm_dynamite.bmp"	
+#define WORM_DYNAMITE_UP "resources/worm_dynamite_up.bmp"
+#define WORM_DYNAMITE_DOWN "resources/worm_dynamite_down.bmp"
 #define WORM_DYNAMITE_R 128
 #define WORM_DYNAMITE_G 128
 #define WORM_DYNAMITE_B 192
@@ -128,6 +147,8 @@
 
 //un gusano con TELEPORTportacion
 #define WORM_TELEPORT "resources/worm_teleport.bmp"
+#define WORM_TELEPORT_UP "resources/worm_teleport_up.bmp"
+#define WORM_TELEPORT_DOWN "resources/worm_teleport_down.bmp"
 #define WORM_TELEPORT_R 192
 #define WORM_TELEPORT_G 192
 #define WORM_TELEPORT_B 128

@@ -61,6 +61,7 @@ public:
   Direction get_direction();
   void change_state(State state);
   bool update_state();
+  bool update_horizontal_state();
   void move_left(); //vel: 0.2 m/s
   void move_right();
   void move(float vel_x, float vel_y);

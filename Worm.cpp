@@ -95,23 +95,25 @@ void Worm::change_state(State state){
  * si no, devuelve false.
  */
 bool Worm::update_state() {
+  bool is_worm_damaged = this->update_horizontal_state();
+  if(this->inclination != 0 && this->inclination != 180){
+    if(this->inclination < 90){
+      printf("busca estado inclinado\n");
+      this->state = (this->direction == Right)? down_states.at(this->state) :up_states.at(this->state);
+    }else if(this->inclination > 90){
+      this->state = (this->direction == Right)? up_states.at(this->state) :down_states.at(this->state);
+    }
+  }
+  return is_worm_damaged;
+}
+
+bool Worm::update_horizontal_state(){
   //caer es el estado "predominante"
   if(this->state == Worm_disappear){
     return false;
   }
   this->handle_end_contact();
   b2Vec2 vel = this->body->GetLinearVelocity();
-  //std::cout << "[Worm] inclination:"<< this->inclination <<" , velocity:" <<vel.y << endl;
-  if(this->inclination != 0 && this->inclination != 180){
-    if(vel.y == 0){
-      if(this->inclination < 90){
-        this->state = (this->direction == Right)? Still_down : Still_up;
-      }else if(this->inclination > 90){
-        this->state = (this->direction == Right)? Still_up : Still_down;
-      }
-      return false;
-    }
-  }
   if (vel.y > 5 && this->state != Fall && this->inclination == 0) {
       this->state = Fall;
       this->start_falling = this->body->GetPosition();
@@ -136,6 +138,7 @@ bool Worm::update_state() {
     return false;
   }
   return false;
+
 }
 
 Direction Worm::get_direction(){

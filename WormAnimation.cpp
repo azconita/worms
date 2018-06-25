@@ -26,11 +26,15 @@ WormAnimation::WormAnimation(int initial_x, int initial_y, Direction initial_dir
 }
 
 bool WormAnimation::has_weapon(){
-    return (this->state != Walk && this->state != Still && this->state != Jump_state && this->state != Fall);
+    return (this->state != Walk && this->state != Walk_up && this->state != Walk_down && //
+        this->state != Still && this->state != Still_up && this->state != Still_down && //
+         this->state != Jump_state && this->state != Jump_up && this->state != Jump_down &&//
+         this->state != Fall && this->state != Jump_back_state);
 }
 
 bool WormAnimation::has_weapon_to_click(){
-    return (this->state == Worm_teleport || this->state == Worm_air_attack);
+    return (this->state == Worm_teleport || this->state == Worm_teleport_up || this->state == Worm_teleport_down
+     || this->state == Worm_air_attack  || this->state == Worm_air_attack_up  || this->state == Worm_air_attack_down);
 }
 
 bool WormAnimation::has_point_weapon(){ //armas con las que no se puede apuntar
@@ -143,8 +147,10 @@ void WormAnimation::move(int position_x, int position_y, State state, Direction 
     this->x = position_x;
     this->y = position_y;
     std::map<State,Animation>::iterator animation_iter = animations.find(this->state);
-    if(this->state == Jump_state || this->state == Jump_back_state ||this->state == Walk  || this->state == Fall//
-     || this->state == Walk_down || this->state == Walk_up || this->state == Worm_disappear){
+    if(this->state == Jump_state || this->state == Jump_up || this->state == Jump_down 
+    || this->state == Jump_back_state  || this->state == Fall 
+    || this->state == Walk ||this->state == Walk_up ||this->state == Walk_down
+    || this->state == Worm_disappear || this->state == Worm_disappear_up || this->state == Worm_disappear_down){
         while(!animation_iter->second.continue_internal_movement()){ 
             // primero termino el movimiento que tenia
         }

@@ -1,5 +1,30 @@
 stage:
   beams:
+    - pos_x: 47
+      pos_y: 5
+      size: 3
+      inclination: 90 #viga vertical arriba
+      direction: 0
+
+      #vigas de arriba
+
+    - pos_x: 20
+      pos_y: 10
+      size: 3
+      inclination: 0 
+      direction: 0
+
+    - pos_x: 35
+      pos_y: 14
+      size: 6
+      inclination: 22 
+      direction: 0
+
+    - pos_x: 40
+      pos_y: 16
+      size: 3
+      inclination: 0
+      direction: 0
    
     - pos_x: 45
       pos_y: 15
@@ -10,6 +35,43 @@ stage:
     - pos_x: 49
       pos_y: 15
       size: 3
+      inclination: 0
+      direction: 0
+
+    - pos_x: 56
+      pos_y: 13
+      size: 6
+      inclination: 22
+      direction: 1
+
+    - pos_x: 58
+      pos_y: 12
+      size: 6
+      inclination: 0
+      direction: 1
+
+    #vigas de abajo
+    - pos_x: 42
+      pos_y: 23
+      size: 3
+      inclination: 0
+      direction: 0
+
+    - pos_x: 45
+      pos_y: 25
+      size: 6
+      inclination: 0
+      direction: 0
+
+    - pos_x: 50
+      pos_y: 27
+      size: 3
+      inclination: 0
+      direction: 0
+
+    - pos_x: 53
+      pos_y: 30
+      size: 6
       inclination: 0
       direction: 0
 
@@ -27,8 +89,8 @@ stage:
       life: 100
       inclination: 0
     - id: 3
-      pos_x: 50
-      pos_y: 15
+      pos_x: 20
+      pos_y: 9
       direction: 1
       life: 100
       inclination: 0
