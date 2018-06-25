@@ -1,96 +1,181 @@
 stage:
   beams:
+
+    - pos_x: 5
+      pos_y: 15
+      size: 3
+      inclination: 0 #viga lejos al principio
+      direction: 0
+
+    - pos_x: 2
+      pos_y: 50
+      size: 6
+      inclination: 22
+      direction: 1
+
+    - pos_x: 5
+      pos_y: 50
+      size: 6
+      inclination: 0
+      direction: 1
+
     - pos_x: 47
       pos_y: 5
-      size: 3
+      size: 6
       inclination: 90 #viga vertical arriba
       direction: 0
 
-      #vigas de arriba
-
-    - pos_x: 20
+    - pos_x: 15  #vigas de arriba
       pos_y: 10
       size: 3
       inclination: 0 
       direction: 0
 
-    - pos_x: 35
+    - pos_x: 20
+      pos_y: 13
+      size: 6
+      inclination: 0
+      direction: 1
+
+    - pos_x: 25
+      pos_y: 14
+      size: 6
+      inclination: 45 
+      direction: 1
+
+    - pos_x: 30
       pos_y: 14
       size: 6
       inclination: 22 
       direction: 0
 
-    - pos_x: 40
+    - pos_x: 35
       pos_y: 16
-      size: 3
+      size: 6
       inclination: 0
       direction: 0
    
-    - pos_x: 45
+    - pos_x: 40
+      pos_y: 15
+      size: 3
+      inclination: 0
+      direction: 0 #dos de tres enfrentadas
+                  
+    - pos_x: 44
       pos_y: 15
       size: 3
       inclination: 0
       direction: 0
 
-    - pos_x: 49
-      pos_y: 15
-      size: 3
-      inclination: 0
-      direction: 0
-
-    - pos_x: 56
-      pos_y: 13
-      size: 6
-      inclination: 22
-      direction: 1
-
-    - pos_x: 58
-      pos_y: 12
+    - pos_x: 48
+      pos_y: 14.5
       size: 6
       inclination: 0
       direction: 1
 
     #vigas de abajo
-    - pos_x: 42
-      pos_y: 23
-      size: 3
-      inclination: 0
-      direction: 0
-
-    - pos_x: 45
+    - pos_x: 5
       pos_y: 25
-      size: 6
-      inclination: 0
-      direction: 0
-
-    - pos_x: 50
-      pos_y: 27
       size: 3
-      inclination: 0
+      inclination: 45
+      direction: 1
+
+    - pos_x: 8
+      pos_y: 23
+      size: 6
+      inclination: 45
       direction: 0
 
-    - pos_x: 53
+    
+    #escalerito
+
+    - pos_x: 55
       pos_y: 30
       size: 6
       inclination: 0
       direction: 0
 
+    - pos_x: 57
+      pos_y: 27
+      size: 3
+      inclination: 0
+      direction: 0
+
+    - pos_x: 62   
+      pos_y: 25
+      size: 6
+      inclination: 0
+      direction: 0
+
+    - pos_x: 65 
+      pos_y: 23
+      size: 3
+      inclination: 0
+      direction: 0
+
+
+    - pos_x: 67  #escalerito
+      pos_y: 23
+      size: 3
+      inclination: 0
+      direction: 0
+
+    - pos_x: 70
+      pos_y: 25
+      size: 6
+      inclination: 0
+      direction: 0
+
+    - pos_x: 75
+      pos_y: 27
+      size: 3
+      inclination: 0
+      direction: 0
+
+    - pos_x: 78
+      pos_y: 30
+      size: 6
+      inclination: 0
+      direction: 0
+
+
+
+   
+
   worms:
     - id: 0
-      pos_x: 45
+      pos_x: 40
       pos_y: 14
       direction: 0
       life: 100
       inclination: 0
     - id: 1
-      pos_x: 50
+      pos_x: 44
       pos_y: 14
       direction: 1
       life: 100
       inclination: 0
     - id: 3
-      pos_x: 20
+      pos_x: 15
       pos_y: 9
+      direction: 1
+      life: 100
+      inclination: 0
+    - id: 4
+      pos_x: 78
+      pos_y: 29
+      direction: 1
+      life: 100
+      inclination: 0
+    - id: 5
+      pos_x: 67
+      pos_y: 22
+      direction: 1
+      life: 100
+      inclination: 0
+    - id: 6
+      pos_x: 5
+      pos_y: 14
       direction: 1
       life: 100
       inclination: 0
