@@ -9,7 +9,6 @@
 
 WormAnimation::WormAnimation(int initial_x, int initial_y, Direction initial_dir, int player, int wormid) : player_id(player), worm_id(wormid) {
     this->animations = AnimationFactory::get_wormsAnimations();
-    printf("tamaño del vector de estados de gusano %lu\n", this->animations.size() );
 
     this->x = initial_x;
     this-> y = initial_y;
@@ -183,6 +182,5 @@ void WormAnimation::show(SDL_Surface * screen, SDL_Rect camera_position){
 
 
 WormAnimation::~WormAnimation() {
-	// TODO Auto-generated destructor stub
 }
 

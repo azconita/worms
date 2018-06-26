@@ -14,7 +14,10 @@
 #include "Colour.h"
 #include "Dtos.h"
 #include "Error.h"
+#include <cmath>
+#include "Logger.h"
 
+extern  logger oLog;
 
 using std::cout;
 using std::endl;

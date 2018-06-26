@@ -10,11 +10,13 @@
 #include "AnimationFactory.h"
 #include <algorithm>
 #include <map>
+#include "Logger.h"
 
 
 #define GRADES_PER_STEP 5.8064516129 //180/31
 #define WORM_OFFSET 10
 
+extern  logger oLog;
 
 
 //armas con mira

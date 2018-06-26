@@ -5,7 +5,9 @@
 #include "Dtos.h"
 #include "BlockingQueue.h"
 #include "Socket.h"
+#include "Logger.h"
 
+extern  logger oLog;
 
 class StageReceiver{
 	Socket & socket;

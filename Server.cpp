@@ -14,7 +14,7 @@
 Server::Server(char* port) :
                      acc_socket(NULL, port) {
   // inicializar vector de escenarios posibles
-  printf("inicializing Server\n");
+  oLog() << "[Server] Inicializing Server\n";
   acc_socket.bind_and_listen();
   for (auto &s : Constants::stages) {
     this->games_by_stage[s.first] = std::vector<Game*>();
@@ -22,11 +22,11 @@ Server::Server(char* port) :
 }
 
 Server::~Server() {
-  printf("[Server] destroy\n");
+  oLog() << "[Server] destroy\n";
   for (auto &i : this->games_by_stage) {
     for (auto &g : i.second) {
       delete g;
-      printf("[Server] game joined\n");
+      oLog() << "[Server] game joined\n";
     }
     i.second.clear();
   }
@@ -34,18 +34,18 @@ Server::~Server() {
 
 
 void Server::run() {
-  printf("running Server\n");
+  oLog() << "running Server\n";
   while (this->on) {
     try {
       Socket client = this->acc_socket.accept_socket();
       std::string stage = client.receive_dto();
-      printf("new client, stage: %s\n", stage.c_str());
+      oLog() << "[Server] new client, stage: " << stage.c_str() << "\n";
       std::map<std::string,std::vector<Game*>>::iterator it = this->games_by_stage.find(stage);
       if (it == this->games_by_stage.end()) {
         // no se encontro el stage: responder al cliente
       } else {
         if (it->second.empty()) {
-          printf("[Server] create stage\n");
+          oLog() <<"[Server] create stage\n";
           // no existen partidas de este escenario: crear una
           it->second.push_back(new Game(stage, Constants::stages.at(stage), std::move(client)));
         } else {
@@ -56,7 +56,7 @@ void Server::run() {
               // partida no llena: agregar jugador
               game->add_player(std::move(client));
               if (game->ready()) {
-                printf("[Server] starting game\n");
+                oLog() << "[Server] starting game\n";
                 game->start();
               }
               found = true;
@@ -70,7 +70,7 @@ void Server::run() {
         }
       }
     } catch (Error &e) {
-      printf("[Server] Error: %s\n", e.what());
+      oLog() << "[Server] Error: " << e.what();
     }
   }
 }

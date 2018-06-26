@@ -12,17 +12,20 @@
 #include <vector>
 
 #include "BlockingQueue.h"
+#include "CommonThread.h"
 #include "Socket.h"
-#include "common_thread.h"
 #include "Constants.h"
 #include "Dtos.h"
 #include "Player.h"
 #include "Stage.h"
 #include "TimerStage.h"
+#include "Logger.h"
+
+extern  logger oLog;
+
 #define QUEUE_SIZE 100
 
 class Game : public Thread {
-  //thread!!
   Stage stage;
   TimerStage timer;
   std::vector<Player*> players;

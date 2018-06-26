@@ -20,6 +20,8 @@
 
 #define TYPE_BEAM 1
 
+extern  logger oLog;
+
 class Beam : public Entity {
 private:
   b2Body* body;

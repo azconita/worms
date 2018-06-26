@@ -17,10 +17,9 @@ Beam::Beam(b2World* world, float size, float x, float y, float angle, Direction 
   b2BodyDef bodyDef;
   bodyDef.type = b2_staticBody;
   bodyDef.position.Set(x, y);
-  //bodyDef.angle = angle* (M_PI / 180); no poner esto porque funciona mal
-   this->angle = angle;
+  this->angle = angle;
   this->body = world->CreateBody(&bodyDef);
-  
+
   //add box fixture
   b2PolygonShape shape;
   shape.SetAsBox((size+0.0)/2 -0.7, (Constants::beam_height+0.0)/2,b2Vec2(0,0),angle* (M_PI / 180));
@@ -35,7 +34,6 @@ Beam::Beam(b2World* world, float size, float x, float y, float angle, Direction 
 }
 
 Beam::Beam(const Beam &other) : Entity(0), body(other.body) {
-  //this->body->SetUserData(this);
 }
 
 Beam* Beam::operator=(const Beam &other) {
@@ -46,7 +44,6 @@ Beam* Beam::operator=(const Beam &other) {
 }
 
 Beam::~Beam() {
-	// TODO Auto-generated destructor stub
 }
 
 std::vector<b2Vec2> Beam::get_points() {

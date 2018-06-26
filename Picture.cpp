@@ -5,7 +5,6 @@
  *      Author: jaz
  */
 
-//#define BOOST_LOG_DYN_LINK 1
 #include "Picture.h"
 
 SDL_Rect Picture::get_dimention(){
@@ -28,8 +27,6 @@ SDL_Surface * Picture::flip(SDL_Surface * original, Uint32 colorkey){
         SDL_Rect origen;
         SDL_Rect destino;
 
-
-        //BOOST_LOG_TRIVIAL(trace) << "Se crea una imagen";
 
         // Origen -> ancho una línea
         // Comienzo de copia por el principio

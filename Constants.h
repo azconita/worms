@@ -7,6 +7,9 @@
 
 #include <map>
 #include <string>
+#include "Logger.h"
+
+extern  logger oLog;
 
 #ifndef CONSTANTS_H_
 #define CONSTANTS_H_

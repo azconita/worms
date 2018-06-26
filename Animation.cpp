@@ -28,17 +28,15 @@ void Animation::first_step(){
     }
 }
 
+void Animation::set_current_direction(Direction direction){
+    this->direction = direction;
+    this->first_step();
 
-    void Animation::set_current_direction(Direction direction){
-        this->direction = direction;
-        this->first_step();
-        
-    }
+}
 
-    Direction Animation::get_current_direction(){
-        return this->direction;
-    }
-
+Direction Animation::get_current_direction(){
+    return this->direction;
+}
 
 void Animation::draw(SDL_Surface *screen, int x, int y){
 	SDL_Rect position;
@@ -47,47 +45,42 @@ void Animation::draw(SDL_Surface *screen, int x, int y){
         this->picture.draw(screen, position, this->direction);
     }
 
-    bool Animation::continue_internal_movement(){
+bool Animation::continue_internal_movement(){
+    this->picture.next_sprite_figure(this->direction);
+    this->step += 1;
+    if(this->step == this->figures_num){
+        this->step = 0;
+        return false;
+    }
+    return true;
+}
+
+bool Animation::point_up(){
+    if(!this->picture.is_in_last_figure(this->direction)){
         this->picture.next_sprite_figure(this->direction);
-        this->step += 1;
-        if(this->step == this->figures_num){
-            this->step = 0;
-            return false;
-        }
         return true;
     }
+    return false;
 
-    bool Animation::point_up(){
-        if(!this->picture.is_in_last_figure(this->direction)){
-            this->picture.next_sprite_figure(this->direction);
-            return true;
-        }
-        return false;
-
+}
+bool Animation::point_down(){
+    if(!this->picture.is_in_first_figure(this->direction)){
+        this->picture.previous_sprite_figure(this->direction);
+        return true;
     }
-    bool Animation::point_down(){
-        if(!this->picture.is_in_first_figure(this->direction)){
-            this->picture.previous_sprite_figure(this->direction);
-            return true;
-        }
-        return false;
+    return false;
+}
+
+void Animation::add_degres(float degrees){
+    this->first_step();
+    int i = 0;
+    while(degrees > 0){
+        this->picture.next_sprite_figure(this->direction);
+        degrees -= GRADES_PER_WEAPON_STEP;
+        i++;
     }
-
-    void Animation::add_degres(float degrees){
-        this->first_step();
-        int i = 0;
-        while(degrees > 0){
-            this->picture.next_sprite_figure(this->direction);
-            degrees -= GRADES_PER_WEAPON_STEP;
-            i++;
-        }
-
-    }
-
-
-
+}
 
 Animation::~Animation() {
-	// TODO Auto-generated destructor stub
 }
 

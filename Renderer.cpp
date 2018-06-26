@@ -41,15 +41,12 @@ void Renderer::draw(){
         if((t1 -t0) > 17) {
          	// Nueva referencia de tiempo
          	t0 = SDL_GetTicks();
-            //FIX ME
             if(s.winner != -1){
                     
                     if(s.winner == this->player_id){
-                            printf("GANE\n");
                             SDL_Flip(screen);
                             this->graphic_designer.won();         
                     }else{
-                            printf("PERDIII\n");
                             SDL_Flip(screen);
                             this->graphic_designer.lost();
                     }

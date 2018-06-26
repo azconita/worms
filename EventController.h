@@ -12,6 +12,9 @@
 #include "BlockingQueue.h"
 #include "Socket.h"
 #include "Dtos.h"
+#include "Logger.h"
+
+extern  logger oLog;
 
 class EventController {
 

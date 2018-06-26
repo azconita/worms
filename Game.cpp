@@ -17,20 +17,17 @@ Game::Game(std::string &stage_name, int total_players, Socket client) :
 }
 
 Game::~Game() {
-  //this->timer.stop();
-  //this->timer.join();
-  //this->stage.end();
   if (this->ran) {
     if (!this->stopped) {
       ActionDTO action;
       action.type = Quit;
       this->stage_queue.push(action);
-      printf("[Game] destroyer: pushed quit\n");
+      oLog() << "[Game] destroyer: pushed quit\n";
     }
     this->join();
   }
 
-  printf("[Game] deleted\n");
+  oLog() << "[Game] deleted\n";
 }
 
 void Game::stop() {
@@ -38,16 +35,16 @@ void Game::stop() {
   this->stage.end();
   this->timer.stop();
   this->timer.join();
-  printf("[Game] stop: timer joined\n");
+  oLog() << "[Game] stop: timer joined\n";
   //delete players!
   for (auto &q : this->players_queues) {
     delete q;
   }
-  printf("[Game] stop: queues deleted\n");
+  oLog() << "[Game] stop: queues deleted\n";
   for (auto &p : this->players) {
     delete p;
   }
-  printf("[Game] stop: players deleted\n");
+  oLog() << "[Game] stop: players deleted\n";
 }
 
 bool Game::not_stopped() {
@@ -66,7 +63,7 @@ void Game::add_player(Socket client) {
   if (this->players.size() >= this->total_players)
     return;
 
-  printf("[Game] add_player -> new Player\n");
+  oLog() << "[Game] add_player -> new Player\n";
   this->players.push_back(new Player(std::move(client)));
 }
 
@@ -78,11 +75,11 @@ void Game::prepare() {
   for (auto& p : this->players) {
     p->set_id(i);
     i++;
-    //printf("[Game] prepare -> new BlockingQueue\n");
+    oLog() << "[Game] prepare -> new BlockingQueue\n";
     BlockingQueue<StageDTO>* q = new BlockingQueue<StageDTO>(QUEUE_SIZE);
     this->players_queues.push_back(q);
     p->add_stage_queues(q, &(this->stage_queue));
-    //printf("[Game]starting player\n");
+    oLog() << "[Game]starting player\n";
     p->start();
   }
   this->timer.start();
@@ -100,11 +97,10 @@ void Game::run() {
     StageDTO s;
     // sacar action de la cola: action de player o action del timer(update)
     action = this->stage_queue.pop();
-    //printf("[Game] pop action: %d\n", action.type);
 
     if (action.type == Quit) {
-      printf("[Game] end game\n");
-      //end game: send block with endgame??
+      oLog() << "[Game] end game\n";
+      //end game: send block with endgame
       this->stage.end();
       s.winner = action.player_id;
       s.worm_turn = -1;
@@ -112,20 +108,17 @@ void Game::run() {
       this->timer.stop();
     } else {
       if (action.type == Timer_update){
-        //printf("[Game] update state\n");
+        oLog() << "[Game] update state\n";
         this->stage.update();
-
-      }
-      else{
-        //printf("[Game] le digo al stage que haga una accion\n");
+      } else {
+        oLog() << "[Game] le digo al stage que haga una accion\n";
         this->stage.make_action(action);
-
       }
       s = stage.get_stageDTO();
-      //printf("[Game] pido un stage DTO\n");
+      //oLog() << "[Game] pido un stage DTO\n";
     }
     for (auto &q : this->players_queues) {
-      //printf("[Game] lo encolo en la cola de un player\n");
+      //oLog() << "[Game] lo encolo en la cola de un player\n";
       q->push(s);
     }
   }

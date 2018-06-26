@@ -17,6 +17,9 @@
 #define _USE_MATH_DEFINES
 
 #define PROJECTILE 3
+#include "Logger.h"
+
+extern  logger oLog;
 
 class Weapon : public Entity {
 private:

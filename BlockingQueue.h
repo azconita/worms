@@ -1,8 +1,9 @@
 /*
  * BlockingQueue.h
+ *      Template creado en base al modelo
+ *      de cola bloqueante proporcionado por
+ *      el profesor Martin Di Paola.
  *
- *  Created on: Jun 5, 2018
- *      Author: gabi
  */
 
 
@@ -30,8 +31,6 @@ public:
                                           max_size(max_size) {
   }
   ~BlockingQueue() {
-    //this->q.clear();
-    printf("[BlockingQueue] deleted\n");
   }
 
   void push(const T& val) {
@@ -51,7 +50,6 @@ public:
   T pop() {
     std::unique_lock<std::mutex> lck(this->mtx);
     while (this->q.empty()) {
-      //std::cout << " cola vacia, el pull se bloquea\n";
       this->is_not_empty.wait(lck);
     }
     const T val = this->q.front();

@@ -2,11 +2,12 @@
 #define ACTIONER_H_
 
 #include <thread>
-#include "Logger.h"
 #include "Dtos.h"
 #include "BlockingQueue.h"
 #include "Socket.h"
+#include "Logger.h"
 
+extern  logger oLog;
 
 class Actioner{
 	Socket & socket;

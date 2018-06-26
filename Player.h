@@ -12,6 +12,9 @@
 #include "Socket.h"
 #include "BlockingQueue.h"
 #include "Dtos.h"
+#include "Logger.h"
+
+extern  logger oLog;
 
 class Player {
   Socket client;

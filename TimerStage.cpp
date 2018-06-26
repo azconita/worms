@@ -16,14 +16,13 @@ TimerStage::TimerStage(BlockingQueue<ActionDTO> &q) : stage_queue(q){
 }
 
 TimerStage::~TimerStage() {
-  printf("[TimerStage] deleted\n");
+  oLog() << "[TimerStage] deleted\n";
 }
 
 void TimerStage::run() {
   using delta = std::chrono::duration<double, std::nano>;
   std::chrono::nanoseconds diff(0);
   while (!this->finished) {
-    //printf("[TimerStage] push update\n");
     auto start = std::chrono::high_resolution_clock::now();
     std::this_thread::sleep_for(std::chrono::nanoseconds(SLEEPNANOSECONDS) - diff);
     ActionDTO action;

@@ -3,6 +3,10 @@
 
 #include <thread>
 
+/*
+ * Interfaz usada por: Server, Game, TimerStage
+ * Estas clases implementan el metodo run()
+ */
 class Thread {
  private:
   std::thread thread;

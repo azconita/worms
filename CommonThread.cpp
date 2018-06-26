@@ -1,4 +1,4 @@
-#include "common_thread.h"
+#include "CommonThread.h"
 
 void Thread::start() {
   this->thread = std::thread(&Thread::run, this);

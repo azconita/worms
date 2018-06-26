@@ -273,8 +273,7 @@ void Socket::send_dto(const std::string & dto_to_send){
 }
 
 std::string Socket::receive_dto(){
-  //  printf("numero del socket ->-----> %i\n",this->socket_num );
-   std::string dto_received;
+  std::string dto_received;
   int dto_size = receive_size_first();
   char chunk[CHUNK_LEN];
   int total_received = 0;

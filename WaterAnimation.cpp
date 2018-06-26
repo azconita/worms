@@ -34,6 +34,5 @@ void WaterAnimation::show(SDL_Surface * screen, int height){
     }
 
 WaterAnimation::~WaterAnimation() {
-	// TODO Auto-generated destructor stub
 }
 

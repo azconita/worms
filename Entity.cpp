@@ -9,12 +9,9 @@
 #include <Box2D/Box2D.h>
 
 Entity::Entity(int i) : en_type(i) {
-  // TODO Auto-generated constructor stub
-
 }
 
 Entity::~Entity() {
-  // TODO Auto-generated destructor stub
 }
 
 void Entity::rotateTranslate(b2Vec2& vector,const b2Vec2& center,float angle) {

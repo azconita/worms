@@ -18,7 +18,6 @@ void StageReceiver::receive_stage(){
 		try{
 		    string stage_str = (this->socket).receive_dto();
 		    YAML::Node yaml_received = YAML::Load(stage_str);
-		    //printf("%s\n", stage_str.c_str());
 		    StageDTO stage_received = yaml_received["stage"].as<StageDTO>();
 		    (this->stages_queue).push(stage_received);
 		    if(stage_received.winner != -1){

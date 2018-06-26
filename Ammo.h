@@ -10,6 +10,9 @@
 
 #include <map>
 #include "Dtos.h"
+#include "Logger.h"
+
+extern  logger oLog;
 
 class Ammo {
   std::map<Weapon_Name, int> per_weapon;

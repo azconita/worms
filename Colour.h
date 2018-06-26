@@ -7,7 +7,9 @@
 
 #ifndef COLOUR_H_
 #define COLOUR_H_
+#include "Logger.h"
 
+extern  logger oLog;
 
 enum Colour_name{
     White,

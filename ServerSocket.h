@@ -4,6 +4,9 @@
 #include "Socket.h"
 #include <string>
 #include <vector>
+#include "Logger.h"
+
+extern  logger oLog;
 
 class ServerSocket : public Socket {
 public:

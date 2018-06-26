@@ -8,9 +8,12 @@
 #ifndef TIMERSTAGE_H_
 #define TIMERSTAGE_H_
 
-#include "common_thread.h"
-#include "Dtos.h"
 #include "BlockingQueue.h"
+#include "CommonThread.h"
+#include "Dtos.h"
+#include "Logger.h"
+
+extern  logger oLog;
 
 class TimerStage : public Thread {
 private:

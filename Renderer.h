@@ -12,6 +12,7 @@
 #include "GraphicDesigner.h"
 #define INTER_TURN -2
 
+extern  logger oLog;
 
 class Renderer{
 	int player_id;

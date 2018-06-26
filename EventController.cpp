@@ -7,8 +7,6 @@
 
 #include "EventController.h"
 
-
-
 EventController::EventController(BlockingQueue<ActionDTO> & actions_queue, SDL_Event & event,
     int screen_height, int screen_width, GraphicDesigner & graphic_designer, int id) :
         actions_queue(actions_queue),
@@ -23,18 +21,13 @@ EventController::EventController(BlockingQueue<ActionDTO> & actions_queue, SDL_E
 }
 
 
-
-
-
 bool EventController::continue_running(WormAnimation & turn_worm){
     this->action.worm_id = turn_worm.get_id();
     
-    //printf("event controller %i\n", this->i);
+    //oLog() <<"event controller " << this->i << "\n";
     this->i++;
     if(SDL_PollEvent(&this->event) != 1){
-           //printf("no hay nuevos eventos\n");
         return keep_clicking(turn_worm); // no hay nuevos eventos
-
     }
     switch(event.type){
         case SDL_QUIT:
@@ -75,7 +68,6 @@ bool EventController::keep_clicking(WormAnimation& turn_worm){
         }
     }
     return true;
-
 }
 
 
@@ -147,7 +139,6 @@ void EventController::click(WormAnimation& turn_worm){
     SDL_GetMouseState(&x, &y);
 
     if(graphic_designer.is_inside_weapon_menu(x,y)){
-        //printf("esta dentro del menu\n");
         Weapon_Name  weapon = graphic_designer.choose_weapon(x,y);
         turn_worm.take_weapon(weapon);
         this->action.type = Take_weapon;
@@ -169,10 +160,8 @@ void EventController::mouse_motion(){
    this->graphic_designer.scroll(x,y);
 }
 
-
-
 void EventController::shot(WormAnimation& turn_worm,int x, int y){
-    if(turn_worm.has_weapon()){
+    if (turn_worm.has_weapon()) {
         this->action.type = Shot_weapon;
         this->action.pos_x = x;
         this->action.pos_y = y;
@@ -182,19 +171,17 @@ void EventController::shot(WormAnimation& turn_worm,int x, int y){
         this->action.time_to_explode = turn_worm.get_timer();
         this->wait_for_destination_clicl = true;
         send_action(this->action);
-    }
-    else{
-        cout << "no tiene arma para disparar" << endl;
+    } else {
+        oLog() << "no tiene arma para disparar" << "\n";
     }
 }
 
 
 
 void EventController::up(WormAnimation& turn_worm){
-    if(turn_worm.has_point_weapon()){
+    if (turn_worm.has_point_weapon()) {
         float degrees = turn_worm.point_up_weapon();
-        //printf("%f\n",degrees );
-    }else{
+    } else {
         turn_worm.change_state(Jump_state);
         this->action.type = Make_move;
         this->action.move = Jump;
@@ -210,23 +197,18 @@ void EventController::up_back(WormAnimation& turn_worm){
     this->action.move = Jump_back;
     this->action.direction = turn_worm.get_direction();
     send_action(this->action);
-
-
 }
 
 void EventController::down(WormAnimation& turn_worm){
     if(turn_worm.has_point_weapon()){
         float degrees = turn_worm.point_down_weapon();
-        //printf("%f\n",degrees );
     }
-
 }
 
 void EventController::right(WormAnimation& turn_worm){
     this->action.type = Make_move;
     this->action.move = Walk_right;
     send_action(this->action);
-
 }
 
 void EventController::left(WormAnimation& turn_worm){
@@ -243,17 +225,11 @@ void EventController::space(WormAnimation& turn_worm){
     }
 }
 
-
-
-
 void EventController::weapon_shot(WormAnimation& turn_worm){
     float x = meters_conversor(turn_worm.get_x());
     float y = meters_conversor(turn_worm.get_y());
     shot(turn_worm,x,y);
-
 }
-
-
 
 float EventController::meters_conversor(int pixel){
     return (pixel+0.0)/23.5;
@@ -275,9 +251,7 @@ void EventController::quit(){
 
 
 
-
 ///shortcuts--------------------------------------------------------------------------------
-
 
 void EventController::weapon_shortcuts(SDL_Event & event, WormAnimation& turn_worm){
     switch(event.key.keysym.sym){
@@ -314,7 +288,7 @@ void EventController::weapon_shortcuts(SDL_Event & event, WormAnimation& turn_wo
     }
 }
 void EventController::air_attack(WormAnimation& turn_worm){
-    //printf("[EventController]    click\n");
+    oLog() << "[EventController] click\n";
     turn_worm.take_weapon(W_Air_Attack);
     this->wait_for_destination_clicl = true;
     this->action.type = Take_weapon;

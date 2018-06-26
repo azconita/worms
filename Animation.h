@@ -10,6 +10,9 @@
 
 #include "Picture.h"
 #define GRADES_PER_WEAPON_STEP 11.6129032258//360/31
+#include "Logger.h"
+
+extern  logger oLog;
 
 class Animation {
 	 Picture picture;

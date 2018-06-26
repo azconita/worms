@@ -9,6 +9,9 @@
 #define TURNHELPER_H_
 
 #include <vector>
+#include "Logger.h"
+
+extern  logger oLog;
 
 class TurnHelper {
 private:

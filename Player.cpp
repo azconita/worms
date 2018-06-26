@@ -17,11 +17,9 @@ Player::Player(Socket client) : client(std::move(client)) {
 }
 
 Player::~Player() {
-  printf("[Player] deleted: %i\n", this->id);
-  // TODO Auto-generated destructor stub
+  oLog() << "[Player] deleted: " << this->id << "\n";
   this->sender.join();
   this->receiver.join();
-  //quien deberia borrar el socket??
   //this->client.shut();
 }
 
@@ -42,7 +40,6 @@ void Player::send() {
     s.player_id = this->id;
     if (s.worm_turn == -1) {
       this->stop();
-      //printf("[player] stop\n");
     }
     YAML::Emitter out;
     out << YAML::BeginMap;
@@ -50,10 +47,9 @@ void Player::send() {
     out << YAML::Value << s;
     out << YAML::EndMap;
     try {
-      ////printf("se envia %s\n", out.c_str());
       this->client.send_dto(out.c_str());
       if (s.winner != -1) {
-        //printf("the winner: %i", s.winner);
+        oLog() << "[Player] the winner: "<< s.winner <<"\n";
         this->stop();
         this->client.shut();
       }
@@ -61,19 +57,15 @@ void Player::send() {
       oLog() << "Player quit (peer socket closed).";
       this->stop();
     }
-
-    //printf("termino un ciclo del Player::send\n");
   }
-  printf("[Player] se termino el ciclo send: %i\n", this->id);
+  oLog() << "[Player] se termino el ciclo send: " << this->id << "\n";
 }
 
 void Player::receive(){
   extern logger oLog;
   while (this->on) {
-    //printf("[Player] recibiendo\n");
     try {
       std::string action_str = this->client.receive_dto();
-      ////printf("%s\n",action_str.c_str() );
       oLog() << "recibiendo";
       oLog() << action_str.c_str();
       YAML::Node yaml_received = YAML::Load(action_str);
@@ -84,13 +76,12 @@ void Player::receive(){
       ActionDTO a;
       a.type = Quit;
       a.player_id = this->id;
-      printf("[Player] receive: \n", e.what());
-      printf("[Player] receive: pushing quit action\n");
+      oLog() << "[Player] receive: pushing quit action\n";
       this->recv_queue->push(a);
       stop();
     }
   }
-  printf("[Player] se termino el ciclo receive: %i\n", this->id);
+  oLog() << "[Player] se termino el ciclo receive: " << this->id << "\n";
 }
 
 void Player::add_stage_queues(BlockingQueue<StageDTO> *send_queue,

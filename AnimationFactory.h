@@ -11,6 +11,9 @@
 #include "Animation.h"
 #include "Dtos.h"
 #include "ResourcesDefinitions.h"
+#include "Logger.h"
+
+extern  logger oLog;
 
 class AnimationFactory {
 	 AnimationFactory();

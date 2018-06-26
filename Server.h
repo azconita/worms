@@ -12,10 +12,14 @@
 #include <string>
 #include <thread>
 #include <vector>
-#include "common_thread.h"
+
+#include "CommonThread.h"
 #include "Dtos.h"
 #include "Game.h"
 #include "Socket.h"
+#include "Logger.h"
+
+extern  logger oLog;
 
 class Server : public Thread {
 private:

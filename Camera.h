@@ -5,6 +5,9 @@
 #include <mutex>
 #include <SDL/SDL.h>
 #include "ResourcesDefinitions.h"
+#include "Logger.h"
+
+extern  logger oLog;
 
 class Camera {
 private:
