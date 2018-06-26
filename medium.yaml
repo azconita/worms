@@ -25,26 +25,28 @@ stage:
       inclination: 90 #viga vertical arriba
       direction: 0
 
+
     - pos_x: 15  #vigas de arriba
       pos_y: 10
       size: 3
       inclination: 0 
       direction: 0
 
-    - pos_x: 20
-      pos_y: 13
+
+    - pos_x: 18
+      pos_y: 12 
+      size: 6
+      inclination: 90 #pared del comienzo
+      direction: 0
+
+    - pos_x: 18
+      pos_y: 14
       size: 6
       inclination: 0
       direction: 1
 
-    - pos_x: 25
-      pos_y: 14
-      size: 6
-      inclination: 45 
-      direction: 1
-
     - pos_x: 30
-      pos_y: 14
+      pos_y: 16
       size: 6
       inclination: 22 
       direction: 0
@@ -66,6 +68,13 @@ stage:
       size: 3
       inclination: 0
       direction: 0
+
+    - pos_x: 45
+      pos_y: 14
+      size: 6
+      inclination: 45 
+      direction: 1
+
 
     - pos_x: 48
       pos_y: 14.5
@@ -96,38 +105,38 @@ stage:
       direction: 0
 
     - pos_x: 57
-      pos_y: 27
+      pos_y: 28.5
       size: 3
       inclination: 0
       direction: 0
 
     - pos_x: 62   
-      pos_y: 25
+      pos_y: 27
       size: 6
       inclination: 0
       direction: 0
 
     - pos_x: 65 
-      pos_y: 23
+      pos_y: 25.3
       size: 3
       inclination: 0
       direction: 0
 
 
     - pos_x: 67  #escalerito
-      pos_y: 23
+      pos_y: 25.3
       size: 3
       inclination: 0
       direction: 0
 
     - pos_x: 70
-      pos_y: 25
+      pos_y: 27
       size: 6
       inclination: 0
       direction: 0
 
     - pos_x: 75
-      pos_y: 27
+      pos_y: 28.5
       size: 3
       inclination: 0
       direction: 0
