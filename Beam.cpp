@@ -28,6 +28,7 @@ Beam::Beam(b2World* world, float size, float x, float y, float angle, Direction 
   fixture.shape = &shape;
   fixture.friction = Constants::beam_friction;
   fixture.density = 100;
+  fixture.restitution = 0;
   this->body->CreateFixture(&fixture);
   this->body->SetUserData(this);
 

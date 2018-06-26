@@ -1,20 +1,38 @@
 stage:
   beams:
     - pos_x: 20
+      pos_y: 4
+      size: 6
+      inclination: 0
+      direction: 0
+    - pos_x: 26
+      pos_y: 4
+      size: 6
+      inclination: 0
+      direction: 0
+
+    - pos_x: 18
+      pos_y: 7
+      size: 6
+      inclination: 90
+      direction: 1
+    - pos_x: 20
       pos_y: 10
       size: 6
       inclination: 0
       direction: 0
-    - pos_x: 23
+    - pos_x: 26
       pos_y: 10
+      size: 6
+      inclination: 0
+      direction: 0
+    - pos_x: 29
+      pos_y: 7
       size: 6
       inclination: 90
       direction: 0
-    - pos_x: 18
-      pos_y: 10
-      size: 6
-      inclination: 90
-      direction: 1
+  
+      
     - pos_x: 13
       pos_y: 20
       size: 6

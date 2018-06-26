@@ -26,6 +26,7 @@ Worm::Worm(b2World* world, float x, float y, int id, Direction direction) :
   shape.SetAsBox(Constants::worm_width, Constants::worm_height);
   b2FixtureDef myFixtureDef;
   myFixtureDef.shape = &shape;
+  myFixtureDef.restitution = 0;
   myFixtureDef.density = Constants::worm_density;
   myFixtureDef.friction = Constants::worm_friction;
   this->body->CreateFixture(&myFixtureDef);
