@@ -46,10 +46,5 @@ stage:
       direction: 0
       life: 100
       inclination: 0
-    - id: 1
-      pos_x: 70
-      pos_y: 19
-      direction: 0
-      life: 100
-      inclination: 0
+
     
