@@ -431,7 +431,7 @@ void Stage::set_worms_to_players(int total_players) {
   std::shuffle(std::begin(ids), std::end(ids), rng);
   //create turn helpers
   int wq = this->worms.size() / total_players;
-  if(wq < 0){
+  if(wq <= 0){
     throw Error("Error in worms quantity:\nplayers = %d"//
       ", total worms = %i", total_players, this->worms.size());
   }
