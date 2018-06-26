@@ -187,7 +187,7 @@ void Weapon::explode() {
     }
   }
   //para compensar el uso del centro del body para aplicar daño
-  //this->radius += Constants::worm_width;
+  this->radius += Constants::worm_width;
   ExplosionQueryCallback query_callback;
   b2AABB aabb;
   b2Vec2 center = this->body->GetPosition();

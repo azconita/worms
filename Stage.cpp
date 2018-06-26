@@ -137,7 +137,7 @@ bool Stage::is_in_movement(){
    Update the velocity of the worms
   made teleport effective
   devuelve true si hay algun gusano moviendose
-  sino false
+  si no false
 */
 bool Stage::update_worms() {
   bool any_worm_in_movement = false;

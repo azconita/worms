@@ -50,13 +50,8 @@ Worm::Worm(const Worm& other) : Entity(1),
   std::cout << "wormDir(&other): " << this << '\n';
 }
 
-/*Worm::Worm() : Entity(1), body(NULL), life(0), world(NULL) {
-  std::cout << "wormDir(): " << this << '\n';
-
-}*/
 
 Worm::~Worm() {
-  // TODO Auto-generated destructor stub
   std::cout << "worm destroyed " << '\n';
   this->world->DestroyBody(this->body);
 }
@@ -215,14 +210,13 @@ void Worm::move_left() {
   }
 }
 
-//TODO: fix me!!
 void Worm::jump(Direction dir) {
   this->change_state(Jump_state);
   int d = (dir == Left) ? 1 : -1;
   float impulse = body->GetMass() * Constants::worm_jump_velocity;
   this->body->ApplyLinearImpulse(b2Vec2(d * impulse /2,impulse), this->body->GetWorldCenter(), true);
 }
-//TODO: fix me!!
+
 void Worm::jump_back() {
   this->change_state(Jump_back_state);
   int d = (this->direction == Left) ? 1 : -1;
