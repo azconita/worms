@@ -196,7 +196,7 @@
 
 
 #define BANANA "resources/banana.bmp"
-#define BANANA_R 1//192
+#define BANANA_R 192
 #define BANANA_G 192
 #define BANANA_B 128
 #define BANANA_COLUMNS 1

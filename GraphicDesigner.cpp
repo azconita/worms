@@ -263,7 +263,7 @@ void GraphicDesigner::show_weapon_point_direction(int x, int y,float degrees, Di
             padding_y = 35;
         }
         if(w.weapon == Banana){
-            padding_y = 0;
+            padding_y = -12;
         }
         int center_x = get_pixels(w.pos_x) - camera_position.x;
         int center_y = get_pixels(w.pos_y) - camera_position.y - padding_y;

@@ -1,35 +1,36 @@
 stage:
   beams:
-    - pos_x: 33.8
+    - pos_x: 32
       pos_y: 15
       size: 6
       inclination: 0
       direction: 0
 
-    - pos_x: 40
-      pos_y: 15
+    - pos_x: 37
+      pos_y: 14.5
       size: 3
       inclination: 0
       direction: 0
    
-    - pos_x: 45
-      pos_y: 14.3
+    - pos_x: 42
+      pos_y: 14
       size: 6
       inclination: 0
       direction: 0
-    - pos_x: 51
-      pos_y: 14.3
+
+    - pos_x: 47
+      pos_y: 14
       size: 6
       inclination: 0
-      direction: 1
-    
-    - pos_x: 58
-      pos_y: 15
+      direction: 0
+
+    - pos_x: 52
+      pos_y: 14.5
       size: 3
       inclination: 0
       direction: 0
 
-    - pos_x: 61.3
+    - pos_x: 57
       pos_y: 15
       size: 6
       inclination: 0
@@ -37,13 +38,13 @@ stage:
 
   worms:
     - id: 0
-      pos_x: 34
+      pos_x: 33
       pos_y: 14
       direction: 0
       life: 100
       inclination: 0
     - id: 1
-      pos_x: 52
+      pos_x: 56
       pos_y: 14
       direction: 1
       life: 100
