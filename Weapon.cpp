@@ -31,9 +31,9 @@ Weapon::Weapon(b2World *world, Weapon_Name name, float x, float y, float wind, s
     shape.SetAsBox(1, 1);
     b2FixtureDef myFixtureDef;
     myFixtureDef.shape = &shape;
+
     myFixtureDef.density = Constants::weapon_density;
-    this->body->CreateFixture(&myFixtureDef);
-    this->body->SetUserData(this);
+    
     //set weapon variables: radius and damage
     switch (name) {
       case W_Bazooka: {
@@ -83,9 +83,9 @@ Weapon::Weapon(b2World *world, Weapon_Name name, float x, float y, float wind, s
         break;
       }
       case Banana: {
-        this->body->SetLinearVelocity(b2Vec2(0,wind));
         this->radius = Constants::banana_radius;
         this->damage = Constants::banana_damage;
+        myFixtureDef.restitution = 1;
         break;
       }
       case Baseball_Bat: {
@@ -94,6 +94,8 @@ Weapon::Weapon(b2World *world, Weapon_Name name, float x, float y, float wind, s
         break;
       }
     }
+    this->body->CreateFixture(&myFixtureDef);
+    this->body->SetUserData(this);
 }
 
 Weapon::Weapon(const Weapon &other) : Entity(3),
@@ -154,9 +156,19 @@ void Weapon::apply_explosion_impulse(b2Body* other_body, b2Vec2 blast_center, b2
 
 }
 
+void Weapon::bounce(b2Vec2 normal){
+  b2Vec2 v = this->get_velocity();
+  float magnitude = round(sqrt(pow(v.x,2) + pow(v.y,2)));
+  printf("[Weapon] rebotandoo vel: %f normal %f, %f\n", magnitude, normal.x, normal.y);
+  this->body->ApplyLinearImpulse(25*normal, this->body->GetWorldCenter(), true);
+}
+
 
 //find all bodies with fixtures in blast radius AABB
-void Weapon::proximity_explosion(float power) {
+void Weapon::proximity_explosion(float power, b2Vec2 normal) {
+  /*if(this->name == Banana && this->timer != 0){
+    this->bounce(normal);
+  }*/
   if (this->name == Explosion)
     return this->explosion();
   if (!this->alive)
@@ -235,6 +247,10 @@ void Weapon::shoot(int power, float degrees, Direction dir, int time_to_explode)
       this->dynamite(time_to_explode, s);
       break;
     }
+    case Banana: {
+      this->grenade(power, degrees, time_to_explode, s);
+      break;
+    }
     case Mortar: {
       this->bazooka(power, degrees, s);
       break;
@@ -282,7 +298,7 @@ void Weapon::explosion() {
 
 bool Weapon::is_time_to_explode() {
   if ((this->timer != 0) && (this->name == Green_Grenade || this->name == Red_Grenade
-                          || this->name == Dynamite || this->name == Holy_Grenade)) {
+                          || this->name == Dynamite || this->name == Holy_Grenade || this->name == Banana)) {
     //std::cout << "t: " << difftime(time(NULL), this->t) << "\n";
     if (difftime(time(NULL), this->t) <= this->timer)
       return false;

@@ -21,7 +21,11 @@ void WeaponExplosionListener::BeginContact(b2Contact* contact) {
 
   Entity* entityA= (Entity*) contact->GetFixtureA()->GetBody()->GetUserData();
   Entity* entityB = (Entity*) contact->GetFixtureB()->GetBody()->GetUserData();
-  handle_begin_explotion( entityA, entityB);
+
+  b2WorldManifold worldManifold;
+  contact->GetWorldManifold(&worldManifold);
+
+  handle_begin_explotion( entityA, entityB, worldManifold.normal );
   handle_begin_contact( entityA, entityB);
 
 
@@ -34,13 +38,16 @@ void WeaponExplosionListener::EndContact(b2Contact* contact) {
 }
 
 
-void WeaponExplosionListener::handle_begin_explotion(Entity* entityA, Entity* entityB){
+void WeaponExplosionListener::handle_begin_explotion(Entity* entityA, Entity* entityB, b2Vec2 normal){
   if (entityA->en_type == WEAPON_TYPE) {
-    static_cast<Weapon*>( entityA)->proximity_explosion(Constants::explosion_power);
+    printf("[WeaponExplosionListener] se detecto contacto\n");
+    static_cast<Weapon*>( entityA)->proximity_explosion(Constants::explosion_power, normal);
   } else if ( entityB->en_type == WEAPON_TYPE ){
-    static_cast<Weapon*>( entityB )->proximity_explosion(Constants::explosion_power);
+    printf("[WeaponExplosionListener] se detecto contacto\n");
+    static_cast<Weapon*>( entityB )->proximity_explosion(Constants::explosion_power, normal);
   }
 }
+
 
 
 void WeaponExplosionListener::handle_begin_contact(Entity* entityA, Entity* entityB){
@@ -71,6 +78,10 @@ void WeaponExplosionListener::handle_end_contact(Entity* entityA, Entity* entity
 
 void WeaponExplosionListener::beam_worm_begin_contact(Beam * beam, Worm * worm){
   float angle = beam->get_angle();
+  if(angle == 90){
+    printf("[WeaponExplosionListener] rebote con viga de 90 grados\n");
+    worm->bounce();
+  }
   if(angle > 45 && angle < 135){
     return;
   }

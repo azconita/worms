@@ -100,7 +100,7 @@ void Game::run() {
     StageDTO s;
     // sacar action de la cola: action de player o action del timer(update)
     action = this->stage_queue.pop();
-    printf("[Game] pop action: %d\n", action.type);
+    //printf("[Game] pop action: %d\n", action.type);
 
     if (action.type == Quit) {
       printf("[Game] end game\n");

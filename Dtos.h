@@ -105,7 +105,7 @@ static std::map<Weapon_Name, State> weapons_states {
 };
 
 static std::map<State, State> up_states {
-     {Fall,Fall},
+   {Fall,Fall},
    {Still,Still_up},
    {Still_up,Still_up},
    {Still_down,Still_up},
@@ -193,6 +193,12 @@ static std::map<State, State> down_states {
    {Worm_dynamite_down,Worm_dynamite_down}
 };
 
+struct Vertex{
+  float pos_x =0;
+  float pos_y =0;
+};
+
+
 
 
 
@@ -202,6 +208,7 @@ struct ElementDTO { //puede ser un gusano, un arma o una viga
   float pos_y = 0; //vertice superior izquierdo en metros
   float h = 0;
   float w = 0;
+  std::vector<Vertex> vertices;
   State worm_state = Still;
   Direction direction = Right;
   float angle = 0;
@@ -285,6 +292,26 @@ struct convert<StageDTO> {
 
 
 template<>
+struct convert<Vertex> {
+  static Node encode(const Vertex& v) {
+    Node node;
+    node["pos_x"] = v.pos_x;
+    node["pos_y"] = v.pos_y;
+    return node;
+  }
+
+  static bool decode(const Node& node, Vertex& v) {
+    v.pos_x = node["pos_x"].as<float>();
+    v.pos_y = node["pos_y"].as<float>();;
+    return true;
+  }
+};
+
+
+
+
+
+template<>
 struct convert<ElementDTO> {
   static Node encode(const ElementDTO& elem) {
     Node node;
@@ -293,6 +320,7 @@ struct convert<ElementDTO> {
     node["pos_y"] = elem.pos_y;
     node["h"] = elem.h;
     node["w"] = elem.w;
+    node["vertices"] = elem.vertices;
     node["worm_state"] = (int)elem.worm_state;
     node["direction"] = (int)elem.direction;
     node["life"] = elem.life;
@@ -309,6 +337,7 @@ struct convert<ElementDTO> {
     elem.pos_y = node["pos_y"].as<float>();
     elem.h = node["h"].as<float>();
     elem.w = node["w"].as<float>();
+    elem.vertices = node["vertices"].as<std::vector<Vertex>>();
     elem.worm_state = static_cast<State>(node["worm_state"].as<int>());
     elem.direction = static_cast<Direction>(node["direction"].as<int>());
     elem.life = node["life"].as<int>();

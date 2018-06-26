@@ -48,7 +48,7 @@ public:
   bool is_time_to_explode();
   bool has_timer();
 
-  void proximity_explosion(float blast_power);
+  void proximity_explosion(float blast_power,b2Vec2 norma);
   void explode();
   void apply_explosion_impulse(b2Body* body, b2Vec2 blast_center, b2Vec2 apply_point);
   void shoot(int power, float degrees, Direction dir, int time_to_explode);
@@ -62,6 +62,7 @@ public:
   void dynamite(int time_to_explode, int s);
   b2Vec2 get_velocity();
   float get_angle_velocity();
+  void bounce(b2Vec2 normal);
 
 
   void printPos() {

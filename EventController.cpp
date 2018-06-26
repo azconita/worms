@@ -27,6 +27,8 @@ EventController::EventController(BlockingQueue<ActionDTO> & actions_queue, SDL_E
 
 
 bool EventController::continue_running(WormAnimation & turn_worm){
+    this->action.worm_id = turn_worm.get_id();
+    
     //printf("event controller %i\n", this->i);
     this->i++;
     if(SDL_PollEvent(&this->event) != 1){
@@ -230,7 +232,6 @@ void EventController::right(WormAnimation& turn_worm){
 void EventController::left(WormAnimation& turn_worm){
     this->action.type = Make_move;
     this->action.move = Walk_left;
-    this->action.worm_id = turn_worm.get_id();
     send_action(this->action);
 }
 

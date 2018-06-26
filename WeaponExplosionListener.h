@@ -37,7 +37,7 @@ public:
 
   void BeginContact(b2Contact* contact);
   void EndContact(b2Contact* contact);
-  void handle_begin_explotion(Entity* entityA, Entity* entityB);
+  void handle_begin_explotion(Entity* entityA, Entity* entityB, b2Vec2 normal);
   void handle_begin_contact(Entity* entityA, Entity* entityB);
   void handle_end_contact(Entity* entityA, Entity* entityB);
 

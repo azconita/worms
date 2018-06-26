@@ -32,10 +32,10 @@ void TurnHelper::delete_id(int id) {
  if (this->ids.at(this->last) == id)
    	this->get_next();
  	this->ids.erase(std::remove(this->ids.begin(), this->ids.end(), id), this->ids.end());
- 	printf("total worms: %lu\n", this->ids.size());
+ 	//printf("[TurnHelper] total worms: %lu\n", this->ids.size());
 }
 
 bool TurnHelper::is_empty() const {
-  printf("cantidad de gusanos %lu\n",this->ids.size() );
+  //printf("[TurnHelper] cantidad de gusanos %lu\n",this->ids.size() );
 	return (this->ids.size() < 1);
 }

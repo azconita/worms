@@ -23,11 +23,12 @@ Beam::Beam(b2World* world, float size, float x, float y, float angle, Direction 
   
   //add box fixture
   b2PolygonShape shape;
-  shape.SetAsBox((size+0.0)/2 -0.5, (Constants::beam_height+0.0)/2,b2Vec2(0,0),angle* (M_PI / 180));
+  shape.SetAsBox((size+0.0)/2 -0.7, (Constants::beam_height+0.0)/2,b2Vec2(0,0),angle* (M_PI / 180));
   b2FixtureDef fixture;
   fixture.shape = &shape;
   fixture.friction = Constants::beam_friction;
   fixture.density = 100;
+  fixture.restitution = 0;
   this->body->CreateFixture(&fixture);
   this->body->SetUserData(this);
 
@@ -64,6 +65,5 @@ Direction Beam::get_direction() {
 }
 
 b2Vec2 Beam::get_center(){
-  std::vector<b2Vec2> v=  this->get_points();
   return this->body->GetPosition();
 }

@@ -26,6 +26,7 @@ Worm::Worm(b2World* world, float x, float y, int id, Direction direction) :
   shape.SetAsBox(Constants::worm_width, Constants::worm_height);
   b2FixtureDef myFixtureDef;
   myFixtureDef.shape = &shape;
+  myFixtureDef.restitution = 0;
   myFixtureDef.density = Constants::worm_density;
   myFixtureDef.friction = Constants::worm_friction;
   this->body->CreateFixture(&myFixtureDef);
@@ -120,10 +121,12 @@ bool Worm::update_horizontal_state(){
     //estaba cayendo: chequear si fueron mas de 2m para hacerle dano al worm
     this->state = Still;
     float d = std::abs(this->start_falling.y - this->body->GetPosition().y);
-    oLog() << "[Worm] worm stops falling: " << d << endl;
-    if (d > 2)
+    std::cout << "[Worm] worm stops falling: " << d << endl;
+    if (d > 2){
       this->apply_damage((d < 25) ? d : 25);
-    return true;
+      return true;
+    }
+    
   }
   if (this->state != Still && (std::abs(vel.y) < 0.1 && std::abs(vel.x) < 0.1 )
      && (this->state == Walk || this->state == Jump_state || this->state == Jump_back_state
@@ -154,8 +157,16 @@ void Worm::calm(){
 }
 
 void Worm::move(float vel_x, float vel_y){
-  ////printf("velocidad: %f, %f\n",vel_x, vel_y);
+  printf("velocidad: %f, %f\n",vel_x, vel_y);
   this->body->ApplyLinearImpulse(b2Vec2(vel_x,vel_y), this->body->GetWorldCenter(), true);
+}
+
+void Worm::bounce(){
+  float v = Constants::worm_walk_velocity;
+  if(this->direction == Right){
+    v = v*(-1);
+  }
+  this->move(3*v, 0);
 }
 
 
