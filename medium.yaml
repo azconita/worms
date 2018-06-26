@@ -11,13 +11,13 @@ stage:
       pos_y: 50
       size: 6
       inclination: 22
-      direction: 1
+      direction: 0
 
     - pos_x: 5
       pos_y: 50
       size: 6
       inclination: 0
-      direction: 1
+      direction: 0
 
     - pos_x: 47
       pos_y: 5
@@ -56,16 +56,16 @@ stage:
       inclination: 90 #pared del comienzo
       direction: 0
 
-    - pos_x: 18
+    - pos_x: 22
       pos_y: 14
       size: 6
       inclination: 0
-      direction: 1
+      direction: 0
 
-    - pos_x: 30
-      pos_y: 16
+    - pos_x: 29
+      pos_y: 15
       size: 6
-      inclination: 22
+      inclination: 45
       direction: 0
 
     - pos_x: 35
@@ -86,31 +86,31 @@ stage:
       inclination: 0
       direction: 0
 
-    - pos_x: 45
-      pos_y: 14
+    - pos_x: 54
+      pos_y: 16
       size: 6
-      inclination: 45
-      direction: 1
+      inclination: 22
+      direction: 0
 
 
     - pos_x: 48
       pos_y: 14.5
       size: 6
       inclination: 0
-      direction: 1
+      direction: 0
 
     #vigas de abajo
     - pos_x: 1
       pos_y: 17
       size: 3
-      inclination: 45
-      direction: 1
+      inclination: 0
+      direction: 0
 
     - pos_x: -2
       pos_y: 20
       size: 3
       inclination: 0
-      direction: 1
+      direction: 0
 
     - pos_x: 8
       pos_y: 19
