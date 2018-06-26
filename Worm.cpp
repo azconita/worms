@@ -126,10 +126,12 @@ bool Worm::update_horizontal_state(){
     //estaba cayendo: chequear si fueron mas de 2m para hacerle dano al worm
     this->state = Still;
     float d = std::abs(this->start_falling.y - this->body->GetPosition().y);
-    oLog() << "[Worm] worm stops falling: " << d << endl;
-    if (d > 2)
+    std::cout << "[Worm] worm stops falling: " << d << endl;
+    if (d > 2){
       this->apply_damage((d < 25) ? d : 25);
-    return true;
+      return true;
+    }
+    
   }
   if (this->state != Still && (std::abs(vel.y) < 0.1 && std::abs(vel.x) < 0.1 )
      && (this->state == Walk || this->state == Jump_state || this->state == Jump_back_state

@@ -196,12 +196,13 @@ void GraphicDesigner::show_worms(StageDTO s, SDL_Surface *screen, SDL_Rect camer
 
         worms_iter->second.move(center_x, center_y,  worm_info.worm_state,worm_info.direction);
 
-
+        printf("[GraphicDesigner] last turn %i, this turn %i \n", this->last_worm_turn, s.worm_turn );
         if(w.first == s.worm_turn && ((this->last_worm_turn != s.worm_turn) || //
             (worms_iter->second.is_in_movement() && s.weapons.size() == 0 ) ) ) { 
-            this->camera->follow(center_x,center_y); 
+            printf("mover camaraaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa\n");
+            this->camera->follow(center_x,center_y);
+            this->last_worm_turn =  s.worm_turn; 
         }
-        this->last_worm_turn =  s.worm_turn;
 
         worms_iter->second.show(this->screen, camera_position);
 
@@ -260,7 +261,9 @@ void GraphicDesigner::show_weapon_point_direction(int x, int y,float degrees, Di
         int padding_y = 10;
         if(w.weapon == Explosion){
             padding_y = 35;
-
+        }
+        if(w.weapon == Banana){
+            padding_y = 0;
         }
         int center_x = get_pixels(w.pos_x) - camera_position.x;
         int center_y = get_pixels(w.pos_y) - camera_position.y - padding_y;

@@ -66,8 +66,8 @@ std::map<State,Animation> AnimationFactory::get_wormsAnimations(){
     animations.insert(std::pair<State,Animation>(Still_up,worm_walk_up));
     animations.insert(std::pair<State,Animation>(Walk_up,worm_walk_up));
 
-     Animation worm_walk_down = AnimationFactory::get_worm_walk_down();
-     animations.insert(std::pair<State,Animation>(Still_down,worm_walk_down));
+    Animation worm_walk_down = AnimationFactory::get_worm_walk_down();
+    animations.insert(std::pair<State,Animation>(Still_down,worm_walk_down));
     animations.insert(std::pair<State,Animation>(Walk_down,worm_walk_down));
 
 

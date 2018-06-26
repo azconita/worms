@@ -24,9 +24,9 @@ void Stage::do_explosions() {
             ++it;
         }
       w->explode();
-      printf("[Stage] se hizo una explosion, listo para cambiar de jugaro\n");
+     
       this->current_player->took_weapon(None);
-      //this->current_player = NULL;
+      printf("[Stage] se hizo una explosion, todavia no cambio de jugador!\n");
     }
   }
 }
@@ -93,7 +93,7 @@ void Stage::clean_dead_bodies() {
     if (!it->second->is_alive()) {
       if (it->second == this->current_player)
         this->current_player = NULL;
-        //printf("[Stage] se murio un gusano, listo para cambiar de jugador\n");
+        printf("[Stage] se murio un gusano, listo para cambiar de jugador\n");
       this->players_turn.at(it->second->get_player_id()).delete_id(it->first);
       delete it->second;
       it = this->worms.erase(it);
@@ -143,12 +143,14 @@ bool Stage::update_worms() {
   bool any_worm_in_movement = false;
   for (auto &w : this->worms) {
     if(w.second->disappear()){
-      //printf("[Stage] el gusano ya se teletransporto, esta listo para cambiar de jugador\n");
+      printf("[Stage] el gusano ya se teletransporto, esta listo para cambiar de jugador\n");
       this->current_player = NULL;
     }
     bool damaged = w.second->update_state();
-    if (damaged)
+    if (damaged && this->weapons.size() == 0){
+      printf("[Stage] el gusno sufrio daño sin que se tire ningun arma, listo para cambiar de jugador\n");
       this->current_player = NULL;
+    }
     if(w.second->get_velocity().Length() > 0.5){
       // si los gusanos se estan moviendo quizas es por una explosion
       //no hay que cambiar de turno porque se vuelven estaticos
