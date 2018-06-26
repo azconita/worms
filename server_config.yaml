@@ -1,7 +1,7 @@
 stages:
         file.yaml: 2
         easy.yaml: 2
-        medium.yaml: 3
+        medium.yaml: 2
         hard.yaml: 4
 
 total_players: 2
@@ -18,7 +18,7 @@ beam_friction: 1
 worm_turn_time: 40
 worm_initial_life: 100
 worm_walk_velocity: 4
-worm_jump_velocity: -4
+worm_jump_velocity: -6
 worm_density: 0
 worm_height: 1.3  
 worm_width: 0.5

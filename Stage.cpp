@@ -2,7 +2,6 @@
 #include "Stage.h"
 
 Stage::Stage(std::string file_name) {
-  std::cout << file_name << '\n';
   b2Vec2 gravity(0, Constants::gravity);
   this->world = new b2World(gravity);
   this->explosion_listener;
