@@ -29,29 +29,29 @@ stage:
     - pos_x: 15  #vigas de arriba cuadrado encerrado
       pos_y: 10
       size: 6
-      inclination: 0
+      inclination: 0 
       direction: 0
 
-    - pos_x: 12
+    - pos_x: 12 
       pos_y: 6
       size: 6
-      inclination: 90
+      inclination: 90 
       direction: 0
 
-    - pos_x: 18
+    - pos_x: 18  
       pos_y: 6
       size: 6
-      inclination: 90
+      inclination: 90 
       direction: 0
 
     - pos_x: 15  #techo
       pos_y: 4
       size: 6
-      inclination: 0
+      inclination: 0 
       direction: 0
 
     - pos_x: 19
-      pos_y: 12
+      pos_y: 12 
       size: 6
       inclination: 90 #pared del comienzo
       direction: 0
@@ -65,7 +65,7 @@ stage:
     - pos_x: 30
       pos_y: 16
       size: 6
-      inclination: 22
+      inclination: 22 
       direction: 0
 
     - pos_x: 35
@@ -73,13 +73,13 @@ stage:
       size: 6
       inclination: 0
       direction: 0
-
+   
     - pos_x: 40
       pos_y: 15
       size: 3
       inclination: 0
       direction: 0 #dos de tres enfrentadas
-
+                  
     - pos_x: 44
       pos_y: 15
       size: 3
@@ -89,7 +89,7 @@ stage:
     - pos_x: 45
       pos_y: 14
       size: 6
-      inclination: 45
+      inclination: 45 
       direction: 1
 
 
@@ -124,7 +124,7 @@ stage:
       inclination: 0
       direction: 0
 
-
+    
     #escalerito
 
     - pos_x: 55
@@ -139,13 +139,13 @@ stage:
       inclination: 0
       direction: 0
 
-    - pos_x: 62
+    - pos_x: 62   
       pos_y: 28
       size: 6
       inclination: 0
       direction: 0
 
-    - pos_x: 65
+    - pos_x: 65 
       pos_y: 27
       size: 3
       inclination: 0
@@ -178,7 +178,7 @@ stage:
 
 
 
-
+   
 
   worms:
     - id: 0

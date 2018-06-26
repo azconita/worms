@@ -24,7 +24,6 @@ Ammo::Ammo() {
 }
 
 Ammo::~Ammo() {
-  // TODO Auto-generated destructor stub
 }
 
 bool Ammo::use(Weapon_Name weapon) {
