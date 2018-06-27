@@ -57,15 +57,15 @@ stage:
       direction: 0
 
     - pos_x: 22
-      pos_y: 14
+      pos_y: 12
       size: 6
       inclination: 0
       direction: 0
 
-    - pos_x: 29
-      pos_y: 15
+    - pos_x: 30
+      pos_y: 16
       size: 6
-      inclination: 45
+      inclination: 22
       direction: 0
 
     - pos_x: 35
@@ -86,15 +86,15 @@ stage:
       inclination: 0
       direction: 0
 
-    - pos_x: 54
+    - pos_x: 48
       pos_y: 16
       size: 6
       inclination: 22
       direction: 0
 
 
-    - pos_x: 48
-      pos_y: 14.5
+    - pos_x: 53
+      pos_y: 16
       size: 6
       inclination: 0
       direction: 0
@@ -103,7 +103,7 @@ stage:
     - pos_x: 1
       pos_y: 17
       size: 3
-      inclination: 0
+      inclination: 22
       direction: 0
 
     - pos_x: -2
@@ -115,7 +115,7 @@ stage:
     - pos_x: 8
       pos_y: 19
       size: 6
-      inclination: 45
+      inclination: 22
       direction: 0
 
     - pos_x: 13
