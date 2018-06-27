@@ -19,9 +19,15 @@ void Renderer::draw(){
 	//para controlar el tiempo
     Uint32 t0 = SDL_GetTicks();
     Uint32 t1;
+    std::chrono::nanoseconds diff(0);
+    
 
 	bool finish = false;
 	while(this->on){
+
+        auto start = std::chrono::high_resolution_clock::now();
+        std::this_thread::sleep_for(std::chrono::nanoseconds(SLEEPNANOSECONDS) - diff);
+
 
         //actualiza el dibujo de la superficie en la pantalla
         SDL_Flip(screen);
@@ -38,7 +44,8 @@ void Renderer::draw(){
             }
         } 
 
-        if((t1 -t0) > 17) {
+
+       // if((t1 -t0) > 17) {
          	// Nueva referencia de tiempo
          	t0 = SDL_GetTicks();
             if(s.winner != -1){
@@ -59,7 +66,13 @@ void Renderer::draw(){
 
             }
 
-        }
+       // }
+
+        auto end = std::chrono::high_resolution_clock::now();
+
+        diff = std::chrono::duration_cast<std::chrono::nanoseconds>(end-start) - std::chrono::nanoseconds(SLEEPNANOSECONDS);
+        diff = (diff.count() > 0) ? diff : std::chrono::nanoseconds(0);
+
     }
 		   
 }

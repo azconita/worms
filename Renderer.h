@@ -12,6 +12,8 @@
 #include "GraphicDesigner.h"
 #define INTER_TURN -2
 
+#define SLEEPNANOSECONDS 17000000
+
 extern  logger oLog;
 
 class Renderer{
